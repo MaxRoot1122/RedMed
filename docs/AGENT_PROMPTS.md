@@ -111,7 +111,16 @@ Implement bracelet v2 industrial design + app SOS / PIN / device management:
 > - Emergency tap must still work if a future battery is dead
 > - Ship product-facing docs (`docs/WIRELESS_CHARGING.md`, README, packaging copy) — docs-only unless product direction changes
 
-**Status on `main`:** guidance merged via #26. UI “Unable To Complete” likely a separate plan/research run without a durable plan file — use [`docs/plans/wireless-charging.md`](plans/wireless-charging.md).
+**Updated from RedMed 2 snapshot files (this branch):**
+
+> Rebase research onto current `main` snapshot. Confirm passive NFC does **not** need WLC/Qi. Keep:
+>
+> - [`docs/WIRELESS_CHARGING.md`](WIRELESS_CHARGING.md) — expanded verdict + learning log
+> - [`docs/plans/manufacturing-bom.md`](plans/manufacturing-bom.md) — vertical-integration chip/BOM map
+> - [`docs/BRACELET.md`](BRACELET.md) — LED battery local-only, side-button SOS siren, phone must not continuous-scan, no MAC blacklist
+> - [`docs/plans/wireless-charging.md`](plans/wireless-charging.md) — executable plan note
+
+**Status:** Active on `cursor/wireless-charging-guidance-a8f0` (rebased onto RedMed 2 `main`).
 
 ---
 
