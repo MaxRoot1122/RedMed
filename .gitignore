@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Local AI / editor junk (never commit)
+.claude/
+.cursor/
+!.cursor/environment.json
+.vscode/
+.idea/
+*.swp
+*~
+
+# Xcode (created once the project is set up per ios/SETUP.md — sources
+# themselves live in ios/RedMed/ and stay tracked)
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Android / Gradle (created once opened in Android Studio per android/SETUP.md)
+android/local.properties
+android/.gradle/
+android/build/
+android/app/build/
+android/.idea/
+android/*.iml
+android/captures/
+android/.cxx/
+
+# Google Maps API key (see config/google-api-key.example)
+config/google-api-key
+ios/RedMed/google-api-key

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <circle cx="180" cy="250" r="72" fill="#0891b2" opacity="0.15"/>
+  <circle cx="180" cy="250" r="48" fill="none" stroke="#0891b2" stroke-width="3"/>
+  <text x="180" y="262" text-anchor="middle" font-family="system-ui,sans-serif" font-size="36" fill="#0891b2"></text>
+  <text x="300" y="210" font-family="system-ui,sans-serif" font-size="56" font-weight="700" fill="#ffffff">RedMed</text>
+  <text x="300" y="270" font-family="system-ui,sans-serif" font-size="28" fill="#94a3b8">Emergency medical ID on NFC</text>
+  <text x="300" y="320" font-family="system-ui,sans-serif" font-size="22" fill="#e11d48">Tap bracelet ’ any phone opens your card</text>
+</svg>

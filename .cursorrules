@@ -1,0 +1,97 @@
+# RedMed — project rules for AI coding assistants
+
+Local-first emergency medical ID app. Owner fills in profile data once;
+it's written to a **passive** NFC chip (wristband/tag); a smartphone that
+taps energizes the chip and reads the data. No backend, no accounts, nothing
+ever sent to a server, by design — keep it that way unless explicitly told
+to change it.
+
+**Passive NFC only:** NTAG-style ISO 14443 tags — no BLE beacons, no active
+RFID, no battery-powered bands, no continuous broadcast. Do not add radio
+features beyond phone-tap read/write of NDEF URI records.
+
+## Sole repository
+
+This product lives in **one** GitHub repo only:
+`https://github.com/MaxRoot1122/RedMed`.
+
+Do not create, recommend, or depend on a second repo (including a
+`MaxRoot1122.github.io` user-site, a fork used as the "real" source, or
+a multi-repo Cursor environment). Hosting, Android TWA, iOS, docs, and
+agent work all stay inside this repo. GitHub Pages path is
+`https://maxroot1122.github.io/RedMed/`.
+
+## Where things live
+
+- `index.html` — the entire web app: single file, inline `<style>`/`<script>`,
+  no build step, no framework, no dependencies. Views (My ID / Aid / 911)
+  are plain divs toggled via `location.hash` routing.
+- `ios/RedMed/` — SwiftUI sources. Open **`ios/RedMed.xcodeproj`** in Xcode
+  (NFC capability, `redmed://` URL scheme, bundle ID `local.redmed.app` are
+  preconfigured — see `ios/SETUP.md`). Nothing here has ever been compiled in
+  this environment; treat any Swift edit as unverified until built on a real Mac.
+- `android/` — a bare Trusted Web Activity (TWA) wrapper around a hosted
+  copy of `index.html`. Zero native UI code exists — see `android/SETUP.md`
+  for NFC write gap (iOS native; Android Chrome Web NFC on hosted page).
+- `get.html` — store-routing QR landing (iOS / Samsung / Huawei / Play).
+- `RedMed.app/` — macOS wrapper: bash launcher serves `Contents/Resources/www/`
+  (a mirror of root `index.html`) over `localhost` (required for GPS —
+  `file://` blocks geolocation) and opens it in Chrome/Edge/Safari app mode.
+- `assets/icon.svg` — source of truth for the **app cover / home-screen icon**
+  (bronze cross + red serpent on the rose plate). All PNG/ICNS variants are
+  generated from this — regenerate after editing, don't hand-edit the rasters.
+- `assets/wordmark.svg` — in-app **RedMed** wordmark; `assets/mark.svg` — symbol
+  only. See `docs/BRAND.md` for which asset goes where.
+- `assets/trauma-hospitals.{json,js}` — bundled offline trauma center
+  directory for **Find 911** (see `docs/TRAUMA_FINDER.md`). Web loads
+  `.js` via `<script src>`; iOS bundles `.json`. Keep copies in sync.
+- `docs/TRAUMA_FINDER.md` — agent handoff for trauma center UX, schema,
+  file list, and verification. Read before editing Find 911 trauma UI.
+
+## Things that will silently break if you miss them
+
+- **`index.html`'s CSP pins an exact `sha256-` hash of the inline
+  `<script>` block.** Any edit inside `<script>...</script>` invalidates
+  that hash — the whole page's JS silently stops running (CSP blocks it,
+  no visible error in a static read, only in the browser console) until
+  you recompute it: hash the exact script text (UTF-8, byte-for-byte) and
+  update the `script-src` directive in the `<meta http-equiv="Content-
+  Security-Policy">` tag. CSS-only edits don't affect this hash.
+- **`RedMed.app/Contents/Resources/www/index.html` must stay byte-identical
+  to root `index.html`.** It's a manual copy, not a symlink or build step —
+  `cp index.html "RedMed.app/Contents/Resources/www/index.html"` after any
+  web edit, then `diff` to confirm. Or run `./scripts/sync-www-mirror.sh`.
+  Copy `assets/trauma-hospitals.*` into
+  `RedMed.app/Contents/Resources/www/assets/` when trauma data changes.
+- **Passive NFC only.** Bracelets are **passive NTAG** chips (ISO 14443 Type A,
+  NDEF URI). No battery, no BLE beacon, no active RFID, no continuous
+  broadcast — the phone powers the chip on tap. App code: CoreNFC + Web NFC
+  write only; do not add Bluetooth, UHF, or live-tracking radios.
+- **NFC opens on smartphones, on purpose.** `AppConfig.medicalCardBaseURL`
+  is the hosted HTTPS card page (`…/RedMed/index.html`). Tags store that
+  URL plus `#d=` profile data on the bracelet chip — no account, no cloud
+  sync. A stranger's **smartphone** taps the band and the emergency card opens
+  in the phone browser (tablets/desktops see a gate screen). Keep `redmed://`
+  registered only as a legacy deep-link; don't switch writes back to app-only
+  without an explicit ask.
+- **Never fake satellite-tracking/pointing UI.** No public API (iOS or
+  Android) exposes real satellite position/connectivity data to
+  third-party apps — Apple's Emergency SOS via satellite (Globalstar) and
+  Android's Satellite SOS (Skylo) are both private OS-vendor integrations.
+  A fake "point your phone here" indicator in a safety-critical app is a
+  real harm vector if someone trusts it during an actual no-signal
+  emergency. Real device compass heading (`CLLocationManager`) is fine and
+  already implemented; simulated satellite direction is not.
+- **No backend, no cloud sync of profile data.** Cloud sync was
+  deliberately removed for a cleaner local-only / HIPAA-adjacent posture.
+  Don't reintroduce network calls carrying profile data without explicit
+  instruction. **Exception:** optional Google Maps Platform on Find 911 only
+  (`connect-src https://maps.googleapis.com`) — see `docs/TRAUMA_FINDER.md`.
+
+## Conventions
+
+- Comments explain *why*, not *what* — keep that pattern.
+- No unused CSS classes or dead views — check whether something is
+  actually referenced before assuming it's load-bearing.
+- Brace/paren-balance-check any Swift edit (`python3` one-liner counting
+  `{`/`}` and `(`/`)`) since there's no Xcode here to catch syntax errors.

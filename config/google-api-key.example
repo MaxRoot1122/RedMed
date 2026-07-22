@@ -1,0 +1,8 @@
+# Paste your Google Maps Platform API key on the line below (no quotes).
+# Enable: Geocoding API + Places API on the key. Restrict by HTTP referrer
+# (web) and iOS bundle ID `local.redmed.app` in Google Cloud Console.
+#
+# Deploy: copy to config/google-api-key (gitignored) locally, or set GitHub
+# Actions secret GOOGLE_MAPS_API_KEY for Pages.
+
+YOUR_GOOGLE_MAPS_API_KEY_HERE

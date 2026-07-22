@@ -1,0 +1,45 @@
+name: Deploy GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build static site
+        run: |
+          mkdir -p _site/.well-known _site/config
+          cp index.html privacy-policy.html terms-of-service.html manifest.json get.html _site/
+          cp -R assets _site/assets
+          cp .well-known/assetlinks.json _site/.well-known/assetlinks.json
+          if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
+          if [ -n "${{ secrets.GOOGLE_MAPS_API_KEY }}" ]; then
+            printf '%s' "${{ secrets.GOOGLE_MAPS_API_KEY }}" > _site/config/google-api-key
+          elif [ -f config/google-api-key ]; then
+            cp config/google-api-key _site/config/google-api-key
+          else
+            : > _site/config/google-api-key
+          fi
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

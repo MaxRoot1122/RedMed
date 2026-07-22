@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>RedMed — Privacy Policy</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #9c0c22;
+    --code-bg: #f7f7f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a;
+      --ink: #f0f0f0;
+      --muted: #a3a3a3;
+      --accent: #ff6b81;
+      --code-bg: #26262a;
+    }
+  }
+  html, body { background: var(--bg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.6;
+    color: var(--ink); background: var(--bg);
+  }
+  h1 { font-size: 24px; color: var(--ink); }
+  h2 { font-size: 17px; margin-top: 28px; color: var(--accent); }
+  .updated { color: var(--muted); font-size: 13px; }
+  code { background: var(--code-bg); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+  li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<h1>RedMed — Privacy Policy</h1>
+<p class="updated">Last updated July 2026.</p>
+
+<p>RedMed is a personal emergency medical ID app, developed by RedMed LLC. <strong>We operate no servers.</strong> There is no backend, no cloud account, and no database of your information on our side. The app exists so you can fill in your profile once and program it onto an NFC medical bracelet. After that, a <strong>smartphone</strong> that taps the band can read your emergency card in its browser.</p>
+
+<h2>What the app does</h2>
+<p>You type your emergency information (name, blood type, allergies, medications, conditions, contacts, notes). RedMed stores it on your phone and helps you write it to your bracelet tag. That is the core purpose — <strong>band setup</strong>. Optional screens (Basic Aid, Find 911) work entirely on your device while you have the app open.</p>
+
+<h2>What data you enter</h2>
+<p>Whatever you choose to type in: your name, blood type, allergies, medications, medical conditions, emergency contacts, doctor and insurance info, and free-text notes. Nothing is collected automatically, and nothing is required beyond your name.</p>
+
+<h2>Where it's stored</h2>
+<p>On your device — in the iOS app's Keychain, or in your browser's local storage on the web version. When you program a bracelet, the same data is encoded onto the NFC chip on the band (phone to band, locally). It is not looked up from any server when someone taps the tag.</p>
+<p>This is a <strong>local-only, HIPAA-adjacent posture</strong>: like carrying a physical medical ID card, not uploading a health record to the cloud. RedMed LLC does not receive, host, or process your profile on our systems.</p>
+
+<h2>While the app is open</h2>
+<ul>
+  <li><strong>My ID / Bracelet:</strong> your profile is edited and saved on this device, then written to the band when you choose</li>
+  <li><strong>Find 911:</strong> precise location and compass heading may be used <strong>only while that screen is visible</strong> — so you can read coordinates to a dispatcher or copy them on screen. This stops when you leave the screen or close the app</li>
+  <li><strong>Text emergency contacts:</strong> opens your phone's Messages app with a pre-filled SMS to contacts you saved — you tap send. RedMed does not send texts or use any messaging server</li>
+</ul>
+<p>We do not log, analyze, or transmit this information to RedMed LLC or any third party as part of normal use.</p>
+
+<h2>The NFC bracelet</h2>
+  <p>Your data is encoded on a <strong>passive NFC chip</strong> in the bracelet (<code>#d=</code> in the URL). The chip has <strong>no battery and does not broadcast</strong> — it stores data until a smartphone taps and powers it briefly (ISO 14443 / NTAG). Tablets and computers won't display the emergency card. Not for card readers or active RFID. Treat the bracelet like a wallet medical card.</p>
+<p>If you copy a link or coordinates to the clipboard yourself, that is your choice — still not sent to us.</p>
+
+<h2>Location (Find 911)</h2>
+<p>Find 911 may access your device's location solely to show coordinates during an emergency on that screen. It is not advertising tracking, not background monitoring, and not used for any other purpose.</p>
+<p><strong>RedMed has no servers.</strong> Location is processed on your device only. It appears on screen and, only if you choose, in text you copy — we never receive it.</p>
+<p>If a Google Maps API key is configured for the hosted web app, Find 911 may send GPS coordinates to <strong>Google Maps Platform</strong> (Geocoding and Places APIs) solely to suggest state/county for offline trauma-center lookup and to verify hospital names — not to RedMed LLC. That is optional and only on the Find 911 screen.</p>
+<p>The web version shows a one-time notice on first open; iOS and Android rely on these terms plus on-screen Find 911 text.</p>
+
+<h2>What we don't do</h2>
+<ul>
+  <li>No servers or cloud storage of your medical profile</li>
+  <li>No advertising or ad tracking</li>
+  <li>No analytics that identify you</li>
+  <li>No selling or sharing of your data with third parties</li>
+  <li>No account required</li>
+</ul>
+
+<h2>Deleting your data</h2>
+<p>Use "Clear All Data" (iOS) or "Clear saved data" (web) inside the app at any time. That removes what's on the phone. To clear a programmed bracelet, write a blank tag or replace the band — we cannot erase a chip remotely because we have no connection to it.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy: RedMed LLC, <a href="mailto:mrmax115@gmail.com">mrmax115@gmail.com</a>, (609) 414-3941.</p>
+</body>
+</html>

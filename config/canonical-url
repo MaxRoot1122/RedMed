@@ -1,0 +1,8 @@
+# Canonical NFC card base URL (no #d= fragment).
+# Run scripts/sync-canonical-url.sh after editing this file.
+#
+# GitHub Pages (works today):
+https://maxroot1122.github.io/RedMed/index.html
+#
+# Custom domain (recommended for commercial bracelets — uncomment and comment GitHub line):
+# https://redmed.app/index.html

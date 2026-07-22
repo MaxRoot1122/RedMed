@@ -1,0 +1,22 @@
+RedMed — local-first emergency medical ID for NFC bracelets.
+
+Fill in allergies, medications, conditions, and emergency contacts once. Save your profile and write it to an NTAG NFC bracelet. Anyone who taps the band sees a high-contrast emergency card in Safari, Chrome, or any browser — no app install required.
+
+KEY FEATURES
+• My ID — edit and save your medical profile on your phone
+• NFC Write (iOS) — write your HTTPS card link to a blank bracelet chip
+• Emergency card — high-contrast responder view from the tag itself
+• Find 911 — GPS coordinates and compass while that screen is open (on-device only)
+• Roadside Aid — offline first-aid reference and CPR timer
+
+PRIVACY
+• No accounts, no cloud sync of your medical profile
+• Data on the tag is intentionally not encrypted so responders can read it
+• Location is used only on the Find 911 screen and is not sent to our servers
+
+IMPORTANT
+RedMed is not a medical device and does not provide medical advice. Always call 911 (or your local emergency number) in a life-threatening emergency. Information you enter is not verified by RedMed.
+
+Works with NTAG215/216 NFC wristbands, wallet cards, and keychain tags.
+
+Privacy policy: https://maxroot1122.github.io/RedMed/privacy-policy.html

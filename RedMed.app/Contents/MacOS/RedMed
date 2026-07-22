@@ -1,0 +1,24 @@
+#!/bin/bash
+CONTENTS="$(cd "$(dirname "$0")/.." && pwd)"
+APP_BUNDLE="$(cd "${CONTENTS}/.." && pwd -P)"
+REPO_ROOT="$(dirname "$APP_BUNDLE")"
+WWW="${CONTENTS}/Resources/www"
+SERVER_SH="${CONTENTS}/Resources/redmed-server.sh"
+
+if [ ! -f "$SERVER_SH" ]; then
+  SERVER_SH="${REPO_ROOT}/scripts/redmed-server.sh"
+fi
+
+if [ ! -f "$SERVER_SH" ]; then
+  osascript -e 'display alert "RedMed" message "Server script missing. Re-download RedMed from GitHub." as critical'
+  exit 1
+fi
+
+INSTALL_SH="${REPO_ROOT}/scripts/install-desktop-shortcut.sh"
+if [ ! -e "${HOME}/Desktop/RedMed.app" ] && [ -f "$INSTALL_SH" ]; then
+  bash "$INSTALL_SH" --quiet >/dev/null 2>&1 || true
+fi
+
+# shellcheck source=/dev/null
+source "$SERVER_SH"
+redmed_launch "$WWW"

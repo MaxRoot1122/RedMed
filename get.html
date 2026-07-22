@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Get RedMed</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#fff1f2">
+<meta name="description" content="Scan to get RedMed — set up your NFC medical bracelet. Only the owner needs the app.">
+<style>
+  :root {
+    --accent: #e11d48;
+    --ink: #1c1917;
+    --muted: #78716c;
+    --bg: #fff7f7;
+    --line: rgba(28, 25, 23, 0.08);
+    --radius: 22px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100dvh; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.5;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  }
+  body::before, body::after {
+    content: ""; position: fixed; z-index: 0; border-radius: 50%; filter: blur(32px); pointer-events: none; opacity: 0.2;
+  }
+  body::before { width: 200px; height: 200px; top: -50px; left: -40px; background: rgba(251,113,133,0.25); }
+  body::after { width: 180px; height: 180px; bottom: -30px; right: -30px; background: rgba(225,29,72,0.12); }
+  .card {
+    position: relative; z-index: 1; width: 100%; max-width: 400px;
+    background: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.95);
+    border-radius: var(--radius); padding: 28px 22px 24px;
+    box-shadow: 0 2px 10px rgba(28, 25, 23, 0.06);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    text-align: center;
+  }
+  .logo {
+    width: 88px; height: 88px; border-radius: 22px; margin: 0 auto 10px; display: block;
+    box-shadow: 0 10px 28px rgba(225, 29, 72, 0.18);
+  }
+  .wordmark { display: block; height: 42px; width: auto; margin: 0 auto 14px; }
+  h1 { display: none; }
+  .lead { margin: 10px 0 0; font-size: 15px; color: var(--muted); font-weight: 550; }
+  .detect {
+    margin: 18px 0 14px; padding: 10px 14px; border-radius: 999px;
+    background: rgba(225,29,72,0.08); color: var(--accent); font-size: 12px; font-weight: 800;
+    letter-spacing: 0.4px; text-transform: uppercase;
+  }
+  .btn {
+    display: block; width: 100%; margin-top: 10px; padding: 16px 18px; border-radius: 16px;
+    font-size: 16px; font-weight: 750; text-decoration: none; border: none; cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, #fb7185, var(--accent)); color: #fff;
+    box-shadow: 0 2px 8px rgba(225,29,72,0.12);
+  }
+  .btn-secondary {
+    background: rgba(255,255,255,0.9); color: var(--ink); border: 1px solid var(--line); font-weight: 650;
+  }
+  .btn:active { transform: scale(0.98); }
+  .note { margin: 16px 0 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+  .steps { text-align: left; margin: 18px 0 0; padding: 0; list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;
+    font-size: 14px; color: var(--ink); font-weight: 550;
+  }
+  .steps .n {
+    flex: 0 0 22px; width: 22px; height: 22px; border-radius: 999px;
+    background: rgba(225,29,72,0.1); color: var(--accent); font-size: 11px; font-weight: 800;
+    display: grid; place-items: center;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<main class="card">
+  <img class="logo" src="assets/icon.svg" width="88" height="88" alt="RedMed app icon">
+  <img class="wordmark" src="assets/wordmark.svg" width="200" height="48" alt="RedMed">
+  <p class="lead">Set up your NFC medical bracelet.<br>Only you need the app — a <strong>passive chip</strong> on the band stores your card (no battery, no broadcast).</p>
+  <p class="detect" id="detectLabel">Detecting your phone…</p>
+
+  <a class="btn btn-primary hidden" id="btnStore" href="#">Get the app</a>
+  <a class="btn btn-secondary hidden" id="btnAltStore" href="#">Alternate store</a>
+  <a class="btn btn-secondary hidden" id="btnWeb" href="index.html?setup=1">Set up in browser</a>
+
+  <ol class="steps">
+    <li><span class="n">1</span><span>Install RedMed (this page sends you to the right store for your phone).</span></li>
+    <li><span class="n">2</span><span>Fill your profile on <strong>My ID</strong> and tap <strong>Bracelet</strong> (top right).</span></li>
+    <li><span class="n">3</span><span>Hold your band to the phone once to program the chip. After that, the <strong>passive chip stores your data</strong> until a smartphone taps to read it (not card readers or other NFC devices).</span></li>
+  </ol>
+  <p class="note" id="autoNote"></p>
+  <p class="note" id="nfcNote">The bracelet uses a passive NFC chip (no battery, no broadcast). A smartphone powers it briefly on tap to read your emergency card. RedMed only programs the chip; it cannot install phone firmware.</p>
+</main>
+<script>
+(function () {
+  "use strict";
+
+  // Keep in sync with ios/RedMed/AppConfig.swift
+  var PKG = "local.redmed.app";
+  var STORES = {
+    ios: "https://apps.apple.com/app/redmed/id0000000000",
+    android: "https://play.google.com/store/apps/details?id=" + PKG,
+    samsung: "https://apps.samsung.com/appquery/appDetail.as?appId=" + PKG,
+    huawei: "https://appgallery.huawei.com/#/app/C000000000",
+    huaweiIntent: "appmarket://details?id=" + PKG,
+    amazon: "https://www.amazon.com/gp/mas/dl/android?p=" + PKG,
+    web: "index.html?setup=1"
+  };
+
+  function detectDevice() {
+    var ua = navigator.userAgent || "";
+    var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      var iosLabel = /iPad/i.test(ua) ? "iPad" : "iPhone";
+      return {
+        platform: "ios",
+        label: iosLabel + " detected",
+        primary: { href: STORES.ios, text: "Open App Store" },
+        web: { href: STORES.web, text: "Set up in Safari instead" },
+        autoNote: "Opening the App Store in a moment…"
+      };
+    }
+
+    if (/Android/i.test(ua) || /HarmonyOS/i.test(ua)) {
+      if (/Samsung|SM-|SAMSUNG|Galaxy/i.test(ua)) {
+        return {
+          platform: "samsung",
+          label: "Samsung Galaxy detected",
+          primary: { href: STORES.samsung, text: "Open Galaxy Store" },
+          alt: { href: STORES.android, text: "Try Google Play instead" },
+          web: { href: STORES.web, text: "Set up in Chrome instead" },
+          autoNote: "Opening Galaxy Store in a moment…"
+        };
+      }
+      if (/HUAWEI|HONOR|HarmonyOS/i.test(ua)) {
+        return {
+          platform: "huawei",
+          label: "Huawei / Honor detected",
+          primary: { href: STORES.huaweiIntent, text: "Open AppGallery" },
+          alt: { href: STORES.huawei, text: "AppGallery (web)" },
+          web: { href: STORES.web, text: "Set up in browser instead" },
+          autoNote: "Opening AppGallery in a moment…"
+        };
+      }
+      if (/Amazon|Fire OS|KFAPWI|KFARWI|Silk\//i.test(ua)) {
+        return {
+          platform: "amazon",
+          label: "Amazon Fire tablet detected",
+          primary: { href: STORES.amazon, text: "Open Amazon Appstore" },
+          web: { href: STORES.web, text: "Set up in browser instead" },
+          autoNote: "Opening Amazon Appstore in a moment…"
+        };
+      }
+      if (/Pixel/i.test(ua)) {
+        return {
+          platform: "android",
+          label: "Google Pixel detected",
+          primary: { href: STORES.android, text: "Open Google Play" },
+          web: { href: STORES.web, text: "Set up in Chrome instead" },
+          autoNote: "Opening Google Play in a moment…"
+        };
+      }
+      if (/OnePlus|OPPO|realme|vivo|Xiaomi|Redmi|POCO|Motorola|moto/i.test(ua)) {
+        return {
+          platform: "android",
+          label: "Android phone detected",
+          primary: { href: STORES.android, text: "Open Google Play" },
+          alt: { href: STORES.samsung, text: "Try Galaxy Store" },
+          web: { href: STORES.web, text: "Set up in Chrome instead" },
+          autoNote: "Opening Google Play in a moment…"
+        };
+      }
+      return {
+        platform: "android",
+        label: "Android detected",
+        primary: { href: STORES.android, text: "Open Google Play" },
+        web: { href: STORES.web, text: "Set up in Chrome instead" },
+        autoNote: "Opening Google Play in a moment…"
+      };
+    }
+
+    return {
+      platform: "other",
+      label: "Computer or unsupported device",
+      primary: { href: STORES.web, text: "Open web app" },
+      web: null,
+      autoNote: "Use your phone to scan the box QR for the native app."
+    };
+  }
+
+  var info = detectDevice();
+  var detect = document.getElementById("detectLabel");
+  var btnStore = document.getElementById("btnStore");
+  var btnAltStore = document.getElementById("btnAltStore");
+  var btnWeb = document.getElementById("btnWeb");
+  var autoNote = document.getElementById("autoNote");
+
+  detect.textContent = info.label;
+  btnStore.textContent = info.primary.text;
+  btnStore.href = info.primary.href;
+
+  if (info.alt) {
+    btnAltStore.textContent = info.alt.text;
+    btnAltStore.href = info.alt.href;
+    btnAltStore.classList.remove("hidden");
+  }
+
+  if (info.web) {
+    btnWeb.textContent = info.web.text;
+    btnWeb.href = info.web.href;
+    btnWeb.classList.remove("hidden");
+  } else {
+    btnWeb.classList.add("hidden");
+  }
+
+  btnStore.classList.remove("hidden");
+  autoNote.textContent = info.autoNote;
+
+  var params = new URLSearchParams(location.search);
+  if (params.get("noauto") === "1") {
+    autoNote.textContent = "";
+  } else if (info.platform === "ios" || info.platform === "android" || info.platform === "samsung" || info.platform === "huawei" || info.platform === "amazon") {
+    setTimeout(function () {
+      location.href = btnStore.href;
+    }, 1600);
+  }
+})();
+</script>
+</body>
+</html>
