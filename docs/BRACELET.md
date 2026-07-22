@@ -47,14 +47,34 @@ Owners can still preview on a computer using **Preview** (`?preview=1` on the li
 | NFC chip | Same as v1 — NTAG216 embedded in silicone body |
 | Durability | IP67 minimum; medical-grade hypoallergenic silicone |
 
+### LED battery display (local-only)
+
+Battery level stays **on the watch**, not in the phone app:
+
+- Idle / wake: LED shows charge as a short bar + percent (e.g. `BAT 72%` or a 5-segment fill).
+- On Qi pad: LED shows charging state (e.g. `CHG 72%` with animated fill).
+- Critical (≤20%): brief low-battery flash on wake; never block NFC medical ID.
+- No cloud sync and no required in-app battery UI — fuel gauge is firmware-local on the band.
+
+Passive **NTAG216** emergency tap must still work when the battery is dead (LED blank; chip still readable).
+
+### Side action button (sole control)
+
+The band has **one physical control**: a flush side action button (Apple Watch crown reference). It is the only button — no other hardware keys.
+
+**Does not trigger SOS:** NFC tap / medical-card scan (responders must be able to tap without starting a countdown).
+
 ### SOS button behavior
 
-The single side button is the hardware SOS trigger. When pressed:
+When the side action button is **activated** (pressed and held / confirmed per firmware anti-pocket rules):
 
-1. Bracelet screen shows a **30-second countdown**.
-2. Wearer has 30 seconds to press the button again (or cancel in-app) to abort.
-3. If not cancelled, the paired phone app auto-dials emergency contacts #1 and #2 (skipping contact #3 / doctor).
-4. If the bracelet is PIN-locked, cancelling the SOS requires entering the PIN in-app first.
+1. Band **immediately** plays a loud Emergency SOS–style siren (Apple Crash Detection / Emergency SOS character — piercing alternating tones) and flashes the LED so the wearer knows SOS started.
+2. LED shows a **30-second countdown**.
+3. Wearer can abort by pressing the side button again within 30 seconds, or by cancelling in the paired phone app (PIN required if the band is PIN-locked).
+4. If not cancelled, the paired phone app auto-dials emergency contacts **#1 and #2 only** — never the doctor / contact #3.
+5. Siren continues through the countdown (or until cancelled) so bystanders hear the activation.
+
+Firmware note: the siren is generated on-band (and mirrored in the phone app overlay when the phone is the SOS surface). Do not rely on a quiet haptic-only cue.
 
 ### PIN lock
 
@@ -62,6 +82,23 @@ The owner can lock the bracelet with a 4-digit PIN via the app. When locked:
 - The bracelet NFC data remains readable (responders can still tap).
 - SOS cancel requires PIN entry in the app.
 - Unlock via the app with the same PIN.
+
+### Phone must not scan / interfere with the bracelet
+
+Goal: the owner's phone should **not** keep an NFC field on the band during normal use.
+
+| Layer | Rule |
+|-------|------|
+| **App (web)** | No background / presence NFC polling. `NDEFReader` runs only for explicit **Read** or **Write**, then aborts. |
+| **App (iOS)** | CoreNFC sessions are user-started only (sheet prompt) and end after one operation — never continuous scan. |
+| **Owner ignore (paired)** | When this phone has linked the band, opening that same `#d=` URL skips the emergency card and stays on My ID (use **Preview** to see the stranger view). Responders on other phones are unaffected. |
+| **Hardware (v1 + v2)** | Place the NFC antenna on the **outer** face of the band (away from the wrist / phone-in-pocket side) so casual pocket coupling is weak. |
+| **OS NFC** | Android/iOS system NFC can still read a tag if the phone is pressed against the band — that is intentional for responders. Owners: avoid resting the phone on the band; RedMed will not add continuous app-side scanning. |
+| **Qi (v2)** | Charging coil and NFC antenna must be designed for coexistence (ferrite / time-multiplex) so a charge pad does not corrupt the NTAG. |
+
+**Do not blacklist a smartphone MAC on the bracelet.** Passive NTAG216 cannot see, store, or filter phone MAC addresses — NFC readers do not present a Wi‑Fi/Bluetooth MAC to the tag, and modern phones randomize MACs. A MAC “blacklist” would also break the owner’s ability to rewrite the band and is the wrong tool. Use: (1) no continuous phone scan, (2) owner-ignore of the paired URL on this phone, (3) outer-face antenna. For v2 BLE, bond to a **pairing token** generated on the phone — never rely on a raw MAC.
+
+**Do not:** leave Web NFC `scan()` running on My ID to show a "connected" dot — that continuously energizes the chip and interferes with the band.
 
 ## What goes on the tag
 
@@ -136,3 +173,5 @@ Budget ~$20–80 for 5–10 sample units. Search: "NTAG216 NFC silicone wristban
 - Custom domain: [`docs/DOMAIN.md`](DOMAIN.md)
 - Packaging copy: [`docs/PACKAGING.md`](PACKAGING.md)
 - Fulfillment: [`docs/FULFILLMENT.md`](FULFILLMENT.md)
+- Manufacturing BOM / chips: [`docs/plans/manufacturing-bom.md`](plans/manufacturing-bom.md)
+- Wireless charging: [`docs/WIRELESS_CHARGING.md`](WIRELESS_CHARGING.md)

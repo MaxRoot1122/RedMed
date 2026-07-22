@@ -13,7 +13,7 @@ Cursor cloud agents **cannot always read each other’s transcripts** across run
 | Bracelet emergency system | Merged | `bc-019f83d5-cb63-7a1b-b405-4f700d444560` | `cursor/bracelet-sos-pin-4560` → [#28](https://github.com/MaxRoot1122/RedMed/pull/28) | [§ Bracelet emergency / SOS + PIN](#1-bracelet-emergency-system) |
 | NFC bracelet project needs | Unable To Complete | `bc-e86e8012-c2bf-4d8c-b2b0-d965e5f8506a` (best match) | `*-506a` stack; commercial launch [#16](https://github.com/MaxRoot1122/RedMed/pull/16) | [§ NFC bracelet project needs](#2-nfc-bracelet-project-needs) |
 | Final codebase integration | Merged | `bc-019f83cc-ba7c-7abf-88a1-d21f5c664af8` | `cursor/final-integration-4af8` → [#25](https://github.com/MaxRoot1122/RedMed/pull/25) | [§ Final codebase integration](#3-final-codebase-integration) |
-| Wireless charging research | Unable To Complete (UI); implementation merged | `bc-019f83d7-b36f-7eac-86f0-604c0164a8f0` | `cursor/wireless-charging-guidance-a8f0` → [#26](https://github.com/MaxRoot1122/RedMed/pull/26) | [§ Wireless charging research](#4-wireless-charging-research) |
+| Wireless charging research | Active — updated from RedMed 2 snapshot | `bc-019f83d7-b36f-7eac-86f0-604c0164a8f0` | `cursor/wireless-charging-guidance-a8f0` | [§ Wireless charging research](#4-wireless-charging-research) |
 | Development environment setup | Merged | `bc-b3048808-2d8b-4ce4-9fe5-9a487c02ecc0` | `cursor/setup-dev-environment-ecc0` → [#21](https://github.com/MaxRoot1122/RedMed/pull/21) (+ many `*-ecc0` PRs) | [§ Development environment setup](#5-development-environment-setup) |
 
 **Access note:** those historical `bc-…` ids are often **not fetchable** from a later cloud run (`batch-fetch-details` → not found / not accessible). Use this doc + `docs/plans/` instead of relying on cross-agent transcript APIs.
@@ -23,6 +23,7 @@ Executable plan copies (for re-runs that look for an “attached plan”):
 - [`docs/plans/bracelet-sos-pin.md`](plans/bracelet-sos-pin.md)
 - [`docs/plans/nfc-bracelet-commercial-launch.md`](plans/nfc-bracelet-commercial-launch.md)
 - [`docs/plans/wireless-charging.md`](plans/wireless-charging.md)
+- [`docs/plans/manufacturing-bom.md`](plans/manufacturing-bom.md)
 - [`docs/plans/final-integration.md`](plans/final-integration.md)
 - [`docs/plans/dev-environment.md`](plans/dev-environment.md)
 

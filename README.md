@@ -56,6 +56,7 @@ iOS: [`ios/SETUP.md`](ios/SETUP.md) · Android: [`android/SETUP.md`](android/SET
 | [`docs/PACKAGING.md`](docs/PACKAGING.md) | Box insert & checkout disclaimers |
 | [`docs/FULFILLMENT.md`](docs/FULFILLMENT.md) | E-commerce & support workflow |
 | [`docs/WIRELESS_CHARGING.md`](docs/WIRELESS_CHARGING.md) | Passive vs powered bracelet charging paths |
+| [`docs/plans/manufacturing-bom.md`](docs/plans/manufacturing-bom.md) | Vertical-integration BOM + chip map (v1 / v2) — agent plans |
 | [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers — agent handoff (state/county UX, bundled data) |
 
 Canonical NFC URL: [`config/canonical-url`](config/canonical-url) — run `./scripts/sync-canonical-url.sh` after changes.

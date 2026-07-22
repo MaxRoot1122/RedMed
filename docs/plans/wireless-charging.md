@@ -1,22 +1,19 @@
-# Plan: Wireless charging research → product guidance
+# Plan note: Wireless charging research
 
-**Source agent:** `bc-019f83d7-b36f-7eac-86f0-604c0164a8f0`  
-**Branch:** `cursor/wireless-charging-guidance-a8f0`  
-**PR:** https://github.com/MaxRoot1122/RedMed/pull/26  
-**Status:** Docs merged into `main` (`docs/WIRELESS_CHARGING.md`).
+**Branch:** `cursor/bracelet-battery-bar-a8f0`  
+**Canonical doc:** [`docs/WIRELESS_CHARGING.md`](../WIRELESS_CHARGING.md)  
+**Agent catalog:** [`docs/AGENT_PROMPTS.md`](../AGENT_PROMPTS.md) §4  
+**Related plan:** [`manufacturing-bom.md`](manufacturing-bom.md)
 
-## Goal
+## Status
 
-Translate wireless charging research into clear product docs without implying today’s passive bracelet needs charging.
+Research continued: **passive NTAG216 does not need wireless charging.**
 
-## Todos
+- Tap power (ISO 14443) ≠ NFC Forum WLC ≠ Qi.
+- WLC/Qi only matter for a future battery-powered Path B band.
+- Keep v1 messaging: no battery, no charging.
 
-- [x] `docs/WIRELESS_CHARGING.md` — Path A passive (no charge); Path B future powered band + OEM RFQ / prototype checklist
-- [x] Preserve emergency tap if a future battery is dead
-- [x] README + packaging wording: no battery / no charging on current SKU
-- [x] Docs-only — no NFC/runtime behavior change unless product direction changes
+## Open (hardware, not this repo)
 
-## Constraints
-
-- Current bracelet = passive NTAG — phone powers chip on tap.
-- Do not add fake battery UI or BLE beacons.
+- Path B OEM RFQ if/when LED+SOS band is greenlit.
+- No further software required for Path A charging (there is nothing to charge).
