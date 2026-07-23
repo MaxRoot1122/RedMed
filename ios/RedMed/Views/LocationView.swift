@@ -8,6 +8,7 @@ struct LocationView: View {
     @StateObject private var networkMonitor = NetworkPathMonitor()
     @State private var copiedCoords = false
     @State private var showSatelliteHelp = false
+    @State private var showCallContactPicker = false
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,14 @@ struct LocationView: View {
                     .buttonStyle(PrimaryButtonStyle(prominent: true))
 
                     Button {
+                        showCallContactPicker = true
+                    } label: {
+                        Text("Call emergency contacts")
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(callableContacts.isEmpty)
+
+                    Button {
                         openEmergencyContactAlert()
                     } label: {
                         Text("Text emergency contacts")
@@ -35,7 +44,7 @@ struct LocationView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(emergencyPhones.isEmpty)
 
-                    Text("Opens Messages with your saved contacts and location — you tap send.")
+                    Text("Pick a saved contact to call — iPhone asks before placing the call.")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
@@ -102,6 +111,18 @@ struct LocationView: View {
             }
             .onAppear { locationManager.requestLocation() }
             .onDisappear { locationManager.stopUpdating() }
+            .confirmationDialog(
+                "Select a contact to call",
+                isPresented: $showCallContactPicker,
+                titleVisibility: .visible
+            ) {
+                ForEach(callableContacts) { contact in
+                    Button(contact.name.isEmpty ? "Contact" : contact.name) {
+                        openPhoneCall(to: contact)
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
         }
     }
 
@@ -230,6 +251,18 @@ struct LocationView: View {
 
     private var emergencyPhones: [String] {
         EmergencySummaryBuilder.emergencyContactPhones(in: store.profile)
+    }
+
+    private var callableContacts: [EmergencyContact] {
+        store.profile.contacts.filter {
+            !$0.phone.filter { $0.isNumber || $0 == "+" }.isEmpty
+        }
+    }
+
+    private func openPhoneCall(to contact: EmergencyContact) {
+        let digits = contact.phone.filter { $0.isNumber || $0 == "+" }
+        guard !digits.isEmpty, let url = URL(string: "tel:\(digits)") else { return }
+        UIApplication.shared.open(url)
     }
 
     private func openEmergencyContactAlert() {
