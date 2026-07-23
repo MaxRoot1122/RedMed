@@ -1,0 +1,227 @@
+/* RedMed — shared stylesheet for legal documents (privacy-policy.html, terms-of-service.html) */
+
+:root {
+  --rm-accent: #e11d48;
+  --rm-accent-soft: rgba(225, 29, 72, 0.08);
+  --rm-ink: #1c1917;
+  --rm-muted: #78716c;
+  --rm-line: #e7e5e4;
+  --rm-paper: #ffffff;
+  --rm-bg: #faf9f7;
+}
+
+* { box-sizing: border-box; }
+
+body.legal-doc {
+  margin: 0;
+  background: var(--rm-bg);
+  color: var(--rm-ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.legal-sheet {
+  max-width: 780px;
+  margin: 40px auto;
+  background: var(--rm-paper);
+  border: 1px solid var(--rm-line);
+  border-radius: 10px;
+  padding: 56px 64px 48px;
+  box-shadow: 0 2px 24px rgba(28, 25, 23, 0.06);
+}
+
+.legal-letterhead {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.legal-firm {
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  font-size: 20px;
+  color: var(--rm-accent);
+  margin: 0;
+}
+
+.legal-tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rm-muted);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 6px 0 0;
+}
+
+.legal-entity {
+  font-size: 12px;
+  color: var(--rm-muted);
+  margin: 4px 0 0;
+}
+
+hr.legal-rule-thin {
+  border: 0;
+  border-top: 1px solid var(--rm-line);
+  margin: 24px 0 32px;
+}
+
+.legal-doc-title {
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.2px;
+  margin: 0 0 16px;
+}
+
+.legal-meta {
+  text-align: center;
+  font-size: 13px;
+  color: var(--rm-muted);
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.legal-meta strong {
+  color: var(--rm-ink);
+}
+
+.legal-parties {
+  text-align: center;
+  font-size: 13px;
+  color: var(--rm-muted);
+  margin: 0 0 24px;
+}
+
+.legal-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.legal-nav a {
+  color: var(--rm-accent);
+  text-decoration: none;
+}
+
+.legal-nav a:hover {
+  text-decoration: underline;
+}
+
+.legal-nav span {
+  color: var(--rm-line);
+}
+
+.legal-notice {
+  background: var(--rm-accent-soft);
+  border: 1px solid rgba(225, 29, 72, 0.18);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.legal-notice strong {
+  display: block;
+  color: var(--rm-accent);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.legal-body h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 32px 0 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.legal-body h2 .sec-num {
+  color: var(--rm-accent);
+  font-weight: 800;
+  min-width: 1.4em;
+}
+
+.legal-body p {
+  margin: 0 0 14px;
+}
+
+.legal-body ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+
+.legal-body li {
+  margin-bottom: 8px;
+}
+
+.legal-body code {
+  background: var(--rm-bg);
+  border: 1px solid var(--rm-line);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.9em;
+}
+
+.legal-body .legal-caps {
+  font-size: 13px;
+  color: var(--rm-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  line-height: 1.7;
+}
+
+.legal-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rm-line);
+  text-align: center;
+  font-size: 12px;
+  color: var(--rm-muted);
+}
+
+.legal-footer p {
+  margin: 0 0 8px;
+}
+
+.legal-footer a {
+  color: var(--rm-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.legal-footer a:hover {
+  text-decoration: underline;
+}
+
+.legal-footer-disclaimer {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .legal-sheet {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    padding: 32px 22px;
+  }
+}
+
+@media print {
+  body.legal-doc { background: #fff; }
+  .legal-sheet {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+  }
+  .legal-nav { display: none; }
+}

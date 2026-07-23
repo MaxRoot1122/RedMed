@@ -3017,6 +3017,16 @@
     <div id="v_contacts"></div>
   </div>
 
+  <div class="section" id="v_doctorSection">
+    <h2 data-i18n="secDoctor">Doctor &amp; insurance</h2>
+    <div id="v_doctor"></div>
+  </div>
+
+  <div class="section" id="v_notesSection">
+    <h2 data-i18n="secNotes">Notes</h2>
+    <p id="v_notes"></p>
+  </div>
+
   <div class="updated" id="v_updated"></div>
   </div>
 </div>
@@ -3728,6 +3738,7 @@
       btnCopy: "Copy", btnPreview: "Preview", btnAdd: "Add", previewLabel: "Card preview",
       secAllergies: "Allergies", secMeds: "Medications", secConditions: "Medical conditions",
       secContacts: "Emergency contacts",
+      secDoctor: "Doctor & insurance", secNotes: "Notes",
       aidTitle: "Roadside Aid", aidLead: "Call 911 first. Tap a pane — expand only what you need.",
       aidPrivacy: "No name, phone, email, or address on this screen — offline only, nothing sent anywhere.",
       btnCall911: "Call 911",
@@ -3832,6 +3843,7 @@
       btnCopy: "Copiar", btnPreview: "Vista previa", btnAdd: "Añadir", previewLabel: "Vista previa",
       secAllergies: "Alergias", secMeds: "Medicamentos", secConditions: "Condiciones médicas",
       secContacts: "Contactos de emergencia",
+      secDoctor: "Médico y seguro", secNotes: "Notas",
       aidTitle: "Ayuda en carretera", aidLead: "Llama al 911 primero. Toca un panel — abre solo lo que necesites.",
       aidPrivacy: "Sin nombre, teléfono, correo ni dirección en esta pantalla — solo referencia sin conexión.",
       btnCall911: "Llamar al 911",
@@ -4945,6 +4957,10 @@
     contactPhone: 32,
     contactAddress: 160,
     contactsRawMax: 4,
+    contactsMax: 3, /* mirrors iOS EditProfileView's 3 contact slots — see MedicalProfile.swift */
+    docField: 120,
+    insuranceField: 120,
+    notes: 500,
     /* Encoded #d= ceiling — NFC tags are ~888 B; URL/deep-link DoS needs a hard cap before atob/JSON.parse. */
     dEncodedMax: 8192
   };
@@ -4968,16 +4984,20 @@
     return out;
   }
 
-  /** Whitelist + coerce profile fields; contacts keep stable SOS slots 1–2. */
+  /** Whitelist + coerce profile fields; contacts keep stable SOS slots 1–3
+   *  (mirrors iOS's 3-slot EditProfileView — was capped at 2 here, which
+   *  silently dropped a 3rd contact written by the iOS app on any browser
+   *  render; fixed to match). */
   function normalizeProfile(data) {
     data = data && typeof data === "object" && !Array.isArray(data) ? data : {};
+    var maxSlot = PROFILE_LIMITS.contactsMax;
     var raw = Array.isArray(data.contacts) ? data.contacts.slice(0, PROFILE_LIMITS.contactsRawMax) : [];
     var hasExplicitSlot = raw.some(function (c) {
-      return c && typeof c.slot === "number" && c.slot >= 1 && c.slot <= 2;
+      return c && typeof c.slot === "number" && c.slot >= 1 && c.slot <= maxSlot;
     });
     var contacts = raw.map(function (c, i) {
       c = c && typeof c === "object" ? c : {};
-      var slot = (typeof c.slot === "number" && c.slot >= 1 && c.slot <= 2)
+      var slot = (typeof c.slot === "number" && c.slot >= 1 && c.slot <= maxSlot)
         ? c.slot
         : (hasExplicitSlot ? 99 : (i + 1));
       return {
@@ -4986,7 +5006,9 @@
         address: clampStr(c.address || c.rel, PROFILE_LIMITS.contactAddress),
         slot: slot
       };
-    }).filter(function (c) { return c.slot >= 1 && c.slot <= 2; });
+    }).filter(function (c) { return c.slot >= 1 && c.slot <= maxSlot; });
+    var doc = data.doc && typeof data.doc === "object" ? data.doc : {};
+    var insurance = data.insurance && typeof data.insurance === "object" ? data.insurance : {};
     return {
       name: clampStr(data.name, PROFILE_LIMITS.name),
       dob: clampStr(data.dob, PROFILE_LIMITS.dob),
@@ -4995,6 +5017,15 @@
       meds: clampStrList(data.meds, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       conditions: clampStrList(data.conditions, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       contacts: contacts,
+      doc: {
+        name: clampStr(doc.name, PROFILE_LIMITS.docField),
+        phone: clampStr(doc.phone, PROFILE_LIMITS.contactPhone)
+      },
+      insurance: {
+        provider: clampStr(insurance.provider, PROFILE_LIMITS.insuranceField),
+        id: clampStr(insurance.id, PROFILE_LIMITS.insuranceField)
+      },
+      notes: clampStr(data.notes, PROFILE_LIMITS.notes),
       updated: clampStr(data.updated, PROFILE_LIMITS.updated)
     };
   }
@@ -5337,6 +5368,75 @@
         }
         contactsWrap.appendChild(card);
       });
+    }
+
+    var docSection = document.getElementById(pfx + "doctorSection");
+    var docWrap = document.getElementById(pfx + "doctor");
+    if (docSection && docWrap) {
+      docWrap.innerHTML = "";
+      var doc = data.doc || {};
+      var insurance = data.insurance || {};
+      var hasDoc = !!(doc.name || doc.phone);
+      var hasIns = !!(insurance.provider || insurance.id);
+      if (!hasDoc && !hasIns) {
+        docSection.style.display = "none";
+      } else {
+        docSection.style.display = "";
+        if (hasDoc) {
+          var docCard = document.createElement("div");
+          docCard.className = "contact-card";
+          var docInfo = document.createElement("div");
+          docInfo.className = "info";
+          var docName = document.createElement("div");
+          docName.className = "name";
+          docName.textContent = doc.name || t("secDoctor");
+          var docPhoneEl = document.createElement("div");
+          docPhoneEl.className = "rel";
+          docPhoneEl.textContent = doc.phone || "";
+          docInfo.appendChild(docName);
+          docInfo.appendChild(docPhoneEl);
+          docCard.appendChild(docInfo);
+          var docPhone = doc.phone ? normalizePhone(doc.phone) : "";
+          if (docPhone) {
+            var docActions = document.createElement("div");
+            docActions.className = "contact-actions";
+            var docCall = document.createElement("a");
+            docCall.className = "call";
+            docCall.textContent = t("call");
+            docCall.setAttribute("href", "tel:" + docPhone);
+            docActions.appendChild(docCall);
+            docCard.appendChild(docActions);
+          }
+          docWrap.appendChild(docCard);
+        }
+        if (hasIns) {
+          var insCard = document.createElement("div");
+          insCard.className = "contact-card";
+          var insInfo = document.createElement("div");
+          insInfo.className = "info";
+          var insName = document.createElement("div");
+          insName.className = "name";
+          insName.textContent = insurance.provider || "Insurance";
+          var insId = document.createElement("div");
+          insId.className = "rel";
+          insId.textContent = insurance.id ? ("ID " + insurance.id) : "";
+          insInfo.appendChild(insName);
+          insInfo.appendChild(insId);
+          insCard.appendChild(insInfo);
+          docWrap.appendChild(insCard);
+        }
+      }
+    }
+
+    var notesSection = document.getElementById(pfx + "notesSection");
+    var notesEl = document.getElementById(pfx + "notes");
+    if (notesSection && notesEl) {
+      if (data.notes) {
+        notesSection.style.display = "";
+        notesEl.textContent = data.notes;
+      } else {
+        notesSection.style.display = "none";
+      }
     }
 
     var updatedEl = document.getElementById(pfx + "updated");
