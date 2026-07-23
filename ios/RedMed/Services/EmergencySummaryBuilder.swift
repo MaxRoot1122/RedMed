@@ -116,15 +116,21 @@ enum EmergencySummaryBuilder {
             .filter { !$0.isEmpty }
     }
 
+    /// Percent-encode like JS `encodeURIComponent` so `&` / `=` in medical text
+    /// cannot break out of the SMS `body=` query parameter.
+    private static func encodeURIComponent(_ string: String) -> String {
+        var allowed = CharacterSet.alphanumerics
+        allowed.insert(charactersIn: "-_.!~*'()")
+        return string.addingPercentEncoding(withAllowedCharacters: allowed) ?? ""
+    }
+
     static func smsURL(phones: [String], body: String) -> URL? {
         guard !phones.isEmpty else { return nil }
-        let encoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let encoded = encodeURIComponent(body)
         if phones.count > 1 {
             let addresses = phones.joined(separator: ",")
-            if let encodedAddresses = addresses.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-               let url = URL(string: "sms:/open?addresses=\(encodedAddresses)&body=\(encoded)") {
-                return url
-            }
+            let encodedAddresses = encodeURIComponent(addresses)
+            return URL(string: "sms:/open?addresses=\(encodedAddresses)&body=\(encoded)")
         }
         return URL(string: "sms:\(phones[0])&body=\(encoded)")
     }

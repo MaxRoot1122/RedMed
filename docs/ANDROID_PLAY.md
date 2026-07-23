@@ -12,14 +12,19 @@ Requires Android Studio on your machine. TWA wraps the hosted web app — most u
 
 1. Open [`android/`](../android/) in Android Studio (generates Gradle wrapper on first open)
 2. **Build → Generate Signed Bundle / APK → Create new...** → save `.jks` keystore **securely**
-3. `keytool -list -v -keystore your.jks` → copy **SHA-256** fingerprint
+3. `keytool -list -v -keystore your.jks` → copy **SHA-256** fingerprint (upload key)
 
 ## Digital Asset Links (full-screen TWA)
 
-1. Paste SHA-256 into [`.well-known/assetlinks.json`](../.well-known/assetlinks.json)
-2. Push to `main` — workflow deploys to Pages
-3. For custom domain: complete [`docs/DOMAIN.md`](DOMAIN.md) first
-4. Verify with [Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator)
+Play App Signing uses a **different** cert than your upload keystore. List both.
+
+1. Play Console → your app → **Setup → App integrity → App signing** → copy **App signing key certificate** SHA-256
+2. Paste that as `REPLACE_WITH_PLAY_APP_SIGNING_SHA256` in [`.well-known/assetlinks.json`](../.well-known/assetlinks.json)
+3. Paste the upload-keystore SHA-256 from step 3 above as `REPLACE_WITH_UPLOAD_KEYSTORE_SHA256`
+4. Remove any leftover `REPLACE_WITH_*` placeholders — do not invent fingerprints
+5. Push to `main` — workflow deploys to Pages
+6. For custom domain: complete [`docs/DOMAIN.md`](DOMAIN.md) first (GitHub project Pages path alone cannot satisfy `/.well-known/assetlinks.json` at the github.io apex)
+7. Verify with [Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator)
 
 On GitHub Pages path only, TWA works but may show a thin address bar — cosmetic only.
 

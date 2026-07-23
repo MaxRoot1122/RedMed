@@ -35,9 +35,9 @@ cp index.html RedMed.app/Contents/Resources/www/index.html
 
 ### 4. Android TWA
 
-1. Build signed `.aab` and get keystore **SHA-256** fingerprint
-2. Replace placeholder in [`.well-known/assetlinks.json`](../.well-known/assetlinks.json)
-3. Push to `main` — GitHub Actions deploys it (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml))
+1. Build signed `.aab` and get **Play App Signing** SHA-256 (Play Console → App integrity) plus upload-keystore SHA-256 (`keytool -list -v`)
+2. Replace `REPLACE_WITH_PLAY_APP_SIGNING_SHA256` and `REPLACE_WITH_UPLOAD_KEYSTORE_SHA256` in [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) — do not invent fingerprints
+3. Push to `main` — GitHub Actions deploys `.well-known/assetlinks.json` at the **domain root** (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml))
 4. Uncomment/add `redmed.app` intent-filter in [`android/app/src/main/AndroidManifest.xml`](../android/app/src/main/AndroidManifest.xml)
 5. Update `asset_statements` site in [`android/app/src/main/res/values/strings.xml`](../android/app/src/main/res/values/strings.xml) via sync script
 

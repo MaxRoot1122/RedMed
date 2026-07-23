@@ -51,7 +51,12 @@ Copy the `SHA256:` fingerprint it prints.
 
 ## 4. Verify app ↔ website ownership (optional)
 
-Edit [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) with your keystore SHA-256 fingerprint from step 3. See [`android/assetlinks.json.example`](assetlinks.json.example) for the schema. Deployed on each `main` push via Pages workflow.
+Edit [`.well-known/assetlinks.json`](../.well-known/assetlinks.json): replace
+`REPLACE_WITH_PLAY_APP_SIGNING_SHA256` (from Play Console → App integrity → App
+signing) and `REPLACE_WITH_UPLOAD_KEYSTORE_SHA256` (from step 3). See
+[`android/assetlinks.json.example`](assetlinks.json.example) and
+[`docs/ANDROID_PLAY.md`](../docs/ANDROID_PLAY.md). Deployed on each `main` push
+via Pages workflow. Do not invent fingerprints.
 
 **Stay on this one repo** (`MaxRoot1122/RedMed`). Do not create a separate
 `MaxRoot1122.github.io` user-site just for Digital Asset Links.
