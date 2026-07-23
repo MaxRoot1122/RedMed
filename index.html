@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-tQIiOekjQ4xq4B5b7wn6ryyx17zZPe3wI/BRhgqkG6M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-d/Wr9tZWR1TnBbxVV698ABWdGbwczdUGjC4soEqKY+Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -595,7 +595,10 @@
   header.app .brand-logo-lockup { height: var(--header-chip-h); }
   .brand-device .brand-logo-lockup {
     height: 34px;
-    max-width: 120px;
+    width: 34px;
+    max-width: 34px;
+    border-radius: 10px;
+    object-fit: cover;
     flex-shrink: 0;
   }
   .brand-mark-sm {
@@ -610,8 +613,17 @@
     display: block; height: 38px; width: auto; max-width: min(168px, 52vw);
     min-width: 0; object-fit: contain;
   }
-  .brand-wordmark-hero { height: 44px; max-width: 200px; margin: 0 auto 6px; }
+  .brand-wordmark-hero { height: 52px; max-width: min(220px, 72vw); margin: 0 auto 6px; }
+  .brand-cover-hero {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
   .page-header .brand-wordmark-hero,
+  .page-header .brand-cover-hero,
   .page-header .brand-logo-lockup {
     margin: 0;
     display: block;
@@ -2080,7 +2092,7 @@
     box-sizing: border-box;
     background: var(--bg);
   }
-  .page-header.aid { gap: 14px; padding-bottom: 16px; }
+  .page-header.aid { gap: 14px; padding-bottom: 16px; align-items: center; text-align: center; }
   .page-header.aid h1 .brand-red,
   .page-header.aid h1 .brand-med,
   .page-header.aid h1 {
@@ -2088,18 +2100,39 @@
     -webkit-background-clip: unset; background-clip: unset;
     color: var(--ink);
   }
+  .page-header.myid .brand-cover-hero,
+  .page-header.aid .brand-cover-hero,
+  .page-header.loc .brand-cover-hero {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    object-fit: cover;
+    object-position: center;
+  }
   .page-header.myid .brand-wordmark-hero,
   .page-header.aid .brand-wordmark-hero,
   .page-header.loc .brand-wordmark-hero {
-    height: 44px;
+    height: 52px;
     width: auto;
-    max-width: min(240px, 72vw);
+    max-width: min(280px, 80vw);
     margin: 0;
     object-fit: contain;
     object-position: left center;
   }
+  .page-header.aid .brand-cover-hero,
+  .page-header.aid .brand-wordmark-hero {
+    object-position: center center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .page-header.loc .brand-wordmark-hero {
+    margin-left: auto;
+    margin-right: auto;
+  }
   .page-header.aid .lead,
   .page-header.loc .lead { color: var(--muted); margin: 0; }
+  .page-header.aid .lead { text-align: center; max-width: 36em; margin-left: auto; margin-right: auto; }
+  .page-header.aid h1 { width: 100%; text-align: center; margin: 0; }
   body:has(#editView:not(.hide)) .page-header.myid,
   body:has(#aidView.show) .page-header.aid,
   body:has(#locView.show) .page-header.loc {
@@ -2117,9 +2150,10 @@
   }
   .page-header.myid .brand-device .brand-logo-lockup {
     height: 34px;
-    width: auto;
-    max-width: min(160px, 58vw);
-    object-fit: contain;
+    width: 34px;
+    max-width: 34px;
+    border-radius: 10px;
+    object-fit: cover;
   }
   .page-header.loc h1 { margin: 0; }
   .page-header.loc .lead {
@@ -2225,13 +2259,14 @@
   .aid-pane.open .aid-pane-face {
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     min-height: 0;
     flex: 0 0 auto;
     padding: 12px 14px;
     gap: 10px;
     background: var(--accent);
     color: #fff;
-    position: static;
+    position: relative;
   }
   .aid-pane.open .aid-pane-title { color: #fff; }
   .aid-pane.open .aid-pane-icon {
@@ -2261,10 +2296,28 @@
   .aid-pane.open .aid-pane-face-main {
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    text-align: left;
+    text-align: center;
+    flex: 0 1 auto;
+  }
+  .aid-pane.open .aid-pane-copy {
+    text-align: center;
+    flex: 0 1 auto;
+    width: auto;
   }
   .aid-pane-icon svg { width: 24px; height: 24px; display: block; }
+  .aid-pane-icon img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+  .aid-pane[data-pane-id="cpr"] .aid-pane-icon {
+    background: transparent;
+    box-shadow: none;
+  }
   .aid-pane.open .aid-pane-icon svg { width: 22px; height: 22px; }
   .aid-pane-copy { min-width: 0; flex: 1; overflow: hidden; width: 100%; }
   .aid-pane:not(.open) .aid-pane-copy {
@@ -2317,11 +2370,14 @@
     opacity: 0.72;
   }
   .aid-pane.open .aid-chevron {
-    transform: rotate(90deg);
-    align-self: center;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    align-self: auto;
     color: #fff;
-    position: static;
     opacity: 1;
+    margin: 0;
   }
   @media (hover: hover) {
     .aid-pane:not(.open):hover {
@@ -2620,10 +2676,10 @@
     max-width: 28em;
   }
   .cpr-options-wrap {
-    display: grid;
-    grid-template-columns: auto auto;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
     gap: 10px 16px;
     margin: 8px 0 0;
     width: 100%;
@@ -2654,15 +2710,23 @@
     flex-shrink: 0;
     accent-color: var(--accent);
   }
-  .cpr-tutorial { display: contents; }
+  .cpr-tutorial {
+    display: block;
+    width: 100%;
+    flex: 1 1 100%;
+    box-sizing: border-box;
+  }
   .cpr-tutorial[hidden] { display: none !important; }
   .cpr-tutorial summary {
     list-style: none;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cpr-tutorial summary::-webkit-details-marker { display: none; }
   .cpr-tutorial-body {
-    grid-column: 1 / -1;
-    margin: 0;
+    margin: 8px auto 0;
     padding: 10px 12px 12px;
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
@@ -2671,10 +2735,17 @@
     font-size: 11px;
     line-height: 1.5;
     color: var(--muted);
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cpr-tutorial-body ol {
-    margin: 0;
+    margin: 0 auto;
     padding-left: 1.15em;
+    display: inline-block;
+    text-align: left;
+    max-width: 36em;
   }
   .cpr-tutorial-body li { margin-bottom: 6px; }
   .cpr-tutorial-body li:last-child { margin-bottom: 0; }
@@ -2684,6 +2755,7 @@
     font-size: 10px;
     line-height: 1.45;
     color: var(--muted);
+    text-align: center;
   }
   @media (min-width: 1080px) {
     .cpr-beat { padding: 22px 20px; }
@@ -2737,7 +2809,7 @@
   }
   .aid-prayer {
     font-family: var(--font);
-    font-size: 8px;
+    font-size: 11.5px;
     font-style: italic;
     font-weight: 400;
     color: var(--muted);
@@ -3232,11 +3304,12 @@
     .page-header.aid .lead { margin: 0; }
     .brand-wordmark-hero { height: calc(34px * var(--phone-scale)); max-width: calc(150px * var(--phone-scale)); }
     header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
-    .page-header.myid .brand-wordmark-hero,
-    .page-header.aid .brand-wordmark-hero,
-    .page-header.loc .brand-wordmark-hero {
-      height: calc(44px * var(--phone-scale));
-      max-width: min(calc(240px * var(--phone-scale)), 72vw);
+    .page-header.myid .brand-cover-hero,
+    .page-header.aid .brand-cover-hero,
+    .page-header.loc .brand-cover-hero {
+      width: calc(48px * var(--phone-scale));
+      height: calc(48px * var(--phone-scale));
+      border-radius: calc(12px * var(--phone-scale));
       margin: 0;
     }
     header.app .brand-wordmark-text { font-size: calc(13px * var(--phone-scale)); }
@@ -3272,7 +3345,7 @@
     .aid-pane-icon svg { width: calc(22px * var(--phone-scale)); height: calc(22px * var(--phone-scale)); }
     .aid-pane.open .aid-pane-icon { width: calc(36px * var(--phone-scale)); height: calc(36px * var(--phone-scale)); }
     .aid-pane.open .aid-pane-icon svg { width: calc(20px * var(--phone-scale)); height: calc(20px * var(--phone-scale)); }
-    .aid-prayer { font-size: calc(8px * var(--phone-scale)); }
+    .aid-prayer { font-size: calc(11.5px * var(--phone-scale)); }
     .app-legal-footer {
       gap: calc(16px * var(--phone-scale));
       padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 4px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
@@ -3575,10 +3648,10 @@
   <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/logo-header.png" width="120" height="31" alt="RedMed">
+        <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
@@ -3909,7 +3982,7 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
   </div>
@@ -3926,7 +3999,7 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No Servers, No Data Collection. GPS &amp; Compass Data Collected While The 911 Screen Is Open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates Stay On This Screen. RedMed Has No Servers — Location Is Not Stored With Us.</p>
@@ -7279,6 +7352,13 @@
     });
   }
 
+  function aidPaneIconHtml(icon) {
+    if (icon === "cpr") {
+      return '<img src="assets/cpr-trainer-icon.png" width="48" height="48" alt="" aria-hidden="true" decoding="async">';
+    }
+    return AID_ICONS[icon] || "";
+  }
+
   var AID_ICONS = {
     crash: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 16l1.5-4.5A2 2 0 018.4 10h7.2a2 2 0 011.9 1.5L19 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 16h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="17.5" r="1.4" fill="currentColor"/><circle cx="16" cy="17.5" r="1.4" fill="currentColor"/><path d="M9 10V8.5A1.5 1.5 0 0110.5 7h3A1.5 1.5 0 0115 8.5V10" stroke="currentColor" stroke-width="1.8"/></svg>',
     bleed: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c0 0-5 5.2-5 9.2A5 5 0 0012 17a5 5 0 005-4.8C17 8.2 12 3 12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12.5c.6 1.4 1.4 2 2 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
@@ -7595,7 +7675,7 @@
       paneEl.innerHTML =
         '<button type="button" class="aid-pane-face" aria-expanded="false">' +
           '<span class="aid-pane-face-main">' +
-            '<span class="aid-pane-icon">' + (AID_ICONS[pane.icon] || "") + '</span>' +
+            '<span class="aid-pane-icon">' + aidPaneIconHtml(pane.icon) + '</span>' +
             '<span class="aid-pane-copy">' +
               '<span class="aid-pane-title">' + esc(pane.title) + '</span>' +
               '<span class="aid-pane-blurb">' + esc(pane.blurb) + '</span>' +
