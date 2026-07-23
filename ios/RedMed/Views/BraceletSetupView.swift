@@ -4,7 +4,6 @@ import SwiftUI
 struct BraceletSetupView: View {
     @Environment(\.layoutMetrics) private var layout
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @StateObject private var writer = NFCWriter()

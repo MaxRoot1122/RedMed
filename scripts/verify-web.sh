@@ -53,8 +53,9 @@ print("OK: get.html + privacy-policy + terms-of-service mirrors match")
 
 import os
 REQUIRED_ASSETS = (
-    "assets/icon.svg", "assets/favicon-32.png", "assets/apple-touch-icon.png",
-    "assets/logo-512.png", "assets/logo-header.png", "assets/fonts/dm-sans-latin.woff2",
+    "assets/icon.svg", "assets/icon-512.png", "assets/cpr-trainer-icon.png",
+    "assets/favicon-32.png", "assets/apple-touch-icon.png",
+    "assets/logo-512.png", "assets/heading.png", "assets/fonts/dm-sans-latin.woff2",
 )
 missing_assets = [p for p in REQUIRED_ASSETS if not os.path.isfile(p)]
 if missing_assets:
