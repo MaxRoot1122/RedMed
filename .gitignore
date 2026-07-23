@@ -34,6 +34,3 @@ android/*.iml
 android/captures/
 android/.cxx/
 
-# Google Maps API key (see config/google-api-key.example)
-config/google-api-key
-ios/RedMed/google-api-key
