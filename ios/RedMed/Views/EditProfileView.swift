@@ -222,18 +222,6 @@ struct EditProfileView: View {
                     }
                 }
 
-                Section("Doctor & insurance") {
-                    TextField("Doctor name", text: $draft.doc.name)
-                    TextField("Doctor phone", text: $draft.doc.phone)
-                        .keyboardType(.phonePad)
-                    TextField("Insurance provider", text: $draft.insurance.provider)
-                    TextField("Member / policy ID", text: $draft.insurance.id)
-                }
-
-                Section("Notes") {
-                    TextEditor(text: $draft.notes).frame(minHeight: layout.s(60))
-                }
-
                 Section {
                     Button("Clear data", role: .destructive) { showingClearConfirm = true }
                 } footer: {

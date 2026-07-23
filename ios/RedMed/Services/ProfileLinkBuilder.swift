@@ -16,8 +16,6 @@ enum ProfileLinkBuilder {
     private static let maxListCount = 32
     private static let maxContacts = 4
     private static let maxContactField = 160
-    private static let maxNotes = 500
-    private static let maxDocField = 120
 
     static func buildURL(profile: MedicalProfile, baseURL: String) -> URL? {
         var stamped = profile
@@ -73,7 +71,6 @@ enum ProfileLinkBuilder {
         p.dob = String(p.dob.prefix(maxDob))
         p.blood = String(p.blood.prefix(maxBlood))
         p.updated = String(p.updated.prefix(maxUpdated))
-        p.notes = String(p.notes.prefix(maxNotes))
         p.allergies = Array(p.allergies.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
         p.meds = Array(p.meds.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
         p.conditions = Array(p.conditions.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
@@ -84,10 +81,6 @@ enum ProfileLinkBuilder {
             contact.phone = String(contact.phone.prefix(32))
             return contact
         })
-        p.doc.name = String(p.doc.name.prefix(maxDocField))
-        p.doc.phone = String(p.doc.phone.prefix(32))
-        p.insurance.provider = String(p.insurance.provider.prefix(maxDocField))
-        p.insurance.id = String(p.insurance.id.prefix(maxDocField))
         return p
     }
 
