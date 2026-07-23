@@ -35,8 +35,6 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NFCReaderUsageDescription</key>
-	<string>Used to read and write your medical ID on an NFC tag.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Unlocks editing of your medical ID so only you can change it.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
