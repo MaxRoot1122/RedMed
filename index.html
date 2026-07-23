@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-A/ojKNusekDI7dInzdFyFhXoMPQcdnNROoNb1fgYSgs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Jnaxr/6Q3+k5N9f2igMcEx3hYicCZzCAxbZgnj4nLik='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -303,6 +303,7 @@
     overflow-x: clip;
     padding-left: var(--md-inset);
     padding-right: var(--md-inset);
+    --form-field-h: var(--md-control);
   }
   #editView .split-main {
     min-width: 0;
@@ -348,14 +349,17 @@
     box-shadow: none;
     background: transparent;
     padding: 0;
-    margin: 0 0 var(--md-5);
+    margin: 0 0 var(--md-3);
+  }
+  #editView #idForm fieldset.fieldset-you {
+    margin-bottom: var(--md-4);
   }
   #editView #idForm fieldset.fieldset-chips {
     padding: 0;
-    margin-bottom: var(--md-4);
+    margin-bottom: var(--md-3);
   }
   #editView #idForm fieldset.fieldset-medical {
-    margin-bottom: var(--md-5);
+    margin-bottom: var(--md-3);
   }
   #editView #idForm .chip-block {
     margin: 0;
@@ -363,8 +367,9 @@
     width: 100%;
     box-sizing: border-box;
   }
-  #editView #idForm .fieldset-heading,
-  #editView #idForm .chip-block-title {
+  /* Section titles (Medical, Birth date, Contacts) — not chip row labels */
+  #editView #idForm > .fieldset-heading,
+  #editView #idForm fieldset.fieldset-contacts > .fieldset-heading {
     font-family: var(--font);
     font-size: var(--md-type-title);
     font-weight: 500;
@@ -376,20 +381,38 @@
     line-height: 1.25;
     text-transform: none;
   }
-  #editView #idForm .chip-block:first-child .chip-block-title,
   #editView #idForm > .fieldset-heading:first-of-type {
-    margin-top: var(--md-2);
+    margin-top: var(--md-4);
+  }
+  #editView #idForm > #medicalHeading {
+    margin-bottom: var(--md-3);
+  }
+  #editView #idForm fieldset.fieldset-contacts > #f_dob + .fieldset-heading {
+    margin-top: var(--md-5);
+  }
+  /* Chip row labels (Allergies, Medications, Conditions) — match Blood type */
+  #editView #idForm .chip-block-title {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    font-style: normal;
+    color: #ffffff;
+    margin: 0 0 var(--md-1);
+    padding: 0;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+    text-transform: none;
   }
   #editView #idForm .chip-block-divider {
     border: none;
     border-top: 1px solid var(--google-outline-variant);
-    margin: var(--md-4) 0;
+    margin: var(--md-2) 0 var(--md-1);
     height: 0;
     width: 100%;
   }
   #editView #idForm fieldset.fieldset-contacts {
     padding: 0;
-    margin-bottom: var(--md-4);
+    margin-bottom: var(--md-2);
   }
   #editView #idForm .contact-fold-toggle {
     padding-inline: var(--md-3);
@@ -403,8 +426,40 @@
     color: var(--google-on-surface-variant);
     letter-spacing: 0.01em;
   }
-  #editView #idForm > .fieldset-heading:first-of-type { margin-top: var(--md-2); }
-  #editView #idForm input[type=text]:not(#f_name):not(#f_lastname),
+  #editView #idForm fieldset > label {
+    margin-top: var(--md-2);
+    margin-bottom: var(--md-1);
+  }
+  #editView #idForm fieldset.fieldset-you > .name-fields {
+    margin-top: 0;
+    gap: var(--md-2);
+  }
+  #editView #idForm fieldset.fieldset-you > .name-fields + label {
+    margin-top: var(--md-3);
+  }
+  #editView #idForm label[for="f_blood"] {
+    font-size: 12px;
+    color: #ffffff;
+  }
+  #editView #idForm #f_blood {
+    font-size: 12px;
+    color: #ffffff;
+  }
+  #editView #idForm fieldset.fieldset-you .donor-row {
+    margin-top: var(--md-3);
+  }
+  #editView #idForm fieldset .chip-list {
+    margin-top: var(--md-1);
+    margin-bottom: 0;
+  }
+  #editView #idForm fieldset .search-add {
+    margin-top: var(--md-2);
+    margin-bottom: 0;
+  }
+  #editView #idForm fieldset.fieldset-contacts #f_dob {
+    margin-bottom: 0;
+  }
+  #editView #idForm input[type=text],
   #editView #idForm input[type=tel],
   #editView #idForm input[type=date],
   #editView #idForm textarea,
@@ -432,6 +487,7 @@
     text-align: left;
     text-align-last: left;
     padding: 0 var(--form-field-pad-x) 0 1px;
+    font-size: var(--chip-search-font);
   }
   #editView #idForm input[type=date] {
     -webkit-appearance: auto;
@@ -449,17 +505,22 @@
   #editView #idForm .chip-search-launcher input,
   #editView #idForm .chip-search-launcher input:hover,
   #editView #idForm .chip-search-launcher input:focus {
-    text-align: center;
+    position: absolute;
+    inset: 0;
+    text-align: left;
     line-height: var(--form-field-h);
     height: 100%;
     min-height: 0;
+    width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 0 var(--form-field-pad-x) 0 calc(var(--form-field-pad-x) + 14px + 6px);
     border: none;
-    border-radius: 0;
+    border-radius: inherit;
     background: transparent;
     box-shadow: none;
     outline: none;
+    font-size: 12px;
+    color: #ffffff;
   }
   #editView #idForm .chip-search-launcher:hover {
     border-color: var(--google-on-surface-variant);
@@ -501,11 +562,7 @@
   #editView #idForm > .saved-note {
     text-align: center;
   }
-  #editView #idForm fieldset {
-    margin: 0 0 var(--md-4);
-    padding: 0 0 var(--md-4);
-  }
-  #editView #idForm fieldset:last-of-type { margin-bottom: var(--md-3); }
+  #editView #idForm fieldset:last-of-type { margin-bottom: var(--md-2); }
   #editView #idForm fieldset.fieldset-chips .chip .chip-label {
     font-size: var(--md-type-body);
     flex: 1 1 auto;
@@ -520,6 +577,8 @@
   #editView #idForm .chip-search-launcher {
     min-width: 0;
     max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
   }
   #idForm {
     display: flex;
@@ -604,7 +663,7 @@
     display: block; height: 38px; width: auto; max-width: min(168px, 52vw);
     min-width: 0; object-fit: contain;
   }
-  .brand-wordmark-hero { height: 52px; max-width: min(220px, 72vw); margin: 0 auto 6px; }
+  .brand-wordmark-hero { height: 68px; max-width: min(300px, 80vw); margin: 0 auto 6px; }
   .brand-cover-hero {
     display: block;
     width: 48px;
@@ -989,13 +1048,14 @@
     align-items: center;
     justify-content: flex-start;
     gap: var(--md-2);
-    margin-top: var(--md-2);
-    width: 100%;
+    margin-top: var(--md-3);
     min-width: 0;
+    box-sizing: border-box;
   }
   #idForm fieldset.fieldset-you .donor-row input[type=checkbox] {
     width: 18px;
     height: 18px;
+    min-width: 18px;
     min-height: 18px;
     margin: 0;
     padding: 0;
@@ -1004,11 +1064,11 @@
   }
   #idForm fieldset.fieldset-you .donor-row label {
     margin: 0;
-    display: inline;
+    flex: 0 1 auto;
     white-space: nowrap;
     font-size: 14px;
     font-weight: 500;
-    line-height: 1.25;
+    line-height: 18px;
     letter-spacing: 0.01em;
     color: var(--google-on-surface-variant);
   }
@@ -1055,6 +1115,15 @@
   .app-legal-footer a:focus-visible {
     color: var(--ink);
     opacity: 1;
+  }
+  .app-legal-footer .support-email-text {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    user-select: all;
+    -webkit-user-select: all;
   }
   /* Aid tab — legal links sit 2px above the bottom nav dock */
   body:has(#aidView.show) #aidView .app-legal-footer {
@@ -1159,13 +1228,14 @@
   }
   .search-add.is-open { z-index: 40; }
   .chip-search-launcher {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0;
     width: 100%;
     height: var(--form-field-h);
     min-height: var(--form-field-h);
-    padding: 0 36px 0 var(--form-field-pad-x);
+    padding: 0 var(--form-field-pad-x);
     border-radius: var(--field-radius);
     border: 1px solid var(--field-border);
     background: var(--field-bg);
@@ -1180,6 +1250,10 @@
     box-shadow: var(--focus-ring), inset 0 1px 2px rgba(60, 64, 67, 0.04);
   }
   .chip-search-icon {
+    position: absolute;
+    left: var(--form-field-pad-x);
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1189,18 +1263,20 @@
     color: var(--muted);
     opacity: 0.78;
     pointer-events: none;
+    z-index: 1;
   }
   .chip-search-icon svg { width: 14px; height: 14px; display: block; }
   .chip-search-launcher input {
-    flex: 1;
+    position: absolute;
+    inset: 0;
     min-width: 0;
-    width: auto;
+    width: 100%;
     height: 100%;
     min-height: 0;
     margin: 0;
-    padding: 0;
+    padding: 0 var(--form-field-pad-x) 0 calc(var(--form-field-pad-x) + 14px + 6px);
     border: none;
-    border-radius: 0;
+    border-radius: inherit;
     background: transparent;
     box-shadow: none;
     font-family: var(--font);
@@ -1211,6 +1287,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--ink);
+    text-align: left;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-appearance: none;
@@ -1937,6 +2014,23 @@
   body:has(#editView:not(.hide)) #editView #idForm select:valid {
     color: #ffffff;
   }
+  body:has(#editView:not(.hide)) #editView #idForm #f_name,
+  body:has(#editView:not(.hide)) #editView #idForm #f_lastname {
+    background-color: #000000;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: none;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm #f_name:hover,
+  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:hover {
+    background-color: #0a0a0a;
+    border-color: rgba(255, 255, 255, 0.32);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm #f_name:focus,
+  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:focus {
+    background-color: #0a0a0a;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
   body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher {
     background-color: #000000;
     border-color: rgba(255, 255, 255, 0.22);
@@ -2145,9 +2239,9 @@
   .page-header.myid .brand-wordmark-hero,
   .page-header.aid .brand-wordmark-hero,
   .page-header.loc .brand-wordmark-hero {
-    height: 52px;
+    height: 68px;
     width: auto;
-    max-width: min(280px, 80vw);
+    max-width: min(360px, 85vw);
     margin: 0;
     object-fit: contain;
     object-position: left center;
@@ -3332,7 +3426,7 @@
     .page-header h1 { font-size: calc(18px * var(--phone-scale)); }
     .page-header .lead { font-size: calc(12px * var(--phone-scale)); margin: 0; }
     .page-header.aid .lead { margin: 0; }
-    .brand-wordmark-hero { height: calc(34px * var(--phone-scale)); max-width: calc(150px * var(--phone-scale)); }
+    .brand-wordmark-hero { height: calc(44px * var(--phone-scale)); max-width: calc(195px * var(--phone-scale)); }
     header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
     .page-header.myid .brand-cover-hero,
     .page-header.aid .brand-cover-hero,
@@ -3560,9 +3654,27 @@
       padding-top: 8px;
       width: calc(var(--phone-ref-w) * 1px);
     }
+    #editView .split-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      box-sizing: border-box;
+    }
     .preview-label {
       font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none;
       color: var(--muted); margin: 0 0 10px;
+    }
+    #editView .preview-label {
+      margin: 0;
+      padding: 0 16px 0 17px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: rgba(255, 255, 255, 0.62);
     }
     .phone-frame {
       border: 1px solid var(--line);
@@ -3574,10 +3686,68 @@
       max-height: min(calc(var(--phone-ref-h) * 1px), calc(100vh - 110px));
       overflow-y: auto;
     }
+    #editView .phone-frame {
+      width: 100%;
+      box-sizing: border-box;
+      border-color: rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      background: #0a0a0a;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    }
     .phone-frame .id-header { border-radius: 0; padding: 24px 16px 20px; }
+    #editView .phone-frame .id-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 12px 16px;
+      box-sizing: border-box;
+      gap: 4px;
+    }
     .phone-frame .id-header h1 { font-size: 22px; }
+    #editView .phone-frame .id-header h1 {
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+      font-size: clamp(17px, 4.2vw, 22px);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: 0;
+      text-align: center;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    #editView .phone-frame .id-header .sub {
+      margin: 0;
+      width: 100%;
+      font-size: 13px;
+      line-height: 1.25;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.92);
+    }
     .phone-frame .id-header .sub { font-size: 13px; }
     .phone-frame .section { padding: 14px 16px; }
+    #editView .phone-frame .section {
+      padding: 12px 16px;
+      background: #111111;
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    #editView .phone-frame .section h2 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.62);
+    }
+    #editView .phone-frame .section li.empty {
+      color: rgba(255, 255, 255, 0.45);
+    }
+    #editView .phone-frame .updated {
+      padding: 12px 16px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.45);
+      background: #0a0a0a;
+    }
     .phone-frame .section li { font-size: 14px; }
     .phone-frame .contact-card .info .name { font-size: 14px; }
     .phone-frame .contact-card a.call { padding: 8px 12px; font-size: 13px; }
@@ -3678,7 +3848,7 @@
   <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
         <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
@@ -3834,11 +4004,12 @@
 
     </div>
 
-    <aside class="split-preview" aria-label="Live card preview">
-      <p class="preview-label" data-i18n="previewLabel">Card preview</p>
+    <aside class="split-preview" aria-label="Patient Information">
+      <p class="preview-label" data-i18n="previewLabel">Patient Information</p>
       <div class="phone-frame" id="liveCard">
         <div class="id-header">
           <h1 id="p_name">—</h1>
+          <p class="sub" id="p_blood" hidden></p>
         </div>
         <div class="section">
           <h2 data-i18n="secAllergies">Allergies</h2>
@@ -3863,7 +4034,7 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
-    <a href="mailto:help.RedMed@gmail.com">Contact</a>
+    <span class="support-email-text" data-i18n="supportEmail">help.RedMed@gmail.com</span>
   </nav>
 </div>
 
@@ -3976,7 +4147,7 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
   </div>
@@ -3987,14 +4158,14 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
-    <a href="mailto:help.RedMed@gmail.com">Contact</a>
+    <span class="support-email-text" data-i18n="supportEmail">help.RedMed@gmail.com</span>
   </nav>
 </div>
 
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.png" width="200" height="52" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No Servers, No Data Collection. GPS &amp; Compass Data Collected While The 911 Screen Is Open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates Stay On This Screen. RedMed Has No Servers — Location Is Not Stored With Us.</p>
@@ -4048,7 +4219,7 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
-    <a href="mailto:help.RedMed@gmail.com">Contact</a>
+    <span class="support-email-text" data-i18n="supportEmail">help.RedMed@gmail.com</span>
   </nav>
 </div>
 <div id="pinDialog" class="sheet-backdrop" hidden aria-hidden="true">
@@ -4700,6 +4871,7 @@
     en: {
       termsChipTerms: "Terms Of Service",
       termsChipPrivacy: "Privacy Policy",
+      supportEmail: "help.RedMed@gmail.com",
       labelName: "Name *", phFirstName: "First", phLastName: "Last", labelNamePlain: "Name", labelDob: "Birth date", labelBlood: "Blood type",
       bloodUnknown: "Unknown", bloodPlaceholder: "—", labelAllergies: "Allergies", labelMeds: "Medications",
       labelConditions: "Conditions", legendMedical: "Medical information",
@@ -4711,7 +4883,7 @@
       clearConfirm: "Clear all saved data on this device? Removes profile, bracelet link, PIN, and preferences. This cannot be undone.",
       cardLinkTitle: "Card link",
       hintCardLink: "Your card is encoded on the passive chip. When a smartphone taps, the phone powers the chip and reads your profile. Tablets and computers won't show the card.",
-      btnCopy: "Copy", btnPreview: "Preview", btnAdd: "Add", previewLabel: "Card preview",
+      btnCopy: "Copy", btnPreview: "Preview", btnAdd: "Add", previewLabel: "Patient Information",
       secAllergies: "Allergies", secMeds: "Medications", secConditions: "Medical conditions",
       secContacts: "Emergency contacts",
       aidTitle: "Roadside Aid", aidLead: "Call 911 first. Tap a pane — expand only what you need.",
@@ -4807,6 +4979,7 @@
     es: {
       termsChipTerms: "Términos de servicio",
       termsChipPrivacy: "Política de privacidad",
+      supportEmail: "help.RedMed@gmail.com",
       labelName: "Nombre *", phFirstName: "Nombre", phLastName: "Apellido", labelNamePlain: "Nombre", labelDob: "Fecha de nacimiento", labelBlood: "Tipo de sangre",
       bloodUnknown: "Desconocido", bloodPlaceholder: "—", labelAllergies: "Alergias", labelMeds: "Medicamentos",
       labelConditions: "Condiciones", legendMedical: "Información médica",
@@ -4817,7 +4990,7 @@
       btnClear: "Borrar datos", btnSave: "Guardar", noteSaved: "Guardado.",
       cardLinkTitle: "Enlace de la tarjeta",
       hintCardLink: "Tu tarjeta queda en el chip pasivo. Al tocar con un smartphone, el teléfono alimenta el chip y lee tu perfil. Tablets y computadoras no muestran la tarjeta.",
-      btnCopy: "Copiar", btnPreview: "Vista previa", btnAdd: "Añadir", previewLabel: "Vista previa",
+      btnCopy: "Copiar", btnPreview: "Vista previa", btnAdd: "Añadir", previewLabel: "Información del paciente",
       secAllergies: "Alergias", secMeds: "Medicamentos", secConditions: "Condiciones médicas",
       secContacts: "Contactos de emergencia",
       aidTitle: "Ayuda en carretera", aidLead: "Llama al 911 primero. Toca un panel — abre solo lo que necesites.",
@@ -6400,6 +6573,13 @@
     return blood.replace(/-$/, "");
   }
 
+  function formatCardHeaderName(data, editPreview) {
+    data = data || {};
+    var name = clampStr(data.name, PROFILE_LIMITS.name);
+    if (name) return name;
+    return editPreview ? "—" : "";
+  }
+
   function formatCardHeaderBlood(data, editPreview) {
     data = data || {};
     var parts = [];
@@ -6412,9 +6592,25 @@
   function paintProfileHeader(pfx, data) {
     data = data || {};
     var editPreview = pfx === "p_";
-    var bloodEl = document.getElementById(editPreview ? "p_name" : "v_blood");
+    if (editPreview) {
+      var nameEl = document.getElementById("p_name");
+      var subEl = document.getElementById("p_blood");
+      if (nameEl) nameEl.textContent = formatCardHeaderName(data, true);
+      if (subEl) {
+        var bloodLine = formatCardHeaderBlood(data, true);
+        if (bloodLine && bloodLine !== "—") {
+          subEl.textContent = bloodLine;
+          subEl.hidden = false;
+        } else {
+          subEl.textContent = "";
+          subEl.hidden = true;
+        }
+      }
+      return;
+    }
+    var bloodEl = document.getElementById("v_blood");
     if (!bloodEl) return;
-    bloodEl.textContent = formatCardHeaderBlood(data, editPreview);
+    bloodEl.textContent = formatCardHeaderBlood(data, false);
   }
 
   function paintCard(pfx, data) {
@@ -6484,16 +6680,12 @@
     if (previewFrame) cancelAnimationFrame(previewFrame);
     previewFrame = requestAnimationFrame(function () {
       previewFrame = 0;
-      var data = collectPersistedFormData();
-      syncPreviewBlood(data.blood);
-      if (isLivePreviewVisible()) paintCard("p_", data);
+      if (isLivePreviewVisible()) paintCard("p_", collectPersistedFormData());
     });
   }
 
   function syncPreviewBlood(blood) {
-    var el = document.getElementById("p_name");
-    if (!el) return;
-    el.textContent = formatCardHeaderBlood(collectPersistedFormData(), true);
+    refreshLivePreview();
   }
 
   function wirePreviewForm() {

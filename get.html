@@ -41,8 +41,8 @@
   .app-logo {
     display: block;
     width: auto;
-    height: 52px;
-    max-width: min(240px, 88vw);
+    height: 68px;
+    max-width: min(320px, 88vw);
     margin: 0 auto 14px;
     object-fit: contain;
   }
@@ -78,12 +78,21 @@
     display: grid; place-items: center;
   }
   .hidden { display: none !important; }
+  .support-email {
+    margin: 14px 0 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    user-select: all;
+    -webkit-user-select: all;
+  }
 </style>
 </head>
 <body>
 <main class="card">
-  <img class="app-logo" src="assets/heading.png" width="200" height="52" alt="RedMed">
+  <img class="app-logo" src="assets/heading.svg" width="300" height="78" alt="RedMed">
   <p class="lead">Set up your NFC medical bracelet.<br>Only you need the app — a <strong>passive chip</strong> on the band stores your card (no battery, no broadcast).</p>
+  <p class="support-email">help.RedMed@gmail.com</p>
   <p class="detect" id="detectLabel">Detecting your phone…</p>
 
   <a class="btn btn-primary hidden" id="btnStore" href="#">Get the app</a>
