@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Get RedMed</title>
-<link rel="icon" type="image/png" href="assets/fav.png">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta name="theme-color" content="#fff1f2">
 <meta name="description" content="Scan to get RedMed — set up your NFC medical bracelet. Only the owner needs the app.">
@@ -37,11 +38,13 @@
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     text-align: center;
   }
-  .logo {
-    width: 88px; height: 88px; border-radius: 22px; margin: 0 auto 10px; display: block;
-    box-shadow: 0 10px 28px rgba(225, 29, 72, 0.18);
+  .app-logo {
+    display: block;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 14px;
+    object-fit: contain;
   }
-  .wordmark { display: block; height: 42px; width: auto; margin: 0 auto 14px; }
   h1 { display: none; }
   .lead { margin: 10px 0 0; font-size: 15px; color: var(--muted); font-weight: 550; }
   .detect {
@@ -78,8 +81,7 @@
 </head>
 <body>
 <main class="card">
-  <img class="logo" src="assets/icon.svg" width="88" height="88" alt="RedMed app icon">
-  <img class="wordmark" src="assets/wordmark.svg" width="200" height="48" alt="RedMed">
+  <img class="app-logo" src="assets/logo.svg" width="88" height="88" alt="RedMed">
   <p class="lead">Set up your NFC medical bracelet.<br>Only you need the app — a <strong>passive chip</strong> on the band stores your card (no battery, no broadcast).</p>
   <p class="detect" id="detectLabel">Detecting your phone…</p>
 
