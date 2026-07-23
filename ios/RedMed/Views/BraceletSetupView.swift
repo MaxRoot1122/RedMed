@@ -2,7 +2,9 @@ import SwiftUI
 
 /// Owner-only bracelet pairing — read blank band, write profile, stranger tap works without app.
 struct BraceletSetupView: View {
+    @Environment(\.layoutMetrics) private var layout
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @StateObject private var writer = NFCWriter()
@@ -13,8 +15,8 @@ struct BraceletSetupView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: layout.spaceXL) {
+                    VStack(alignment: .leading, spacing: layout.spaceSM) {
                         Text("Your bracelet")
                             .font(.title2.weight(.bold))
                             .foregroundStyle(AppTheme.ink)
@@ -79,8 +81,8 @@ struct BraceletSetupView: View {
                     let note = ProfileLinkBuilder.capacityNote(for: store.profile)
                     SoftStatusChip(text: note.text, warning: note.warn)
                 }
-                .padding(AppTheme.screenPad)
-                .padding(.bottom, 24)
+                .padding(layout.screenPad)
+                .padding(.bottom, layout.screenBottom)
             }
             .screenAtmosphere()
             .navigationTitle("Bracelet")
@@ -113,14 +115,14 @@ struct BraceletSetupView: View {
     }
 
     private func setupStep(number: Int, title: String, detail: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: layout.spaceMD) {
             Text("\(number)")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.white)
-                .frame(width: 26, height: 26)
+                .frame(width: layout.stepBadge, height: layout.stepBadge)
                 .background(LinearGradient(colors: [Color(red: 1, green: 0.45, blue: 0.55), AppTheme.accent], startPoint: .top, endPoint: .bottom))
                 .clipShape(Circle())
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: layout.spaceXS) {
                 Text(title)
                     .font(.subheadline.weight(.bold))
                     .foregroundStyle(AppTheme.ink)
@@ -130,7 +132,7 @@ struct BraceletSetupView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(14)
+        .padding(layout.s(14))
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
     }
@@ -140,4 +142,5 @@ struct BraceletSetupView: View {
     BraceletSetupView()
         .environmentObject(ProfileStore())
         .environmentObject(BraceletLinkStore())
+        .withLayoutMetrics()
 }

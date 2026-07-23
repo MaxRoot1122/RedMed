@@ -3,6 +3,8 @@ import CoreLocation
 
 /// Offline trauma hospital picker — shared by Find 911 and the NFC emergency card.
 struct TraumaHospitalsSection: View {
+    @Environment(\.layoutMetrics) private var layout
+
     /// When set (Find 911), Google Geocoding may auto-select state/county from GPS.
     var gpsCoordinate: CLLocationCoordinate2D?
 
@@ -14,7 +16,7 @@ struct TraumaHospitalsSection: View {
         let needsCounty = TraumaHospitalFinder.needsCountyPicker(for: traumaState)
         let hospitals = TraumaHospitalFinder.resolvedHospitals(state: traumaState, county: traumaCounty)
 
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: layout.spaceMD) {
             SectionEyebrow(text: "Trauma hospitals", tint: AppTheme.medical)
             Text("For transport when they may not survive if you wait for a closer hospital.")
                 .font(.caption.weight(.semibold))
@@ -57,8 +59,8 @@ struct TraumaHospitalsSection: View {
                         .foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(hospitals) { hospital in
-                        HStack(alignment: .top, spacing: 12) {
-                            VStack(alignment: .leading, spacing: 4) {
+                        HStack(alignment: .top, spacing: layout.spaceMD) {
+                            VStack(alignment: .leading, spacing: layout.spaceXS) {
                                 Text(hospital.name)
                                     .font(.subheadline.weight(.bold))
                                     .foregroundStyle(AppTheme.ink)
@@ -72,18 +74,18 @@ struct TraumaHospitalsSection: View {
                                         .foregroundStyle(AppTheme.muted)
                                 }
                             }
-                            Spacer(minLength: 8)
+                            Spacer(minLength: layout.spaceSM)
                             if let url = hospital.mapsURL {
                                 Link("Maps", destination: url)
                                     .font(.caption.weight(.bold))
                                     .foregroundStyle(.white)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, layout.spaceMD)
+                                    .padding(.vertical, layout.spaceSM)
                                     .background(AppTheme.medical)
                                     .clipShape(Capsule())
                             }
                         }
-                        .padding(12)
+                        .padding(layout.spaceMD)
                         .appCard(elevated: false)
                     }
                     Text("Call 911 first. Tell the dispatcher you need trauma-center transport and your location.")
@@ -92,7 +94,7 @@ struct TraumaHospitalsSection: View {
                 }
             }
         }
-        .padding(16)
+        .padding(layout.spaceLG)
         .frame(maxWidth: .infinity, alignment: .leading)
         .appCard()
         .task(id: gpsCoordinate.map { "\($0.latitude),\($0.longitude)" }) {

@@ -109,11 +109,23 @@ enum EmergencySummaryBuilder {
         return lines.joined(separator: "\n")
     }
 
+    static func normalizedPhone(_ phone: String) -> String {
+        phone.filter { $0.isNumber || $0 == "+" }
+    }
+
     static func emergencyContactPhones(in profile: MedicalProfile) -> [String] {
         profile.contacts
             .map(\.phone)
-            .map { $0.filter { $0.isNumber || $0 == "+" } }
+            .map(normalizedPhone)
             .filter { !$0.isEmpty }
+    }
+
+    /// `telprompt:` asks iPhone to confirm before placing the call — required for in-app contact dialing.
+    static func telURL(phone: String, prompt: Bool = true) -> URL? {
+        let digits = normalizedPhone(phone)
+        guard !digits.isEmpty else { return nil }
+        let scheme = prompt ? "telprompt" : "tel"
+        return URL(string: "\(scheme):\(digits)")
     }
 
     /// Percent-encode like JS `encodeURIComponent` so `&` / `=` in medical text

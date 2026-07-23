@@ -8,7 +8,7 @@ Source: [`assets/icon.svg`](../assets/icon.svg). Regenerate PNGs with `./scripts
 
 | Platform | Location |
 |----------|----------|
-| iOS | [`ios/RedMed/Assets.xcassets/AppIcon.appiconset/`](../ios/RedMed/Assets.xcassets/AppIcon.appiconset/) |
+| iOS | [`ios/RedMed/Assets.xcassets/AppIcon.appiconset/AppIcon.png`](../ios/RedMed/Assets.xcassets/AppIcon.appiconset/AppIcon.png) — **single 1024×1024** (Xcode scales) |
 | Play | [`play/listing/play-store-icon-512.png`](../play/listing/play-store-icon-512.png) |
 
 ## Google Play

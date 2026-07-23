@@ -1,20 +1,24 @@
 import SwiftUI
 
 struct BasicAidView: View {
-    private let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
+    @Environment(\.layoutMetrics) private var layout
 
     @State private var openPaneId: String?
+
+    private var columns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: layout.spaceMD),
+            GridItem(.flexible(), spacing: layout.spaceMD)
+        ]
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: layout.spaceXL) {
+                    VStack(alignment: .leading, spacing: layout.spaceSM) {
                         Text("Roadside Aid")
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .font(layout.heroTitleFont())
                             .tracking(-0.4)
                             .foregroundStyle(
                                 LinearGradient(
@@ -28,28 +32,28 @@ struct BasicAidView: View {
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
 
-                        HStack(spacing: 8) {
+                        HStack(spacing: layout.spaceSM) {
                             Text("tap to expand")
                                 .font(.caption2.weight(.bold))
                                 .textCase(.uppercase)
                                 .foregroundStyle(AppTheme.accent)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
+                                .padding(.horizontal, layout.s(10))
+                                .padding(.vertical, layout.s(5))
                                 .background(AppTheme.accentSoft)
                                 .clipShape(Capsule())
                             Text("911 first")
                                 .font(.caption2.weight(.bold))
                                 .textCase(.uppercase)
                                 .foregroundStyle(AppTheme.muted)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
+                                .padding(.horizontal, layout.s(10))
+                                .padding(.vertical, layout.s(5))
                                 .background(Color.white.opacity(0.7))
                                 .clipShape(Capsule())
                         }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, layout.spaceXS)
 
-                    LazyVGrid(columns: columns, spacing: 12) {
+                    LazyVGrid(columns: columns, spacing: layout.spaceMD) {
                         ForEach(AidPaneLibrary.panes) { pane in
                             AidPaneCard(
                                 pane: pane,
@@ -70,11 +74,11 @@ struct BasicAidView: View {
                         .italic()
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 8)
-                        .padding(.horizontal, 8)
+                        .padding(.top, layout.spaceSM)
+                        .padding(.horizontal, layout.spaceSM)
                 }
-                .padding(.horizontal, AppTheme.screenPad)
-                .padding(.bottom, 24)
+                .padding(.horizontal, layout.screenPad)
+                .padding(.bottom, layout.screenBottom)
             }
             .screenAtmosphere()
             .navigationTitle("Aid")
@@ -92,6 +96,8 @@ struct BasicAidView: View {
 }
 
 private struct AidPaneCard: View {
+    @Environment(\.layoutMetrics) private var layout
+
     let pane: AidPane
     let isOpen: Bool
     let onToggle: () -> Void
@@ -99,14 +105,13 @@ private struct AidPaneCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Button(action: onToggle) {
-                HStack(alignment: isOpen ? .center : .top, spacing: 12) {
+                HStack(alignment: isOpen ? .center : .top, spacing: layout.spaceMD) {
                     IconWell(
                         systemName: pane.icon,
                         tint: pane.critical ? Color.white : AppTheme.accent,
-                        soft: pane.critical ? AppTheme.accent : AppTheme.accentSoft,
-                        size: 44
+                        soft: pane.critical ? AppTheme.accent : AppTheme.accentSoft
                     )
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: layout.spaceXS) {
                         Text(pane.title)
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(AppTheme.ink)
@@ -124,13 +129,13 @@ private struct AidPaneCard: View {
                         .foregroundStyle(AppTheme.accent)
                         .rotationEffect(.degrees(isOpen ? 90 : 0))
                 }
-                .padding(14)
-                .frame(maxWidth: .infinity, minHeight: isOpen ? 0 : 132, alignment: .topLeading)
+                .padding(layout.s(14))
+                .frame(maxWidth: .infinity, minHeight: isOpen ? 0 : layout.aidPaneMinHeight, alignment: .topLeading)
             }
             .buttonStyle(.plain)
 
             if isOpen {
-                VStack(spacing: 10) {
+                VStack(spacing: layout.s(10)) {
                     ForEach(pane.topics) { topic in
                         NavigationLink(value: topic) {
                             HStack {
@@ -142,25 +147,25 @@ private struct AidPaneCard: View {
                                     .font(.caption2.weight(.bold))
                                     .foregroundStyle(AppTheme.muted)
                             }
-                            .padding(12)
+                            .padding(layout.spaceMD)
                             .background(Color.white.opacity(0.8))
-                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous)
                                     .stroke(AppTheme.line, lineWidth: 1)
                             )
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.bottom, 14)
+                .padding(.horizontal, layout.spaceMD)
+                .padding(.bottom, layout.s(14))
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
         .appCard()
         .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous)
                 .stroke(isOpen ? AppTheme.accent.opacity(0.28) : Color.clear, lineWidth: 1)
         )
     }
@@ -168,4 +173,5 @@ private struct AidPaneCard: View {
 
 #Preview {
     BasicAidView()
+        .withLayoutMetrics()
 }

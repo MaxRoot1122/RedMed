@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>RedMed</title>
-<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-COivTRHGpPReYM9KoUTFrxyq7dtPk/UMxY2F4KFeKpo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-tQIiOekjQ4xq4B5b7wn6ryyx17zZPe3wI/BRhgqkG6M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -106,6 +106,9 @@
     --gloss: none;
     --app-max: 560px;
     --app-width: min(100vw, var(--app-max));
+    --desktop-min-w: 1920px;
+    --desktop-min-h: 1080px;
+    --desktop-shell-max: 1680px;
     --phone-ref-w: 402;
     --phone-ref-h: 874;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -154,6 +157,7 @@
     --page-nav-inset: 8px;
     --page-nav-radius: 22px;
     --terms-footer-h: 18px;
+    --content-pad-bottom: var(--page-nav-clearance);
   }
   * { box-sizing: border-box; }
   html {
@@ -287,7 +291,7 @@
     color: var(--google-on-surface);
   }
   #editView .split-main.wrap {
-    padding: var(--md-4) 0 var(--md-6);
+    padding: var(--md-4) 0 calc(var(--page-nav-clearance) + var(--md-6));
     box-sizing: border-box;
   }
   /* Single horizontal gutter on the form — not on wrap + children */
@@ -300,9 +304,12 @@
   #editView #idForm fieldset,
   #editView #idForm fieldset.fieldset-chips,
   #editView #idForm fieldset.fieldset-contacts,
+  #editView #idForm fieldset.fieldset-care,
+  #editView #idForm fieldset.fieldset-notes,
   #editView #idForm fieldset.fieldset-chips .chip-block,
   #editView #idForm fieldset > label,
   #editView #idForm fieldset > input,
+  #editView #idForm fieldset > textarea,
   #editView #idForm fieldset > .row2,
   #editView #idForm fieldset > .chip-list,
   #editView #idForm fieldset.fieldset-chips .chip-block .chip-list,
@@ -328,7 +335,9 @@
   /* My ID form — flat Google-style sections, no nested card chrome */
   #editView #idForm fieldset,
   #editView #idForm fieldset.fieldset-chips,
-  #editView #idForm fieldset.fieldset-contacts {
+  #editView #idForm fieldset.fieldset-contacts,
+  #editView #idForm fieldset.fieldset-care,
+  #editView #idForm fieldset.fieldset-notes {
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -368,7 +377,9 @@
     height: 0;
     width: 100%;
   }
-  #editView #idForm fieldset.fieldset-contacts {
+  #editView #idForm fieldset.fieldset-contacts,
+  #editView #idForm fieldset.fieldset-care,
+  #editView #idForm fieldset.fieldset-notes {
     padding: 0;
     margin-bottom: var(--md-4);
   }
@@ -396,7 +407,7 @@
   #editView #idForm > .fieldset-heading:first-of-type { margin-top: var(--md-2); }
   #editView #idForm input[type=text],
   #editView #idForm input[type=tel],
-  #editView #idForm input[type=search],
+  #editView #idForm textarea,
   #editView #idForm select,
   #editView #idForm .chip-pick-select {
     box-shadow: none;
@@ -433,17 +444,56 @@
     text-align: center;
     line-height: calc(var(--control-h) - 2px);
   }
-  #editView #idForm .chip-search-launcher input {
+  /* Border lives on .chip-search-launcher — inner input must stay borderless. */
+  #editView #idForm .chip-search-launcher input,
+  #editView #idForm .chip-search-launcher input:hover,
+  #editView #idForm .chip-search-launcher input:focus {
     text-align: center;
     line-height: var(--form-field-h);
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  #editView #idForm .chip-search-launcher:hover {
+    border-color: var(--google-on-surface-variant);
+    background: var(--field-bg);
+  }
+  #editView #idForm .donor-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--md-2);
+    margin-top: var(--md-2);
+  }
+  #editView #idForm .donor-row input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+  #editView #idForm .donor-row span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--google-on-surface-variant);
   }
   #editView #idForm input:hover,
+  #editView #idForm textarea:hover,
   #editView #idForm select:hover {
     box-shadow: none;
     border-color: var(--google-on-surface-variant);
     background: var(--field-bg);
   }
   #editView #idForm input:focus,
+  #editView #idForm textarea:focus,
   #editView #idForm select:focus {
     box-shadow: 0 0 0 1px var(--accent);
     border-color: var(--accent);
@@ -933,32 +983,27 @@
     min-width: 100%;
     text-overflow: clip;
   }
-  .hint { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
-  .terms-chip-compact {
-    justify-content: center; text-align: center;
-    padding: 12px 16px; margin: var(--md-3) 0 0;
-  }
-  #aidView .aid-terms-footer {
+  .app-legal-footer {
     position: fixed;
-    bottom: calc(var(--dock-bottom) + env(safe-area-inset-bottom, 0px) + 2px);
+    bottom: calc(var(--page-nav-clearance) + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     max-width: var(--app-width);
-    z-index: 210;
+    z-index: 50;
     pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 18px;
     margin: 0;
-    padding: 0 16px 2px;
+    padding: 0 16px 4px;
     text-align: center;
     background: transparent;
     border: none;
   }
-  #aidView .aid-terms-footer a {
-    font-size: 8px;
+  .app-legal-footer a {
+    font-size: 9px;
     font-weight: 500;
     font-style: normal;
     color: var(--muted);
@@ -968,11 +1013,12 @@
     line-height: 1.2;
     pointer-events: auto;
   }
-  #aidView .aid-terms-footer a:hover,
-  #aidView .aid-terms-footer a:focus-visible {
+  .app-legal-footer a:hover,
+  .app-legal-footer a:focus-visible {
     color: var(--ink);
     opacity: 1;
   }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
   .contact-fold {
     margin-top: 0; border: 1px solid var(--field-border); border-radius: var(--field-radius);
     background: var(--field-bg); overflow: hidden;
@@ -1240,8 +1286,9 @@
   }
   .bottombar-tabs {
     display: grid;
-    grid-template-columns: repeat(3, var(--page-nav-tab-w));
+    grid-template-columns: repeat(3, minmax(var(--page-nav-tab-w), 1fr));
     align-items: stretch;
+    justify-items: stretch;
     gap: 2px;
     flex: 0 0 auto;
     width: max-content;
@@ -1311,7 +1358,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 3px;
     min-height: var(--page-nav-item-h);
     height: var(--page-nav-item-h);
     padding: 4px 2px;
@@ -1350,12 +1397,14 @@
     justify-content: center;
     width: 20px;
     height: 20px;
+    flex: 0 0 20px;
     color: var(--ink);
     opacity: 0.55;
     flex-shrink: 0;
+    line-height: 0;
   }
   .bb-item.active .bb-icon { color: var(--accent); opacity: 1; }
-  .bb-icon svg { width: 20px; height: 20px; display: block; }
+  .bb-icon svg { width: 20px; height: 20px; display: block; flex-shrink: 0; }
   .bb-label {
     max-width: 100%;
     overflow: hidden;
@@ -1363,6 +1412,15 @@
     white-space: nowrap;
     font-size: 12px;
     font-weight: inherit;
+    line-height: 1;
+    min-height: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
   }
   @media (min-width: 1024px) {
     :root {
@@ -1371,16 +1429,18 @@
       --page-nav-inset: 16px;
     }
     .bottombar { padding: var(--page-nav-pad); gap: 3px; }
-    .bottombar-tabs { gap: 3px; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; }
+    .bottombar-tabs { gap: 3px; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; align-items: stretch; }
     .bb-item {
       flex: 1 1 0;
       width: auto;
-      flex-direction: row;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       min-height: var(--page-nav-item-h);
       height: var(--page-nav-item-h);
       font-size: 13px;
-      padding: 0 14px;
-      gap: 6px;
+      padding: 4px 10px;
+      gap: 3px;
     }
     .bb-label { font-size: 13px; }
   }
@@ -1837,6 +1897,11 @@
     border-color: rgba(255, 255, 255, 0.22);
     box-shadow: none;
   }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:hover {
+    background-color: #0a0a0a;
+    border-color: rgba(255, 255, 255, 0.32);
+    box-shadow: none;
+  }
   body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:focus-within,
   body:has(#editView:not(.hide)) #editView #idForm .search-add.is-open .chip-search-launcher {
     background-color: #0a0a0a;
@@ -1869,13 +1934,29 @@
   body:has(#editView:not(.hide)) #editView #idForm .suggest-item + .suggest-group-label {
     border-top-color: rgba(255, 255, 255, 0.1);
   }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input {
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:hover,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:focus {
     color: #ffffff;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input::placeholder {
     color: rgba(255, 255, 255, 0.45);
+  }
+  body:has(#editView:not(.hide)) .app-legal-footer a {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  body:has(#editView:not(.hide)) .app-legal-footer a:hover,
+  body:has(#editView:not(.hide)) .app-legal-footer a:focus-visible {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .donor-row span {
+    color: rgba(255, 255, 255, 0.62);
   }
   body:has(#editView:not(.hide)) input[type=text],
   body:has(#editView:not(.hide)) input[type=tel],
@@ -2056,14 +2137,6 @@
     text-align: left;
     max-width: 22em;
   }
-  .aid-privacy-hint {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.45;
-    color: var(--muted);
-    text-align: left;
-    max-width: 36em;
-  }
   .page-header .lead { font-size: 14px; color: var(--muted); margin: 0; max-width: 36em; line-height: 1.5; font-weight: 400; }
   .page-header .vibe-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 
@@ -2074,13 +2147,18 @@
     min-height: 100dvh;
     background: var(--bg);
     color: var(--ink);
-    padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 16px);
+    padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 12px);
   }
 
   #aidCards {
-    padding: 0 var(--space) 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px; max-width: var(--app-width); margin: 0 auto;
-    grid-auto-rows: auto; align-items: stretch;
+    padding: 0 var(--md-inset) 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: var(--app-width);
+    margin: 0 auto;
+    grid-auto-rows: 1fr;
+    align-items: stretch;
   }
   .aid-pane:not(.open) {
     display: flex;
@@ -2088,21 +2166,38 @@
   }
   .aid-pane:not(.open) .aid-pane-face {
     flex: 1;
-    min-height: 80px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 112px;
+    padding: 14px 12px 10px;
+    position: relative;
   }
   .aid-pane {
     background: var(--surface);
-    border: 1px solid var(--line); border-radius: var(--radius-lg);
-    overflow: hidden; box-shadow: var(--elevation-1); min-width: 0;
-    display: flex; flex-direction: column; height: auto;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--elevation-1);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     transition: box-shadow 0.25s var(--ease-out), border-color 0.25s var(--ease-out), transform 0.2s var(--ease-out);
   }
   .aid-pane-icon {
-    width: 32px; height: 32px; border-radius: var(--radius-md); display: grid; place-items: center;
-    background: var(--panel); color: var(--ink); flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: var(--panel);
+    color: var(--ink);
+    flex-shrink: 0;
   }
   .aid-pane.emphasis .aid-pane-icon {
-    background: var(--panel);
+    background: var(--accent-container);
+    color: var(--accent);
     box-shadow: none;
   }
   .aid-pane.open {
@@ -2111,49 +2206,136 @@
     box-shadow: var(--accent-glow-ring);
     background: var(--surface);
     align-self: stretch;
+    height: auto;
   }
   .aid-pane-face {
-    display: flex; flex-direction: row; align-items: flex-start; justify-content: flex-start;
-    gap: 6px; width: 100%; flex: 1; min-height: 72px; padding: 10px 10px 10px 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    flex: 1;
+    min-height: 72px;
+    padding: 10px 10px 10px 12px;
     box-sizing: border-box;
     background: transparent;
     transition: background-color 0.25s var(--ease-out);
   }
   .aid-pane.open .aid-pane-face {
-    flex-direction: row; align-items: center; min-height: 0; flex: 0 0 auto;
-    padding: 12px 14px; gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    gap: 10px;
     background: var(--accent);
     color: #fff;
+    position: static;
   }
   .aid-pane.open .aid-pane-title { color: #fff; }
   .aid-pane.open .aid-pane-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.22);
     color: #fff;
   }
   .aid-pane-face-main {
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px;
-    min-width: 0; flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
   }
-  .aid-pane.open .aid-pane-face-main { flex-direction: row; align-items: center; gap: 10px; }
-  .aid-pane-icon svg { width: 20px; height: 20px; display: block; }
-  .aid-pane-copy { min-width: 0; flex: 1; overflow: visible; }
+  .aid-pane:not(.open) .aid-pane-face-main {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .aid-pane.open .aid-pane-face-main {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+  }
+  .aid-pane-icon svg { width: 24px; height: 24px; display: block; }
+  .aid-pane.open .aid-pane-icon svg { width: 22px; height: 22px; }
+  .aid-pane-copy { min-width: 0; flex: 1; overflow: hidden; width: 100%; }
+  .aid-pane:not(.open) .aid-pane-copy {
+    text-align: center;
+  }
   .aid-pane-title {
-    display: block;
-    margin: 0; font-size: 13px; font-weight: 500; letter-spacing: 0; line-height: 1.25;
-    overflow-wrap: anywhere; word-break: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
   .aid-pane-blurb {
-    display: block;
-    margin: 3px 0 0; font-size: 10px; font-weight: 400; color: var(--muted); line-height: 1.3;
-    overflow-wrap: anywhere; word-break: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin: 2px 0 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
   .aid-pane-blurb::before { content: none; }
   .aid-pane.open .aid-pane-blurb { display: none; }
   .aid-chevron {
-    flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--muted);
-    transition: transform 0.2s var(--ease-out); align-self: center; margin-left: 2px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: transform 0.2s var(--ease-out);
+    align-self: center;
+    margin-left: 2px;
   }
-  .aid-pane.open .aid-chevron { transform: rotate(90deg); align-self: center; color: #fff; }
+  .aid-pane:not(.open) .aid-chevron {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    align-self: auto;
+    margin: 0;
+    font-size: 11px;
+    opacity: 0.72;
+  }
+  .aid-pane.open .aid-chevron {
+    transform: rotate(90deg);
+    align-self: center;
+    color: #fff;
+    position: static;
+    opacity: 1;
+  }
+  @media (hover: hover) {
+    .aid-pane:not(.open):hover {
+      border-color: var(--outline-hover);
+      box-shadow: var(--elevation-2);
+    }
+  }
+  @media (min-width: 720px) {
+    #aidCards {
+      gap: 14px;
+      max-width: min(640px, var(--app-width));
+    }
+    .aid-pane:not(.open) .aid-pane-face { min-height: 120px; padding: 16px 14px 12px; }
+  }
   .aid-pane-body { display: none; padding: 0 14px 16px; border-top: 1px solid var(--line); }
   .aid-pane.open .aid-pane-body {
     display: block;
@@ -2437,13 +2619,13 @@
     text-align: center;
     max-width: 28em;
   }
-  .cpr-options {
-    display: flex;
+  .cpr-options-wrap {
+    display: grid;
+    grid-template-columns: auto auto;
     align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: start;
     gap: 10px 16px;
-    margin: 8px auto 0;
+    margin: 8px 0 0;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -2451,7 +2633,7 @@
   .cpr-option {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
     min-height: 30px;
     padding: 4px 10px;
@@ -2460,6 +2642,10 @@
     color: var(--muted);
     font-weight: 550;
     cursor: pointer;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: transparent;
+    box-sizing: border-box;
   }
   .cpr-option input {
     width: 18px;
@@ -2468,40 +2654,19 @@
     flex-shrink: 0;
     accent-color: var(--accent);
   }
-  .cpr-tutorial {
-    margin: 10px 0 0;
-    width: 100%;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--surface-dim);
-    overflow: hidden;
-  }
+  .cpr-tutorial { display: contents; }
   .cpr-tutorial[hidden] { display: none !important; }
   .cpr-tutorial summary {
     list-style: none;
-    cursor: pointer;
-    padding: 10px 12px;
-    font-family: var(--font);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
   }
   .cpr-tutorial summary::-webkit-details-marker { display: none; }
-  .cpr-tutorial summary::after {
-    content: "›";
-    font-size: 16px;
-    line-height: 1;
-    color: var(--muted);
-    transform: rotate(90deg);
-    transition: transform 0.2s var(--ease-out);
-  }
-  .cpr-tutorial[open] summary::after { transform: rotate(-90deg); }
   .cpr-tutorial-body {
-    padding: 0 12px 12px;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 10px 12px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-dim);
     font-family: var(--font);
     font-size: 11px;
     line-height: 1.5;
@@ -2524,9 +2689,11 @@
     .cpr-beat { padding: 22px 20px; }
     .cpr-cue { font-size: 17px; }
   }
-  @media (min-width: 1440px) {
+  @media (min-width: 1920px) {
+    :root { --desktop-shell-max: var(--desktop-min-w); }
     .cpr-beat { padding: 24px 22px; gap: 16px; }
     .cpr-cue { font-size: 18px; }
+    #editView .split-layout { gap: 32px; }
   }
   .cpr-controls {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px;
@@ -2542,7 +2709,12 @@
     width: 100%; background: var(--accent); color: #fff; border: none;
     box-shadow: none; border-radius: var(--md-btn-radius);
   }
-  .cpr-btn-start.running { background: var(--google-on-surface); box-shadow: none; }
+  /* Stop state — use --shell (#1c1917), not --google-on-surface (remapped to #fff on Aid dark canvas). */
+  .cpr-btn-start.running,
+  .cpr-btn-start.running:active,
+  .cpr-btn-start.running:focus-visible {
+    background: var(--shell); color: #fff; box-shadow: none;
+  }
   .cpr-btn-reset {
     width: auto; min-width: 68px; padding: 7px 10px;
     background: var(--surface); color: var(--ink);
@@ -2571,7 +2743,8 @@
     color: var(--muted);
     line-height: 1.4;
     padding: 0;
-    margin: 0 auto;
+    margin: 8px auto 0;
+    transform: translateY(8px);
     width: 100%;
     max-width: 36em;
     text-align: center;
@@ -2581,7 +2754,7 @@
     display: block;
     background: var(--bg);
     color: var(--ink);
-    padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 16px);
+    padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 12px);
   }
 
   #locView .hint { margin: 0; }
@@ -2744,20 +2917,22 @@
   .coord-card {
     background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line);
     border-radius: var(--radius-lg); padding: 20px 16px; text-align: center; margin-bottom: 12px;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 10px;
+    width: 100%; box-sizing: border-box;
   }
   .coord-card .coords {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 22px; font-weight: 700;
-    color: var(--ink); line-height: 1.25; margin: 0;
+    color: var(--ink); line-height: 1.25; margin: 0; width: 100%; text-align: center;
   }
   .coord-card .dms {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 17px; font-weight: 600;
-    color: var(--ink); line-height: 1.35; margin: 0;
+    color: var(--ink); line-height: 1.35; margin: 0; width: 100%; text-align: center;
   }
-  .coord-card .heading { font-size: 14px; color: var(--muted); margin: 0; font-weight: 600; line-height: 1.4; }
-  .coord-card .loc-time { font-size: 12px; color: var(--muted); margin: 2px 0 0; line-height: 1.35; }
+  .coord-card .heading { font-size: 14px; color: var(--muted); margin: 0; font-weight: 600; line-height: 1.4; width: 100%; text-align: center; }
+  .coord-card .loc-time { font-size: 12px; color: var(--muted); margin: 2px 0 0; line-height: 1.35; width: 100%; text-align: center; }
   .coord-card .coord-copy-hint {
     font-size: 11px; color: var(--muted); margin: 0; line-height: 1.3; font-weight: 500;
+    width: 100%; text-align: center;
   }
   .coord-card.coord-card--copyable {
     cursor: pointer;
@@ -2773,7 +2948,7 @@
     color: var(--accent);
     font-weight: 600;
   }
-  .coord-card .status { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 0; }
+  .coord-card .status { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 0; width: 100%; text-align: center; }
   .loc-gps-error { font-size: 13px; color: var(--ink); font-weight: 600; text-align: center; margin: 0; }
   .loc-bracelet-section {
     background: var(--panel);
@@ -2832,34 +3007,6 @@
     line-height: 1.45;
     text-align: left;
   }
-  #locView .loc-terms-footer {
-    position: fixed;
-    bottom: calc(var(--page-nav-clearance) + env(safe-area-inset-bottom, 0px));
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: var(--app-width);
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin: 0;
-    padding: 0 16px 2px;
-    text-align: center;
-    background: transparent;
-    border: none;
-  }
-  #locView .loc-terms-footer a {
-    font-size: 9px;
-    font-weight: 500;
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    letter-spacing: 0.02em;
-    line-height: 1.2;
-  }
-  #locView .loc-terms-footer a:hover { color: var(--accent); opacity: 0.72; }
   .btn-call {
     display: flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;
     text-align: center; text-decoration: none;
@@ -2957,7 +3104,6 @@
   .trauma-card .maps {
     flex-shrink: 0; font-size: 12px; font-weight: 700; color: #fff; text-decoration: none;
     background: var(--medical); padding: 8px 12px; border-radius: 999px;
-  }
   }
 
   /* iPhone 17 class phones (~402×874 CSS px, 3× → 1206×2622 physical) — native density, not desktop Material sizing */
@@ -3084,7 +3230,6 @@
     .page-header h1 { font-size: calc(18px * var(--phone-scale)); }
     .page-header .lead { font-size: calc(12px * var(--phone-scale)); margin: 0; }
     .page-header.aid .lead { margin: 0; }
-    .aid-privacy-hint { font-size: calc(11px * var(--phone-scale)); }
     .brand-wordmark-hero { height: calc(34px * var(--phone-scale)); max-width: calc(150px * var(--phone-scale)); }
     header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
     .page-header.myid .brand-wordmark-hero,
@@ -3116,26 +3261,23 @@
       padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
       max-width: none;
       width: 100%;
-      gap: calc(8px * var(--phone-scale));
+      gap: calc(10px * var(--phone-scale));
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .aid-pane:not(.open) .aid-pane-face { min-height: calc(72px * var(--phone-scale)); }
-    .aid-pane-face { min-height: calc(58px * var(--phone-scale)); padding: calc(8px * var(--phone-scale)); }
-    .aid-pane-title { font-size: calc(12px * var(--phone-scale)); }
-    .aid-pane-blurb { font-size: calc(9px * var(--phone-scale)); }
-    .aid-pane-icon { width: calc(28px * var(--phone-scale)); height: calc(28px * var(--phone-scale)); }
-    .aid-pane-icon svg { width: calc(17px * var(--phone-scale)); height: calc(17px * var(--phone-scale)); }
+    .aid-pane:not(.open) .aid-pane-face { min-height: calc(104px * var(--phone-scale)); padding: calc(12px * var(--phone-scale)); }
+    .aid-pane-face { min-height: calc(58px * var(--phone-scale)); }
+    .aid-pane-title { font-size: calc(13px * var(--phone-scale)); }
+    .aid-pane-blurb { font-size: calc(10px * var(--phone-scale)); }
+    .aid-pane-icon { width: calc(44px * var(--phone-scale)); height: calc(44px * var(--phone-scale)); border-radius: calc(11px * var(--phone-scale)); }
+    .aid-pane-icon svg { width: calc(22px * var(--phone-scale)); height: calc(22px * var(--phone-scale)); }
+    .aid-pane.open .aid-pane-icon { width: calc(36px * var(--phone-scale)); height: calc(36px * var(--phone-scale)); }
+    .aid-pane.open .aid-pane-icon svg { width: calc(20px * var(--phone-scale)); height: calc(20px * var(--phone-scale)); }
     .aid-prayer { font-size: calc(8px * var(--phone-scale)); }
-    #aidView .aid-terms-footer {
+    .app-legal-footer {
       gap: calc(16px * var(--phone-scale));
-      padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 2px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
+      padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 4px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
     }
-    #aidView .aid-terms-footer a { font-size: calc(8px * var(--phone-scale)); }
-    #locView .loc-terms-footer {
-      gap: calc(16px * var(--phone-scale));
-      padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 2px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
-    }
-    #locView .loc-terms-footer a { font-size: calc(9px * var(--phone-scale)); }
+    .app-legal-footer a { font-size: calc(9px * var(--phone-scale)); }
     .loc-bracelet-section { padding: calc(12px * var(--phone-scale)); gap: calc(8px * var(--phone-scale)); }
     .loc-body {
       max-width: none;
@@ -3164,12 +3306,14 @@
       gap: calc(6px * var(--phone-scale));
     }
     .bottombar-tabs {
-      grid-template-columns: repeat(3, var(--page-nav-tab-w));
+      grid-template-columns: repeat(3, minmax(var(--page-nav-tab-w), 1fr));
       flex: 0 0 auto;
       width: max-content;
       max-width: calc(100% - calc(5.5rem * var(--phone-scale)));
       gap: calc(2px * var(--phone-scale));
       min-width: 0;
+      align-items: stretch;
+      justify-items: stretch;
     }
     .bottombar-lang {
       margin-left: auto;
@@ -3192,7 +3336,9 @@
     .bb-item {
       width: 100%;
       flex-direction: column;
-      gap: calc(2px * var(--phone-scale));
+      align-items: center;
+      justify-content: center;
+      gap: calc(3px * var(--phone-scale));
       min-height: var(--page-nav-item-h);
       height: var(--page-nav-item-h);
       padding: calc(4px * var(--phone-scale)) calc(2px * var(--phone-scale));
@@ -3257,7 +3403,8 @@
   @media (min-width: 1024px) {
     html { background: var(--shell); }
     body {
-      max-width: 1200px;
+      max-width: min(var(--desktop-shell-max), 100vw);
+      min-height: min(var(--desktop-min-h), 100dvh);
       border: none;
       box-shadow: var(--shadow-float);
       background: var(--bg);
@@ -3278,12 +3425,12 @@
       border-right: 1px solid var(--line);
       box-shadow: var(--shadow);
       min-height: 100dvh;
-      max-width: 1200px;
+      max-width: min(var(--desktop-shell-max), 100vw);
       margin-left: auto;
       margin-right: auto;
     }
     #editView .page-header.myid {
-      max-width: 1200px;
+      max-width: min(var(--desktop-shell-max), 100vw);
       margin-left: auto;
       margin-right: auto;
       box-sizing: border-box;
@@ -3293,7 +3440,7 @@
       grid-template-columns: minmax(0, 1fr) calc(var(--phone-ref-w) * 1px);
       gap: 24px;
       align-items: start;
-      max-width: 1200px;
+      max-width: min(var(--desktop-shell-max), 100vw);
       margin: 0 auto;
       padding: 0 0 16px;
     }
@@ -3444,7 +3591,7 @@
       <div id="useConsent" class="consent-banner consent-banner-top" hidden>
         <button type="button" id="useConsentAccept" class="btn-primary consent-accept" data-i18n="btnAccept">Accept</button>
         <div class="consent-box">
-          <p data-i18n-html="consentBody">RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our <a href="terms-of-service.html">Terms of Use</a> and <a href="privacy-policy.html">Privacy Policy</a>. Find 911 may use location while that screen is open (not sent to us).</p>
+          <p data-i18n="consentBody">RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our Terms Of Service and Privacy Policy. Find 911 may use location while that screen is open (not sent to us).</p>
         </div>
       </div>
 
@@ -3460,6 +3607,10 @@
             <option>B-</option><option>B+</option>
             <option>AB-</option><option>AB+</option>
           </select>
+          <div class="donor-row">
+            <input type="checkbox" id="f_donor">
+            <label for="f_donor" data-i18n="labelDonor">Organ donor</label>
+          </div>
         </fieldset>
 
         <h1 class="fieldset-heading" id="medicalHeading" data-i18n="legendMedical">Medical information</h1>
@@ -3467,7 +3618,7 @@
           <section class="chip-block" aria-labelledby="allergiesHeading">
             <h2 class="chip-block-title" id="allergiesHeading" data-i18n="labelAllergies">Allergies</h2>
             <div class="chip-list" id="allergiesList"></div>
-            <select id="allergyPick" class="chip-pick-select" required aria-labelledby="allergiesHeading"></select>
+            <select id="allergyPick" class="chip-pick-select" aria-labelledby="allergiesHeading"></select>
             <div class="search-add" id="allergySearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3482,7 +3633,7 @@
           <section class="chip-block" aria-labelledby="medsHeading">
             <h2 class="chip-block-title" id="medsHeading" data-i18n="labelMeds">Medications</h2>
             <div class="chip-list" id="medsList"></div>
-            <select id="medPick" class="chip-pick-select" required aria-labelledby="medsHeading"></select>
+            <select id="medPick" class="chip-pick-select" aria-labelledby="medsHeading"></select>
             <div class="search-add" id="medSearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3497,7 +3648,7 @@
           <section class="chip-block" aria-labelledby="conditionsHeading">
             <h2 class="chip-block-title" id="conditionsHeading" data-i18n="labelConditions">Conditions</h2>
             <div class="chip-list" id="conditionsList"></div>
-            <select id="conditionPick" class="chip-pick-select" required aria-labelledby="conditionsHeading"></select>
+            <select id="conditionPick" class="chip-pick-select" aria-labelledby="conditionsHeading"></select>
             <div class="search-add" id="conditionSearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3524,8 +3675,8 @@
                 <input type="text" id="c1_name" autocomplete="name">
                 <label for="c1_phone" data-i18n="labelPhone">Phone</label>
                 <input type="tel" id="c1_phone" autocomplete="tel">
-                <label for="c1_address" data-i18n="labelAddress">Address</label>
-                <input type="text" id="c1_address" autocomplete="street-address" data-i18n-placeholder="phAddress" placeholder="Street, city, state…">
+                <label for="c1_address" data-i18n="labelRelationship">Relationship</label>
+                <input type="text" id="c1_address" autocomplete="off" data-i18n-placeholder="phRelationship" placeholder="Spouse, parent, friend…">
               </div>
             </div>
             <div class="contact-fold" data-contact="2">
@@ -3539,11 +3690,44 @@
                 <input type="text" id="c2_name" autocomplete="name">
                 <label for="c2_phone" data-i18n="labelPhone">Phone</label>
                 <input type="tel" id="c2_phone" autocomplete="tel">
-                <label for="c2_address" data-i18n="labelAddress">Address</label>
-                <input type="text" id="c2_address" autocomplete="street-address" data-i18n-placeholder="phAddress" placeholder="Street, city, state…">
+                <label for="c2_address" data-i18n="labelRelationship">Relationship</label>
+                <input type="text" id="c2_address" autocomplete="off" data-i18n-placeholder="phRelationship" placeholder="Spouse, parent, friend…">
+              </div>
+            </div>
+            <div class="contact-fold" data-contact="3">
+              <button type="button" class="contact-fold-toggle" aria-expanded="false">
+                <span class="contact-fold-title" data-i18n="contact3">Emergency contact 3</span>
+                <span class="contact-fold-summary" id="c3_summary"></span>
+                <span class="aid-chevron" aria-hidden="true">›</span>
+              </button>
+              <div class="contact-fold-body">
+                <label for="c3_name" data-i18n="labelNamePlain">Name</label>
+                <input type="text" id="c3_name" autocomplete="name">
+                <label for="c3_phone" data-i18n="labelPhone">Phone</label>
+                <input type="tel" id="c3_phone" autocomplete="tel">
+                <label for="c3_address" data-i18n="labelRelationship">Relationship</label>
+                <input type="text" id="c3_address" autocomplete="off" data-i18n-placeholder="phRelationship" placeholder="Spouse, parent, friend…">
               </div>
             </div>
           </div>
+        </fieldset>
+
+        <h1 class="fieldset-heading" id="careHeading" data-i18n="legendCare">Doctor &amp; insurance</h1>
+        <fieldset class="fieldset-care" aria-labelledby="careHeading">
+          <label for="f_doc_name" data-i18n="labelDocName">Doctor name</label>
+          <input type="text" id="f_doc_name" autocomplete="off">
+          <label for="f_doc_phone" data-i18n="labelDocPhone">Doctor phone</label>
+          <input type="tel" id="f_doc_phone" autocomplete="tel">
+          <label for="f_ins_provider" data-i18n="labelInsProvider">Insurance provider</label>
+          <input type="text" id="f_ins_provider" autocomplete="off">
+          <label for="f_ins_id" data-i18n="labelInsId">Member / policy ID</label>
+          <input type="text" id="f_ins_id" autocomplete="off">
+        </fieldset>
+
+        <h1 class="fieldset-heading" id="notesHeading" data-i18n="secNotes">Notes</h1>
+        <fieldset class="fieldset-notes" aria-labelledby="notesHeading">
+          <label for="f_notes" data-i18n="secNotes">Notes</label>
+          <textarea id="f_notes" rows="3" maxlength="500"></textarea>
         </fieldset>
 
         <div class="form-actions">
@@ -3588,10 +3772,22 @@
           <h2 data-i18n="secContacts">Emergency contacts</h2>
           <div id="p_contacts"></div>
         </div>
+        <div class="section" id="p_doctorSection">
+          <h2 data-i18n="secDoctor">Doctor &amp; insurance</h2>
+          <div id="p_doctor"></div>
+        </div>
+        <div class="section" id="p_notesSection">
+          <h2 data-i18n="secNotes">Notes</h2>
+          <p id="p_notes"></p>
+        </div>
         <div class="updated" id="p_updated"></div>
       </div>
     </aside>
   </div>
+  <nav class="app-legal-footer" aria-label="Terms and conditions">
+    <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
+    <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
+  </nav>
 </div>
 
 <div id="braceletSheet" class="sheet-backdrop" hidden aria-hidden="true">
@@ -3715,15 +3911,14 @@
   <div class="page-header aid">
     <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
-    <p class="lead" data-i18n="aidLead" data-highlight>Call 911 First. Tap A Pane — Expand Only What You Need.</p>
-    <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No Name, Phone, Email, Or Address On This Screen — Offline Only, Nothing Sent Anywhere.</p>
+    <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
   </div>
   <div id="aidCards"></div>
   <div class="aid-prayer-box">
     <p class="aid-prayer">God, steady my hands and calm my heart so I can help.</p>
   </div>
-  <nav class="aid-terms-footer terms-chip-compact" aria-label="Terms and conditions">
-    <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms of Use</a>
+  <nav class="app-legal-footer" aria-label="Terms and conditions">
+    <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
   </nav>
 </div>
@@ -3782,13 +3977,11 @@
       <p class="hint loc-bracelet-hint" id="locBraceletHint" data-i18n="locBraceletHint">Set up or update your NFC wristband.</p>
     </div>
   </div>
-  <nav class="loc-terms-footer terms-chip-compact" aria-label="Terms and conditions">
-    <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms of Use</a>
+  <nav class="app-legal-footer" aria-label="Terms and conditions">
+    <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
   </nav>
 </div>
-
-<!-- ============ PIN DIALOG ============ -->
 <div id="pinDialog" class="sheet-backdrop" hidden aria-hidden="true">
   <div class="sheet-card pin-card" role="dialog" aria-labelledby="pinDialogTitle">
     <div class="sheet-head">
@@ -3843,7 +4036,7 @@
   </button>
   <button type="button" class="bb-item" data-target="911" role="tab" aria-selected="false">
     <span class="bb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7.5 4.2c.4-.9 1.5-1.2 2.3-.7l1.6.9c.7.4.9 1.3.6 2l-.9 1.8a12 12 0 0 0 5.2 5.2l1.8-.9c.7-.3 1.6-.1 2 .6l.9 1.6c.5.8.2 1.9-.7 2.3-1.2.5-2.5.8-3.8.8C9.4 18 6 14.6 6 10.5c0-1.3.3-2.6.8-3.8z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg></span>
-    <span class="bb-label">911</span>
+    <span class="bb-label" data-i18n="nav911">911</span>
   </button>
     </nav>
     <div class="bottombar-lang" aria-label="Language">
@@ -4435,14 +4628,16 @@
   var currentLang = "en";
   var STRINGS = {
     en: {
-      termsChipTerms: "Terms of Use",
+      termsChipTerms: "Terms Of Service",
       termsChipPrivacy: "Privacy Policy",
       labelName: "Name *", labelNamePlain: "Name", labelDob: "Birth date", labelBlood: "Blood type",
       bloodUnknown: "Unknown", bloodPlaceholder: "—", labelAllergies: "Allergies", labelMeds: "Medications",
       labelConditions: "Conditions", legendMedical: "Medical information",
-      legendContacts: "Contacts", labelPhone: "Phone", labelAddress: "Address",
-      contact1: "Emergency contact 1", contact2: "Emergency contact 2",
-      phAddress: "Street, city, state…",
+      legendContacts: "Contacts", labelPhone: "Phone", labelRelationship: "Relationship",
+      phRelationship: "Spouse, parent, friend…", labelDonor: "Organ donor", donorBadge: "Organ donor",
+      contact1: "Emergency contact 1", contact2: "Emergency contact 2", contact3: "Emergency contact 3",
+      legendCare: "Doctor & insurance", labelDocName: "Doctor name", labelDocPhone: "Doctor phone",
+      labelInsProvider: "Insurance provider", labelInsId: "Member / policy ID",
       hintLocalOnly: "On this device and your band only — PHI/PII never uploaded to RedMed.",
       btnClear: "Clear data", btnSave: "Save", noteSaved: "Saved.",
       clearConfirm: "Clear all saved data on this device? Removes profile, bracelet link, PIN, and preferences. This cannot be undone.",
@@ -4452,8 +4647,7 @@
       secAllergies: "Allergies", secMeds: "Medications", secConditions: "Medical conditions",
       secContacts: "Emergency contacts",
       secDoctor: "Doctor & insurance", secNotes: "Notes",
-      aidTitle: "Roadside Aid", aidLead: "Call 911 First. Tap A Pane — Expand Only What You Need.",
-      aidPrivacy: "No Name, Phone, Email, Or Address On This Screen — Offline Only, Nothing Sent Anywhere.",
+      aidTitle: "Roadside Aid", aidLead: "Call 911 first. Tap a pane — expand only what you need.",
       btnCall911: "Call 911",
       locTitle: "Find 911", locLead: "No Servers, No Data Collection. GPS & Compass Data Collected While The 911 Screen Is Open.",
       btnAlertContacts: "Text emergency contacts", btnText: "Text",
@@ -4481,8 +4675,8 @@
       locTraumaGoogleRegion: "Region from GPS (Google) — showing offline trauma centers below.",
       locTraumaGoogleVerified: "Google verified",
       locTraumaGoogleHint: "With a Google API key, GPS sets your state and each hospital is checked against Google Places.",
-      consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our <a href=\"terms-of-service.html\">Terms of Use</a> and <a href=\"privacy-policy.html\">Privacy Policy</a>. Find 911 may use location while that screen is open (not sent to us).",
-      btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid",
+      consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our Terms Of Service and Privacy Policy. Find 911 may use location while that screen is open (not sent to us).",
+      btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid", nav911: "911",
       phAllergy: "Search…", phMed: "Search…", phCondition: "Search…",
       pickAllergy: "Choose allergy", pickMed: "Choose medication", pickCondition: "Choose condition",
       pickOther: "Other",
@@ -4513,6 +4707,7 @@
       braceletDeviceNameLabel: "Device name", braceletDeviceNamePh: "My wristband",
       braceletReadNfc: "Read bracelet (add device)", braceletReadOk: "Bracelet linked — chip matches.",
       braceletReadFail: "Couldn't read a RedMed bracelet. Hold the band to the phone and try again.",
+      braceletReadInvalid: "That tag isn't a RedMed emergency card. Only program or read official RedMed bands.",
       braceletLinked: "Bracelet linked",
       braceletStatusNote: "Passive chip — no battery. NFC runs only when you tap Read or Write.",
       viewPhoneGateTitle: "Smartphone required",
@@ -4545,14 +4740,16 @@
       productComingSoon: "Coming soon"
     },
     es: {
-      termsChipTerms: "Términos de uso",
+      termsChipTerms: "Términos de servicio",
       termsChipPrivacy: "Política de privacidad",
       labelName: "Nombre *", labelNamePlain: "Nombre", labelDob: "Fecha de nacimiento", labelBlood: "Tipo de sangre",
       bloodUnknown: "Desconocido", bloodPlaceholder: "—", labelAllergies: "Alergias", labelMeds: "Medicamentos",
       labelConditions: "Condiciones", legendMedical: "Información médica",
-      legendContacts: "Contactos", labelPhone: "Teléfono", labelAddress: "Dirección",
-      contact1: "Contacto de emergencia 1", contact2: "Contacto de emergencia 2",
-      phAddress: "Calle, ciudad, estado…",
+      legendContacts: "Contactos", labelPhone: "Teléfono", labelRelationship: "Parentesco",
+      phRelationship: "Cónyuge, padre, amigo…", labelDonor: "Donante de órganos", donorBadge: "Donante de órganos",
+      contact1: "Contacto de emergencia 1", contact2: "Contacto de emergencia 2", contact3: "Contacto de emergencia 3",
+      legendCare: "Médico y seguro", labelDocName: "Nombre del médico", labelDocPhone: "Teléfono del médico",
+      labelInsProvider: "Aseguradora", labelInsId: "ID de póliza / miembro",
       hintLocalOnly: "Solo en este dispositivo y tu banda — PHI/PII nunca se sube a RedMed.",
       btnClear: "Borrar datos", btnSave: "Guardar", noteSaved: "Guardado.",
       cardLinkTitle: "Enlace de la tarjeta",
@@ -4561,8 +4758,7 @@
       secAllergies: "Alergias", secMeds: "Medicamentos", secConditions: "Condiciones médicas",
       secContacts: "Contactos de emergencia",
       secDoctor: "Médico y seguro", secNotes: "Notas",
-      aidTitle: "Ayuda en carretera", aidLead: "Llama Al 911 Primero. Toca Un Panel — Abre Solo Lo Que Necesites.",
-      aidPrivacy: "Sin Nombre, Teléfono, Correo Ni Dirección En Esta Pantalla — Solo Referencia Sin Conexión.",
+      aidTitle: "Ayuda en carretera", aidLead: "Llama al 911 primero. Toca un panel — abre solo lo que necesites.",
       btnCall911: "Llamar al 911",
       locTitle: "Buscar 911", locLead: "Sin Servidores, Sin Recopilación De Datos. GPS Y Brújula Solo Mientras La Pantalla 911 Esté Abierta.",
       btnAlertContacts: "Enviar SMS a contactos de emergencia", btnText: "SMS",
@@ -4590,8 +4786,8 @@
       locTraumaGoogleRegion: "Región desde GPS (Google) — centros de trauma sin conexión abajo.",
       locTraumaGoogleVerified: "Verificado por Google",
       locTraumaGoogleHint: "Con clave de Google API, el GPS fija el estado y cada hospital se comprueba en Google Places.",
-      consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros <a href=\"terms-of-service.html\">Términos de uso</a> y la <a href=\"privacy-policy.html\">Política de privacidad</a>. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
-      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda",
+      consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros Términos de servicio y la Política de privacidad. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
+      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
       phAllergy: "Buscar…", phMed: "Buscar…", phCondition: "Buscar…",
       pickAllergy: "Elegir alergia", pickMed: "Elegir medicamento", pickCondition: "Elegir condición",
       pickOther: "Otro",
@@ -4625,6 +4821,7 @@
       braceletDeviceNameLabel: "Nombre del dispositivo", braceletDeviceNamePh: "Mi pulsera",
       braceletReadNfc: "Leer pulsera (agregar dispositivo)", braceletReadOk: "Pulsera vinculada — chip reconocido.",
       braceletReadFail: "No se pudo leer una pulsera RedMed. Acerca la banda al teléfono e intenta de nuevo.",
+      braceletReadInvalid: "Esa etiqueta no es una tarjeta de emergencia RedMed. Solo usa pulseras RedMed oficiales.",
       braceletLinked: "Pulsera vinculada",
       braceletStatusNote: "Chip pasivo — sin batería. NFC solo al tocar Leer o Escribir.",
       pinTitle: "PIN de pulsera",
@@ -5890,7 +6087,7 @@
     summary.textContent = parts.length ? parts.join(" · ") : "";
   }
 
-  var CONTACT_SLOTS = [1, 2];
+  var CONTACT_SLOTS = [1, 2, 3];
   var CONTACT_FIELDS = ["name", "phone", "address"];
 
   function updateAllContactSummaries() {
@@ -5946,25 +6143,48 @@
     updateAllContactSummaries();
   }
 
+  function fieldVal(id) {
+    var el = document.getElementById(id);
+    return el && el.value != null ? el.value.trim() : "";
+  }
+
   function collectFormData() {
+    var donorEl = document.getElementById("f_donor");
     return {
-      name: document.getElementById("f_name").value.trim(),
-      dob: document.getElementById("f_dob").value,
-      blood: document.getElementById("f_blood").value,
+      name: fieldVal("f_name"),
+      dob: (document.getElementById("f_dob") || {}).value || "",
+      blood: (document.getElementById("f_blood") || {}).value || "",
+      donor: !!(donorEl && donorEl.checked),
       allergies: collectAllergies(),
       meds: collectMeds(),
       conditions: conditionItems.slice(),
       /* Keep slot so SOS can dial #1/#2 only even when empty slots are omitted. */
       contacts: CONTACT_SLOTS.map(function (i) {
+        var rel = fieldVal("c" + i + "_address");
         return {
-          name: document.getElementById("c" + i + "_name").value.trim(),
-          phone: document.getElementById("c" + i + "_phone").value.trim(),
-          address: document.getElementById("c" + i + "_address").value.trim(),
+          name: fieldVal("c" + i + "_name"),
+          phone: fieldVal("c" + i + "_phone"),
+          address: rel,
+          rel: rel,
           slot: i
         };
-      }).filter(function (c) { return c.name || c.phone || c.address; }),
+      }).filter(function (c) { return c.name || c.phone || c.address || c.rel; }),
+      doc: {
+        name: fieldVal("f_doc_name"),
+        phone: fieldVal("f_doc_phone")
+      },
+      insurance: {
+        provider: fieldVal("f_ins_provider"),
+        id: fieldVal("f_ins_id")
+      },
+      notes: fieldVal("f_notes"),
       updated: new Date().toISOString()
     };
+  }
+
+  /** Normalize form data before save/NFC — same shape as iOS MedicalProfile. */
+  function collectPersistedFormData() {
+    return normalizeProfile(collectFormData());
   }
 
   /* Caps for untrusted #d= / NFC payloads — coerce types, drop unknown keys. */
@@ -6022,10 +6242,12 @@
       var slot = (typeof c.slot === "number" && c.slot >= 1 && c.slot <= maxSlot)
         ? c.slot
         : (hasExplicitSlot ? 99 : (i + 1));
+      var relOrAddr = clampStr(c.address || c.rel, PROFILE_LIMITS.contactAddress);
       return {
         name: clampStr(c.name, PROFILE_LIMITS.contactName),
         phone: clampStr(c.phone, PROFILE_LIMITS.contactPhone),
-        address: clampStr(c.address || c.rel, PROFILE_LIMITS.contactAddress),
+        address: relOrAddr,
+        rel: relOrAddr,
         slot: slot
       };
     }).filter(function (c) { return c.slot >= 1 && c.slot <= maxSlot; });
@@ -6035,6 +6257,7 @@
       name: clampStr(data.name, PROFILE_LIMITS.name),
       dob: clampStr(data.dob, PROFILE_LIMITS.dob),
       blood: clampStr(data.blood, PROFILE_LIMITS.blood),
+      donor: data.donor === true || data.donor === 1 || data.donor === "true" || data.donor === "1",
       allergies: clampStrList(data.allergies, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       meds: clampStrList(data.meds, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       conditions: clampStrList(data.conditions, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
@@ -6065,12 +6288,14 @@
     document.getElementById("f_name").value = data.name || "";
     document.getElementById("f_dob").value = data.dob || "";
     document.getElementById("f_blood").value = data.blood || "";
+    var donorEl = document.getElementById("f_donor");
+    if (donorEl) donorEl.checked = !!(data.donor === true || data.donor === 1 || data.donor === "true" || data.donor === "1");
     fillAllergies(data.allergies || []);
     fillMeds(data.meds || []);
     fillConditions(data.conditions || []);
     (data.contacts || []).forEach(function (c, idx) {
-      var i = (c && typeof c.slot === "number" && c.slot >= 1 && c.slot <= 2) ? c.slot : (idx + 1);
-      if (i > 2) return;
+      var i = (c && typeof c.slot === "number" && c.slot >= 1 && c.slot <= 3) ? c.slot : (idx + 1);
+      if (i > 3) return;
       var nameEl = document.getElementById("c" + i + "_name");
       var phoneEl = document.getElementById("c" + i + "_phone");
       var addressEl = document.getElementById("c" + i + "_address");
@@ -6078,6 +6303,18 @@
       if (phoneEl) phoneEl.value = c.phone || "";
       if (addressEl) addressEl.value = c.address || c.rel || "";
     });
+    var doc = data.doc || {};
+    var insurance = data.insurance || {};
+    var docNameEl = document.getElementById("f_doc_name");
+    var docPhoneEl = document.getElementById("f_doc_phone");
+    var insProviderEl = document.getElementById("f_ins_provider");
+    var insIdEl = document.getElementById("f_ins_id");
+    var notesEl = document.getElementById("f_notes");
+    if (docNameEl) docNameEl.value = doc.name || "";
+    if (docPhoneEl) docPhoneEl.value = doc.phone || "";
+    if (insProviderEl) insProviderEl.value = insurance.provider || "";
+    if (insIdEl) insIdEl.value = insurance.id || "";
+    if (notesEl) notesEl.value = data.notes || "";
     updateAllContactSummaries();
     var openedContact = false;
     CONTACT_SLOTS.forEach(function (i) {
@@ -6165,7 +6402,7 @@
 
     document.getElementById("idForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      var data = collectFormData();
+      var data = collectPersistedFormData();
       if (!data.name) { document.getElementById("f_name").focus(); return; }
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (err) {
         alert(t("hintLocalOnly"));
@@ -6317,14 +6554,21 @@
     return blood.replace(/-$/, "");
   }
 
+  function formatCardHeaderBlood(data, editPreview) {
+    data = data || {};
+    var parts = [];
+    if (data.blood) parts.push(editPreview ? formatPreviewBlood(data.blood) : data.blood);
+    if (data.donor) parts.push(t("donorBadge"));
+    if (parts.length) return parts.join(" · ");
+    return editPreview ? "—" : t("bloodUnknown");
+  }
+
   function paintProfileHeader(pfx, data) {
     data = data || {};
     var editPreview = pfx === "p_";
     var bloodEl = document.getElementById(editPreview ? "p_name" : "v_blood");
     if (!bloodEl) return;
-    bloodEl.textContent = editPreview
-      ? formatPreviewBlood(data.blood)
-      : (data.blood || t("bloodUnknown"));
+    bloodEl.textContent = formatCardHeaderBlood(data, editPreview);
   }
 
   function paintCard(pfx, data) {
@@ -6337,7 +6581,7 @@
 
     var contactsWrap = document.getElementById(pfx + "contacts");
     contactsWrap.innerHTML = "";
-    var contacts = (data.contacts || []).filter(function (c) { return c.name || c.phone || c.address; });
+    var contacts = (data.contacts || []).filter(function (c) { return c.name || c.phone || c.address || c.rel; });
     var contactsSection = document.getElementById(pfx + "contactsSection");
     if (!contacts.length) {
       contactsSection.style.display = "none";
@@ -6354,7 +6598,8 @@
         var relEl = document.createElement("div");
         relEl.className = "rel";
         var sub = [];
-        if (c.address) sub.push(c.address);
+        var relLine = c.address || c.rel;
+        if (relLine) sub.push(relLine);
         if (c.phone) sub.push(c.phone);
         relEl.textContent = sub.join(" · ");
         info.appendChild(nameEl);
@@ -6462,7 +6707,7 @@
     if (previewFrame) cancelAnimationFrame(previewFrame);
     previewFrame = requestAnimationFrame(function () {
       previewFrame = 0;
-      var data = collectFormData();
+      var data = collectPersistedFormData();
       syncPreviewBlood(data.blood);
       if (isLivePreviewVisible()) paintCard("p_", data);
     });
@@ -6471,7 +6716,7 @@
   function syncPreviewBlood(blood) {
     var el = document.getElementById("p_name");
     if (!el) return;
-    el.textContent = formatPreviewBlood(blood);
+    el.textContent = formatCardHeaderBlood(collectPersistedFormData(), true);
   }
 
   function wirePreviewForm() {
@@ -6479,6 +6724,8 @@
     if (!blood || blood.getAttribute("data-preview-wired") === "1") return;
     blood.setAttribute("data-preview-wired", "1");
     blood.addEventListener("change", refreshLivePreview);
+    var donor = document.getElementById("f_donor");
+    if (donor) donor.addEventListener("change", refreshLivePreview);
   }
 
   /* Bracelet emergency card: smartphones only — not card readers, tablets, or desktops. */
@@ -7036,6 +7283,7 @@
     crash: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 16l1.5-4.5A2 2 0 018.4 10h7.2a2 2 0 011.9 1.5L19 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 16h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="17.5" r="1.4" fill="currentColor"/><circle cx="16" cy="17.5" r="1.4" fill="currentColor"/><path d="M9 10V8.5A1.5 1.5 0 0110.5 7h3A1.5 1.5 0 0115 8.5V10" stroke="currentColor" stroke-width="1.8"/></svg>',
     bleed: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3c0 0-5 5.2-5 9.2A5 5 0 0012 17a5 5 0 005-4.8C17 8.2 12 3 12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 12.5c.6 1.4 1.4 2 2 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
     breath: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 11c-2.2-1.4-4.5-1.2-6-.3C4.5 11.8 4 13.2 4 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 11c2.2-1.4 4.5-1.2 6-.3 1.5 1.1 2 2.5 2 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 7.5c0-1.5 1.1-2.5 2.5-2.5s2.5 1 2.5 2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    choking: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="6.5" r="2.8" stroke="currentColor" stroke-width="1.8"/><path d="M8 21v-4a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 14.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14.5 12.5l2.5-1.5M9.5 12.5L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 14.5v2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     shock: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L6 13h5l-1 9 8-12h-5l0-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
     temp: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 14.76V5.5a2 2 0 0 0-4 0v9.26a4 4 0 1 0 4 0z" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="currentColor"/></svg>',
     seizure: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12h3l2-5 3 10 2-6 2 6 2-10 2 5h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -7086,7 +7334,7 @@
     {
       id: "bleed",
       title: "Bleeding",
-      blurb: "Pressure · tourniquet",
+      blurb: "Pressure · tourniquet · wounds",
       icon: "bleed",
       emphasis: true,
       topics: [
@@ -7129,7 +7377,7 @@
       id: "breath",
       title: "Choking",
       blurb: "Can't breathe · thrusts",
-      icon: "breath",
+      icon: "choking",
       emphasis: true,
       topics: [
         { title: "Choking", symptoms: ["Can't cough, speak, or breathe", "Turning blue"], care: [
@@ -7502,13 +7750,13 @@
         '<button type="button" class="cpr-btn-start" id="cprStartBtn">Start</button>' +
         '<button type="button" class="cpr-btn-reset" id="cprResetBtn">Reset</button>' +
       '</div>' +
-      '<div class="cpr-options">' +
+      '<div class="cpr-options-wrap">' +
         '<label class="cpr-option"><input type="checkbox" id="cprSoundChk"> Sound</label>' +
-      '</div>' +
-      '<details class="cpr-tutorial" id="cprTutorial">' +
-        '<summary id="cprTutorialSummary">How to do CPR</summary>' +
-        '<div class="cpr-tutorial-body" id="cprTutorialBody"></div>' +
-      '</details>';
+        '<details class="cpr-tutorial" id="cprTutorial">' +
+          '<summary class="cpr-option" id="cprTutorialSummary">How to do CPR</summary>' +
+          '<div class="cpr-tutorial-body" id="cprTutorialBody"></div>' +
+        '</details>' +
+      '</div>';
 
     el.querySelector("#cprStartBtn").addEventListener("click", function () {
       if (cprState.running) stopCpr();
@@ -7871,6 +8119,22 @@
     return el && el.value.trim() ? el.value.trim() : "My bracelet";
   }
 
+  /** Reject non-RedMed tag URLs before pairing (javascript:, wrong host, missing #d=). */
+  function isAllowedBraceletUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+      var u = new URL(url);
+      if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+      var host = u.hostname.toLowerCase();
+      if (u.protocol === "http:" && host !== "127.0.0.1" && host !== "localhost") return false;
+      if (host !== "127.0.0.1" && host !== "localhost" && host !== "maxroot1122.github.io") return false;
+      if (host === "maxroot1122.github.io" && u.pathname.indexOf("/RedMed") !== 0) return false;
+      return /#d=/.test(u.hash || "");
+    } catch (e) {
+      return false;
+    }
+  }
+
   function getBraceletDevice() {
     try {
       var raw = localStorage.getItem(BRACELET_DEVICE_KEY);
@@ -8023,6 +8287,10 @@
         if (status) status.textContent = t("braceletReadFail");
         return;
       }
+      if (!isAllowedBraceletUrl(url)) {
+        if (status) status.textContent = t("braceletReadInvalid");
+        return;
+      }
       saveBraceletDevice(getBraceletDeviceNameInput(), url);
       if (status) status.textContent = t("braceletReadOk");
     } catch (e) {
@@ -8037,7 +8305,7 @@
     if (!requireBraceletUnlocked()) return;
     var status = document.getElementById("braceletNfcStatus");
     var writeBtn = document.getElementById("braceletWriteNfc");
-    var data = collectFormData();
+    var data = collectPersistedFormData();
     if (!data.name) {
       document.getElementById("f_name").focus();
       return;
@@ -8162,7 +8430,7 @@
     if (mark && mark.getAttribute("data-wired") !== "1") {
       mark.setAttribute("data-wired", "1");
       mark.addEventListener("click", function () {
-        var data = collectFormData();
+        var data = collectPersistedFormData();
         if (!data.name) {
           document.getElementById("f_name").focus();
           return;

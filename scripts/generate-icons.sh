@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Regenerate raster icons from assets/logo.svg (requires Inkscape or rsvg-convert).
+# Regenerate raster icons from assets/icon.svg (requires Inkscape or rsvg-convert).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SVG="$ROOT/assets/logo.svg"
+SVG="$ROOT/assets/icon.svg"
 
 if [[ ! -f "$SVG" ]]; then
   echo "Missing $SVG" >&2
@@ -37,5 +37,9 @@ cp "$ROOT/assets/logo-32.png" "$ROOT/assets/favicon-32.png"
 cp "$ROOT/assets/logo-180.png" "$ROOT/assets/apple-touch-icon.png"
 mkdir -p "$ROOT/play/listing"
 cp "$ROOT/assets/logo-512.png" "$ROOT/play/listing/play-store-icon-512.png"
+
+APPICON="$ROOT/ios/RedMed/Assets.xcassets/AppIcon.appiconset"
+render 1024 "$APPICON/AppIcon.png"
+echo "$APPICON/AppIcon.png"
 
 echo "Done. Run ./scripts/sync-www-mirror.sh to refresh RedMed.app."

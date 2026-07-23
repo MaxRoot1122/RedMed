@@ -51,6 +51,34 @@ for name in ("get.html", "privacy-policy.html", "terms-of-service.html"):
         print(f"WARN: missing mirror {mpath}")
 print("OK: get.html + privacy-policy + terms-of-service mirrors match")
 
+import os
+REQUIRED_ASSETS = (
+    "assets/icon.svg", "assets/favicon-32.png", "assets/apple-touch-icon.png",
+    "assets/logo-512.png", "assets/logo-header.png", "assets/fonts/dm-sans-latin.woff2",
+)
+missing_assets = [p for p in REQUIRED_ASSETS if not os.path.isfile(p)]
+if missing_assets:
+    print("FAIL: missing deploy assets:")
+    for p in missing_assets:
+        print(" ", p)
+    sys.exit(1)
+print("OK: required assets present in assets/")
+
+index_html = open("index.html", encoding="utf-8").read()
+css = index_html.split("<style>", 1)[1].split("</style>", 1)[0]
+if css.count("{") != css.count("}"):
+    print("FAIL: index.html CSS brace imbalance")
+    sys.exit(1)
+print("OK: index.html CSS braces balanced")
+
+server_sh = "scripts/redmed-server.sh"
+app_server_sh = "RedMed.app/Contents/Resources/redmed-server.sh"
+if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
+    if not filecmp.cmp(server_sh, app_server_sh, shallow=False):
+        print(f"FAIL: {app_server_sh} out of sync with {server_sh}")
+        sys.exit(1)
+    print("OK: redmed-server.sh mirror matches")
+
 try:
     links = json.load(open(".well-known/assetlinks.json", encoding="utf-8"))
     fps = links[0]["target"]["sha256_cert_fingerprints"]

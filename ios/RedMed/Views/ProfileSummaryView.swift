@@ -7,6 +7,8 @@ import SwiftUI
 /// MyIDView's "Edit" button, which presents `EditProfileView(embedded: false)`
 /// as a sheet after the biometric check (once armed).
 struct ProfileSummaryView: View {
+    @Environment(\.layoutMetrics) private var layout
+
     let profile: MedicalProfile
     @ObservedObject var link: BraceletLinkStore
 
@@ -40,7 +42,7 @@ struct ProfileSummaryView: View {
     var body: some View {
         Form {
             Section {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: layout.s(10)) {
                     if link.isLinked {
                         BrandMark(size: .hero, titleOverride: link.deviceName)
                     } else {
@@ -52,10 +54,15 @@ struct ProfileSummaryView: View {
                         }
                     }
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, layout.spaceSM)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
+                .listRowInsets(EdgeInsets(
+                    top: layout.spaceXS,
+                    leading: layout.spaceXS,
+                    bottom: layout.spaceSM,
+                    trailing: layout.spaceXS
+                ))
             }
 
             Section("You") {
@@ -93,7 +100,7 @@ struct ProfileSummaryView: View {
                     Text("None").foregroundStyle(.secondary)
                 } else {
                     ForEach(filledContacts) { contact in
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: layout.s(2)) {
                             Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
                                 .font(.subheadline.weight(.semibold))
                             let detail = [contact.rel, contact.phone]
@@ -142,4 +149,5 @@ struct ProfileSummaryView: View {
     NavigationStack {
         ProfileSummaryView(profile: MedicalProfile(), link: BraceletLinkStore())
     }
+    .withLayoutMetrics()
 }

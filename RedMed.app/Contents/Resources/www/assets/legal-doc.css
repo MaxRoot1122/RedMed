@@ -101,6 +101,11 @@ hr.legal-rule-thin {
   margin-bottom: 32px;
 }
 
+.legal-nav-top {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
 .legal-nav a {
   color: var(--rm-accent);
   text-decoration: none;
