@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>RedMed</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-iH4STqrnwBYHGnDh3R/kJL3M2Dx/vUm18o/Wifvp3P8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4i6hi2Vpk6JBVkzgEquBxhsnTy+Qs34d5+CqLPL0FZY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -105,6 +106,8 @@
     --gloss: none;
     --app-max: 560px;
     --app-width: min(100vw, var(--app-max));
+    --phone-ref-w: 402;
+    --phone-ref-h: 874;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
     --duration-fast: 0.1s;
@@ -137,6 +140,7 @@
     --md-type-input: 16px;
     --control-h: var(--md-control);
     --page-nav-item-h: 50px;
+    --page-nav-tab-w: 4rem;
     --page-nav-pad: 4px;
     --page-nav-offset: 8px;
     --page-nav-gap: 0px;
@@ -298,8 +302,8 @@
   #editView #idForm fieldset > .row2,
   #editView #idForm fieldset > .chip-list,
   #editView #idForm fieldset.fieldset-chips .chip-block .chip-list,
-  #editView #idForm fieldset > .quick-picks,
-  #editView #idForm fieldset.fieldset-chips .chip-block .quick-picks,
+  #editView #idForm fieldset > .chip-pick-select,
+  #editView #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
   #editView #idForm fieldset > .search-add,
   #editView #idForm fieldset.fieldset-chips .chip-block .search-add,
   #editView #idForm fieldset > #contactsAccordion,
@@ -407,35 +411,9 @@
     box-shadow: 0 0 0 1px var(--accent);
     border-color: var(--accent);
   }
-  #editView #idForm fieldset.fieldset-chips .quick-picks {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    max-height: none;
-    overflow: visible;
+  #editView #idForm fieldset.fieldset-chips .chip-pick-select {
     margin: var(--md-1) 0 var(--md-2);
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    gap: var(--md-2);
-  }
-  #editView #idForm fieldset.fieldset-chips .quick-pick {
-    font-size: 11px;
-    font-weight: 500;
-    min-height: 28px;
-    padding: 4px 8px;
-    border-radius: var(--field-radius);
-    background: var(--google-surface-high);
-    border: 1px solid transparent;
-    color: var(--google-on-surface);
-    box-shadow: none;
-  }
-  #editView #idForm fieldset.fieldset-chips .quick-pick:active {
-    background: var(--accent-container);
-    border-color: transparent;
-    box-shadow: none;
-    transform: none;
+    font-size: var(--md-type-body);
   }
   #editView #idForm fieldset.fieldset-chips .chip {
     border-color: var(--google-outline-variant);
@@ -521,6 +499,19 @@
   }
   .brand-wordmark-text .brand-red { color: var(--brand); }
   .brand-wordmark-text .brand-med { color: var(--ink); }
+  .brand-logo-lockup {
+    display: block;
+    height: 28px;
+    width: auto;
+    max-width: min(148px, 44vw);
+    object-fit: contain;
+  }
+  header.app .brand-logo-lockup { height: var(--header-chip-h); }
+  .brand-device .brand-logo-lockup {
+    height: 34px;
+    max-width: 120px;
+    flex-shrink: 0;
+  }
   .brand-mark-sm {
     width: 36px; height: 36px; border-radius: var(--radius-md);
     box-shadow: none;
@@ -599,7 +590,7 @@
   #idForm fieldset > input,
   #idForm fieldset > .row2,
   #idForm fieldset > .chip-list,
-  #idForm fieldset > .quick-picks,
+  #idForm fieldset > .chip-pick-select,
   #idForm fieldset > .search-add,
   #idForm fieldset > #contactsAccordion,
   #idForm fieldset > .hint,
@@ -633,10 +624,10 @@
     overflow: visible;
   }
   #idForm fieldset.fieldset-chips > .chip-list,
-  #idForm fieldset.fieldset-chips > .quick-picks,
+  #idForm fieldset.fieldset-chips > .chip-pick-select,
   #idForm fieldset.fieldset-chips > .search-add,
   #idForm fieldset.fieldset-chips .chip-block .chip-list,
-  #idForm fieldset.fieldset-chips .chip-block .quick-picks,
+  #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
   #idForm fieldset.fieldset-chips .chip-block .search-add {
     margin-left: 0;
     margin-right: 0;
@@ -744,60 +735,26 @@
     margin: 0;
     padding: 0;
   }
-  #idForm fieldset.fieldset-chips .quick-picks {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-    align-items: stretch;
-    align-content: start;
-    gap: 6px;
-    margin: var(--md-2) 0 var(--md-3);
-    padding: 8px;
-    max-height: calc(28px * 3 + 4px * 2 + 12px);
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    touch-action: pan-y;
-    border-radius: var(--field-radius);
-    background: var(--field-bg);
-    border: 1px solid var(--field-border);
-    box-shadow: inset 0 1px 2px rgba(60, 64, 67, 0.03);
-  }
-  #idForm fieldset.fieldset-chips .quick-picks:empty {
-    display: none;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-  }
-  #idForm fieldset.fieldset-chips .quick-pick {
-    display: block;
+  #idForm fieldset.fieldset-chips .chip-pick-select {
+    margin: var(--md-2) 0 var(--md-2);
     width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 1.15;
-    min-height: 26px;
-    height: auto;
-    padding: 3px 5px;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
-    border: 1px solid var(--field-border);
-    color: var(--ink);
-    box-shadow: none;
-    white-space: nowrap;
-    overflow: hidden;
+    font-size: var(--md-type-body);
+    font-weight: 400;
+    line-height: 1.35;
     text-overflow: ellipsis;
-    text-align: center;
-    word-break: normal;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+    white-space: nowrap;
   }
-  #idForm fieldset.fieldset-chips .chip,
-  #idForm fieldset.fieldset-chips .quick-pick {
+  #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
+    color: var(--muted);
+  }
+  #editView #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
+    color: var(--google-on-surface-variant);
+  }
+  body:has(#editView:not(.hide)) #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  #idForm fieldset.fieldset-chips .chip {
     -webkit-user-select: none;
     user-select: none;
   }
@@ -835,13 +792,6 @@
     font-weight: 500;
     letter-spacing: 0;
     border-radius: 999px;
-  }
-  #idForm fieldset.fieldset-chips .quick-pick:active {
-    background: var(--accent-container);
-    border-color: var(--accent);
-    color: var(--ink);
-    box-shadow: var(--accent-glow-ring);
-    transform: scale(0.98);
   }
   label {
     display: block; font-size: var(--md-type-label); font-weight: 500;
@@ -1068,15 +1018,6 @@
   }
 
 
-  .privacy-chip {
-    display: flex; align-items: flex-start; gap: 10px; margin: 8px 0 16px;
-    padding: 12px 14px; border-radius: 16px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,241,242,0.9));
-    border: 1px solid rgba(225, 29, 72, 0.14);
-  }
-  .privacy-chip strong { display: block; font-size: 13px; color: var(--accent); font-weight: 700; margin-bottom: 2px; }
-  .privacy-chip span { font-size: 12px; color: var(--muted); line-height: 1.45; }
-
   .bottombar-shell {
     position: fixed;
     bottom: calc(var(--page-nav-offset) + env(safe-area-inset-bottom, 0));
@@ -1101,8 +1042,9 @@
     pointer-events: auto;
     display: flex;
     flex-direction: row;
-    align-items: stretch;
-    gap: 3px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(28, 25, 23, 0.08);
     border-radius: var(--page-nav-radius);
@@ -1110,13 +1052,15 @@
     box-shadow: 0 12px 32px rgba(28, 25, 23, 0.10);
     backdrop-filter: blur(18px) saturate(1.35);
     -webkit-backdrop-filter: blur(18px) saturate(1.35);
-    min-height: 58px;
   }
   .bottombar-tabs {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, var(--page-nav-tab-w));
     align-items: stretch;
-    gap: 0;
-    flex: 1 1 0;
+    gap: 2px;
+    flex: 0 0 auto;
+    width: max-content;
+    max-width: calc(100% - 5.5rem);
     min-width: 0;
   }
   .bottombar-lang {
@@ -1124,33 +1068,33 @@
     align-items: center;
     flex: 0 0 auto;
     box-sizing: border-box;
-    padding-left: 3px;
-    margin-left: 1px;
+    padding-left: 6px;
+    margin-left: auto;
     border-left: 1px solid var(--line);
   }
   .bottombar-lang .lang-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 1px;
+    gap: 2px;
     box-shadow: none;
     background-color: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius-pill);
     min-height: var(--page-nav-item-h);
     height: var(--page-nav-item-h);
-    font-size: 6px;
-    padding: 1px 1px;
-    letter-spacing: 0.04em;
+    font-size: 9px;
+    padding: 2px 3px;
+    letter-spacing: 0.03em;
     line-height: 1;
   }
   .bottombar-lang .lang-toggle [data-lang-side] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 0;
-    height: calc(var(--page-nav-item-h) - 6px);
-    padding: 0 3px;
+    min-width: 1.6em;
+    height: calc(var(--page-nav-item-h) - 8px);
+    padding: 0 5px;
     border-radius: var(--radius-pill);
     color: var(--muted);
     font-weight: 600;
@@ -1176,16 +1120,16 @@
     user-select: none;
   }
   .bb-item {
-    flex: 1 1 0;
+    width: 100%;
     min-width: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 2px;
     min-height: var(--page-nav-item-h);
     height: var(--page-nav-item-h);
-    padding: 0 8px;
+    padding: 4px 2px;
     text-decoration: none;
     color: var(--muted);
     font-size: var(--md-type-label);
@@ -1209,6 +1153,7 @@
     color: var(--accent);
     background: var(--accent-soft);
     box-shadow: none;
+    padding: 4px 2px;
   }
   .bb-item.active .bb-label {
     color: var(--accent);
@@ -1241,8 +1186,11 @@
       --page-nav-inset: 16px;
     }
     .bottombar { padding: var(--page-nav-pad); gap: 3px; }
-    .bottombar-tabs { gap: 3px; }
+    .bottombar-tabs { gap: 3px; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; }
     .bb-item {
+      flex: 1 1 0;
+      width: auto;
+      flex-direction: row;
       min-height: var(--page-nav-item-h);
       height: var(--page-nav-item-h);
       font-size: 13px;
@@ -1612,6 +1560,78 @@
   #viewView.show { display: block; }
   #editView.hide { display: none; }
 
+  /* My ID — black canvas, white type */
+  html:has(#editView:not(.hide)) {
+    background: #000;
+    color-scheme: dark;
+  }
+  body:has(#editView:not(.hide)) {
+    --ink: #ffffff;
+    --muted: rgba(255, 255, 255, 0.62);
+    --bg: #000000;
+    --surface: rgba(255, 255, 255, 0.1);
+    --surface-dim: #111111;
+    --panel: rgba(255, 255, 255, 0.08);
+    --field-bg: rgba(255, 255, 255, 0.1);
+    --field-bg-focus: rgba(255, 255, 255, 0.14);
+    --field-border: rgba(255, 255, 255, 0.2);
+    --field-border-hover: rgba(255, 255, 255, 0.32);
+    --outline: rgba(255, 255, 255, 0.14);
+    --outline-hover: rgba(255, 255, 255, 0.28);
+    --line: rgba(255, 255, 255, 0.1);
+    --google-on-surface: #ffffff;
+    --google-on-surface-variant: rgba(255, 255, 255, 0.62);
+    --google-outline-variant: rgba(255, 255, 255, 0.16);
+    --google-surface-high: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    background: #000;
+    background-image: none;
+    box-shadow: none;
+  }
+  body:has(#editView:not(.hide))::before,
+  body:has(#editView:not(.hide))::after {
+    display: none;
+  }
+  body:has(#editView:not(.hide)) select {
+    color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  }
+  body:has(#editView:not(.hide)) input[type=text],
+  body:has(#editView:not(.hide)) input[type=tel],
+  body:has(#editView:not(.hide)) input[type=date],
+  body:has(#editView:not(.hide)) textarea {
+    color: #fff;
+  }
+  body:has(#editView:not(.hide)) input::placeholder,
+  body:has(#editView:not(.hide)) textarea::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  body:has(#editView:not(.hide)) #editView .chip-block-divider {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Bottom bar keeps its own light palette — not My ID dark-theme text or selection */
+  .bottombar .bb-item { color: #6b6560; }
+  .bottombar .bb-icon { color: #1c1917; opacity: 0.55; }
+  .bottombar .bb-item.active {
+    color: #e11d48;
+    background: rgba(225, 29, 72, 0.10);
+  }
+  .bottombar .bb-item.active .bb-label,
+  .bottombar .bb-item.active .bb-icon {
+    color: #e11d48;
+    opacity: 1;
+  }
+  .bottombar .bottombar-lang { border-left-color: rgba(28, 25, 23, 0.09); }
+  .bottombar .lang-toggle { background-color: rgba(255, 241, 242, 0.92); border-color: rgba(28, 25, 23, 0.09); }
+  .bottombar .lang-toggle [data-lang-side] { color: #6b6560; }
+  .bottombar .lang-toggle [data-lang-side].on {
+    background: #e11d48;
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(225, 29, 72, 0.28);
+  }
+  .bottombar .lang-toggle .lang-toggle-sep { color: #6b6560; opacity: 0.42; }
+
   .id-header {
     background: var(--accent);
     color: #fff; padding: 32px 20px 28px; text-align: center;
@@ -1715,6 +1735,28 @@
     height: 44px;
     max-width: 200px;
     margin: 0;
+  }
+  .page-header.myid {
+    padding: calc(var(--safe-top) + 20px) var(--space) 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+  }
+  .page-header.myid .brand-lockup { width: 100%; }
+  .page-header.myid .brand-default {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .page-header.myid .brand-wordmark-hero {
+    height: 44px;
+    max-width: 200px;
+    margin: 0;
+  }
+  .page-header.myid .brand-device .brand-logo-lockup {
+    height: 34px;
+    max-width: 120px;
   }
   .page-header.loc h1 { margin: 0; }
   .page-header.loc .lead {
@@ -2333,11 +2375,10 @@
   }
   }
 
-  /* iPhone 15 class phones (~393×852 CSS px, 3× → 1179×2556 physical) — native density, not desktop Material sizing */
+  /* iPhone 17 class phones (~402×874 CSS px, 3× → 1206×2622 physical) — native density, not desktop Material sizing */
   @media (max-width: 767px) {
     :root {
-      --phone-ref-w: 393;
-      --phone-scale: min(1, 100vw / 393px);
+      --phone-scale: min(1, 100vw / calc(var(--phone-ref-w) * 1px));
       --app-max: 100%;
       --app-width: 100%;
       --space: calc(14px * var(--phone-scale));
@@ -2363,14 +2404,15 @@
       --header-row: calc(44px * var(--phone-scale));
       --header-chip-h: calc(28px * var(--phone-scale));
       --safe-top: env(safe-area-inset-top, 0px);
-      --page-nav-offset: calc(8px * var(--phone-scale));
-      --page-nav-pad: 3px;
-      --page-nav-item-h: calc(40px * var(--phone-scale));
-      --page-nav-gap: calc(6px * var(--phone-scale));
+      --page-nav-offset: calc(12px * var(--phone-scale));
+      --page-nav-pad: 4px;
+      --page-nav-item-h: calc(44px * var(--phone-scale));
+      --page-nav-tab-w: calc(4rem * var(--phone-scale));
+      --page-nav-gap: calc(10px * var(--phone-scale));
       --page-nav-dock-h: calc(var(--page-nav-pad) * 2 + var(--page-nav-item-h));
       --dock-bottom: calc(var(--page-nav-offset) + var(--page-nav-dock-h));
       --page-nav-clearance: calc(var(--dock-bottom) + var(--page-nav-gap));
-      --page-nav-inset: max(16px, env(safe-area-inset-left, 0px));
+      --page-nav-inset: max(12px, env(safe-area-inset-left, 0px));
       --terms-footer-h: 20px;
       --content-pad-bottom: 0px;
     }
@@ -2417,7 +2459,7 @@
     #editView .split-main.wrap {
       padding-left: 0;
       padding-right: 0;
-      padding-top: 12px;
+      padding-top: 0;
       padding-bottom: 24px;
       box-sizing: border-box;
     }
@@ -2425,17 +2467,8 @@
       padding-left: max(var(--md-inset), env(safe-area-inset-left, 0px));
       padding-right: max(var(--md-inset), env(safe-area-inset-right, 0px));
     }
-    #editView #idForm fieldset.fieldset-chips .quick-picks {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      max-height: none;
-      overflow: visible;
-    }
-    #editView #idForm fieldset.fieldset-chips .quick-pick {
-      font-size: 11px;
-      min-height: 28px;
-      padding: 4px 6px;
+    #editView #idForm fieldset.fieldset-chips .chip-pick-select {
+      margin: var(--md-1) 0 var(--md-2);
     }
     #editView #idForm .form-actions .btn-primary,
     #editView #idForm .form-actions .btn-secondary {
@@ -2469,8 +2502,16 @@
     .page-header.aid .lead { margin: 0; }
     .aid-privacy-hint { font-size: calc(11px * var(--phone-scale)); }
     .brand-wordmark-hero { height: calc(34px * var(--phone-scale)); max-width: calc(150px * var(--phone-scale)); }
+    header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
     .page-header.aid .brand-wordmark-hero { margin: 0; }
     .page-header.loc .brand-wordmark-hero { margin: 0; }
+    .page-header.myid {
+      padding: calc(var(--safe-top) + calc(16px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(8px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
+    }
+    .page-header.myid .brand-wordmark-hero {
+      height: calc(44px * var(--phone-scale));
+      max-width: calc(200px * var(--phone-scale));
+    }
     header.app .brand-wordmark-text { font-size: calc(13px * var(--phone-scale)); }
     #aidView,
     #locView,
@@ -2530,50 +2571,56 @@
     }
     .bottombar-shell,
     .bottombar-shell.is-phone-dock {
-      left: max(calc(8px * var(--phone-scale)), env(safe-area-inset-left, 0px)) !important;
-      right: max(calc(8px * var(--phone-scale)), env(safe-area-inset-right, 0px));
+      left: max(var(--page-nav-inset), env(safe-area-inset-left, 0px)) !important;
+      right: max(var(--page-nav-inset), env(safe-area-inset-right, 0px));
       width: auto !important;
       bottom: calc(var(--page-nav-offset) + env(safe-area-inset-bottom, 0px));
     }
     .bottombar {
       border-radius: calc(16px * var(--phone-scale));
       padding: var(--page-nav-pad);
-      gap: calc(2px * var(--phone-scale));
+      gap: calc(6px * var(--phone-scale));
     }
     .bottombar-tabs {
-      gap: 1px;
+      grid-template-columns: repeat(3, var(--page-nav-tab-w));
+      flex: 0 0 auto;
+      width: max-content;
+      max-width: calc(100% - calc(5.5rem * var(--phone-scale)));
+      gap: calc(2px * var(--phone-scale));
       min-width: 0;
     }
     .bottombar-lang {
-      padding-left: calc(2px * var(--phone-scale));
+      margin-left: auto;
+      padding-left: calc(6px * var(--phone-scale));
     }
     .bottombar-lang .lang-toggle {
-      font-size: calc(5.5px * var(--phone-scale));
-      padding: calc(1px * var(--phone-scale)) calc(1px * var(--phone-scale));
-      gap: calc(1px * var(--phone-scale));
-      letter-spacing: 0.04em;
+      font-size: calc(8px * var(--phone-scale));
+      padding: calc(2px * var(--phone-scale)) calc(3px * var(--phone-scale));
+      gap: calc(2px * var(--phone-scale));
+      letter-spacing: 0.03em;
     }
     .bottombar-lang .lang-toggle [data-lang-side] {
-      min-width: 0;
-      height: calc(var(--page-nav-item-h) - calc(6px * var(--phone-scale)));
-      padding: 0 calc(2px * var(--phone-scale));
+      min-width: calc(1.6em * var(--phone-scale));
+      height: calc(var(--page-nav-item-h) - calc(8px * var(--phone-scale)));
+      padding: 0 calc(4px * var(--phone-scale));
     }
     .bottombar-lang .lang-toggle .lang-toggle-sep {
-      font-size: calc(6px * var(--phone-scale));
+      font-size: calc(7px * var(--phone-scale));
     }
     .bb-item {
+      width: 100%;
       flex-direction: column;
-      gap: 1px;
+      gap: calc(2px * var(--phone-scale));
       min-height: var(--page-nav-item-h);
       height: var(--page-nav-item-h);
-      padding: calc(3px * var(--phone-scale)) calc(2px * var(--phone-scale)) calc(2px * var(--phone-scale));
+      padding: calc(4px * var(--phone-scale)) calc(2px * var(--phone-scale));
     }
     .bb-icon {
       width: calc(20px * var(--phone-scale));
       height: calc(20px * var(--phone-scale));
     }
     .bb-icon svg { width: calc(20px * var(--phone-scale)); height: calc(20px * var(--phone-scale)); }
-    .bb-label { font-size: calc(9px * var(--phone-scale)); letter-spacing: 0.02em; }
+    .bb-label { font-size: var(--md-type-label); letter-spacing: 0; }
     .sheet-card {
       max-width: none;
       width: 100%;
@@ -2593,24 +2640,13 @@
       max-width: calc(100% - var(--md-inset) * 2);
     }
     #idForm fieldset.fieldset-chips > .chip-list,
-    #idForm fieldset.fieldset-chips > .quick-picks,
+    #idForm fieldset.fieldset-chips > .chip-pick-select,
     #idForm fieldset.fieldset-chips > .search-add,
     #idForm fieldset.fieldset-chips .chip-block .chip-list,
-    #idForm fieldset.fieldset-chips .chip-block .quick-picks,
+    #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
     #idForm fieldset.fieldset-chips .chip-block .search-add {
       width: 100%;
       max-width: 100%;
-    }
-    #idForm fieldset.fieldset-chips .quick-picks {
-      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-      padding: 0;
-      gap: 8px;
-      max-height: none;
-    }
-    #idForm fieldset.fieldset-chips .quick-pick {
-      font-size: 11px;
-      min-height: 28px;
-      padding: 4px 6px;
     }
     .contact-card {
       flex-wrap: wrap;
@@ -2664,17 +2700,15 @@
       margin-left: auto;
       margin-right: auto;
     }
-    #editView header.app {
-      width: 100%;
-      max-width: none;
-      margin: 0;
-      padding-left: 12px;
-      padding-right: 20px;
+    #editView .page-header.myid {
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
       box-sizing: border-box;
     }
     #editView .split-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) var(--app-width);
+      grid-template-columns: minmax(0, 1fr) calc(var(--phone-ref-w) * 1px);
       gap: 24px;
       align-items: start;
       max-width: 1200px;
@@ -2692,7 +2726,7 @@
       position: sticky;
       top: calc(var(--safe-top) + var(--header-height));
       padding-top: 8px;
-      width: var(--app-width);
+      width: calc(var(--phone-ref-w) * 1px);
     }
     .preview-label {
       font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none;
@@ -2704,8 +2738,8 @@
       overflow: hidden;
       background: var(--bg);
       box-shadow: var(--shadow);
-      width: var(--app-width);
-      max-height: min(720px, calc(100vh - 110px));
+      width: calc(var(--phone-ref-w) * 1px);
+      max-height: min(calc(var(--phone-ref-h) * 1px), calc(100vh - 110px));
       overflow-y: auto;
     }
     .phone-frame .id-header { border-radius: 0; padding: 24px 16px 20px; }
@@ -2722,25 +2756,20 @@
 
 <!-- ============ MY ID (owner editable) ============ -->
 <div id="editView">
-  <header class="app">
+  <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <div class="brand-mark brand-mark-sm">
-          <img class="brand-logo" src="assets/icon.svg" width="28" height="28" alt="">
-        </div>
-        <span class="brand-wordmark-text"><span class="brand-red">Red</span><span class="brand-med">Med</span></span>
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <div class="brand-mark">
-          <img class="brand-logo" src="assets/icon.svg" width="34" height="34" alt="">
-        </div>
+        <img class="brand-logo-lockup" src="assets/longlogo.png" width="120" height="35" alt="RedMed">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
         </div>
       </div>
     </div>
-  </header>
+  </div>
   <div class="split-layout">
     <div class="split-main wrap">
       <div id="useConsent" class="consent-banner consent-banner-top" hidden>
@@ -2781,10 +2810,10 @@
           <section class="chip-block" aria-labelledby="allergiesHeading">
             <h2 class="chip-block-title" id="allergiesHeading" data-i18n="labelAllergies">Allergies</h2>
             <div class="chip-list" id="allergiesList"></div>
-            <div class="quick-picks" id="allergyQuickPicks" aria-label="Common allergies"></div>
+            <select id="allergyPick" class="chip-pick-select" required aria-labelledby="allergiesHeading"></select>
             <div class="search-add" id="allergySearch">
               <div class="search-add-row">
-                <input type="text" id="allergyQuery" data-i18n-placeholder="phAllergy" placeholder="Type 2 letters to search allergy" autocomplete="off">
+                <input type="text" id="allergyQuery" data-i18n-placeholder="phAllergy" placeholder="Search or add…" autocomplete="off">
                 <button type="button" class="btn-add" id="addAllergyBtn" data-i18n="btnAdd">Add</button>
               </div>
               <div class="suggest-list" id="allergySuggest"></div>
@@ -2796,10 +2825,10 @@
           <section class="chip-block" aria-labelledby="medsHeading">
             <h2 class="chip-block-title" id="medsHeading" data-i18n="labelMeds">Medications</h2>
             <div class="chip-list" id="medsList"></div>
-            <div class="quick-picks" id="medQuickPicks" aria-label="Common medications"></div>
+            <select id="medPick" class="chip-pick-select" required aria-labelledby="medsHeading"></select>
             <div class="search-add" id="medSearch">
               <div class="search-add-row">
-                <input type="text" id="medQuery" data-i18n-placeholder="phMed" placeholder="Type 2 letters to search medications" autocomplete="off">
+                <input type="text" id="medQuery" data-i18n-placeholder="phMed" placeholder="Search or add…" autocomplete="off">
                 <button type="button" class="btn-add" id="addMedBtn" data-i18n="btnAdd">Add</button>
               </div>
               <div class="suggest-list" id="medSuggest"></div>
@@ -2811,10 +2840,10 @@
           <section class="chip-block" aria-labelledby="conditionsHeading">
             <h2 class="chip-block-title" id="conditionsHeading" data-i18n="labelConditions">Conditions</h2>
             <div class="chip-list" id="conditionsList"></div>
-            <div class="quick-picks" id="conditionQuickPicks" aria-label="Common conditions"></div>
+            <select id="conditionPick" class="chip-pick-select" required aria-labelledby="conditionsHeading"></select>
             <div class="search-add" id="conditionSearch">
               <div class="search-add-row">
-                <input type="text" id="conditionQuery" data-i18n-placeholder="phCondition" placeholder="Type 2 letters to search condition" autocomplete="off">
+                <input type="text" id="conditionQuery" data-i18n-placeholder="phCondition" placeholder="Search or add…" autocomplete="off">
                 <button type="button" class="btn-add" id="addConditionBtn" data-i18n="btnAdd">Add</button>
               </div>
               <div class="suggest-list" id="conditionSuggest"></div>
@@ -2858,13 +2887,6 @@
           </div>
         </fieldset>
 
-        <div class="privacy-chip" role="note">
-          <div>
-            <strong data-i18n="privacyChipTitle">Local-only · PHI / PII stays here</strong>
-            <span data-i18n="privacyChipBody">No RedMed servers. Medical and personal details stay on this device and your band — never uploaded to us.</span>
-          </div>
-        </div>
-        <p class="hint" data-i18n="hintLocalOnly">On this device and your band only — PHI/PII never uploaded to RedMed.</p>
         <div class="form-actions">
           <button type="button" class="btn-secondary" id="clearDataBtn" data-i18n="btnClear">Clear data</button>
           <button type="submit" class="btn-primary" data-i18n="btnSave">Save</button>
@@ -3034,7 +3056,7 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/wordmark.svg" srcset="assets/wordmark-1080.png 1080w, assets/wordmark.svg" width="180" height="44" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
     <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No name, phone, email, or address on this screen — offline only, nothing sent anywhere.</p>
@@ -3050,7 +3072,7 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/wordmark.svg" srcset="assets/wordmark-1080.png 1080w, assets/wordmark.svg" width="180" height="44" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No servers, no data collection. GPS &amp; compass data collected while the 911 screen is open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates stay on this screen. RedMed has no servers — location is not stored with us.</p>
@@ -3248,8 +3270,9 @@
     document.documentElement.classList.toggle("is-phone", phone);
     if (phone) {
       document.documentElement.style.setProperty("--app-width", "100%");
-      /* iPhone 15 baseline (393 CSS px); shrink slightly on narrower phones */
-      var scale = Math.min(1, vw / 393);
+      /* iPhone 17 baseline (--phone-ref-w CSS px); shrink slightly on narrower phones */
+      var refW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--phone-ref-w")) || 402;
+      var scale = Math.min(1, vw / refW);
       document.documentElement.style.setProperty("--phone-scale", String(scale));
     } else {
       document.documentElement.style.removeProperty("--phone-scale");
@@ -3757,8 +3780,7 @@
       contact1: "Emergency contact 1", contact2: "Emergency contact 2",
       phAddress: "Street, city, state…",
       hintLocalOnly: "On this device and your band only — PHI/PII never uploaded to RedMed.",
-      privacyChipTitle: "Local-only · PHI / PII stays here",
-      privacyChipBody: "No RedMed servers. Medical and personal details stay on this device and your band — never uploaded to us.", btnClear: "Clear data", btnSave: "Save", noteSaved: "Saved.",
+      btnClear: "Clear data", btnSave: "Save", noteSaved: "Saved.",
       clearConfirm: "Clear all saved data on this device? Removes profile, bracelet link, PIN, and preferences. This cannot be undone.",
       cardLinkTitle: "Card link",
       hintCardLink: "Your card is encoded on the passive chip. When a smartphone taps, the phone powers the chip and reads your profile. Tablets and computers won't show the card.",
@@ -3794,10 +3816,11 @@
       locTraumaGoogleHint: "With a Google API key, GPS sets your state and each hospital is checked against Google Places.",
       consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our <a href=\"terms-of-service.html\">Terms of Use</a> and <a href=\"privacy-policy.html\">Privacy Policy</a>. Find 911 may use location while that screen is open (not sent to us).",
       btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid",
-      phAllergy: "Type 2 letters to search allergy", phMed: "Type 2 letters to search medications", phCondition: "Type 2 letters to search condition",
+      phAllergy: "Search or add…", phMed: "Search or add…", phCondition: "Search or add…",
+      pickAllergy: "Choose allergy", pickMed: "Choose medication", pickCondition: "Choose condition",
       searchMinHint: "{n} more letter(s) — search starts at 2",
       searchNoMatches: "No matches — press Enter to add your own",
-      medGroupCommon: "Common", medGroupRare: "Less common / specialty",
+      medGroupCommon: "Common", medGroupRare: "Other",
       dose: "Dose", none: "None", blood: "Blood", unknown: "Unknown",
       yrs: "yrs", updated: "Updated", call: "Call",
       copied: "Copied!",
@@ -3863,8 +3886,7 @@
       contact1: "Contacto de emergencia 1", contact2: "Contacto de emergencia 2",
       phAddress: "Calle, ciudad, estado…",
       hintLocalOnly: "Solo en este dispositivo y tu banda — PHI/PII nunca se sube a RedMed.",
-      privacyChipTitle: "Solo local · PHI / PII se queda aquí",
-      privacyChipBody: "Sin servidores RedMed. Los datos médicos y personales quedan en este dispositivo y tu banda — nunca se nos suben.", btnClear: "Borrar datos", btnSave: "Guardar", noteSaved: "Guardado.",
+      btnClear: "Borrar datos", btnSave: "Guardar", noteSaved: "Guardado.",
       cardLinkTitle: "Enlace de la tarjeta",
       hintCardLink: "Tu tarjeta queda en el chip pasivo. Al tocar con un smartphone, el teléfono alimenta el chip y lee tu perfil. Tablets y computadoras no muestran la tarjeta.",
       btnCopy: "Copiar", btnPreview: "Vista previa", btnAdd: "Añadir", previewLabel: "Vista previa",
@@ -3899,10 +3921,11 @@
       locTraumaGoogleHint: "Con clave de Google API, el GPS fija el estado y cada hospital se comprueba en Google Places.",
       consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros <a href=\"terms-of-service.html\">Términos de uso</a> y la <a href=\"privacy-policy.html\">Política de privacidad</a>. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
       btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda",
-      phAllergy: "Escribe 2 letras para buscar alergia", phMed: "Escribe 2 letras para buscar medicamentos", phCondition: "Escribe 2 letras para buscar condición",
+      phAllergy: "Buscar o agregar…", phMed: "Buscar o agregar…", phCondition: "Buscar o agregar…",
+      pickAllergy: "Elegir alergia", pickMed: "Elegir medicamento", pickCondition: "Elegir condición",
       searchMinHint: "{n} letra(s) más — la búsqueda empieza en 2",
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
-      medGroupCommon: "Comunes", medGroupRare: "Menos comunes / especialidad",
+      medGroupCommon: "Comunes", medGroupRare: "Otras",
       dose: "Dosis", none: "Ninguno", blood: "Sangre", unknown: "Desconocido",
       yrs: "años", updated: "Actualizado", call: "Llamar",
       copied: "¡Copiado!", clearConfirm: "¿Borrar todos los datos guardados? Elimina perfil, pulsera, PIN y preferencias. No se puede deshacer.",
@@ -3986,6 +4009,11 @@
       el.classList.toggle("on", el.getAttribute("data-lang-side") === currentLang);
     });
     try { refreshLivePreview(); } catch (e) {}
+    try {
+      renderAllergyPickSelect();
+      renderMedPickSelect();
+      renderConditionPickSelect();
+    } catch (e) {}
     if (traumaPickerBound) {
       Object.keys(traumaPickerBound).forEach(function (prefix) {
         populateTraumaStates(prefix);
@@ -4743,95 +4771,88 @@
     if (active && el && el.contains(active) && typeof active.blur === "function") active.blur();
   }
 
-  var quickPickWired = {};
-  var quickPickTouch = {};
-  var quickPickTapAt = 0;
-  var QUICK_PICK_TAP_MAX_MOVE = 12;
+  function renderChipPickSelect(config) {
+    var sel = document.getElementById(config.selectId);
+    if (!sel) return;
+    blurIfFocusedInside(sel);
+    sel.innerHTML = "";
+    var placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.hidden = true;
+    placeholder.textContent = t(config.placeholderKey);
+    sel.appendChild(placeholder);
 
-  function activateQuickPick(wrap, item, isAdded, onAdd) {
-    if (!item || isAdded(item)) return;
-    onAdd(item);
-    blurChipSearchInputs();
-    if (wrap && typeof wrap.blur === "function") wrap.blur();
-  }
-
-  function wireQuickPickTray(wrap, wrapId) {
-    wrap.addEventListener("touchstart", function (e) {
-      var btn = e.target.closest(".quick-pick");
-      if (!btn || !wrap.contains(btn)) {
-        quickPickTouch[wrapId] = null;
-        return;
-      }
-      var t = e.changedTouches[0] || e.touches[0];
-      if (!t) return;
-      quickPickTouch[wrapId] = { x: t.clientX, y: t.clientY, btn: btn };
-    }, { passive: true });
-    wrap.addEventListener("touchend", function (e) {
-      var start = quickPickTouch[wrapId];
-      quickPickTouch[wrapId] = null;
-      if (!start) return;
-      var btn = e.target.closest(".quick-pick");
-      if (!btn || btn !== start.btn) return;
-      var t = e.changedTouches[0];
-      if (!t) return;
-      if (Math.abs(t.clientX - start.x) > QUICK_PICK_TAP_MAX_MOVE ||
-          Math.abs(t.clientY - start.y) > QUICK_PICK_TAP_MAX_MOVE) return;
-      e.preventDefault();
-      quickPickTapAt = Date.now();
-      var cfg = quickPickWired[wrapId];
-      activateQuickPick(btn, btn.getAttribute("data-pick"), cfg.isAdded, cfg.onAdd);
-    }, { passive: false });
-    wrap.addEventListener("click", function (e) {
-      var btn = e.target.closest(".quick-pick");
-      if (!btn || !wrap.contains(btn)) return;
-      if (Date.now() - quickPickTapAt < 450) {
-        e.preventDefault();
-        return;
-      }
-      var cfg = quickPickWired[wrapId];
-      activateQuickPick(btn, btn.getAttribute("data-pick"), cfg.isAdded, cfg.onAdd);
-    });
-  }
-
-  function renderQuickPicks(wrapId, picks, isAdded, onAdd) {
-    var wrap = document.getElementById(wrapId);
-    if (!wrap) return;
-    if (!quickPickWired[wrapId]) {
-      quickPickWired[wrapId] = { isAdded: isAdded, onAdd: onAdd };
-      wireQuickPickTray(wrap, wrapId);
-    } else {
-      quickPickWired[wrapId].isAdded = isAdded;
-      quickPickWired[wrapId].onAdd = onAdd;
+    function appendGroup(label, items) {
+      var available = (items || []).filter(function (item) {
+        return item && !config.isAdded(item);
+      });
+      if (!available.length) return;
+      var group = document.createElement("optgroup");
+      group.label = label;
+      available.forEach(function (item) {
+        var opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        group.appendChild(opt);
+      });
+      sel.appendChild(group);
     }
-    blurIfFocusedInside(wrap);
-    wrap.innerHTML = "";
-    picks.forEach(function (item) {
-      if (isAdded(item)) return;
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "quick-pick";
-      btn.setAttribute("data-pick", item);
-      btn.textContent = item;
-      wrap.appendChild(btn);
+
+    appendGroup(t("medGroupCommon"), config.commonList);
+    appendGroup(t("medGroupRare"), config.rareList);
+    sel.disabled = sel.options.length <= 1;
+  }
+
+  function wireChipPickSelect(selectId, onAdd, rerender) {
+    var sel = document.getElementById(selectId);
+    if (!sel || sel.getAttribute("data-wired") === "1") return;
+    sel.setAttribute("data-wired", "1");
+    sel.addEventListener("change", function () {
+      var val = sel.value;
+      if (!val) return;
+      onAdd(val);
+      rerender();
+      sel.blur();
+      blurChipSearchInputs();
     });
   }
 
-  function renderAllergyQuickPicks() {
-    renderQuickPicks("allergyQuickPicks", QUICK_ALLERGENS, function (name) {
-      return allergyItems.some(function (a) { return a.toLowerCase() === name.toLowerCase(); });
-    }, addAllergy);
+  function renderAllergyPickSelect() {
+    renderChipPickSelect({
+      selectId: "allergyPick",
+      placeholderKey: "pickAllergy",
+      commonList: QUICK_ALLERGENS,
+      rareList: QUICK_RARE_ALLERGENS.slice(0, BROWSE_RARE_MAX),
+      isAdded: function (name) {
+        return allergyItems.some(function (a) { return a.toLowerCase() === name.toLowerCase(); });
+      }
+    });
   }
 
-  function renderMedQuickPicks() {
-    renderQuickPicks("medQuickPicks", QUICK_MEDS, function (name) {
-      return medItems.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); });
-    }, addMed);
+  function renderMedPickSelect() {
+    renderChipPickSelect({
+      selectId: "medPick",
+      placeholderKey: "pickMed",
+      commonList: QUICK_MEDS,
+      rareList: QUICK_RARE_MEDS.slice(0, BROWSE_RARE_MAX),
+      isAdded: function (name) {
+        return medItems.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); });
+      }
+    });
   }
 
-  function renderConditionQuickPicks() {
-    renderQuickPicks("conditionQuickPicks", QUICK_CONDITIONS, function (name) {
-      return conditionItems.some(function (c) { return c.toLowerCase() === name.toLowerCase(); });
-    }, addCondition);
+  function renderConditionPickSelect() {
+    renderChipPickSelect({
+      selectId: "conditionPick",
+      placeholderKey: "pickCondition",
+      commonList: QUICK_CONDITIONS,
+      rareList: QUICK_RARE_CONDITIONS.slice(0, BROWSE_RARE_MAX),
+      isAdded: function (name) {
+        return conditionItems.some(function (c) { return c.toLowerCase() === name.toLowerCase(); });
+      }
+    });
   }
 
   function renderAllergyChips() {
@@ -4839,7 +4860,7 @@
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!allergyItems.length) {
-      renderAllergyQuickPicks();
+      renderAllergyPickSelect();
       refreshLivePreview();
       return;
     }
@@ -4864,7 +4885,7 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderAllergyQuickPicks();
+    renderAllergyPickSelect();
     refreshLivePreview();
   }
 
@@ -4873,7 +4894,7 @@
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!medItems.length) {
-      renderMedQuickPicks();
+      renderMedPickSelect();
       refreshLivePreview();
       return;
     }
@@ -4911,7 +4932,7 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderMedQuickPicks();
+    renderMedPickSelect();
     refreshLivePreview();
   }
 
@@ -4920,7 +4941,7 @@
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!conditionItems.length) {
-      renderConditionQuickPicks();
+      renderConditionPickSelect();
       refreshLivePreview();
       return;
     }
@@ -4945,7 +4966,7 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderConditionQuickPicks();
+    renderConditionPickSelect();
     refreshLivePreview();
   }
 
@@ -5373,6 +5394,10 @@
     renderMedChips();
     renderConditionChips();
     refreshLivePreview();
+
+    wireChipPickSelect("allergyPick", addAllergy, renderAllergyPickSelect);
+    wireChipPickSelect("medPick", addMed, renderMedPickSelect);
+    wireChipPickSelect("conditionPick", addCondition, renderConditionPickSelect);
 
     if (editWired) return;
     editWired = true;
