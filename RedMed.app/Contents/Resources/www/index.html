@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>RedMed</title>
-<link rel="icon" type="image/png" href="assets/fav.png">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
@@ -1591,10 +1592,6 @@
   body:has(#editView:not(.hide))::after {
     display: none;
   }
-  body:has(#editView:not(.hide)) header.app {
-    background: rgba(0, 0, 0, 0.72);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
-  }
   body:has(#editView:not(.hide)) select {
     color: #fff;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
@@ -1738,6 +1735,28 @@
     height: 44px;
     max-width: 200px;
     margin: 0;
+  }
+  .page-header.myid {
+    padding: calc(var(--safe-top) + 20px) var(--space) 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+  }
+  .page-header.myid .brand-lockup { width: 100%; }
+  .page-header.myid .brand-default {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .page-header.myid .brand-wordmark-hero {
+    height: 44px;
+    max-width: 200px;
+    margin: 0;
+  }
+  .page-header.myid .brand-device .brand-logo-lockup {
+    height: 34px;
+    max-width: 120px;
   }
   .page-header.loc h1 { margin: 0; }
   .page-header.loc .lead {
@@ -2440,7 +2459,7 @@
     #editView .split-main.wrap {
       padding-left: 0;
       padding-right: 0;
-      padding-top: 12px;
+      padding-top: 0;
       padding-bottom: 24px;
       box-sizing: border-box;
     }
@@ -2486,6 +2505,13 @@
     header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
     .page-header.aid .brand-wordmark-hero { margin: 0; }
     .page-header.loc .brand-wordmark-hero { margin: 0; }
+    .page-header.myid {
+      padding: calc(var(--safe-top) + calc(16px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(8px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
+    }
+    .page-header.myid .brand-wordmark-hero {
+      height: calc(44px * var(--phone-scale));
+      max-width: calc(200px * var(--phone-scale));
+    }
     header.app .brand-wordmark-text { font-size: calc(13px * var(--phone-scale)); }
     #aidView,
     #locView,
@@ -2674,12 +2700,10 @@
       margin-left: auto;
       margin-right: auto;
     }
-    #editView header.app {
-      width: 100%;
-      max-width: none;
-      margin: 0;
-      padding-left: 12px;
-      padding-right: 20px;
+    #editView .page-header.myid {
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
       box-sizing: border-box;
     }
     #editView .split-layout {
@@ -2732,20 +2756,20 @@
 
 <!-- ============ MY ID (owner editable) ============ -->
 <div id="editView">
-  <header class="app">
+  <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-logo-lockup" src="assets/logo.png" width="148" height="36" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/logo.png" width="120" height="29" alt="RedMed">
+        <img class="brand-logo-lockup" src="assets/longlogo.svg" width="120" height="35" alt="RedMed">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
         </div>
       </div>
     </div>
-  </header>
+  </div>
   <div class="split-layout">
     <div class="split-main wrap">
       <div id="useConsent" class="consent-banner consent-banner-top" hidden>
@@ -3032,7 +3056,7 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo.png" width="180" height="44" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
     <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No name, phone, email, or address on this screen — offline only, nothing sent anywhere.</p>
@@ -3048,7 +3072,7 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo.png" width="180" height="44" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No servers, no data collection. GPS &amp; compass data collected while the 911 screen is open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates stay on this screen. RedMed has no servers — location is not stored with us.</p>

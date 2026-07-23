@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Regenerate raster icons from assets/icon.svg (requires Inkscape or rsvg-convert).
+# Regenerate raster icons from assets/logo.svg (requires Inkscape or rsvg-convert).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SVG="$ROOT/assets/icon.svg"
+SVG="$ROOT/assets/logo.svg"
 
 if [[ ! -f "$SVG" ]]; then
   echo "Missing $SVG" >&2
@@ -15,19 +15,27 @@ render() {
     rsvg-convert -w "$size" -h "$size" "$SVG" -o "$out"
   elif command -v inkscape >/dev/null 2>&1; then
     inkscape "$SVG" -w "$size" -h "$size" -o "$out"
+  elif command -v qlmanage >/dev/null 2>&1 && command -v sips >/dev/null 2>&1; then
+    local tmp
+    tmp="$(mktemp -t redmed-logo).png"
+    qlmanage -t -s 512 -o "$(dirname "$tmp")" "$SVG" >/dev/null 2>&1
+    mv "$(dirname "$tmp")/$(basename "$SVG").png" "$tmp"
+    sips -z "$size" "$size" "$tmp" --out "$out" >/dev/null
+    rm -f "$tmp"
   else
-    echo "Install rsvg-convert (librsvg) or Inkscape to render icons." >&2
+    echo "Install rsvg-convert (librsvg), Inkscape, or use macOS qlmanage+sips." >&2
     exit 1
   fi
 }
 
-for size in 16 32 48 64 128 180 192 256 512 1024; do
-  render "$size" "$ROOT/assets/icon-${size}.png"
-  echo "assets/icon-${size}.png"
+for size in 32 180 512; do
+  render "$size" "$ROOT/assets/logo-${size}.png"
+  echo "assets/logo-${size}.png"
 done
 
-cp "$ROOT/assets/icon-32.png" "$ROOT/assets/favicon-32.png"
-cp "$ROOT/assets/icon-180.png" "$ROOT/assets/apple-touch-icon.png"
-cp "$ROOT/assets/icon-512.png" "$ROOT/play/listing/play-store-icon-512.png"
+cp "$ROOT/assets/logo-32.png" "$ROOT/assets/favicon-32.png"
+cp "$ROOT/assets/logo-180.png" "$ROOT/assets/apple-touch-icon.png"
+mkdir -p "$ROOT/play/listing"
+cp "$ROOT/assets/logo-512.png" "$ROOT/play/listing/play-store-icon-512.png"
 
-echo "Done. Copy iOS/Android appiconset variants manually or use Xcode/Android Studio asset tools."
+echo "Done. Run ./scripts/sync-www-mirror.sh to refresh RedMed.app."
