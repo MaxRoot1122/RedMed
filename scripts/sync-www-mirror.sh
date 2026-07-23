@@ -3,11 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WWW="$ROOT/RedMed.app/Contents/Resources/www"
-mkdir -p "$WWW/assets" "$WWW/assets/fonts" "$WWW/config"
-if [ -d "$ROOT/assets/fonts" ]; then
-  mkdir -p "$WWW/assets/fonts"
-  cp "$ROOT"/assets/fonts/*.woff2 "$WWW/assets/fonts/" 2>/dev/null || true
-fi
+mkdir -p "$WWW/assets" "$WWW/config"
 cp "$ROOT/index.html" "$WWW/index.html"
 cp "$ROOT/get.html" "$WWW/get.html"
 if [ -f "$ROOT/assets/trauma-hospitals.json" ]; then
