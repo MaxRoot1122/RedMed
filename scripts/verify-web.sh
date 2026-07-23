@@ -72,6 +72,36 @@ if css.count("{") != css.count("}"):
     sys.exit(1)
 print("OK: index.html CSS braces balanced")
 
+# Canonical URL — shipping surfaces must match config/canonical-url
+from urllib.parse import urlparse
+cfg_lines = [ln.strip() for ln in open("config/canonical-url", encoding="utf-8")]
+card_url = next((ln for ln in cfg_lines if ln.startswith("https://")), "")
+legacy_urls = [ln.split(":", 1)[1] for ln in cfg_lines if ln.startswith("legacy:https://")]
+if not card_url:
+    print("FAIL: no https:// in config/canonical-url"); sys.exit(1)
+get_url = card_url.replace("/index.html", "/get.html")
+privacy_url = card_url.replace("/index.html", "/privacy-policy.html")
+origin = f"{urlparse(card_url).scheme}://{urlparse(card_url).netloc}"
+checks = [
+    ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
+    ("ios/RedMed/AppConfig.swift", get_url, "getStartedURL"),
+    ("ios/RedMed/AppConfig.swift", privacy_url, "privacyPolicyURL"),
+    ("index.html", card_url, "HOSTED_URL"),
+    ("index.html", get_url, "GET_URL"),
+    ("android/app/src/main/res/values/strings.xml", card_url, "launch_url"),
+    ("android/app/src/main/res/values/strings.xml", origin, "asset_statements site"),
+]
+for path, needle, label in checks:
+    body = open(path, encoding="utf-8").read()
+    if needle not in body:
+        print(f"FAIL: {label} mismatch in {path} (expected {needle})"); sys.exit(1)
+legacy_js = json.dumps(legacy_urls, ensure_ascii=False)
+if legacy_js not in open("index.html", encoding="utf-8").read():
+    print("FAIL: LEGACY_HOSTED_URLS out of sync in index.html"); sys.exit(1)
+if "hostedCardOrigins" not in open("index.html", encoding="utf-8").read():
+    print("FAIL: index.html missing hostedCardOrigins() allow-list helper"); sys.exit(1)
+print("OK: canonical URL synced across shipping surfaces")
+
 server_sh = "scripts/redmed-server.sh"
 app_server_sh = "RedMed.app/Contents/Resources/redmed-server.sh"
 if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):

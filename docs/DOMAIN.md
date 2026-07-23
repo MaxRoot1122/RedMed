@@ -1,8 +1,10 @@
 # Custom domain for RedMed
 
-GitHub project Pages (`https://maxroot1122.github.io/RedMed/`) is the **current** NFC card host once Pages is enabled (repo **Settings → Pages → Build and deployment → GitHub Actions**). Until that URL loads, do not manufacture bracelets.
+**Active canonical host:** `https://www.redmed.com/` (see [`config/canonical-url`](../config/canonical-url) and [`CNAME`](../CNAME)).
 
-**Custom domain (future):** register a domain **you control** — not `redmed.app` (see [`SECURITY.md`](../SECURITY.md): that name is an unrelated third-party storefront as of 2026-07-23).
+GitHub project Pages (`https://maxroot1122.github.io/RedMed/`) remains listed as a **legacy** host in config until field bracelets are re-flashed — it is not written to new tags.
+
+**Do not use `redmed.app`** — unrelated third-party storefront (see [`SECURITY.md`](../SECURITY.md)).
 
 ## Why switch later
 
@@ -19,10 +21,9 @@ Register your apex (e.g. `yourbrand.com`) at any registrar (~$12–30/yr). **Do 
 
 ### 2. GitHub Pages custom domain
 
-1. Repo **Settings → Pages → Custom domain** → enter your apex or `www` host
-2. At registrar, add DNS records GitHub shows (typically `A` records to GitHub Pages IPs and/or `CNAME` `www` → `maxroot1122.github.io`)
-3. Add a [`CNAME`](../CNAME) file in this repo **only after** you choose the host (e.g. `www.yourbrand.com`) — there is **no** `CNAME` in the repo today
-4. Enable **Enforce HTTPS** in Pages settings after DNS propagates
+1. Repo **Settings → Pages → Custom domain** → enter `www.redmed.com` (matches [`CNAME`](../CNAME))
+2. At registrar, add DNS records GitHub shows (typically `CNAME` `www` → `maxroot1122.github.io`, plus apex redirect if desired)
+3. Enable **Enforce HTTPS** in Pages settings after DNS propagates
 
 ### 3. Update canonical URL in code
 
@@ -50,7 +51,7 @@ Edit [`config/canonical-url`](../config/canonical-url) to the new HTTPS card URL
 
 ## Until domain is live
 
-Keep `config/canonical-url` on the GitHub Pages URL. **Enable Pages first**, confirm the URL loads, then manufacture.
+Confirm `https://www.redmed.com/index.html` loads over HTTPS before manufacturing new bracelets. Keep the `legacy:` line in `config/canonical-url` until old GitHub-hosted tags are re-flashed.
 
 ## Single repo rule
 

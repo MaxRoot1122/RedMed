@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">RedMed</string>
-    <string name="launch_url">https://maxroot1122.github.io/RedMed/index.html</string>
+    <string name="launch_url">https://www.redmed.com/index.html</string>
     <string name="asset_statements">
         [{
             \"relation\": [\"delegate_permission/common.handle_all_urls\"],
-            \"target\": {\"namespace\": \"web\", \"site\": \"https://maxroot1122.github.io\"}
+            \"target\": {\"namespace\": \"web\", \"site\": \"https://www.redmed.com\"}
         }]
     </string>
 </resources>

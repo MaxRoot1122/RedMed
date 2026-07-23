@@ -35,7 +35,7 @@ Before enabling the secret:
 | Restriction | Value |
 |-------------|--------|
 | APIs | Geocoding + Places only |
-| Web referrer | `https://maxroot1122.github.io/RedMed/*` (and `http://127.0.0.1:*/*` for local dev if needed) |
+| Web referrer | `https://www.redmed.com/*` (and `http://127.0.0.1:*/*` for local dev if needed) |
 | iOS | Bundle ID `local.redmed.app` (separate key preferred) |
 | Quotas | Hard daily caps + billing alerts |
 

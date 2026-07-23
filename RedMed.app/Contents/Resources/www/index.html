@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-d/Wr9tZWR1TnBbxVV698ABWdGbwczdUGjC4soEqKY+Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-M6PAXc0EJ4Ed2Q/1O7rUn1ayQIMrSIGuJH5P6yq95wE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -2809,7 +2809,7 @@
   }
   .aid-prayer {
     font-family: var(--font);
-    font-size: 10px;
+    font-size: 11.5px;
     font-style: italic;
     font-weight: 400;
     color: var(--muted);
@@ -3345,7 +3345,7 @@
     .aid-pane-icon svg { width: calc(22px * var(--phone-scale)); height: calc(22px * var(--phone-scale)); }
     .aid-pane.open .aid-pane-icon { width: calc(36px * var(--phone-scale)); height: calc(36px * var(--phone-scale)); }
     .aid-pane.open .aid-pane-icon svg { width: calc(20px * var(--phone-scale)); height: calc(20px * var(--phone-scale)); }
-    .aid-prayer { font-size: calc(10px * var(--phone-scale)); }
+    .aid-prayer { font-size: calc(11.5px * var(--phone-scale)); }
     .app-legal-footer {
       gap: calc(16px * var(--phone-scale));
       padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 4px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
@@ -3860,6 +3860,7 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
+    <a href="mailto:help.RedMed@gmail.com">Contact</a>
   </nav>
 </div>
 
@@ -3993,6 +3994,7 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
+    <a href="mailto:help.RedMed@gmail.com">Contact</a>
   </nav>
 </div>
 
@@ -4053,6 +4055,7 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
+    <a href="mailto:help.RedMed@gmail.com">Contact</a>
   </nav>
 </div>
 <div id="pinDialog" class="sheet-backdrop" hidden aria-hidden="true">
@@ -4146,8 +4149,9 @@
   var OWNER_PAIR_ID_KEY = "redMedOwnerPairId";
   var BRACELET_KEY = "redMedBraceletPaired";
   var BRACELET_DEVICE_KEY = "redMedBraceletDevice";
-  var GET_URL = "https://maxroot1122.github.io/RedMed/get.html";
-  var HOSTED_URL = "https://maxroot1122.github.io/RedMed/index.html";
+  var GET_URL = "https://www.redmed.com/get.html";
+  var HOSTED_URL = "https://www.redmed.com/index.html";
+  var LEGACY_HOSTED_URLS = ["https://maxroot1122.github.io/RedMed/index.html"];
   var APP_WIDTH_MAX = 560;
   var previewFrame = 0;
   var bottomBarFrame = 0;
@@ -8199,6 +8203,20 @@
     return el && el.value.trim() ? el.value.trim() : "My bracelet";
   }
 
+  /** Card hosts allowed for bracelet pairing — derived from HOSTED_URL + LEGACY_HOSTED_URLS (sync-canonical-url.sh). */
+  function hostedCardOrigins() {
+    var bases = [HOSTED_URL].concat(LEGACY_HOSTED_URLS || []);
+    var out = [];
+    bases.forEach(function (base) {
+      try {
+        var u = new URL(base);
+        var path = (u.pathname || "").replace(/\/index\.html$/i, "");
+        out.push({ host: u.hostname.toLowerCase(), pathPrefix: path || "" });
+      } catch (e) { /* skip malformed */ }
+    });
+    return out;
+  }
+
   /** Reject non-RedMed tag URLs before pairing (javascript:, wrong host, missing #d=). */
   function isAllowedBraceletUrl(url) {
     if (!url || typeof url !== "string") return false;
@@ -8207,8 +8225,13 @@
       if (u.protocol !== "https:" && u.protocol !== "http:") return false;
       var host = u.hostname.toLowerCase();
       if (u.protocol === "http:" && host !== "127.0.0.1" && host !== "localhost") return false;
-      if (host !== "127.0.0.1" && host !== "localhost" && host !== "maxroot1122.github.io") return false;
-      if (host === "maxroot1122.github.io" && u.pathname.indexOf("/RedMed") !== 0) return false;
+      if (host === "127.0.0.1" || host === "localhost") return /#d=/.test(u.hash || "");
+      var matched = hostedCardOrigins().some(function (origin) {
+        if (host !== origin.host) return false;
+        if (origin.pathPrefix && u.pathname.indexOf(origin.pathPrefix) !== 0) return false;
+        return true;
+      });
+      if (!matched) return false;
       return /#d=/.test(u.hash || "");
     } catch (e) {
       return false;

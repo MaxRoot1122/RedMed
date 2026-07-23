@@ -1,8 +1,8 @@
 # Canonical NFC card base URL (no #d= fragment).
 # Run scripts/sync-canonical-url.sh after editing this file.
 #
-# GitHub Pages — enable in repo Settings → Pages → GitHub Actions, then confirm this URL loads:
-https://maxroot1122.github.io/RedMed/index.html
+# Active host (first uncommented https:// line):
+https://www.redmed.com/index.html
 #
-# Custom domain (recommended for commercial bracelets — uncomment and comment GitHub line):
-# https://redmed.app/index.html
+# Legacy hosts — optional; keep while field bracelets still use old URLs:
+legacy:https://maxroot1122.github.io/RedMed/index.html

@@ -2,7 +2,7 @@ import Foundation
 
 enum AppConfig {
     /// QR on packaging should point here — detects iOS vs Android and opens the right store.
-    static let getStartedURL = "https://maxroot1122.github.io/RedMed/get.html"
+    static let getStartedURL = "https://www.redmed.com/get.html"
 
     /// Update when the App Store listing is live (App Store Connect app ID).
     static let appStoreURL = "https://apps.apple.com/app/redmed/id0000000000"
@@ -22,11 +22,11 @@ enum AppConfig {
     /// Any phone that taps the tag opens this URL in a browser — app not required.
     /// When a custom domain is live, run `scripts/sync-canonical-url.sh` so iOS,
     /// web, and Android all match. See `docs/DOMAIN.md`.
-    static let medicalCardBaseURL = "https://maxroot1122.github.io/RedMed/index.html"
+    static let medicalCardBaseURL = "https://www.redmed.com/index.html"
 
     /// Registered in Info.plist for marketing deep links and legacy tags written
     /// before the universal HTTPS switch — not used for new tag writes.
     static let legacyAppSchemeBaseURL = "redmed://card"
 
-    static let privacyPolicyURL = "https://maxroot1122.github.io/RedMed/privacy-policy.html"
+    static let privacyPolicyURL = "https://www.redmed.com/privacy-policy.html"
 }
