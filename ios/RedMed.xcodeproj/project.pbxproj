@@ -5,89 +5,384 @@
 	};
 	objectVersion = 56;
 	objects = {
-		E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppConfig.swift"; sourceTree = "<group>"; };
-		C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */; };
-		B2CELET000014A1D00000001 /* BraceletLinkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BraceletLinkStore.swift"; sourceTree = "<group>"; };
-		B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2CELET000014A1D00000001 /* BraceletLinkStore.swift */; };
-		B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BraceletToolbarButton.swift"; sourceTree = "<group>"; };
-		B3CELET000014A1D00000002 /* BraceletToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */; };
-		8C18F62ABD454BB6B2392009 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView.swift"; sourceTree = "<group>"; };
-		18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C18F62ABD454BB6B2392009 /* ContentView.swift */; };
-		8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RedMedApp.swift"; sourceTree = "<group>"; };
-		A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */; };
-		4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FirstAidTopic.swift"; sourceTree = "<group>"; };
-		CAAABDF6872A4D1293AEAF11 /* FirstAidTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */; };
-		A1DFA1D300014A1D00000001 /* AidPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AidPane.swift"; sourceTree = "<group>"; };
-		A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DFA1D300014A1D00000001 /* AidPane.swift */; };
-		B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MedicalProfile.swift"; sourceTree = "<group>"; };
-		5AEAD51967FE43B28F510E5B /* MedicalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */; };
-		6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileStore.swift"; sourceTree = "<group>"; };
-		8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */; };
-		A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraumaHospitalFinder.swift; sourceTree = "<group>"; };
-		B2C3D4E5F6A789012345BCDE /* TraumaHospitalFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */; };
-		C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "trauma-hospitals.json"; sourceTree = "<group>"; };
-		D4E5F6A7B8C901234567DEF0 /* trauma-hospitals.json in Resources */ = {isa = PBXBuildFile; fileRef = C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */; };
-		02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppTheme.swift"; sourceTree = "<group>"; };
-		B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */; };
-		F904DC2367104A3595DC5468 /* BasicAidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BasicAidView.swift"; sourceTree = "<group>"; };
+
+/* Begin PBXBuildFile section */
 		140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F904DC2367104A3595DC5468 /* BasicAidView.swift */; };
-		CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CPRTimerView.swift"; sourceTree = "<group>"; };
-		37E149251C1146ED976FE5A9 /* CPRTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */; };
-		C4CC2B3234F946E992AF8294 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditProfileView.swift"; sourceTree = "<group>"; };
-		1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CC2B3234F946E992AF8294 /* EditProfileView.swift */; };
-		A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FirstAidDetailView.swift"; sourceTree = "<group>"; };
-		272E340D430D45A1B65C115A /* FirstAidDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */; };
-		572AFAA69FD048659B137D3A /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationView.swift"; sourceTree = "<group>"; };
-		40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572AFAA69FD048659B137D3A /* LocationView.swift */; };
-		E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraumaHospitalsSection.swift; sourceTree = "<group>"; };
-		F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */; };
-		A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleGeocoder.swift; sourceTree = "<group>"; };
-		B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */; };
-		C5D6E7F8A9B0123456CDEF12 /* google-api-key */ = {isa = PBXFileReference; lastKnownFileType = text; path = "google-api-key"; sourceTree = "<group>"; };
-		D6E7F8A9B0C1234567DEF123 /* google-api-key in Resources */ = {isa = PBXBuildFile; fileRef = C5D6E7F8A9B0123456CDEF12 /* google-api-key */; };
-		1381A61F1B3645C98CB67182 /* MyIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyIDView.swift"; sourceTree = "<group>"; };
-		98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1381A61F1B3645C98CB67182 /* MyIDView.swift */; };
-		9F510000014A1D00000001 /* ProfileSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileSummaryView.swift"; sourceTree = "<group>"; };
-		9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F510000014A1D00000001 /* ProfileSummaryView.swift */; };
-		84F177F3DB4549588AF855B5 /* ScannedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScannedCardView.swift"; sourceTree = "<group>"; };
-		25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F177F3DB4549588AF855B5 /* ScannedCardView.swift */; };
-		E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WriteTagView.swift"; sourceTree = "<group>"; };
-		A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */; };
-		D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UseConsentView.swift"; sourceTree = "<group>"; };
-		C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */; };
-		B1CELET000014A1D00000001 /* BraceletSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BraceletSetupView.swift"; sourceTree = "<group>"; };
-		B1CELET000014A1D00000002 /* BraceletSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CELET000014A1D00000001 /* BraceletSetupView.swift */; };
-		8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmergencySummaryBuilder.swift"; sourceTree = "<group>"; };
-		287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */; };
-		57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeychainStore.swift"; sourceTree = "<group>"; };
-		61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */; };
-		FACE1D0000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BiometricGate.swift"; sourceTree = "<group>"; };
-		FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE1D0000014A1D00000001 /* BiometricGate.swift */; };
-		5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationManager.swift"; sourceTree = "<group>"; };
-		283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */; };
-		A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkPathMonitor.swift"; sourceTree = "<group>"; };
-		FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */; };
-		41F919F5A31247B2B0CB18DB /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCReader.swift"; sourceTree = "<group>"; };
-		F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F919F5A31247B2B0CB18DB /* NFCReader.swift */; };
-		FAA5420A418C4467938AA432 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCWriter.swift"; sourceTree = "<group>"; };
-		B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA5420A418C4467938AA432 /* NFCWriter.swift */; };
-		6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileLinkBuilder.swift"; sourceTree = "<group>"; };
+		18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C18F62ABD454BB6B2392009 /* ContentView.swift */; };
 		1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */; };
-		BFBA864A15A1418FBA801232 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B97AA6BDDA134B69ABA01F65 /* RedMed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RedMed.entitlements; sourceTree = "<group>"; };
-		949BF96AEE164413B602D23E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		349B554805D54C418E202B76 /* RedMed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedMed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CC2B3234F946E992AF8294 /* EditProfileView.swift */; };
+		25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F177F3DB4549588AF855B5 /* ScannedCardView.swift */; };
+		272E340D430D45A1B65C115A /* FirstAidDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */; };
+		283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */; };
+		287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */; };
+		37E149251C1146ED976FE5A9 /* CPRTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */; };
+		40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572AFAA69FD048659B137D3A /* LocationView.swift */; };
+		5AEAD51967FE43B28F510E5B /* MedicalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */; };
+		61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */; };
+		8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */; };
+		98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1381A61F1B3645C98CB67182 /* MyIDView.swift */; };
+		9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F510000014A1D00000001 /* ProfileSummaryView.swift */; };
+		A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */; };
+		A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DFA1D300014A1D00000001 /* AidPane.swift */; };
+		A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */; };
+		B1CELET000014A1D00000002 /* BraceletSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CELET000014A1D00000001 /* BraceletSetupView.swift */; };
+		B2C3D4E5F6A789012345BCDE /* TraumaHospitalFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */; };
+		B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2CELET000014A1D00000001 /* BraceletLinkStore.swift */; };
+		B3CELET000014A1D00000002 /* BraceletToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */; };
+		B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */; };
+		B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA5420A418C4467938AA432 /* NFCWriter.swift */; };
+		B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */; };
+		C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */; };
+		C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */; };
+		CAAABDF6872A4D1293AEAF11 /* FirstAidTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */; };
+		D4E5F6A7B8C901234567DEF0 /* trauma-hospitals.json in Resources */ = {isa = PBXBuildFile; fileRef = C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */; };
+		D6E7F8A9B0C1234567DEF123 /* google-api-key in Resources */ = {isa = PBXBuildFile; fileRef = C5D6E7F8A9B0123456CDEF12 /* google-api-key */; };
 		E491D7ADA2744DCF80D3C865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 949BF96AEE164413B602D23E /* Assets.xcassets */; };
-		069281337815419DA7EB02F2 /* Models */ = {isa = PBXGroup; children = (A1DFA1D300014A1D00000001 /* AidPane.swift */, B2CELET000014A1D00000001 /* BraceletLinkStore.swift */, 4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */, B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */, 6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */, A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */); path = Models; sourceTree = "<group>"; };
-		C7428494040244ACB57B9038 /* Services */ = {isa = PBXGroup; children = (FACE1D0000014A1D00000001 /* BiometricGate.swift */, 8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */, A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */, 57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */, 5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */, A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */, 41F919F5A31247B2B0CB18DB /* NFCReader.swift */, FAA5420A418C4467938AA432 /* NFCWriter.swift */, 6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */); path = Services; sourceTree = "<group>"; };
-		2833C727D3F24F4AB759151E /* Views */ = {isa = PBXGroup; children = (02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */, F904DC2367104A3595DC5468 /* BasicAidView.swift */, B1CELET000014A1D00000001 /* BraceletSetupView.swift */, B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */, CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */, C4CC2B3234F946E992AF8294 /* EditProfileView.swift */, A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */, 572AFAA69FD048659B137D3A /* LocationView.swift */, 1381A61F1B3645C98CB67182 /* MyIDView.swift */, 84F177F3DB4549588AF855B5 /* ScannedCardView.swift */, E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */, D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */, 9F510000014A1D00000001 /* ProfileSummaryView.swift */, E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */); path = Views; sourceTree = "<group>"; };
-		7C36E4567833401AB16628A3 /* RedMed */ = {isa = PBXGroup; children = (E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */, 8C18F62ABD454BB6B2392009 /* ContentView.swift */, 8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */, 069281337815419DA7EB02F2 /* Models */, C7428494040244ACB57B9038 /* Services */, 2833C727D3F24F4AB759151E /* Views */, C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */, C5D6E7F8A9B0123456CDEF12 /* google-api-key */, BFBA864A15A1418FBA801232 /* Info.plist */, B97AA6BDDA134B69ABA01F65 /* RedMed.entitlements */, 949BF96AEE164413B602D23E /* Assets.xcassets */); path = RedMed; sourceTree = "<group>"; };
-		8516640B1B3C46CB93DCC727 /* Products */ = {isa = PBXGroup; children = (349B554805D54C418E202B76 /* RedMed.app */); name = Products; sourceTree = "<group>"; };
-		17A1312EB7FB4F2C936CCDAD /* Main */ = {isa = PBXGroup; children = (7C36E4567833401AB16628A3 /* RedMed */, 8516640B1B3C46CB93DCC727 /* Products */); name = Main; sourceTree = "<group>"; };
-		1BF59E37D05A441DA9D76570 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */, 18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */, A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */, B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */, CAAABDF6872A4D1293AEAF11 /* FirstAidTopic.swift in Sources */, 5AEAD51967FE43B28F510E5B /* MedicalProfile.swift in Sources */, 8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */, B2C3D4E5F6A789012345BCDE /* TraumaHospitalFinder.swift in Sources */, B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */, A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */, 287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */, FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */, 61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */, 283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */, FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */, F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */, B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */, 1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */, B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */, 140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */, B1CELET000014A1D00000002 /* BraceletSetupView.swift in Sources */, B3CELET000014A1D00000002 /* BraceletToolbarButton.swift in Sources */, 37E149251C1146ED976FE5A9 /* CPRTimerView.swift in Sources */, 1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */, 272E340D430D45A1B65C115A /* FirstAidDetailView.swift in Sources */, 40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */, F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */, 98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */, 9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */, 25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */, C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */, A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */); runOnlyForDeploymentPostprocessing = 0; };
-		94CA24ADB06040BEBF603F09 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-		F3CBA7F42B4344AA902AAB52 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (E491D7ADA2744DCF80D3C865 /* Assets.xcassets in Resources */, D4E5F6A7B8C901234567DEF0 /* trauma-hospitals.json in Resources */, D6E7F8A9B0C1234567DEF123 /* google-api-key in Resources */); runOnlyForDeploymentPostprocessing = 0; };
-		F52740C57B6B4759B6D334CB /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+		F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F919F5A31247B2B0CB18DB /* NFCReader.swift */; };
+		F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */; };
+		FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE1D0000014A1D00000001 /* BiometricGate.swift */; };
+		FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		1381A61F1B3645C98CB67182 /* MyIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyIDView.swift; sourceTree = "<group>"; };
+		349B554805D54C418E202B76 /* RedMed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedMed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		41F919F5A31247B2B0CB18DB /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
+		4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstAidTopic.swift; sourceTree = "<group>"; };
+		572AFAA69FD048659B137D3A /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
+		57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLinkBuilder.swift; sourceTree = "<group>"; };
+		6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
+		84F177F3DB4549588AF855B5 /* ScannedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedCardView.swift; sourceTree = "<group>"; };
+		8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencySummaryBuilder.swift; sourceTree = "<group>"; };
+		8C18F62ABD454BB6B2392009 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedMedApp.swift; sourceTree = "<group>"; };
+		949BF96AEE164413B602D23E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9F510000014A1D00000001 /* ProfileSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSummaryView.swift; sourceTree = "<group>"; };
+		A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstAidDetailView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPathMonitor.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraumaHospitalFinder.swift; sourceTree = "<group>"; };
+		A1DFA1D300014A1D00000001 /* AidPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AidPane.swift; sourceTree = "<group>"; };
+		A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleGeocoder.swift; sourceTree = "<group>"; };
+		B1CELET000014A1D00000001 /* BraceletSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BraceletSetupView.swift; sourceTree = "<group>"; };
+		B2CELET000014A1D00000001 /* BraceletLinkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BraceletLinkStore.swift; sourceTree = "<group>"; };
+		B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BraceletToolbarButton.swift; sourceTree = "<group>"; };
+		B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalProfile.swift; sourceTree = "<group>"; };
+		B97AA6BDDA134B69ABA01F65 /* RedMed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RedMed.entitlements; sourceTree = "<group>"; };
+		BFBA864A15A1418FBA801232 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "trauma-hospitals.json"; sourceTree = "<group>"; };
+		C4CC2B3234F946E992AF8294 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		C5D6E7F8A9B0123456CDEF12 /* google-api-key */ = {isa = PBXFileReference; lastKnownFileType = text; path = "google-api-key"; sourceTree = "<group>"; };
+		CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPRTimerView.swift; sourceTree = "<group>"; };
+		D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseConsentView.swift; sourceTree = "<group>"; };
+		E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraumaHospitalsSection.swift; sourceTree = "<group>"; };
+		E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTagView.swift; sourceTree = "<group>"; };
+		F904DC2367104A3595DC5468 /* BasicAidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAidView.swift; sourceTree = "<group>"; };
+		FAA5420A418C4467938AA432 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
+		FACE1D0000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricGate.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		94CA24ADB06040BEBF603F09 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		069281337815419DA7EB02F2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1DFA1D300014A1D00000001 /* AidPane.swift */,
+				B2CELET000014A1D00000001 /* BraceletLinkStore.swift */,
+				4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */,
+				B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */,
+				6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */,
+				A1B2C3D4E5F678901234ABCD /* TraumaHospitalFinder.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		17A1312EB7FB4F2C936CCDAD /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				7C36E4567833401AB16628A3 /* RedMed */,
+				8516640B1B3C46CB93DCC727 /* Products */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		2833C727D3F24F4AB759151E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
+				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
+				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
+				B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */,
+				CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */,
+				C4CC2B3234F946E992AF8294 /* EditProfileView.swift */,
+				A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */,
+				572AFAA69FD048659B137D3A /* LocationView.swift */,
+				1381A61F1B3645C98CB67182 /* MyIDView.swift */,
+				84F177F3DB4549588AF855B5 /* ScannedCardView.swift */,
+				E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */,
+				D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */,
+				9F510000014A1D00000001 /* ProfileSummaryView.swift */,
+				E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		7C36E4567833401AB16628A3 /* RedMed */ = {
+			isa = PBXGroup;
+			children = (
+				E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */,
+				8C18F62ABD454BB6B2392009 /* ContentView.swift */,
+				8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */,
+				069281337815419DA7EB02F2 /* Models */,
+				C7428494040244ACB57B9038 /* Services */,
+				2833C727D3F24F4AB759151E /* Views */,
+				C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */,
+				C5D6E7F8A9B0123456CDEF12 /* google-api-key */,
+				BFBA864A15A1418FBA801232 /* Info.plist */,
+				B97AA6BDDA134B69ABA01F65 /* RedMed.entitlements */,
+				949BF96AEE164413B602D23E /* Assets.xcassets */,
+			);
+			path = RedMed;
+			sourceTree = "<group>";
+		};
+		8516640B1B3C46CB93DCC727 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				349B554805D54C418E202B76 /* RedMed.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C7428494040244ACB57B9038 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FACE1D0000014A1D00000001 /* BiometricGate.swift */,
+				8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */,
+				A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */,
+				57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */,
+				5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */,
+				A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */,
+				41F919F5A31247B2B0CB18DB /* NFCReader.swift */,
+				FAA5420A418C4467938AA432 /* NFCWriter.swift */,
+				6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		52FAC360FED746F6A1BC0696 /* RedMed */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B2AA388FD3604634A6B8C17C /* Build configuration list for PBXNativeTarget "RedMed" */;
+			buildPhases = (
+				1BF59E37D05A441DA9D76570 /* Sources */,
+				94CA24ADB06040BEBF603F09 /* Frameworks */,
+				F3CBA7F42B4344AA902AAB52 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RedMed;
+			productName = RedMed;
+			productReference = 349B554805D54C418E202B76 /* RedMed.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6A233A20B2094759985BE8E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				ORGANIZATIONNAME = RedMed;
+				TargetAttributes = {
+					52FAC360FED746F6A1BC0696 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 5C5B4FA7F1C246C8AD0E570C /* Build configuration list for PBXProject "RedMed" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 17A1312EB7FB4F2C936CCDAD /* Main */;
+			productRefGroup = 8516640B1B3C46CB93DCC727 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				52FAC360FED746F6A1BC0696 /* RedMed */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F3CBA7F42B4344AA902AAB52 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E491D7ADA2744DCF80D3C865 /* Assets.xcassets in Resources */,
+				D4E5F6A7B8C901234567DEF0 /* trauma-hospitals.json in Resources */,
+				D6E7F8A9B0C1234567DEF123 /* google-api-key in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1BF59E37D05A441DA9D76570 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */,
+				18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */,
+				A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */,
+				B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */,
+				CAAABDF6872A4D1293AEAF11 /* FirstAidTopic.swift in Sources */,
+				5AEAD51967FE43B28F510E5B /* MedicalProfile.swift in Sources */,
+				8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */,
+				B2C3D4E5F6A789012345BCDE /* TraumaHospitalFinder.swift in Sources */,
+				B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */,
+				A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */,
+				287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */,
+				FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */,
+				61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */,
+				283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */,
+				FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */,
+				F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */,
+				B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */,
+				1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */,
+				B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */,
+				140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */,
+				B1CELET000014A1D00000002 /* BraceletSetupView.swift in Sources */,
+				B3CELET000014A1D00000002 /* BraceletToolbarButton.swift in Sources */,
+				37E149251C1146ED976FE5A9 /* CPRTimerView.swift in Sources */,
+				1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */,
+				272E340D430D45A1B65C115A /* FirstAidDetailView.swift in Sources */,
+				40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */,
+				F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */,
+				98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */,
+				9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */,
+				25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */,
+				C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */,
+				A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3A48EB16576A41F39933B19F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6C3D1D89A40940C3AB1D108B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RedMed/RedMed.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 33F9FQ4VBU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RedMed/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RedMed;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = local.redmed.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F52740C57B6B4759B6D334CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -126,7 +421,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)", );
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -141,64 +439,16 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			}; name = Debug; };
-		3A48EB16576A41F39933B19F /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				ENABLE_NS_ASSERTIONS = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
-			}; name = Release; };
-		6C3D1D89A40940C3AB1D108B /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+			};
+			name = Debug;
+		};
+		F8271ACC9D20473DA4AC7140 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = RedMed/RedMed.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -209,42 +459,42 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = local.redmed.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			}; name = Debug; };
-		F8271ACC9D20473DA4AC7140 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = RedMed/RedMed.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = RedMed/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RedMed;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = local.redmed.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			}; name = Release; };
-		5C5B4FA7F1C246C8AD0E570C /* Build configuration list for PBXProject "RedMed" */ = {isa = XCConfigurationList; buildConfigurations = (F52740C57B6B4759B6D334CB /* Debug */, 3A48EB16576A41F39933B19F /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		B2AA388FD3604634A6B8C17C /* Build configuration list for PBXNativeTarget "RedMed" */ = {isa = XCConfigurationList; buildConfigurations = (6C3D1D89A40940C3AB1D108B /* Debug */, F8271ACC9D20473DA4AC7140 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		52FAC360FED746F6A1BC0696 /* RedMed */ = {isa = PBXNativeTarget; buildConfigurationList = B2AA388FD3604634A6B8C17C /* Build configuration list for PBXNativeTarget "RedMed" */; buildPhases = (1BF59E37D05A441DA9D76570 /* Sources */, 94CA24ADB06040BEBF603F09 /* Frameworks */, F3CBA7F42B4344AA902AAB52 /* Resources */); buildRules = (); dependencies = (); name = RedMed; productName = RedMed; productReference = 349B554805D54C418E202B76 /* RedMed.app */; productType = "com.apple.product-type.application"; };
-		6A233A20B2094759985BE8E3 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; ORGANIZATIONNAME = RedMed; TargetAttributes = { 52FAC360FED746F6A1BC0696 = { CreatedOnToolsVersion = 16.0; }; }; }; buildConfigurationList = 5C5B4FA7F1C246C8AD0E570C /* Build configuration list for PBXProject "RedMed" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 17A1312EB7FB4F2C936CCDAD /* Main */; productRefGroup = 8516640B1B3C46CB93DCC727 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (52FAC360FED746F6A1BC0696 /* RedMed */); };
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5C5B4FA7F1C246C8AD0E570C /* Build configuration list for PBXProject "RedMed" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F52740C57B6B4759B6D334CB /* Debug */,
+				3A48EB16576A41F39933B19F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B2AA388FD3604634A6B8C17C /* Build configuration list for PBXNativeTarget "RedMed" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C3D1D89A40940C3AB1D108B /* Debug */,
+				F8271ACC9D20473DA4AC7140 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
 	};
 	rootObject = 6A233A20B2094759985BE8E3 /* Project object */;
 }
