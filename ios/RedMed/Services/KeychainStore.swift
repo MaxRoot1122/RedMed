@@ -1,10 +1,10 @@
 import Foundation
 import Security
 
-/// Minimal Keychain wrapper for the medical profile blob. Keychain (vs.
-/// UserDefaults) is hardware-encrypted and, with `.WhenUnlockedThisDeviceOnly`,
-/// is excluded from iCloud/iTunes backups and never leaves this device —
-/// the right container for personal health data on iOS.
+/// Minimal Keychain wrapper for medical profile and bracelet chip URL blobs.
+/// Keychain (vs. UserDefaults) is hardware-encrypted and, with
+/// `.WhenUnlockedThisDeviceOnly`, is excluded from iCloud/iTunes backups and
+/// never leaves this device — the right container for personal health data.
 enum KeychainStore {
     private static let service = "local.redmed.profile"
 

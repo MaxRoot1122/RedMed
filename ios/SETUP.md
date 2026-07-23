@@ -84,6 +84,7 @@ Full checklist: [`docs/IOS_APP_STORE.md`](../docs/IOS_APP_STORE.md).
 ## Notes
 
 - Profile data is stored in the iOS Keychain (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`) — not synced to iCloud.
+- Linked bracelet chip URL (includes `#d=` medical payload) is also stored in the Keychain; device display name stays in UserDefaults.
 - The app never auto-dials 911; buttons open Phone/Messages pre-filled for you to confirm.
 - **Find 911 and satellite emergency:** RedMed shows on-device GPS coordinates and a copyable dispatch summary. It does not connect to satellites or simulate satellite pointing. If you have no cell service, iPhone Emergency SOS via satellite and Android Satellite SOS are built into the operating system (Settings → Emergency SOS on iPhone 14+, or your phone's native emergency dialer on supported Android devices). RedMed's Find 911 screen explains that path when you're offline — it cannot open or control those OS features.
 - First aid content is general public guidance, not personalized medical advice.

@@ -6,6 +6,19 @@ import Foundation
 /// vice versa.
 enum ProfileLinkBuilder {
 
+    /// Match web `PROFILE_LIMITS.dEncodedMax` — reject hostile deep-link DoS before decode.
+    private static let maxEncodedLength = 8192
+    private static let maxName = 120
+    private static let maxDob = 32
+    private static let maxBlood = 16
+    private static let maxUpdated = 40
+    private static let maxListItem = 80
+    private static let maxListCount = 32
+    private static let maxContacts = 4
+    private static let maxContactField = 160
+    private static let maxNotes = 500
+    private static let maxDocField = 120
+
     static func buildURL(profile: MedicalProfile, baseURL: String) -> URL? {
         var stamped = profile
         stamped.updated = ISO8601DateFormatter().string(from: Date())
@@ -47,8 +60,35 @@ enum ProfileLinkBuilder {
     static func decodeProfile(fromURLString urlString: String) -> MedicalProfile? {
         guard let range = urlString.range(of: "#d=") else { return nil }
         let encoded = String(urlString[range.upperBound...])
-        guard let data = base64urlDecode(encoded) else { return nil }
-        return try? JSONDecoder().decode(MedicalProfile.self, from: data)
+        guard encoded.utf8.count <= maxEncodedLength else { return nil }
+        guard let data = base64urlDecode(encoded), data.count <= maxEncodedLength else { return nil }
+        guard let profile = try? JSONDecoder().decode(MedicalProfile.self, from: data) else { return nil }
+        return clamp(profile)
+    }
+
+    /// Cap hostile / oversized fields after Codable decode (mirrors web normalizeProfile).
+    private static func clamp(_ profile: MedicalProfile) -> MedicalProfile {
+        var p = profile
+        p.name = String(p.name.prefix(maxName))
+        p.dob = String(p.dob.prefix(maxDob))
+        p.blood = String(p.blood.prefix(maxBlood))
+        p.updated = String(p.updated.prefix(maxUpdated))
+        p.notes = String(p.notes.prefix(maxNotes))
+        p.allergies = Array(p.allergies.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
+        p.meds = Array(p.meds.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
+        p.conditions = Array(p.conditions.map { String($0.prefix(maxListItem)) }.prefix(maxListCount))
+        p.contacts = Array(p.contacts.prefix(maxContacts).map { c in
+            var contact = c
+            contact.name = String(contact.name.prefix(maxContactField))
+            contact.rel = String(contact.rel.prefix(maxContactField))
+            contact.phone = String(contact.phone.prefix(32))
+            return contact
+        })
+        p.doc.name = String(p.doc.name.prefix(maxDocField))
+        p.doc.phone = String(p.doc.phone.prefix(32))
+        p.insurance.provider = String(p.insurance.provider.prefix(maxDocField))
+        p.insurance.id = String(p.insurance.id.prefix(maxDocField))
+        return p
     }
 
     private static func base64url(_ data: Data) -> String {
