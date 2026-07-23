@@ -42,14 +42,14 @@ if not filecmp.cmp("index.html", mirror, shallow=False):
     print(f"FAIL: {mirror} out of sync with index.html"); sys.exit(1)
 print("OK: macOS www mirror matches index.html")
 
-for name in ("get.html", "privacy-policy.html"):
+for name in ("get.html", "privacy-policy.html", "terms-of-service.html"):
     mpath = f"RedMed.app/Contents/Resources/www/{name}"
     try:
         if not filecmp.cmp(name, mpath, shallow=False):
             print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
     except FileNotFoundError:
         print(f"WARN: missing mirror {mpath}")
-print("OK: get.html + privacy-policy mirrors match")
+print("OK: get.html + privacy-policy + terms-of-service mirrors match")
 
 try:
     links = json.load(open(".well-known/assetlinks.json", encoding="utf-8"))
