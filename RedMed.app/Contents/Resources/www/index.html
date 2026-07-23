@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-M6PAXc0EJ4Ed2Q/1O7rUn1ayQIMrSIGuJH5P6yq95wE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-o+LTzn0j/Ckzk/4IGTDIdiBP2YOusQwSvld4nFSl3eU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -716,6 +716,8 @@
     display: block;
   }
   #idForm fieldset.fieldset-you > label:first-child { margin-top: var(--md-4); }
+  #idForm fieldset.fieldset-you > .name-field:first-child { margin-top: var(--md-4); }
+  #idForm fieldset.fieldset-you > .name-field + .name-field { margin-top: var(--md-2); }
   #idForm fieldset .chip-list { margin-top: var(--md-2); margin-bottom: var(--md-2); }
   #idForm fieldset .search-add { margin-top: var(--md-1); margin-bottom: var(--md-2); }
   #idForm fieldset.fieldset-chips {
@@ -3670,8 +3672,8 @@
 
       <form id="idForm">
         <fieldset class="fieldset-you">
-          <label for="f_name" data-i18n="labelName">Name *</label>
-          <input type="text" id="f_name" required>
+          <input type="text" id="f_name" class="name-field" required autocomplete="given-name" data-i18n-placeholder="phFirstName" placeholder="First" aria-label="Name">
+          <input type="text" id="f_lastname" class="name-field" autocomplete="family-name" data-i18n-placeholder="phLastName" placeholder="Last" aria-label="Last name">
           <label for="f_blood" data-i18n="labelBlood">Blood type</label>
           <select id="f_blood">
             <option value="" data-i18n="bloodPlaceholder">—</option>
@@ -4707,7 +4709,7 @@
     en: {
       termsChipTerms: "Terms Of Service",
       termsChipPrivacy: "Privacy Policy",
-      labelName: "Name *", labelNamePlain: "Name", labelDob: "Birth date", labelBlood: "Blood type",
+      labelName: "Name *", phFirstName: "First", phLastName: "Last", labelNamePlain: "Name", labelDob: "Birth date", labelBlood: "Blood type",
       bloodUnknown: "Unknown", bloodPlaceholder: "—", labelAllergies: "Allergies", labelMeds: "Medications",
       labelConditions: "Conditions", legendMedical: "Medical information",
       legendContacts: "Contacts", labelPhone: "Phone", labelRelationship: "Relationship",
@@ -4819,7 +4821,7 @@
     es: {
       termsChipTerms: "Términos de servicio",
       termsChipPrivacy: "Política de privacidad",
-      labelName: "Nombre *", labelNamePlain: "Nombre", labelDob: "Fecha de nacimiento", labelBlood: "Tipo de sangre",
+      labelName: "Nombre *", phFirstName: "Nombre", phLastName: "Apellido", labelNamePlain: "Nombre", labelDob: "Fecha de nacimiento", labelBlood: "Tipo de sangre",
       bloodUnknown: "Desconocido", bloodPlaceholder: "—", labelAllergies: "Alergias", labelMeds: "Medicamentos",
       labelConditions: "Condiciones", legendMedical: "Información médica",
       legendContacts: "Contactos", labelPhone: "Teléfono", labelRelationship: "Parentesco",
@@ -6225,10 +6227,24 @@
     return el && el.value != null ? el.value.trim() : "";
   }
 
+  function joinProfileName(first, last) {
+    first = String(first || "").trim();
+    last = String(last || "").trim();
+    return [first, last].filter(Boolean).join(" ");
+  }
+
+  function splitProfileName(full) {
+    full = String(full || "").trim();
+    if (!full) return { first: "", last: "" };
+    var i = full.indexOf(" ");
+    if (i < 0) return { first: full, last: "" };
+    return { first: full.slice(0, i).trim(), last: full.slice(i + 1).trim() };
+  }
+
   function collectFormData() {
     var donorEl = document.getElementById("f_donor");
     return {
-      name: fieldVal("f_name"),
+      name: joinProfileName(fieldVal("f_name"), fieldVal("f_lastname")),
       dob: (document.getElementById("f_dob") || {}).value || "",
       blood: (document.getElementById("f_blood") || {}).value || "",
       donor: !!(donorEl && donorEl.checked),
@@ -6362,7 +6378,10 @@
 
   function fillFormFrom(data) {
     if (!data) return;
-    document.getElementById("f_name").value = data.name || "";
+    var nameParts = splitProfileName(data.name || "");
+    document.getElementById("f_name").value = nameParts.first;
+    var lastNameEl = document.getElementById("f_lastname");
+    if (lastNameEl) lastNameEl.value = nameParts.last;
     document.getElementById("f_dob").value = data.dob || "";
     document.getElementById("f_blood").value = data.blood || "";
     var donorEl = document.getElementById("f_donor");
