@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eyVb/eLdu0pu+rZPXX/c+EzIgihQnlil5QIheuxF8GQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WmvmUSBMmdjpUoSS1GeYDLsDfKvuXZI3jhxhZ73m2w8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -138,6 +138,10 @@
     --md-type-body: 14px;
     --md-type-label: 11px;
     --md-type-input: 16px;
+    --chip-dropdown-font: 12px;
+    --chip-search-font: 10px;
+    --form-field-h: var(--md-btn);
+    --form-field-pad-x: 12px;
     --control-h: var(--md-control);
     --page-nav-item-h: 50px;
     --page-nav-tab-w: 4rem;
@@ -346,7 +350,7 @@
     box-sizing: border-box;
   }
   #editView #idForm .chip-block-title {
-    font-size: var(--md-type-label);
+    font-size: 14px;
     font-weight: 500;
     color: var(--google-on-surface-variant);
     margin: var(--md-4) 0 var(--md-2);
@@ -375,7 +379,7 @@
     padding-inline: var(--md-3);
   }
   #editView #idForm label {
-    font-size: var(--md-type-label);
+    font-size: 14px;
     font-weight: 500;
     color: var(--google-on-surface-variant);
     letter-spacing: 0.01em;
@@ -397,8 +401,12 @@
     box-shadow: none;
     border-color: var(--google-outline-variant);
     background: var(--field-bg);
-    font-size: var(--md-type-input);
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 400;
     line-height: 1.25;
+    height: var(--form-field-h);
+    min-height: var(--form-field-h);
   }
   #editView #idForm input:hover,
   #editView #idForm select:hover {
@@ -413,7 +421,6 @@
   }
   #editView #idForm fieldset.fieldset-chips .chip-pick-select {
     margin: var(--md-1) 0 var(--md-2);
-    font-size: var(--md-type-body);
   }
   #editView #idForm fieldset.fieldset-chips .chip {
     border-color: var(--google-outline-variant);
@@ -525,6 +532,11 @@
     min-width: 0; object-fit: contain;
   }
   .brand-wordmark-hero { height: 44px; max-width: 200px; margin: 0 auto 6px; }
+  .page-header .brand-wordmark-hero,
+  .page-header .brand-logo-lockup {
+    margin: 0;
+    display: block;
+  }
   .brand-device { display: none; align-items: center; gap: 11px; min-width: 0; flex: 1; }
   .brand-lockup.is-device .brand-default { display: none; }
   .brand-lockup.is-device .brand-device { display: flex; }
@@ -700,8 +712,49 @@
   #idForm fieldset.fieldset-you input[type=text],
   #idForm fieldset.fieldset-you input[type=date],
   #idForm fieldset.fieldset-you select {
-    height: var(--md-btn);
-    min-height: var(--md-btn);
+    height: var(--form-field-h);
+    min-height: var(--form-field-h);
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 400;
+    line-height: 1.25;
+    padding: 0 var(--form-field-pad-x);
+  }
+  #idForm select,
+  #idForm .chip-pick-select {
+    height: var(--form-field-h);
+    min-height: var(--form-field-h);
+    padding: 0 36px 0 var(--form-field-pad-x);
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 400;
+    line-height: 1.25;
+    box-sizing: border-box;
+  }
+  #idForm fieldset.fieldset-chips .chip-pick-select {
+    margin: var(--md-2) 0 var(--md-2);
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  #idForm fieldset.fieldset-chips .chip-pick-select option,
+  #idForm fieldset.fieldset-chips .chip-pick-select optgroup,
+  #idForm select option,
+  #idForm select optgroup,
+  .trauma-pickers select option,
+  .trauma-pickers select optgroup {
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 400;
+  }
+  .trauma-pickers select {
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 400;
+    line-height: 1.25;
   }
   #idForm fieldset.fieldset-chips .chip {
     padding: 0 var(--md-3) 0 var(--md-3);
@@ -735,24 +788,11 @@
     margin: 0;
     padding: 0;
   }
-  #idForm fieldset.fieldset-chips .chip-pick-select {
-    margin: var(--md-2) 0 var(--md-2);
-    width: 100%;
-    font-size: var(--md-type-body);
-    font-weight: 400;
-    line-height: 1.35;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
   #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
     color: var(--muted);
   }
   #editView #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
     color: var(--google-on-surface-variant);
-  }
-  body:has(#editView:not(.hide)) #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
-    color: rgba(255, 255, 255, 0.45);
   }
   #idForm fieldset.fieldset-chips .chip {
     -webkit-user-select: none;
@@ -841,6 +881,19 @@
   .row2 > div { min-width: 0; }
   .row2 select { width: 100%; }
   .row2 label { margin-top: 0; }
+  /* Blood type (left, wider) + birth date (right) */
+  #idForm fieldset.fieldset-you .row2 {
+    grid-template-columns: minmax(15rem, 1.85fr) minmax(0, 0.88fr);
+    align-items: end;
+  }
+  #idForm fieldset.fieldset-you .row2-blood {
+    min-width: 15rem;
+  }
+  #idForm fieldset.fieldset-you #f_blood {
+    width: 100%;
+    min-width: 100%;
+    text-overflow: clip;
+  }
   .hint { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
   .terms-chip-compact {
     justify-content: center; text-align: center;
@@ -848,12 +901,13 @@
   }
   #aidView .aid-terms-footer {
     position: fixed;
-    bottom: calc(var(--page-nav-clearance) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--dock-bottom) + env(safe-area-inset-bottom, 0px) + 2px);
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     max-width: var(--app-width);
-    z-index: 50;
+    z-index: 210;
+    pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -865,15 +919,21 @@
     border: none;
   }
   #aidView .aid-terms-footer a {
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 500;
-    color: var(--accent);
+    font-style: normal;
+    color: var(--muted);
     text-decoration: underline;
     text-underline-offset: 2px;
     letter-spacing: 0.02em;
     line-height: 1.2;
+    pointer-events: auto;
   }
-  #aidView .aid-terms-footer a:hover { color: var(--accent); opacity: 0.72; }
+  #aidView .aid-terms-footer a:hover,
+  #aidView .aid-terms-footer a:focus-visible {
+    color: var(--ink);
+    opacity: 1;
+  }
   .contact-fold {
     margin-top: 0; border: 1px solid var(--field-border); border-radius: var(--field-radius);
     background: var(--field-bg); overflow: hidden;
@@ -960,11 +1020,79 @@
   }
 
   .search-add { position: relative; margin-top: 0; z-index: 2; }
+  #idForm fieldset.fieldset-chips .search-add {
+    display: block;
+    width: 100%;
+    margin-top: var(--md-2);
+  }
   .search-add.is-open { z-index: 40; }
-  .search-add.is-open input {
+  .chip-search-launcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: var(--form-field-h);
+    min-height: var(--form-field-h);
+    padding: 0 36px 0 var(--form-field-pad-x);
+    border-radius: var(--field-radius);
+    border: 1px solid var(--field-border);
+    background: var(--field-bg);
+    box-shadow: none;
+    box-sizing: border-box;
+    transition: border-color var(--duration-med) var(--ease-out), background-color var(--duration-med) var(--ease-out), box-shadow var(--duration-med) var(--ease-out);
+  }
+  .chip-search-launcher:focus-within,
+  .search-add.is-open .chip-search-launcher {
     border-color: var(--accent);
     background: var(--field-bg-focus);
     box-shadow: var(--focus-ring), inset 0 1px 2px rgba(60, 64, 67, 0.04);
+  }
+  .chip-search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--muted);
+    opacity: 0.78;
+    pointer-events: none;
+  }
+  .chip-search-icon svg { width: 12px; height: 12px; display: block; }
+  .chip-search-launcher input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-family: var(--font);
+    font-size: var(--chip-search-font);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .chip-search-launcher input:hover,
+  .chip-search-launcher input:focus {
+    outline: none;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+  .chip-search-launcher input::-webkit-search-cancel-button { -webkit-appearance: none; }
+  .search-add.is-open input {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
   .search-add-row { display: flex; gap: var(--md-2); align-items: center; width: 100%; }
   .search-add-row input {
@@ -996,9 +1124,25 @@
     animation: suggestIn 0.18s var(--ease-emphasized) both;
   }
   #medSuggest { max-height: 320px; }
+  #idForm fieldset.fieldset-chips .suggest-list .suggest-item {
+    min-height: var(--form-field-h);
+    font-size: var(--chip-search-font);
+    line-height: 1.25;
+  }
+  #idForm fieldset.fieldset-chips .suggest-list .suggest-hint,
+  #idForm fieldset.fieldset-chips .suggest-list .suggest-group-label {
+    font-size: var(--chip-search-font);
+    line-height: 1.25;
+  }
   .suggest-group-label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.02em; text-transform: none;
-    color: var(--muted); padding: 12px 16px 4px; pointer-events: none;
+    font-family: var(--font);
+    font-size: var(--chip-dropdown-font);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--muted);
+    padding: 12px var(--form-field-pad-x) 4px;
+    pointer-events: none;
   }
   .suggest-group-label + .suggest-group-label,
   .suggest-item + .suggest-group-label {
@@ -1006,14 +1150,16 @@
   }
   .suggest-item {
     display: flex; align-items: center; width: 100%; text-align: left;
-    min-height: var(--md-touch); padding: 0 var(--md-4); border: none; background: none;
-    font-family: inherit; font-size: var(--md-type-body); color: var(--ink); cursor: pointer; border-bottom: 1px solid var(--line);
+    min-height: var(--form-field-h); padding: 0 var(--form-field-pad-x); border: none; background: none;
+    font-family: var(--font); font-size: var(--chip-dropdown-font); font-weight: 400; line-height: 1.25;
+    color: var(--ink); cursor: pointer; border-bottom: 1px solid var(--line);
     border-radius: 0;
   }
   .suggest-item:last-child { border-bottom: none; }
   .suggest-item:hover, .suggest-item:focus { background: var(--panel); }
   .suggest-hint {
-    padding: var(--md-3) var(--md-4); font-size: var(--md-type-body); color: var(--muted); line-height: 1.4286;
+    padding: var(--md-3) var(--form-field-pad-x); font-family: var(--font);
+    font-size: var(--chip-dropdown-font); font-weight: 400; line-height: 1.25; color: var(--muted);
     pointer-events: none;
   }
 
@@ -1152,7 +1298,7 @@
     font-weight: 700;
     color: var(--accent);
     background: var(--accent-soft);
-    box-shadow: none;
+    box-shadow: var(--accent-glow-ring), 0 0 14px rgba(225, 29, 72, 0.24);
     padding: 4px 2px;
   }
   .bb-item.active .bb-label {
@@ -1559,21 +1705,29 @@
   #viewView { display: none; }
   #viewView.show { display: block; }
   #editView.hide { display: none; }
+  #editView:not(.hide) {
+    background: var(--bg);
+    color: var(--ink);
+  }
 
-  /* My ID — black canvas, white type */
-  html:has(#editView:not(.hide)) {
+  /* Owner tabs (My ID, Aid, 911) — black canvas, white type */
+  html:has(#editView:not(.hide)),
+  html:has(#aidView.show),
+  html:has(#locView.show) {
     background: #000;
     color-scheme: dark;
   }
-  body:has(#editView:not(.hide)) {
+  body:has(#editView:not(.hide)),
+  body:has(#aidView.show),
+  body:has(#locView.show) {
     --ink: #ffffff;
     --muted: rgba(255, 255, 255, 0.62);
     --bg: #000000;
     --surface: rgba(255, 255, 255, 0.1);
     --surface-dim: #111111;
     --panel: rgba(255, 255, 255, 0.08);
-    --field-bg: rgba(255, 255, 255, 0.1);
-    --field-bg-focus: rgba(255, 255, 255, 0.14);
+    --field-bg: #111111;
+    --field-bg-focus: #1a1a1a;
     --field-border: rgba(255, 255, 255, 0.2);
     --field-border-hover: rgba(255, 255, 255, 0.32);
     --outline: rgba(255, 255, 255, 0.14);
@@ -1589,18 +1743,78 @@
     box-shadow: none;
   }
   body:has(#editView:not(.hide))::before,
-  body:has(#editView:not(.hide))::after {
+  body:has(#editView:not(.hide))::after,
+  body:has(#aidView.show)::before,
+  body:has(#aidView.show)::after,
+  body:has(#locView.show)::before,
+  body:has(#locView.show)::after {
     display: none;
   }
-  body:has(#editView:not(.hide)) select {
-    color: #fff;
+  body:has(#editView:not(.hide)) #editView #idForm select,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select,
+  body:has(#locView.show) #locView .trauma-pickers select {
+    color: #ffffff;
+    background-color: #111111;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: none;
+    opacity: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  }
+  body:has(#editView:not(.hide)) #editView #idForm select:hover,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:hover,
+  body:has(#locView.show) #locView .trauma-pickers select:hover {
+    color: #ffffff;
+    background-color: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.32);
+    box-shadow: none;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm select:focus,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:focus,
+  body:has(#locView.show) #locView .trauma-pickers select:focus {
+    color: #ffffff;
+    background-color: #1a1a1a;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm select option,
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select option,
+  body:has(#locView.show) #locView .trauma-pickers select option {
+    color: #ffffff;
+    background-color: #111111;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:invalid {
+    color: rgba(255, 255, 255, 0.58);
+    background-color: #111111;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:valid,
+  body:has(#editView:not(.hide)) #editView #idForm select:valid {
+    color: #ffffff;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher {
+    background-color: #111111;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: none;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input {
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
   }
   body:has(#editView:not(.hide)) input[type=text],
   body:has(#editView:not(.hide)) input[type=tel],
   body:has(#editView:not(.hide)) input[type=date],
+  body:has(#editView:not(.hide)) input[type=search],
   body:has(#editView:not(.hide)) textarea {
     color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-shadow: none;
   }
   body:has(#editView:not(.hide)) input::placeholder,
   body:has(#editView:not(.hide)) textarea::placeholder {
@@ -1616,6 +1830,7 @@
   .bottombar .bb-item.active {
     color: #e11d48;
     background: rgba(225, 29, 72, 0.10);
+    box-shadow: var(--accent-glow-ring), 0 0 14px rgba(225, 29, 72, 0.24);
   }
   .bottombar .bb-item.active .bb-label,
   .bottombar .bb-item.active .bb-icon {
@@ -1642,19 +1857,6 @@
   .id-header::before { display: none; }
   .id-header h1 { margin: 0; font-size: 28px; font-weight: 400; letter-spacing: 0; line-height: 1.2; position: relative; }
   .id-header .sub { font-size: 14px; color: rgba(255,255,255,0.92); margin-top: 8px; font-weight: 400; position: relative; }
-
-  /* Live header preview under name / DOB / blood — always on narrow layouts */
-  .profile-header-preview {
-    margin: var(--md-4) 0 0;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: opacity var(--duration-med) var(--ease-out);
-  }
-  .profile-header-preview h1 { font-size: 22px; }
-  .profile-header-preview .sub { font-size: 13px; }
-  @media (min-width: 1024px) {
-    .profile-header-preview { display: none; }
-  }
 
   .section { padding: 16px 20px; border-bottom: 1px solid var(--line); background: var(--surface); }
   .section h2 {
@@ -1701,9 +1903,24 @@
 
   .updated { text-align: center; font-size: 12px; color: var(--muted); padding: 16px; }
   .page-header {
-    background: transparent; color: var(--ink); padding: 24px 20px 12px; text-align: center;
+    background: transparent; color: var(--ink); padding: 24px 20px 12px; text-align: left;
   }
-  .page-header h1 { margin: 0; font-size: 22px; font-weight: 400; letter-spacing: 0; }
+  .page-header h1 { margin: 0; font-size: 22px; font-weight: 400; letter-spacing: 0; color: var(--ink); }
+  .page-header.myid,
+  .page-header.aid,
+  .page-header.loc {
+    position: sticky;
+    top: 0;
+    z-index: 45;
+    padding: calc(var(--safe-top) + 8px) var(--space) 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    box-sizing: border-box;
+    background: var(--bg);
+  }
+  .page-header.aid { gap: 14px; padding-bottom: 16px; }
   .page-header.aid h1 .brand-red,
   .page-header.aid h1 .brand-med,
   .page-header.aid h1 {
@@ -1711,37 +1928,22 @@
     -webkit-background-clip: unset; background-clip: unset;
     color: var(--ink);
   }
-  .page-header.aid {
-    padding: 28px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-  .page-header.aid .brand-wordmark-hero {
-    height: 44px;
-    max-width: 200px;
-    margin: 0;
-  }
-  .page-header.aid .lead { color: #000000; margin: 0; }
-  .page-header.loc {
-    padding: 20px 16px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
+  .page-header.myid .brand-wordmark-hero,
+  .page-header.aid .brand-wordmark-hero,
   .page-header.loc .brand-wordmark-hero {
     height: 44px;
-    max-width: 200px;
+    width: auto;
+    max-width: min(240px, 72vw);
     margin: 0;
+    object-fit: contain;
+    object-position: left center;
   }
-  .page-header.myid {
-    padding: calc(var(--safe-top) + 20px) var(--space) 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    box-sizing: border-box;
+  .page-header.aid .lead,
+  .page-header.loc .lead { color: var(--muted); margin: 0; }
+  body:has(#editView:not(.hide)) .page-header.myid,
+  body:has(#aidView.show) .page-header.aid,
+  body:has(#locView.show) .page-header.loc {
+    background: #000;
   }
   .page-header.myid .brand-lockup { width: 100%; }
   .page-header.myid .brand-default {
@@ -1749,18 +1951,19 @@
     justify-content: flex-start;
     width: 100%;
   }
-  .page-header.myid .brand-wordmark-hero {
-    height: 44px;
-    max-width: 200px;
-    margin: 0;
+  .page-header.myid .brand-lockup.is-device .brand-device {
+    justify-content: flex-start;
+    width: 100%;
   }
   .page-header.myid .brand-device .brand-logo-lockup {
     height: 34px;
-    max-width: 120px;
+    width: auto;
+    max-width: min(160px, 58vw);
+    object-fit: contain;
   }
   .page-header.loc h1 { margin: 0; }
   .page-header.loc .lead {
-    color: var(--ink);
+    color: var(--muted);
     margin: 0;
     font-size: 13px;
     line-height: 1.45;
@@ -1771,7 +1974,7 @@
     font-size: 12px;
     line-height: 1.45;
     color: var(--muted);
-    text-align: center;
+    text-align: left;
     max-width: 22em;
   }
   .aid-privacy-hint {
@@ -1779,20 +1982,24 @@
     font-size: 13px;
     line-height: 1.45;
     color: var(--muted);
-    text-align: center;
+    text-align: left;
     max-width: 36em;
   }
-  .page-header .lead { font-size: 14px; color: var(--muted); margin: 8px auto 0; max-width: 36em; line-height: 1.5; font-weight: 400; }
+  .page-header .lead { font-size: 14px; color: var(--muted); margin: 0; max-width: 36em; line-height: 1.5; font-weight: 400; }
   .page-header .vibe-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 
   #aidView { display: none; }
   #aidView.show {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--ink);
     padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 16px);
   }
 
   #aidCards {
-    padding: 0 14px 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 var(--space) 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px; max-width: var(--app-width); margin: 0 auto;
     grid-auto-rows: auto; align-items: stretch;
   }
@@ -1813,7 +2020,7 @@
   }
   .aid-pane-icon {
     width: 32px; height: 32px; border-radius: var(--radius-md); display: grid; place-items: center;
-    background: var(--panel); color: #000000; flex-shrink: 0;
+    background: var(--panel); color: var(--ink); flex-shrink: 0;
   }
   .aid-pane.emphasis .aid-pane-icon {
     background: var(--panel);
@@ -2030,24 +2237,41 @@
   }
   .cpr-sound input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; accent-color: var(--accent); }
 
+  .aid-prayer-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: var(--app-width);
+    margin: 0 auto;
+    padding: 0 var(--space);
+    box-sizing: border-box;
+    min-height: 48px;
+  }
   .aid-prayer {
-    font-size: 12px; color: var(--muted); line-height: 1.35;
-    padding: 8px 16px 12px; margin: 0 auto; max-width: none;
-    text-align: center; font-style: italic; font-weight: 500;
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    font-size: 8px;
+    color: var(--muted);
+    line-height: 1.35;
+    padding: 0;
+    margin: 0;
+    max-width: 36em;
+    text-align: center;
+    font-style: italic;
+    font-weight: 500;
   }
   #locView { display: none; }
   #locView.show {
     display: block;
+    background: var(--bg);
+    color: var(--ink);
     padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 16px);
   }
 
   #locView .hint { margin: 0; }
 
   .loc-body {
-    padding: 0 16px 16px;
+    padding: 0 var(--space) var(--space);
     max-width: var(--app-width);
     margin: 0 auto;
     display: flex;
@@ -2088,11 +2312,12 @@
   #locView .loc-action-block {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     margin: 0;
   }
   #locView .loc-action-block .btn-call,
-  #locView .loc-action-block .btn-alert-contacts {
+  #locView .loc-action-block .btn-alert-contacts,
+  #locView .loc-action-block .btn-call-contacts {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2130,6 +2355,76 @@
     background: var(--surface);
     cursor: pointer;
   }
+  #locView .loc-action-block .btn-call-contacts {
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: var(--md-btn-radius);
+    color: var(--ink);
+    border: 1px solid var(--outline);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  #locView .loc-action-block .btn-call-contacts[hidden] { display: none !important; }
+  .loc-contact-picker {
+    border: none;
+    padding: 0;
+    margin: auto;
+    max-width: calc(100% - 32px);
+    width: min(360px, 100%);
+    background: transparent;
+  }
+  .loc-contact-picker::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+  }
+  .loc-contact-picker-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 18px 16px 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .loc-contact-picker-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .loc-contact-picker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .loc-contact-picker-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: var(--md-touch);
+    padding: 12px 20px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    border-radius: var(--md-btn-radius);
+    color: var(--ink);
+    border: 1px solid var(--outline);
+    background: var(--surface-dim);
+    cursor: pointer;
+  }
+  .loc-contact-picker-item:active,
+  .loc-contact-picker-item:hover {
+    background: var(--accent-container);
+    border-color: rgba(225, 29, 72, 0.22);
+  }
+  .loc-contact-picker-cancel {
+    margin: 0;
+  }
   .coord-card {
     background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--line);
     border-radius: var(--radius-lg); padding: 20px 16px; text-align: center; margin-bottom: 12px;
@@ -2144,14 +2439,6 @@
     color: var(--ink); line-height: 1.35; margin: 0;
   }
   .coord-card .heading { font-size: 14px; color: var(--muted); margin: 0; font-weight: 600; line-height: 1.4; }
-  .coord-card .coord-meta-block {
-    width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; margin: 0;
-  }
-  .coord-card .altitude { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.4; text-align: right; }
-  .coord-card .acc {
-    font-size: 10px; color: var(--muted); margin: 0; line-height: 1.25; font-weight: 500;
-    text-align: right; opacity: 0.82;
-  }
   .coord-card .loc-time { font-size: 12px; color: var(--muted); margin: 2px 0 0; line-height: 1.35; }
   .coord-card .coord-copy-hint {
     font-size: 11px; color: var(--muted); margin: 0; line-height: 1.3; font-weight: 500;
@@ -2172,24 +2459,6 @@
   }
   .coord-card .status { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 0; }
   .loc-gps-error { font-size: 13px; color: var(--ink); font-weight: 600; text-align: center; margin: 0; }
-  .loc-signal-section {
-    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg);
-    padding: 16px; margin: 0; line-height: 1.5;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .loc-signal-section.prominent {
-    background: var(--accent-container); border-color: rgba(225, 29, 72, 0.28);
-    box-shadow: none;
-  }
-  .loc-signal-section h2 { font-size: 16px; margin: 0; color: var(--ink); }
-  .loc-signal-section p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.5; }
-  .loc-offline-banner {
-    font-size: 13px; font-weight: 650; color: var(--ink); margin: 0;
-  }
-  .loc-signal-ios { display: none; }
-  .loc-signal-ios.show { display: block; }
   .loc-bracelet-section {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -2245,7 +2514,7 @@
     margin: 0;
     font-size: 12px;
     line-height: 1.45;
-    text-align: center;
+    text-align: left;
   }
   #locView .loc-terms-footer {
     position: fixed;
@@ -2395,7 +2664,7 @@
       --md-inset: 16px;
       --md-type-title: 16px;
       --md-type-body: 14px;
-      --md-type-label: 12px;
+      --md-type-label: 14px;
       --md-type-input: 16px;
       --field-radius: 8px;
       --card-radius: 12px;
@@ -2485,32 +2754,29 @@
     }
     .brand-lockup { min-width: 0; flex: 1 1 auto; }
     .page-header {
-      padding: calc(16px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(8px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
+      padding: calc(var(--safe-top) + calc(8px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(10px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
     }
-    .page-header.aid {
-      padding: calc(22px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(16px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
-      gap: calc(12px * var(--phone-scale));
-    }
+    .page-header.myid,
+    .page-header.aid,
     .page-header.loc {
-      padding: calc(18px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(10px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
-      gap: calc(8px * var(--phone-scale));
+      padding: calc(var(--safe-top) + calc(8px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(10px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
     }
+    .page-header.aid { padding-bottom: calc(16px * var(--phone-scale)); gap: calc(12px * var(--phone-scale)); }
+    .page-header.loc { gap: calc(8px * var(--phone-scale)); }
     .page-header.loc .lead { font-size: calc(12px * var(--phone-scale)); }
     .page-header.loc .loc-privacy-hint { font-size: calc(11px * var(--phone-scale)); }
     .page-header h1 { font-size: calc(18px * var(--phone-scale)); }
-    .page-header .lead { font-size: calc(12px * var(--phone-scale)); margin-top: calc(6px * var(--phone-scale)); }
+    .page-header .lead { font-size: calc(12px * var(--phone-scale)); margin: 0; }
     .page-header.aid .lead { margin: 0; }
     .aid-privacy-hint { font-size: calc(11px * var(--phone-scale)); }
     .brand-wordmark-hero { height: calc(34px * var(--phone-scale)); max-width: calc(150px * var(--phone-scale)); }
     header.app .brand-logo-lockup { max-width: min(calc(148px * var(--phone-scale)), 44vw); }
-    .page-header.aid .brand-wordmark-hero { margin: 0; }
-    .page-header.loc .brand-wordmark-hero { margin: 0; }
-    .page-header.myid {
-      padding: calc(var(--safe-top) + calc(16px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(8px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
-    }
-    .page-header.myid .brand-wordmark-hero {
+    .page-header.myid .brand-wordmark-hero,
+    .page-header.aid .brand-wordmark-hero,
+    .page-header.loc .brand-wordmark-hero {
       height: calc(44px * var(--phone-scale));
-      max-width: calc(200px * var(--phone-scale));
+      max-width: min(calc(240px * var(--phone-scale)), 72vw);
+      margin: 0;
     }
     header.app .brand-wordmark-text { font-size: calc(13px * var(--phone-scale)); }
     #aidView,
@@ -2543,12 +2809,12 @@
     .aid-pane-blurb { font-size: calc(9px * var(--phone-scale)); }
     .aid-pane-icon { width: calc(28px * var(--phone-scale)); height: calc(28px * var(--phone-scale)); }
     .aid-pane-icon svg { width: calc(17px * var(--phone-scale)); height: calc(17px * var(--phone-scale)); }
-    .aid-prayer { font-size: calc(11px * var(--phone-scale)); padding: calc(8px * var(--phone-scale)) calc(14px * var(--phone-scale)) calc(10px * var(--phone-scale)); }
+    .aid-prayer { font-size: calc(8px * var(--phone-scale)); }
     #aidView .aid-terms-footer {
       gap: calc(16px * var(--phone-scale));
       padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 2px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
     }
-    #aidView .aid-terms-footer a { font-size: calc(9px * var(--phone-scale)); }
+    #aidView .aid-terms-footer a { font-size: calc(8px * var(--phone-scale)); }
     #locView .loc-terms-footer {
       gap: calc(16px * var(--phone-scale));
       padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 2px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
@@ -2750,6 +3016,93 @@
     .phone-frame .contact-card .info .name { font-size: 14px; }
     .phone-frame .contact-card a.call { padding: 8px 12px; font-size: 13px; }
   }
+
+  /* Desktop design frame (?phone=1) — full app in iPhone 17 chassis, not split layout */
+  html.phone-emulate {
+    /* Mirror mobile typography tokens — @media (max-width:767px) does not fire on wide viewports */
+    --phone-scale: 1;
+    --app-max: 100%;
+    --app-width: 100%;
+    --space: 14px;
+    --md-1: 4px;
+    --md-2: 8px;
+    --md-3: 10px;
+    --md-4: 14px;
+    --md-5: 20px;
+    --md-6: 28px;
+    --md-touch: 44px;
+    --md-control: 44px;
+    --md-btn: 36px;
+    --md-chip: 28px;
+    --md-inset: 16px;
+    --md-type-title: 16px;
+    --md-type-body: 14px;
+    --md-type-label: 14px;
+    --md-type-input: 16px;
+    --field-radius: 8px;
+    --card-radius: 12px;
+    --control-h: var(--md-control);
+    --header-pad-y: 6px;
+    --header-row: 44px;
+    --header-chip-h: 28px;
+    --page-nav-offset: 12px;
+    --page-nav-pad: 4px;
+    --page-nav-item-h: 44px;
+    --page-nav-tab-w: 4rem;
+    --page-nav-gap: 10px;
+    --page-nav-dock-h: calc(var(--page-nav-pad) * 2 + var(--page-nav-item-h));
+    --dock-bottom: calc(var(--page-nav-offset) + var(--page-nav-dock-h));
+    --page-nav-clearance: calc(var(--dock-bottom) + var(--page-nav-gap));
+    --page-nav-inset: 12px;
+    --terms-footer-h: 20px;
+    --content-pad-bottom: 0px;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(251, 113, 133, 0.18), transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, rgba(225, 29, 72, 0.10), transparent 50%),
+      #1c1917;
+    min-height: 100dvh;
+  }
+  html.phone-emulate body {
+    width: calc(var(--phone-ref-w) * 1px);
+    max-width: calc(var(--phone-ref-w) * 1px);
+    min-height: calc(var(--phone-ref-h) * 1px);
+    max-height: min(calc(var(--phone-ref-h) * 1px), calc(100dvh - 32px));
+    margin: 16px auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 28px;
+    box-shadow: var(--shadow-float);
+    -webkit-overflow-scrolling: touch;
+    font-size: var(--md-type-body);
+    padding-bottom: calc(var(--page-nav-clearance) + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 768px) {
+    html.phone-emulate .split-preview { display: none !important; }
+    html.phone-emulate #editView .split-layout {
+      display: block;
+      max-width: none;
+      padding: 0;
+    }
+    html.phone-emulate #editView .split-main.wrap {
+      padding-top: 0;
+    }
+    html.phone-emulate #editView,
+    html.phone-emulate #aidView,
+    html.phone-emulate #locView,
+    html.phone-emulate #viewView {
+      max-width: 100%;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+    }
+    html.phone-emulate #editView .page-header.myid,
+    html.phone-emulate #aidView .page-header.aid,
+    html.phone-emulate #locView .page-header.loc {
+      max-width: 100%;
+      margin: 0;
+    }
+  }
 </style>
 </head>
 <body>
@@ -2759,10 +3112,10 @@
   <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/longlogo.svg" width="120" height="35" alt="RedMed">
+        <img class="brand-logo-lockup" src="assets/logo-header.png" width="120" height="31" alt="RedMed">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
@@ -2784,24 +3137,20 @@
           <label for="f_name" data-i18n="labelName">Name *</label>
           <input type="text" id="f_name" required>
           <div class="row2">
-            <div>
-              <label for="f_dob" data-i18n="labelDob">Birth date</label>
-              <input type="date" id="f_dob">
-            </div>
-            <div>
+            <div class="row2-blood">
               <label for="f_blood" data-i18n="labelBlood">Blood type</label>
               <select id="f_blood">
-                <option value="" data-i18n="bloodUnknown">Unknown</option>
+                <option value="" data-i18n="bloodPlaceholder">—</option>
                 <option>O-</option><option>O+</option>
                 <option>A-</option><option>A+</option>
                 <option>B-</option><option>B+</option>
                 <option>AB-</option><option>AB+</option>
               </select>
             </div>
-          </div>
-          <div class="profile-header-preview id-header" aria-live="polite" aria-atomic="true">
-            <h1 id="ip_name">—</h1>
-            <div class="sub" id="ip_agedob"></div>
+            <div>
+              <label for="f_dob" data-i18n="labelDob">Birth date</label>
+              <input type="date" id="f_dob">
+            </div>
           </div>
         </fieldset>
 
@@ -2812,9 +3161,9 @@
             <div class="chip-list" id="allergiesList"></div>
             <select id="allergyPick" class="chip-pick-select" required aria-labelledby="allergiesHeading"></select>
             <div class="search-add" id="allergySearch">
-              <div class="search-add-row">
-                <input type="text" id="allergyQuery" data-i18n-placeholder="phAllergy" placeholder="Search or add…" autocomplete="off">
-                <button type="button" class="btn-add" id="addAllergyBtn" data-i18n="btnAdd">Add</button>
+              <div class="chip-search-launcher">
+                <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
+                <input type="search" id="allergyQuery" data-i18n-placeholder="phAllergy" placeholder="Search…" autocomplete="off" enterkeyhint="search">
               </div>
               <div class="suggest-list" id="allergySuggest"></div>
             </div>
@@ -2827,9 +3176,9 @@
             <div class="chip-list" id="medsList"></div>
             <select id="medPick" class="chip-pick-select" required aria-labelledby="medsHeading"></select>
             <div class="search-add" id="medSearch">
-              <div class="search-add-row">
-                <input type="text" id="medQuery" data-i18n-placeholder="phMed" placeholder="Search or add…" autocomplete="off">
-                <button type="button" class="btn-add" id="addMedBtn" data-i18n="btnAdd">Add</button>
+              <div class="chip-search-launcher">
+                <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
+                <input type="search" id="medQuery" data-i18n-placeholder="phMed" placeholder="Search…" autocomplete="off" enterkeyhint="search">
               </div>
               <div class="suggest-list" id="medSuggest"></div>
             </div>
@@ -2842,9 +3191,9 @@
             <div class="chip-list" id="conditionsList"></div>
             <select id="conditionPick" class="chip-pick-select" required aria-labelledby="conditionsHeading"></select>
             <div class="search-add" id="conditionSearch">
-              <div class="search-add-row">
-                <input type="text" id="conditionQuery" data-i18n-placeholder="phCondition" placeholder="Search or add…" autocomplete="off">
-                <button type="button" class="btn-add" id="addConditionBtn" data-i18n="btnAdd">Add</button>
+              <div class="chip-search-launcher">
+                <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
+                <input type="search" id="conditionQuery" data-i18n-placeholder="phCondition" placeholder="Search…" autocomplete="off" enterkeyhint="search">
               </div>
               <div class="suggest-list" id="conditionSuggest"></div>
             </div>
@@ -3056,13 +3405,15 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
     <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No name, phone, email, or address on this screen — offline only, nothing sent anywhere.</p>
   </div>
   <div id="aidCards"></div>
-  <p class="aid-prayer">God, steady my hands and calm my heart so I can help.</p>
+  <div class="aid-prayer-box">
+    <p class="aid-prayer">God, steady my hands and calm my heart so I can help.</p>
+  </div>
   <nav class="aid-terms-footer terms-chip-compact" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms of Use</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
@@ -3072,7 +3423,7 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.svg" width="180" height="53" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No servers, no data collection. GPS &amp; compass data collected while the 911 screen is open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates stay on this screen. RedMed has no servers — location is not stored with us.</p>
@@ -3086,13 +3437,20 @@
 
     <div class="loc-action-block">
       <a href="tel:911" class="btn-call" data-i18n="btnCall911">Call 911</a>
+      <button type="button" class="btn-secondary btn-call-contacts" id="locCallContactsBtn" data-i18n="locCallContacts" hidden>Call emergency contacts</button>
       <button type="button" class="btn-secondary btn-alert-contacts" id="locAlertContactsBtn" data-i18n="btnAlertContacts">Text emergency contacts</button>
     </div>
+    <dialog class="loc-contact-picker" id="locContactPicker" aria-labelledby="locContactPickerTitle">
+      <div class="loc-contact-picker-panel">
+        <p class="loc-contact-picker-title" id="locContactPickerTitle" data-i18n="locPickContact">Select a contact to call</p>
+        <div class="loc-contact-picker-list" id="locContactPickerList" role="listbox"></div>
+        <button type="button" class="btn-secondary loc-contact-picker-cancel" id="locContactPickerCancel" data-i18n="btnCancel">Cancel</button>
+      </div>
+    </dialog>
 
     <div class="trauma-section" id="traumaSection">
       <div class="trauma-section-head">
         <h2 data-i18n="locTraumaTitle">Trauma centers nearby</h2>
-        <p class="hint" data-i18n="locTraumaLead">When a closer hospital may not be enough — pick your state.</p>
       </div>
       <p class="trauma-google-status muted" id="traumaGoogleStatus" hidden></p>
       <div class="trauma-pickers">
@@ -3107,14 +3465,6 @@
       </div>
       <div class="trauma-list" id="traumaList"></div>
       <p class="hint trauma-verify-note" data-i18n="locTraumaVerify">Call 911 first. Tell the dispatcher you need trauma-center transport and your location. If they must be moved, keep head and spine still when possible — move as one unit.</p>
-    </div>
-
-    <div class="loc-signal-section" id="locSignalSection">
-      <p class="loc-offline-banner" id="locOfflineBanner" style="display:none;" data-i18n="locOffline">You're offline. GPS coordinates above still work.</p>
-      <h2 data-i18n="locNoSignal">No cell signal?</h2>
-      <p data-i18n="locSatOnly">RedMed shows GPS only. Satellite emergency calling is built into your phone — RedMed cannot open or control it.</p>
-      <p class="loc-signal-ios" id="locIosTip" data-i18n-html="locIosTip"><strong>iPhone 14+ (iOS 16.1+):</strong> Use Apple's <strong>Emergency SOS via satellite</strong> — hold Side + volume until the Emergency SOS slider appears, or go to <strong>Settings → Emergency SOS</strong>. RedMed cannot start this. Apple's guide: https://support.apple.com/en-us/102669</p>
-      <p data-i18n-html="locAndroidTip"><strong>Android (Pixel, Samsung, etc.):</strong> If your carrier and device support Satellite SOS, use your phone's native emergency dialer — not RedMed.</p>
     </div>
 
     <div class="loc-bracelet-section" id="locBraceletSection">
@@ -3212,6 +3562,12 @@
     return;
   }
 
+  try {
+    if (new URLSearchParams(location.search).get("phone") === "1") {
+      document.documentElement.classList.add("phone-emulate");
+    }
+  } catch (e) {}
+
   var STORAGE_KEY = "medicalIdData";
   var CONSENT_KEY = "redMedUseConsent";
   var OWNER_PAIR_ID_KEY = "redMedOwnerPairId";
@@ -3234,7 +3590,7 @@
         var slash = base.lastIndexOf("/");
         if (slash >= 0 && base.indexOf(".", slash) !== -1) base = base.slice(0, slash);
       }
-      if (!base || base === "/") return "/" + filename;
+      if (!base || base === "/") return filename;
       return base + "/" + filename;
     } catch (e) {
       return filename;
@@ -3258,8 +3614,13 @@
     return !!(preview && preview.offsetParent);
   }
 
-  /* Fill real phone screens; cap on desktop. */
+  function isPhoneEmulate() {
+    return document.documentElement.classList.contains("phone-emulate");
+  }
+
+  /* Fill real phone screens; cap on desktop. ?phone=1 forces phone layout in a desktop frame. */
   function isPhoneLayout() {
+    if (isPhoneEmulate()) return true;
     return window.matchMedia("(max-width: 767px)").matches;
   }
 
@@ -3271,9 +3632,13 @@
     if (phone) {
       document.documentElement.style.setProperty("--app-width", "100%");
       /* iPhone 17 baseline (--phone-ref-w CSS px); shrink slightly on narrower phones */
-      var refW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--phone-ref-w")) || 402;
-      var scale = Math.min(1, vw / refW);
-      document.documentElement.style.setProperty("--phone-scale", String(scale));
+      if (isPhoneEmulate()) {
+        document.documentElement.style.setProperty("--phone-scale", "1");
+      } else {
+        var refW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--phone-ref-w")) || 402;
+        var scale = Math.min(1, vw / refW);
+        document.documentElement.style.setProperty("--phone-scale", String(scale));
+      }
     } else {
       document.documentElement.style.removeProperty("--phone-scale");
       var w = Math.max(320, Math.min(vw, APP_WIDTH_MAX));
@@ -3342,18 +3707,8 @@
     shell.style.right = "";
   }
 
-  function wireProfilePreview() {
-    ["f_name", "f_dob", "f_blood"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el || el.getAttribute("data-preview-wired") === "1") return;
-      el.setAttribute("data-preview-wired", "1");
-      el.addEventListener("input", refreshLivePreview);
-      el.addEventListener("change", refreshLivePreview);
-    });
-  }
-
   function initReactiveUi() {
-    wireProfilePreview();
+    refreshLivePreview();
 
     document.querySelectorAll(".search-add").forEach(function (wrap) {
       var input = wrap.querySelector("input");
@@ -3774,7 +4129,7 @@
       termsChipTerms: "Terms of Use",
       termsChipPrivacy: "Privacy Policy",
       labelName: "Name *", labelNamePlain: "Name", labelDob: "Birth date", labelBlood: "Blood type",
-      bloodUnknown: "Unknown", labelAllergies: "Allergies", labelMeds: "Medications",
+      bloodUnknown: "Unknown", bloodPlaceholder: "—", labelAllergies: "Allergies", labelMeds: "Medications",
       labelConditions: "Conditions", legendMedical: "Medical information",
       legendContacts: "Contacts", labelPhone: "Phone", labelAddress: "Address",
       contact1: "Emergency contact 1", contact2: "Emergency contact 2",
@@ -3793,6 +4148,9 @@
       btnCall911: "Call 911",
       locTitle: "Find 911", locLead: "No servers, no data collection. GPS & compass data collected while the 911 screen is open.",
       btnAlertContacts: "Text emergency contacts", btnText: "Text",
+      locCallContacts: "Call emergency contacts",
+      locPickContact: "Select a contact to call",
+      btnCancel: "Cancel",
       alertNoContacts: "Add emergency contacts with phone numbers on RedMed first.",
       locMailTip: "Mail, Street Sign, Find Landmarks & Relay To 911",
       locPrivacy: "Coordinates stay on this screen. RedMed has no servers — location is not stored with us.",
@@ -3816,8 +4174,9 @@
       locTraumaGoogleHint: "With a Google API key, GPS sets your state and each hospital is checked against Google Places.",
       consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our <a href=\"terms-of-service.html\">Terms of Use</a> and <a href=\"privacy-policy.html\">Privacy Policy</a>. Find 911 may use location while that screen is open (not sent to us).",
       btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid",
-      phAllergy: "Search or add…", phMed: "Search or add…", phCondition: "Search or add…",
+      phAllergy: "Search…", phMed: "Search…", phCondition: "Search…",
       pickAllergy: "Choose allergy", pickMed: "Choose medication", pickCondition: "Choose condition",
+      pickOther: "Other",
       searchMinHint: "{n} more letter(s) — search starts at 2",
       searchNoMatches: "No matches — press Enter to add your own",
       medGroupCommon: "Common", medGroupRare: "Other",
@@ -3880,7 +4239,7 @@
       termsChipTerms: "Términos de uso",
       termsChipPrivacy: "Política de privacidad",
       labelName: "Nombre *", labelNamePlain: "Nombre", labelDob: "Fecha de nacimiento", labelBlood: "Tipo de sangre",
-      bloodUnknown: "Desconocido", labelAllergies: "Alergias", labelMeds: "Medicamentos",
+      bloodUnknown: "Desconocido", bloodPlaceholder: "—", labelAllergies: "Alergias", labelMeds: "Medicamentos",
       labelConditions: "Condiciones", legendMedical: "Información médica",
       legendContacts: "Contactos", labelPhone: "Teléfono", labelAddress: "Dirección",
       contact1: "Contacto de emergencia 1", contact2: "Contacto de emergencia 2",
@@ -3898,6 +4257,9 @@
       btnCall911: "Llamar al 911",
       locTitle: "Buscar 911", locLead: "Sin servidores, sin recopilación de datos. GPS y brújula solo mientras la pantalla 911 esté abierta.",
       btnAlertContacts: "Enviar SMS a contactos de emergencia", btnText: "SMS",
+      locCallContacts: "Llamar a contactos de emergencia",
+      locPickContact: "Selecciona un contacto para llamar",
+      btnCancel: "Cancelar",
       alertNoContacts: "Primero agrega contactos de emergencia con teléfono en RedMed.",
       locMailTip: "Correo, señal de calle, puntos de referencia — comuníquelos al 911",
       locPrivacy: "Las coordenadas se quedan en esta pantalla. RedMed no tiene servidores — la ubicación no se guarda con nosotros.",
@@ -3921,8 +4283,9 @@
       locTraumaGoogleHint: "Con clave de Google API, el GPS fija el estado y cada hospital se comprueba en Google Places.",
       consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros <a href=\"terms-of-service.html\">Términos de uso</a> y la <a href=\"privacy-policy.html\">Política de privacidad</a>. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
       btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda",
-      phAllergy: "Buscar o agregar…", phMed: "Buscar o agregar…", phCondition: "Buscar o agregar…",
+      phAllergy: "Buscar…", phMed: "Buscar…", phCondition: "Buscar…",
       pickAllergy: "Elegir alergia", pickMed: "Elegir medicamento", pickCondition: "Elegir condición",
+      pickOther: "Otro",
       searchMinHint: "{n} letra(s) más — la búsqueda empieza en 2",
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
       medGroupCommon: "Comunes", medGroupRare: "Otras",
@@ -4023,6 +4386,7 @@
     patchLegalHrefs();
     try { syncBraceletUi(); } catch (e) {}
     try { if (lastCoords) updateLocUI(); } catch (e) {}
+    try { syncLocCallContactsBtn(); } catch (e) {}
   }
 
   function setLang(code) {
@@ -4761,12 +5125,51 @@
   var conditionItems = [];
 
   var CHIP_QUERY_IDS = ["allergyQuery", "medQuery", "conditionQuery"];
+  var CHIP_OTHER_VALUE = "__other__";
+  var CHIP_SEARCH_BY_SELECT = {
+    allergyPick: "allergySearch",
+    medPick: "medSearch",
+    conditionPick: "conditionSearch"
+  };
+
+  function closeChipSuggest(wrapId, clearInput) {
+    var wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    wrap.classList.remove("is-open");
+    var input = wrap.querySelector("input");
+    if (clearInput && input) input.value = "";
+    var list = wrap.querySelector(".suggest-list");
+    if (list) {
+      list.classList.remove("show");
+      list.innerHTML = "";
+    }
+  }
+
+  function closeAllChipSuggests(clearInput) {
+    Object.keys(CHIP_SEARCH_BY_SELECT).forEach(function (selectId) {
+      closeChipSuggest(CHIP_SEARCH_BY_SELECT[selectId], clearInput);
+    });
+  }
+
+  function focusChipSearch(selectId) {
+    var wrapId = CHIP_SEARCH_BY_SELECT[selectId];
+    var wrap = document.getElementById(wrapId);
+    var sel = document.getElementById(selectId);
+    if (!wrap) return;
+    var input = wrap.querySelector("input");
+    if (input) {
+      input.focus();
+      input.dispatchEvent(new Event("focus"));
+    }
+    if (sel) sel.selectedIndex = 0;
+  }
 
   function blurChipSearchInputs() {
     CHIP_QUERY_IDS.forEach(function (id) {
       var el = document.getElementById(id);
       if (el && typeof el.blur === "function") el.blur();
     });
+    closeAllChipSuggests(false);
   }
 
   function blurIfFocusedInside(el) {
@@ -4805,6 +5208,10 @@
 
     appendGroup(t("medGroupCommon"), config.commonList);
     appendGroup(t("medGroupRare"), config.rareList);
+    var otherOpt = document.createElement("option");
+    otherOpt.value = CHIP_OTHER_VALUE;
+    otherOpt.textContent = t("pickOther");
+    sel.appendChild(otherOpt);
     sel.disabled = sel.options.length <= 1;
   }
 
@@ -4815,6 +5222,10 @@
     sel.addEventListener("change", function () {
       var val = sel.value;
       if (!val) return;
+      if (val === CHIP_OTHER_VALUE) {
+        focusChipSearch(selectId);
+        return;
+      }
       onAdd(val);
       rerender();
       sel.blur();
@@ -5054,6 +5465,7 @@
       input.value = "";
       hide();
       input.blur();
+      if (config.searchWrapId) closeChipSuggest(config.searchWrapId, true);
     }
 
     function showBrowse() {
@@ -5092,7 +5504,12 @@
       clearTimeout(input._searchDebounce);
       showMatches();
     });
-    input.addEventListener("blur", function () { setTimeout(hide, 150); });
+    input.addEventListener("blur", function () {
+      setTimeout(function () {
+        hide();
+        if (config.searchWrapId) closeChipSuggest(config.searchWrapId, false);
+      }, 150);
+    });
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -5101,6 +5518,7 @@
         input.value = "";
         hide();
         input.blur();
+        if (config.searchWrapId) closeChipSuggest(config.searchWrapId, true);
       }
     });
   }
@@ -5109,6 +5527,7 @@
     wireChipSearch({
       queryId: "medQuery",
       suggestId: "medSuggest",
+      searchWrapId: "medSearch",
       commonCatalog: COMMON_MEDS,
       rareCatalog: RARE_MEDS,
       browseCommon: QUICK_MEDS,
@@ -5407,6 +5826,7 @@
     wireChipSearch({
       queryId: "allergyQuery",
       suggestId: "allergySuggest",
+      searchWrapId: "allergySearch",
       commonCatalog: COMMON_ALLERGENS,
       rareCatalog: RARE_ALLERGENS,
       browseCommon: QUICK_ALLERGENS,
@@ -5419,6 +5839,7 @@
     wireChipSearch({
       queryId: "conditionQuery",
       suggestId: "conditionSuggest",
+      searchWrapId: "conditionSearch",
       commonCatalog: COMMON_CONDITIONS,
       rareCatalog: RARE_CONDITIONS,
       browseCommon: QUICK_CONDITIONS,
@@ -5432,28 +5853,6 @@
 
     document.getElementById("idForm").addEventListener("input", refreshLivePreview);
     document.getElementById("idForm").addEventListener("change", refreshLivePreview);
-
-    document.getElementById("addAllergyBtn").addEventListener("click", function () {
-      var input = document.getElementById("allergyQuery");
-      addAllergy(input.value);
-      input.value = "";
-      document.getElementById("allergySuggest").classList.remove("show");
-      input.blur();
-    });
-    document.getElementById("addMedBtn").addEventListener("click", function () {
-      var input = document.getElementById("medQuery");
-      addMed(input.value);
-      input.value = "";
-      document.getElementById("medSuggest").classList.remove("show");
-      input.blur();
-    });
-    document.getElementById("addConditionBtn").addEventListener("click", function () {
-      var input = document.getElementById("conditionQuery");
-      addCondition(input.value);
-      input.value = "";
-      document.getElementById("conditionSuggest").classList.remove("show");
-      input.blur();
-    });
 
     document.getElementById("idForm").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -5609,12 +6008,14 @@
     var nameEl = document.getElementById(pfx + "name");
     var ageDobEl = document.getElementById(pfx + "agedob");
     if (!nameEl || !ageDobEl) return;
+    var editPreview = pfx === "p_";
     nameEl.textContent = data.name || "—";
     var age = calcAge(data.dob);
     var parts = [];
     if (age !== null) parts.push(age + " " + t("yrs"));
     if (data.dob) parts.push("DOB " + data.dob);
-    parts.push(t("blood") + " " + (data.blood || t("unknown")));
+    var bloodLabel = data.blood || (editPreview ? "—" : t("unknown"));
+    parts.push(t("blood") + " " + bloodLabel);
     ageDobEl.textContent = parts.join(" · ");
   }
 
@@ -5754,7 +6155,6 @@
     previewFrame = requestAnimationFrame(function () {
       previewFrame = 0;
       var data = collectFormData();
-      paintProfileHeader("ip_", data);
       if (isLivePreviewVisible()) paintCard("p_", data);
     });
   }
@@ -5927,16 +6327,6 @@
     return new Date(ts || Date.now()).toLocaleString();
   }
 
-  function updateOfflineUI() {
-    var section = document.getElementById("locSignalSection");
-    var banner = document.getElementById("locOfflineBanner");
-    var iosTip = document.getElementById("locIosTip");
-    var offline = navigator.onLine === false;
-    if (section) section.classList.toggle("prominent", offline);
-    if (banner) banner.style.display = offline ? "block" : "none";
-    if (iosTip && /iPhone|iPad|iPod/.test(navigator.userAgent)) iosTip.classList.add("show");
-  }
-
   function formatCoordsCopyText(coords) {
     if (!coords || !isFinite(coords.lat) || !isFinite(coords.lng)) return "";
     return coords.lat.toFixed(6) + ", " + coords.lng.toFixed(6);
@@ -6011,16 +6401,6 @@
       var headingHtml = deviceHeading != null
         ? '<div class="heading">Heading: ' + Math.round(deviceHeading) + "\u00B0 (" + cardinalForHeading(deviceHeading) + ")</div>"
         : "";
-      var altLine = lastCoords.alt != null && isFinite(lastCoords.alt)
-        ? '<div class="altitude">Altitude: ' + Math.round(lastCoords.alt) + " m</div>"
-        : "";
-      var accLine = lastCoords.acc != null && isFinite(lastCoords.acc)
-        ? '<div class="acc">' + (lastCoords.acc <= 100 ? "Satellite GPS" : "GPS") +
-          " accuracy: \u00B1" + Math.round(lastCoords.acc) + " meters</div>"
-        : "";
-      var metaHtml = (altLine || accLine)
-        ? '<div class="coord-meta-block">' + altLine + accLine + "</div>"
-        : "";
       var hintHtml = isSmartphone()
         ? '<div class="coord-copy-hint">' + esc(t("gpsTapCopy")) + "</div>"
         : "";
@@ -6028,7 +6408,6 @@
         '<div class="coords">' + lastCoords.lat.toFixed(6) + ", " + lastCoords.lng.toFixed(6) + "</div>" +
         '<div class="dms">' + formatDMS(lastCoords.lat, lastCoords.lng) + "</div>" +
         headingHtml +
-        metaHtml +
         '<div class="loc-time">Location as of ' + formatLocTimestamp(lastCoords.ts) + "</div>" +
         hintHtml;
       setCoordCardCopyable(card, true);
@@ -6047,6 +6426,7 @@
     if (alertBtn) {
       alertBtn.disabled = !emergencyContactPhones(getProfileData()).length;
     }
+    syncLocCallContactsBtn();
   }
 
   function onDeviceOrientation(e) {
@@ -6174,6 +6554,52 @@
       .filter(Boolean);
   }
 
+  function emergencyContactsCallable(data) {
+    return normalizeProfile(data).contacts
+      .map(function (c) {
+        var phone = normalizePhone(c.phone);
+        if (!phone) return null;
+        return { name: (c.name || "").trim() || "Contact", phone: phone };
+      })
+      .filter(Boolean);
+  }
+
+  function syncLocCallContactsBtn() {
+    var btn = document.getElementById("locCallContactsBtn");
+    if (!btn) return;
+    btn.hidden = !emergencyContactsCallable(getProfileData()).length;
+  }
+
+  function openLocContactPicker() {
+    var contacts = emergencyContactsCallable(getProfileData());
+    if (!contacts.length) {
+      window.alert(t("alertNoContacts"));
+      return;
+    }
+    var list = document.getElementById("locContactPickerList");
+    var dialog = document.getElementById("locContactPicker");
+    if (!list || !dialog) return;
+    list.innerHTML = "";
+    contacts.forEach(function (c) {
+      var item = document.createElement("button");
+      item.type = "button";
+      item.className = "loc-contact-picker-item";
+      item.setAttribute("role", "option");
+      item.textContent = c.name;
+      item.addEventListener("click", function () {
+        placeLocContactCall(c.phone);
+      });
+      list.appendChild(item);
+    });
+    if (typeof dialog.showModal === "function") dialog.showModal();
+  }
+
+  function placeLocContactCall(phone) {
+    var dialog = document.getElementById("locContactPicker");
+    if (dialog && dialog.open) dialog.close();
+    if (phone) window.location.href = "tel:" + phone;
+  }
+
   function buildEmergencyAlertBody(data) {
     var lines = ["I need help — emergency alert from RedMed."];
     if (data.name) lines.push("Name: " + data.name);
@@ -6215,7 +6641,6 @@
   }
 
   function initLoc() {
-    updateOfflineUI();
     updateLocUI();
     loadGoogleApiKey().then(function (key) {
       if (key) setTraumaGoogleStatus(t("locTraumaGoogleHint"), false);
@@ -6225,15 +6650,29 @@
     if (locBound) return;
     locBound = true;
 
-    window.addEventListener("online", updateOfflineUI);
     window.addEventListener("offline", function () {
-      updateOfflineUI();
       updateLocUI();
     });
 
     var alertBtn = document.getElementById("locAlertContactsBtn");
     if (alertBtn) {
       alertBtn.addEventListener("click", openEmergencyContactAlert);
+    }
+
+    var callContactsBtn = document.getElementById("locCallContactsBtn");
+    if (callContactsBtn) {
+      callContactsBtn.addEventListener("click", openLocContactPicker);
+    }
+
+    var pickerCancel = document.getElementById("locContactPickerCancel");
+    var picker = document.getElementById("locContactPicker");
+    if (pickerCancel && picker) {
+      pickerCancel.addEventListener("click", function () {
+        if (picker.open) picker.close();
+      });
+      picker.addEventListener("click", function (e) {
+        if (e.target === picker && picker.open) picker.close();
+      });
     }
 
     var coordCard = document.getElementById("coordCard");

@@ -3,20 +3,26 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WWW="$ROOT/RedMed.app/Contents/Resources/www"
-mkdir -p "$WWW/assets" "$WWW/config"
-cp "$ROOT/index.html" "$WWW/index.html"
-cp "$ROOT/get.html" "$WWW/get.html"
-cp "$ROOT/manifest.json" "$WWW/manifest.json"
-for f in logo.svg longlogo.svg longlogo.png apple-touch-icon.png favicon-32.png logo-512.png; do
-  if [ -f "$ROOT/assets/$f" ]; then
-    cp "$ROOT/assets/$f" "$WWW/assets/$f"
+mkdir -p "$WWW/assets"
+
+if [ -f "$ROOT/assets/logo.pdf" ] && command -v sips >/dev/null 2>&1; then
+  sips -s format png "$ROOT/assets/logo.pdf" --out "$ROOT/assets/logo-header.png" >/dev/null
+fi
+
+for page in index.html get.html manifest.json privacy-policy.html terms-of-service.html; do
+  if [ -f "$ROOT/$page" ]; then
+    cp "$ROOT/$page" "$WWW/$page"
   fi
 done
-if [ -f "$ROOT/assets/trauma-hospitals.json" ]; then
-  cp "$ROOT/assets/trauma-hospitals.json" "$WWW/assets/trauma-hospitals.json"
+
+if [ -d "$ROOT/assets" ]; then
+  rsync -a "$ROOT/assets/" "$WWW/assets/"
 fi
-if [ -f "$ROOT/assets/trauma-hospitals.js" ]; then
-  cp "$ROOT/assets/trauma-hospitals.js" "$WWW/assets/trauma-hospitals.js"
-fi
-diff -q "$ROOT/index.html" "$WWW/index.html"
+
+for page in index.html get.html privacy-policy.html terms-of-service.html; do
+  if [ -f "$ROOT/$page" ] && [ -f "$WWW/$page" ]; then
+    diff -q "$ROOT/$page" "$WWW/$page"
+  fi
+done
+
 echo "www mirror synced."
