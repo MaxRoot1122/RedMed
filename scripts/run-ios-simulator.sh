@@ -1,6 +1,6 @@
 #!/bin/bash
-# Build and install the iOS app on Simulator.
-# Do NOT drag RedMed.app from the repo root — that is the macOS web launcher.
+# Build (if needed) and run the native RedMed iOS app in Simulator.
+# RedMed.app on Mac calls this — not the web index.html launcher.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -10,9 +10,10 @@ CONFIG="${REDMED_IOS_CONFIG:-Debug}"
 DERIVED="$ROOT/build/DerivedData"
 APP="$DERIVED/Build/Products/${CONFIG}-iphonesimulator/RedMed.app"
 DEVICE_NAME="${REDMED_SIM_DEVICE:-iPhone 17}"
+BUNDLE_ID="local.redmed.app"
 
 if ! command -v xcodebuild >/dev/null 2>&1; then
-  echo "ERROR: xcodebuild not found. Install Xcode from the Mac App Store."
+  echo "ERROR: xcodebuild not found. Install Xcode from the Mac App Store." >&2
   exit 1
 fi
 
@@ -37,19 +38,28 @@ else:
     sys.exit(f'ERROR: Simulator \"{name}\" not found for runtime {runtime}.')
 " "$DEVICE_NAME" "$RUNTIME")"
 
-echo "==> Building RedMed for iOS Simulator ($CONFIG)"
-xcodebuild \
-  -project "$PROJECT" \
-  -scheme "$SCHEME" \
-  -destination "platform=iOS Simulator,id=$DEVICE_ID" \
-  -configuration "$CONFIG" \
-  CODE_SIGNING_ALLOWED=NO \
-  -derivedDataPath "$DERIVED" \
-  build
+need_build=1
+if [ -d "$APP" ] && [ "${REDMED_IOS_FORCE_BUILD:-0}" != "1" ]; then
+  need_build=0
+fi
 
-echo "==> Installing on $DEVICE_NAME"
+if [ "$need_build" -eq 1 ]; then
+  echo "==> Building RedMed for iOS Simulator ($CONFIG)"
+  xcodebuild \
+    -project "$PROJECT" \
+    -scheme "$SCHEME" \
+    -destination "platform=iOS Simulator,id=$DEVICE_ID" \
+    -configuration "$CONFIG" \
+    CODE_SIGNING_ALLOWED=NO \
+    -derivedDataPath "$DERIVED" \
+    build
+else
+  echo "==> Using existing Simulator build ($APP)"
+fi
+
+echo "==> Launching on $DEVICE_NAME (native iOS app)"
 xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
 open -a Simulator
 xcrun simctl install "$DEVICE_ID" "$APP"
-xcrun simctl launch "$DEVICE_ID" local.redmed.app
-echo "RedMed is running on $DEVICE_NAME."
+xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID"
+echo "RedMed native app is running on $DEVICE_NAME."
