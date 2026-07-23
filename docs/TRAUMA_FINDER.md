@@ -29,7 +29,7 @@ Threshold constant: **30** (`TRAUMA_COUNTY_THRESHOLD` web, `TraumaHospitalFinder
 | Area | Path | Notes |
 |------|------|--------|
 | Web UI + logic | [`index.html`](../index.html) | `#locView` trauma under GPS (`trauma*`); optional Google via `config/google-api-key` |
-| Google API key | [`config/google-api-key.example`](../config/google-api-key.example) | Geocoding + Places; gitignored `config/google-api-key`; Pages secret `GOOGLE_MAPS_API_KEY` |
+| Google API key | [`config/google-api-key.example`](../config/google-api-key.example) | Geocoding + Places; gitignored `config/google-api-key`; Pages secret `GOOGLE_MAPS_API_KEY`. Key is public on Pages — lock referrer/bundle + quotas first ([`SECURITY.md`](../SECURITY.md)) |
 | Bundled data (web) | [`assets/trauma-hospitals.json`](../assets/trauma-hospitals.json) | Source JSON |
 | Bundled data (web load) | [`assets/trauma-hospitals.js`](../assets/trauma-hospitals.js) | `window.REDMED_TRAUMA_HOSPITALS = [...]` — keep byte-synced with `.json` |
 | iOS model | [`ios/RedMed/Models/TraumaHospitalFinder.swift`](../ios/RedMed/Models/TraumaHospitalFinder.swift) | `needsCountyPicker`, `resolvedHospitals`, `hospitals(in:)` |
