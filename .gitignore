@@ -1,5 +1,7 @@
 # macOS
 .DS_Store
+build/icon.iconset/
+build/DerivedData/
 .AppleDouble
 .LSOverride
 

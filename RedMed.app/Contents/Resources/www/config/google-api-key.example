@@ -1,0 +1,2 @@
+# Removed for security. RedMed ships with NO Google Maps API key and makes
+# no calls to Google. The trauma finder uses the bundled static dataset only.

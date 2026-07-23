@@ -53,10 +53,11 @@ def main() -> int:
     here = os.path.dirname(os.path.abspath(__file__))
     repo = os.path.dirname(here)
     parser = argparse.ArgumentParser(description="Serve RedMed on localhost")
+    www = os.path.join(repo, "RedMed.app", "Contents", "Resources", "www")
     parser.add_argument(
         "--root",
-        default=repo,
-        help="Directory to serve (default: repo root)",
+        default=www if os.path.isfile(os.path.join(www, "index.html")) else repo,
+        help="Directory to serve (default: RedMed.app www mirror, else repo root)",
     )
     parser.add_argument("--host", default=os.environ.get("REDMED_HOST", "127.0.0.1"))
     parser.add_argument(

@@ -1,0 +1,8 @@
+# Canonical NFC card base URL (no #d= fragment).
+# Run scripts/sync-canonical-url.sh after editing this file.
+#
+# Active host (first uncommented https:// line):
+https://www.redmed.com/index.html
+#
+# Legacy hosts — optional; keep while field bracelets still use old URLs:
+legacy:https://maxroot1122.github.io/RedMed/index.html
