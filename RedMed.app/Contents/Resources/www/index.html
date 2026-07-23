@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4i6hi2Vpk6JBVkzgEquBxhsnTy+Qs34d5+CqLPL0FZY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-COivTRHGpPReYM9KoUTFrxyq7dtPk/UMxY2F4KFeKpo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -396,17 +396,46 @@
   #editView #idForm > .fieldset-heading:first-of-type { margin-top: var(--md-2); }
   #editView #idForm input[type=text],
   #editView #idForm input[type=tel],
-  #editView #idForm input[type=date],
-  #editView #idForm select {
+  #editView #idForm input[type=search],
+  #editView #idForm select,
+  #editView #idForm .chip-pick-select {
     box-shadow: none;
     border-color: var(--google-outline-variant);
     background: var(--field-bg);
     font-family: var(--font);
     font-size: var(--chip-dropdown-font);
     font-weight: 400;
-    line-height: 1.25;
+    line-height: calc(var(--form-field-h) - 2px);
     height: var(--form-field-h);
     min-height: var(--form-field-h);
+    text-align: center;
+    text-align-last: center;
+  }
+  #editView #idForm input[type=date] {
+    box-shadow: none;
+    border-color: var(--google-outline-variant);
+    background: var(--field-bg);
+    font-family: var(--font);
+    font-weight: 400;
+    font-size: var(--md-type-input);
+    -webkit-appearance: auto;
+    appearance: auto;
+    height: var(--md-touch);
+    min-height: var(--md-touch);
+    line-height: normal;
+    text-align: center;
+    cursor: pointer;
+  }
+  #editView #idForm input[type=date]::-webkit-date-and-time-value {
+    text-align: center;
+  }
+  #editView #idForm .contact-fold-body input {
+    text-align: center;
+    line-height: calc(var(--control-h) - 2px);
+  }
+  #editView #idForm .chip-search-launcher input {
+    text-align: center;
+    line-height: var(--form-field-h);
   }
   #editView #idForm input:hover,
   #editView #idForm select:hover {
@@ -709,16 +738,32 @@
     max-height: none;
     overflow: visible;
   }
+  #idForm fieldset.fieldset-contacts input[type=date],
+  #idForm fieldset.fieldset-contacts #f_dob {
+    height: var(--md-touch);
+    min-height: var(--md-touch);
+    font-family: var(--font);
+    font-size: var(--md-type-input);
+    font-weight: 400;
+    line-height: normal;
+    padding: 0 var(--form-field-pad-x);
+    text-align: center;
+    -webkit-appearance: auto;
+    appearance: auto;
+    cursor: pointer;
+    margin-bottom: var(--md-3);
+  }
   #idForm fieldset.fieldset-you input[type=text],
-  #idForm fieldset.fieldset-you input[type=date],
   #idForm fieldset.fieldset-you select {
     height: var(--form-field-h);
     min-height: var(--form-field-h);
     font-family: var(--font);
     font-size: var(--chip-dropdown-font);
     font-weight: 400;
-    line-height: 1.25;
+    line-height: calc(var(--form-field-h) - 2px);
     padding: 0 var(--form-field-pad-x);
+    text-align: center;
+    text-align-last: center;
   }
   #idForm select,
   #idForm .chip-pick-select {
@@ -727,8 +772,10 @@
     padding: 0 36px 0 var(--form-field-pad-x);
     font-family: var(--font);
     font-size: var(--chip-dropdown-font);
+    text-align: center;
+    text-align-last: center;
     font-weight: 400;
-    line-height: 1.25;
+    line-height: calc(var(--form-field-h) - 2px);
     box-sizing: border-box;
   }
   #idForm fieldset.fieldset-chips .chip-pick-select {
@@ -881,14 +928,6 @@
   .row2 > div { min-width: 0; }
   .row2 select { width: 100%; }
   .row2 label { margin-top: 0; }
-  /* Blood type (left, wider) + birth date (right) */
-  #idForm fieldset.fieldset-you .row2 {
-    grid-template-columns: minmax(15rem, 1.85fr) minmax(0, 0.88fr);
-    align-items: end;
-  }
-  #idForm fieldset.fieldset-you .row2-blood {
-    min-width: 15rem;
-  }
   #idForm fieldset.fieldset-you #f_blood {
     width: 100%;
     min-width: 100%;
@@ -1754,7 +1793,7 @@
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select,
   body:has(#locView.show) #locView .trauma-pickers select {
     color: #ffffff;
-    background-color: #111111;
+    background-color: #000000;
     border-color: rgba(255, 255, 255, 0.22);
     box-shadow: none;
     opacity: 1;
@@ -1767,7 +1806,7 @@
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:hover,
   body:has(#locView.show) #locView .trauma-pickers select:hover {
     color: #ffffff;
-    background-color: #1a1a1a;
+    background-color: #0a0a0a;
     border-color: rgba(255, 255, 255, 0.32);
     box-shadow: none;
   }
@@ -1775,7 +1814,7 @@
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:focus,
   body:has(#locView.show) #locView .trauma-pickers select:focus {
     color: #ffffff;
-    background-color: #1a1a1a;
+    background-color: #0a0a0a;
     border-color: var(--accent);
     box-shadow: 0 0 0 1px var(--accent);
   }
@@ -1783,20 +1822,52 @@
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select option,
   body:has(#locView.show) #locView .trauma-pickers select option {
     color: #ffffff;
-    background-color: #111111;
+    background-color: #000000;
   }
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:invalid {
     color: rgba(255, 255, 255, 0.58);
-    background-color: #111111;
+    background-color: #000000;
   }
   body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:valid,
   body:has(#editView:not(.hide)) #editView #idForm select:valid {
     color: #ffffff;
   }
   body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher {
-    background-color: #111111;
+    background-color: #000000;
     border-color: rgba(255, 255, 255, 0.22);
     box-shadow: none;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:focus-within,
+  body:has(#editView:not(.hide)) #editView #idForm .search-add.is-open .chip-search-launcher {
+    background-color: #0a0a0a;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .chip-search-icon {
+    color: rgba(255, 255, 255, 0.62);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-list {
+    background-color: #000000;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-item {
+    color: #ffffff;
+    background-color: #000000;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:hover,
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:focus {
+    color: #ffffff;
+    background-color: #141414;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-hint,
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-group-label {
+    color: rgba(255, 255, 255, 0.62);
+    background-color: #000000;
+  }
+  body:has(#editView:not(.hide)) #editView #idForm .suggest-item + .suggest-group-label {
+    border-top-color: rgba(255, 255, 255, 0.1);
   }
   body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input {
     color: #ffffff;
@@ -1808,10 +1879,18 @@
   }
   body:has(#editView:not(.hide)) input[type=text],
   body:has(#editView:not(.hide)) input[type=tel],
-  body:has(#editView:not(.hide)) input[type=date],
   body:has(#editView:not(.hide)) input[type=search],
   body:has(#editView:not(.hide)) textarea {
     color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-shadow: none;
+  }
+  body:has(#editView:not(.hide)) input[type=date] {
+    color: #fff;
+    color-scheme: dark;
+    -webkit-appearance: auto;
+    appearance: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     box-shadow: none;
@@ -2161,51 +2240,293 @@
   .cpr-guide { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); width: 100%; box-sizing: border-box; }
   .cpr-beat {
     container-type: inline-size;
-    --cpr-pulse-size: clamp(72px, 26cqi, 96px);
-    display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 2.5cqi, 12px);
-    padding: clamp(16px, 4.5cqi, 24px) clamp(14px, 3.5cqi, 20px);
-    border-radius: var(--radius-lg); background: var(--accent-container); margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 3cqi, 16px);
+    padding: clamp(18px, 4.5cqi, 24px);
+    border-radius: 20px;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 48%, rgba(225, 29, 72, 0.08) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    margin-bottom: 12px;
+    transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  }
+  .cpr-beat.is-active {
+    border-color: rgba(225, 29, 72, 0.32);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(225, 29, 72, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .cpr-beat.is-breath {
+    border-color: rgba(37, 99, 235, 0.38);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    animation: cpr-breath-card-glow 1.15s ease-in-out infinite;
+  }
+  @keyframes cpr-breath-card-glow {
+    0%, 100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32), 0 0 18px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+    50% { box-shadow: 0 12px 44px rgba(0, 0, 0, 0.34), 0 0 32px rgba(59, 130, 246, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
+  }
+  .cpr-beat-stage {
+    position: relative;
+    --cpr-core-size: clamp(56px, 18cqi, 72px);
+    width: clamp(104px, 32cqi, 132px);
+    height: clamp(104px, 32cqi, 132px);
+    display: grid;
+    place-items: center;
+  }
+  .cpr-wave {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--cpr-core-size);
+    height: var(--cpr-core-size);
+    margin: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(225, 29, 72, 0.55);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: cpr-heartbeat-wave 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes cpr-heartbeat-wave {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.82; border-width: 2px; }
+    100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; border-width: 1px; }
+  }
+  .cpr-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(225, 29, 72, 0.2);
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  .cpr-ring-a { inset: 10%; }
+  .cpr-ring-b { inset: 0; }
+  .cpr-beat-stage.beat .cpr-ring-a { animation: cpr-ring-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .cpr-beat-stage.beat .cpr-ring-b { animation: cpr-ring-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.06s; }
+  @keyframes cpr-ring-pop {
+    0% { transform: scale(0.88); opacity: 0.75; border-color: rgba(225, 29, 72, 0.42); }
+    100% { transform: scale(1.2); opacity: 0; border-color: rgba(225, 29, 72, 0); }
   }
   .cpr-pulse {
-    position: relative; flex-shrink: 0;
-    width: var(--cpr-pulse-size); height: var(--cpr-pulse-size); border-radius: 50%;
-    background: radial-gradient(circle at 32% 28%, #fb7185 0%, var(--accent) 52%, var(--accent-pressed) 100%);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    width: var(--cpr-core-size);
+    height: var(--cpr-core-size);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fda4af 0%, var(--accent) 45%, var(--accent-pressed) 100%);
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.65) inset,
-      0 2px 10px rgba(225, 29, 72, 0.28);
-    transition: transform 0.07s ease-out, box-shadow 0.07s ease-out;
+      0 0 0 3px rgba(255, 255, 255, 0.12) inset,
+      0 8px 24px rgba(225, 29, 72, 0.42);
+    transition: transform 0.08s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.08s ease-out, background 0.25s var(--ease-out);
     will-change: transform;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
-  .cpr-pulse::before,
-  .cpr-pulse::after {
-    content: ""; position: absolute; border-radius: 50%; pointer-events: none;
-    border: 2px solid rgba(225, 29, 72, 0.22);
-  }
-  .cpr-pulse::before { inset: calc(var(--cpr-pulse-size) * -0.18); }
-  .cpr-pulse::after {
-    inset: calc(var(--cpr-pulse-size) * -0.34);
-    border-width: 1px; border-color: rgba(225, 29, 72, 0.12);
-  }
   .cpr-pulse.on {
-    transform: scale(1.1);
+    transform: scale(0.86);
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.75) inset,
-      0 0 0 6px rgba(225, 29, 72, 0.22),
-      0 6px 22px rgba(190, 18, 60, 0.38);
+      0 0 0 3px rgba(255, 255, 255, 0.2) inset,
+      0 0 0 8px rgba(225, 29, 72, 0.22),
+      0 4px 18px rgba(190, 18, 60, 0.48);
   }
-  .cpr-pulse.on::before { border-color: rgba(225, 29, 72, 0.38); }
-  .cpr-cue { font-size: clamp(14px, 4cqi, 16px); font-weight: 650; color: var(--ink); text-align: center; line-height: 1.3; }
-  .cpr-cue.idle { color: var(--muted); font-weight: 600; }
-  .cpr-elapsed { font-size: clamp(15px, 4.2cqi, 18px); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .cpr-beat.is-breath .cpr-beat-stage {
+    --cpr-core-size: clamp(64px, 22cqi, 88px);
+  }
+  .cpr-pulse.breath {
+    transform: scale(1);
+    background: radial-gradient(circle at 35% 30%, #93c5fd 0%, #2563eb 48%, #1d4ed8 100%);
+    box-shadow:
+      0 0 0 3px rgba(255, 255, 255, 0.18) inset,
+      0 8px 24px rgba(37, 99, 235, 0.45);
+    animation: cpr-breath-orb-glow 1.15s ease-in-out infinite;
+  }
+  @keyframes cpr-breath-orb-glow {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(255,255,255,0.18) inset, 0 8px 24px rgba(37,99,235,0.45); }
+    50% { transform: scale(1.08); box-shadow: 0 0 0 3px rgba(255,255,255,0.26) inset, 0 0 28px rgba(96,165,250,0.55), 0 8px 28px rgba(37,99,235,0.5); }
+  }
+  .cpr-pulse.breath.on {
+    animation: none;
+    transform: scale(1.06);
+    box-shadow:
+      0 0 0 3px rgba(255, 255, 255, 0.24) inset,
+      0 0 0 8px rgba(37, 99, 235, 0.24),
+      0 4px 18px rgba(29, 78, 216, 0.48);
+  }
+  .cpr-breath-label {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--font);
+    font-size: clamp(13px, 5.8cqi, 18px);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1;
+    z-index: 3;
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
+  }
+  .cpr-pulse.breath .cpr-breath-label { display: flex; }
+  .cpr-beat-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .cpr-cue {
+    font-family: var(--font);
+    font-size: clamp(15px, 4.2cqi, 17px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.25;
+  }
+  .cpr-cue.idle { color: var(--muted); font-weight: 500; }
+  .cpr-beat-stats {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .cpr-bpm,
+  .cpr-elapsed {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--muted);
+    line-height: 1.2;
+  }
+  .cpr-elapsed {
+    color: var(--ink);
+    min-width: 3.2em;
+    text-align: center;
+  }
+  .cpr-beat.is-active .cpr-elapsed {
+    background: rgba(225, 29, 72, 0.14);
+    border-color: rgba(225, 29, 72, 0.28);
+    color: #fff;
+  }
+  .cpr-beat.is-breath .cpr-elapsed {
+    background: rgba(37, 99, 235, 0.16);
+    border-color: rgba(37, 99, 235, 0.3);
+    color: #fff;
+  }
+  .cpr-cue.is-hidden { visibility: hidden; }
+  .cpr-breath-hint {
+    margin: 0;
+    font-family: var(--font);
+    font-size: 10px;
+    line-height: 1.45;
+    color: var(--muted);
+    text-align: center;
+    max-width: 28em;
+  }
+  .cpr-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin: 8px auto 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .cpr-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 30px;
+    padding: 4px 10px;
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 550;
+    cursor: pointer;
+  }
+  .cpr-option input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+  .cpr-tutorial {
+    margin: 10px 0 0;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-dim);
+    overflow: hidden;
+  }
+  .cpr-tutorial[hidden] { display: none !important; }
+  .cpr-tutorial summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .cpr-tutorial summary::-webkit-details-marker { display: none; }
+  .cpr-tutorial summary::after {
+    content: "›";
+    font-size: 16px;
+    line-height: 1;
+    color: var(--muted);
+    transform: rotate(90deg);
+    transition: transform 0.2s var(--ease-out);
+  }
+  .cpr-tutorial[open] summary::after { transform: rotate(-90deg); }
+  .cpr-tutorial-body {
+    padding: 0 12px 12px;
+    font-family: var(--font);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .cpr-tutorial-body ol {
+    margin: 0;
+    padding-left: 1.15em;
+  }
+  .cpr-tutorial-body li { margin-bottom: 6px; }
+  .cpr-tutorial-body li:last-child { margin-bottom: 0; }
+  .cpr-tutorial-body strong { color: var(--ink); font-weight: 600; }
+  .cpr-tutorial-note {
+    margin: 8px 0 0;
+    font-size: 10px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
   @media (min-width: 1080px) {
-    .cpr-beat { --cpr-pulse-size: 88px; padding: 22px 20px; }
+    .cpr-beat { padding: 22px 20px; }
+    .cpr-cue { font-size: 17px; }
   }
   @media (min-width: 1440px) {
-    .cpr-beat { --cpr-pulse-size: 96px; padding: 24px 22px; gap: 12px; }
-    .cpr-cue { font-size: 17px; }
-    .cpr-elapsed { font-size: 19px; }
+    .cpr-beat { padding: 24px 22px; gap: 16px; }
+    .cpr-cue { font-size: 18px; }
   }
   .cpr-controls {
     display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px;
@@ -2229,36 +2550,31 @@
     border-radius: var(--md-btn-radius);
   }
   .cpr-btn-reset:active { background: var(--panel); }
-  .cpr-sound {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    margin: 8px auto 0; width: auto; max-width: 100%; box-sizing: border-box;
-    min-height: 30px; padding: 4px 10px;
-    font-size: 12px; color: var(--muted); font-weight: 550; cursor: pointer;
-  }
-  .cpr-sound input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; accent-color: var(--accent); }
 
   .aid-prayer-box {
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     max-width: var(--app-width);
     margin: 0 auto;
-    padding: 0 var(--space);
+    padding: 8px var(--space);
     box-sizing: border-box;
-    min-height: 48px;
+    min-height: 56px;
   }
   .aid-prayer {
+    font-family: var(--font);
     font-size: 8px;
+    font-style: italic;
+    font-weight: 400;
     color: var(--muted);
-    line-height: 1.35;
+    line-height: 1.4;
     padding: 0;
-    margin: 0;
+    margin: 0 auto;
+    width: 100%;
     max-width: 36em;
     text-align: center;
-    font-style: italic;
-    font-weight: 500;
   }
   #locView { display: none; }
   #locView.show {
@@ -3112,10 +3428,10 @@
   <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/longlogo.png" width="120" height="35" alt="RedMed">
+        <img class="brand-logo-lockup" src="assets/logo-header.png" width="120" height="31" alt="RedMed">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
@@ -3136,22 +3452,14 @@
         <fieldset class="fieldset-you">
           <label for="f_name" data-i18n="labelName">Name *</label>
           <input type="text" id="f_name" required>
-          <div class="row2">
-            <div class="row2-blood">
-              <label for="f_blood" data-i18n="labelBlood">Blood type</label>
-              <select id="f_blood">
-                <option value="" data-i18n="bloodPlaceholder">—</option>
-                <option>O-</option><option>O+</option>
-                <option>A-</option><option>A+</option>
-                <option>B-</option><option>B+</option>
-                <option>AB-</option><option>AB+</option>
-              </select>
-            </div>
-            <div>
-              <label for="f_dob" data-i18n="labelDob">Birth date</label>
-              <input type="date" id="f_dob">
-            </div>
-          </div>
+          <label for="f_blood" data-i18n="labelBlood">Blood type</label>
+          <select id="f_blood">
+            <option value="" data-i18n="bloodPlaceholder">—</option>
+            <option>O-</option><option>O+</option>
+            <option>A-</option><option>A+</option>
+            <option>B-</option><option>B+</option>
+            <option>AB-</option><option>AB+</option>
+          </select>
         </fieldset>
 
         <h1 class="fieldset-heading" id="medicalHeading" data-i18n="legendMedical">Medical information</h1>
@@ -3202,6 +3510,8 @@
 
         <h1 class="fieldset-heading" id="contactsHeading" data-i18n="legendContacts">Contacts</h1>
         <fieldset class="fieldset-contacts" aria-labelledby="contactsHeading">
+          <label for="f_dob" data-i18n="labelDob">Birth date</label>
+          <input type="date" id="f_dob" autocomplete="bday" min="1900-01-01">
           <div id="contactsAccordion">
             <div class="contact-fold" data-contact="1">
               <button type="button" class="contact-fold-toggle" aria-expanded="false">
@@ -3261,7 +3571,6 @@
       <div class="phone-frame" id="liveCard">
         <div class="id-header">
           <h1 id="p_name">—</h1>
-          <div class="sub" id="p_agedob"></div>
         </div>
         <div class="section">
           <h2 data-i18n="secAllergies">Allergies</h2>
@@ -3334,8 +3643,7 @@
 <!-- ============ VIEW (FIRST RESPONDER) ============ -->
 <div id="viewView">
   <div class="id-header">
-    <h1 id="v_name">—</h1>
-    <div class="sub" id="v_agedob"></div>
+    <h1 id="v_blood">—</h1>
   </div>
 
   <div id="viewPhoneGate" class="view-phone-gate" hidden>
@@ -3405,10 +3713,10 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
-    <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
-    <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No name, phone, email, or address on this screen — offline only, nothing sent anywhere.</p>
+    <p class="lead" data-i18n="aidLead" data-highlight>Call 911 First. Tap A Pane — Expand Only What You Need.</p>
+    <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No Name, Phone, Email, Or Address On This Screen — Offline Only, Nothing Sent Anywhere.</p>
   </div>
   <div id="aidCards"></div>
   <div class="aid-prayer-box">
@@ -3423,10 +3731,10 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
-    <p class="lead" data-i18n="locLead">No servers, no data collection. GPS &amp; compass data collected while the 911 screen is open.</p>
-    <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates stay on this screen. RedMed has no servers — location is not stored with us.</p>
+    <p class="lead" data-i18n="locLead">No Servers, No Data Collection. GPS &amp; Compass Data Collected While The 911 Screen Is Open.</p>
+    <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates Stay On This Screen. RedMed Has No Servers — Location Is Not Stored With Us.</p>
   </div>
   <div class="loc-body">
     <div class="loc-gps-panel">
@@ -3437,8 +3745,7 @@
 
     <div class="loc-action-block">
       <a href="tel:911" class="btn-call" data-i18n="btnCall911">Call 911</a>
-      <button type="button" class="btn-secondary btn-call-contacts" id="locCallContactsBtn" data-i18n="locCallContacts" hidden>Call emergency contacts</button>
-      <button type="button" class="btn-secondary btn-alert-contacts" id="locAlertContactsBtn" data-i18n="btnAlertContacts">Text emergency contacts</button>
+      <button type="button" class="btn-secondary btn-call-contacts" id="locAlertContactsBtn" data-i18n="locCallContacts">Call Emergency Contacts</button>
     </div>
     <dialog class="loc-contact-picker" id="locContactPicker" aria-labelledby="locContactPickerTitle">
       <div class="loc-contact-picker-panel">
@@ -3708,6 +4015,8 @@
   }
 
   function initReactiveUi() {
+    wirePreviewForm();
+    wireDobField();
     refreshLivePreview();
 
     document.querySelectorAll(".search-add").forEach(function (wrap) {
@@ -4143,17 +4452,17 @@
       secAllergies: "Allergies", secMeds: "Medications", secConditions: "Medical conditions",
       secContacts: "Emergency contacts",
       secDoctor: "Doctor & insurance", secNotes: "Notes",
-      aidTitle: "Roadside Aid", aidLead: "Call 911 first. Tap a pane — expand only what you need.",
-      aidPrivacy: "No name, phone, email, or address on this screen — offline only, nothing sent anywhere.",
+      aidTitle: "Roadside Aid", aidLead: "Call 911 First. Tap A Pane — Expand Only What You Need.",
+      aidPrivacy: "No Name, Phone, Email, Or Address On This Screen — Offline Only, Nothing Sent Anywhere.",
       btnCall911: "Call 911",
-      locTitle: "Find 911", locLead: "No servers, no data collection. GPS & compass data collected while the 911 screen is open.",
+      locTitle: "Find 911", locLead: "No Servers, No Data Collection. GPS & Compass Data Collected While The 911 Screen Is Open.",
       btnAlertContacts: "Text emergency contacts", btnText: "Text",
-      locCallContacts: "Call emergency contacts",
+      locCallContacts: "Call Emergency Contacts",
       locPickContact: "Select a contact to call",
       btnCancel: "Cancel",
       alertNoContacts: "Add emergency contacts with phone numbers on RedMed first.",
       locMailTip: "Mail, Street Sign, Find Landmarks & Relay To 911",
-      locPrivacy: "Coordinates stay on this screen. RedMed has no servers — location is not stored with us.",
+      locPrivacy: "Coordinates Stay On This Screen. RedMed Has No Servers — Location Is Not Stored With Us.",
       gpsGetting: "Getting GPS/satellite location…",
       gpsTapCopy: "Tap to copy",
       gpsTapCopyAria: "Copy GPS coordinates to clipboard",
@@ -4181,7 +4490,7 @@
       searchNoMatches: "No matches — press Enter to add your own",
       medGroupCommon: "Common", medGroupRare: "Other",
       dose: "Dose", none: "None", blood: "Blood", unknown: "Unknown",
-      yrs: "yrs", updated: "Updated", call: "Call",
+      yrs: "yrs", updated: "Profile Updated:", call: "Call",
       copied: "Copied!",
       capTooLarge: "chars — too large for most tags.", cap216: "chars — needs NTAG216.",
       cap215: "chars — needs NTAG215+.", capOk: "chars — fits standard tags.",
@@ -4252,17 +4561,17 @@
       secAllergies: "Alergias", secMeds: "Medicamentos", secConditions: "Condiciones médicas",
       secContacts: "Contactos de emergencia",
       secDoctor: "Médico y seguro", secNotes: "Notas",
-      aidTitle: "Ayuda en carretera", aidLead: "Llama al 911 primero. Toca un panel — abre solo lo que necesites.",
-      aidPrivacy: "Sin nombre, teléfono, correo ni dirección en esta pantalla — solo referencia sin conexión.",
+      aidTitle: "Ayuda en carretera", aidLead: "Llama Al 911 Primero. Toca Un Panel — Abre Solo Lo Que Necesites.",
+      aidPrivacy: "Sin Nombre, Teléfono, Correo Ni Dirección En Esta Pantalla — Solo Referencia Sin Conexión.",
       btnCall911: "Llamar al 911",
-      locTitle: "Buscar 911", locLead: "Sin servidores, sin recopilación de datos. GPS y brújula solo mientras la pantalla 911 esté abierta.",
+      locTitle: "Buscar 911", locLead: "Sin Servidores, Sin Recopilación De Datos. GPS Y Brújula Solo Mientras La Pantalla 911 Esté Abierta.",
       btnAlertContacts: "Enviar SMS a contactos de emergencia", btnText: "SMS",
-      locCallContacts: "Llamar a contactos de emergencia",
+      locCallContacts: "Llamar a Contactos de Emergencia",
       locPickContact: "Selecciona un contacto para llamar",
       btnCancel: "Cancelar",
       alertNoContacts: "Primero agrega contactos de emergencia con teléfono en RedMed.",
       locMailTip: "Correo, señal de calle, puntos de referencia — comuníquelos al 911",
-      locPrivacy: "Las coordenadas se quedan en esta pantalla. RedMed no tiene servidores — la ubicación no se guarda con nosotros.",
+      locPrivacy: "Las Coordenadas Se Quedan En Esta Pantalla. RedMed No Tiene Servidores — La Ubicación No Se Guarda Con Nosotros.",
       gpsGetting: "Obteniendo ubicación GPS/satélite…",
       gpsTapCopy: "Toca para copiar",
       gpsTapCopyAria: "Copiar coordenadas GPS al portapapeles",
@@ -4290,7 +4599,7 @@
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
       medGroupCommon: "Comunes", medGroupRare: "Otras",
       dose: "Dosis", none: "Ninguno", blood: "Sangre", unknown: "Desconocido",
-      yrs: "años", updated: "Actualizado", call: "Llamar",
+      yrs: "años", updated: "Perfil actualizado:", call: "Llamar",
       copied: "¡Copiado!", clearConfirm: "¿Borrar todos los datos guardados? Elimina perfil, pulsera, PIN y preferencias. No se puede deshacer.",
       capTooLarge: "caracteres — demasiado grande para la mayoría de tags.", cap216: "caracteres — necesita NTAG216.",
       cap215: "caracteres — necesita NTAG215+.", capOk: "caracteres — cabe en tags estándar.",
@@ -5804,6 +6113,8 @@
   function initEdit() {
     setActiveView("myid");
     document.title = t("titleMyId");
+    wirePreviewForm();
+    wireDobField();
     var saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
     if (saved) {
@@ -6001,20 +6312,19 @@
     });
   }
 
+  function formatPreviewBlood(blood) {
+    if (!blood) return "—";
+    return blood.replace(/-$/, "");
+  }
+
   function paintProfileHeader(pfx, data) {
     data = data || {};
-    var nameEl = document.getElementById(pfx + "name");
-    var ageDobEl = document.getElementById(pfx + "agedob");
-    if (!nameEl || !ageDobEl) return;
     var editPreview = pfx === "p_";
-    nameEl.textContent = data.name || "—";
-    var age = calcAge(data.dob);
-    var parts = [];
-    if (age !== null) parts.push(age + " " + t("yrs"));
-    if (data.dob) parts.push("DOB " + data.dob);
-    var bloodLabel = data.blood || (editPreview ? "—" : t("unknown"));
-    parts.push(t("blood") + " " + bloodLabel);
-    ageDobEl.textContent = parts.join(" · ");
+    var bloodEl = document.getElementById(editPreview ? "p_name" : "v_blood");
+    if (!bloodEl) return;
+    bloodEl.textContent = editPreview
+      ? formatPreviewBlood(data.blood)
+      : (data.blood || t("bloodUnknown"));
   }
 
   function paintCard(pfx, data) {
@@ -6142,7 +6452,7 @@
     var updatedEl = document.getElementById(pfx + "updated");
     if (data.updated) {
       var d = new Date(data.updated);
-      updatedEl.textContent = t("updated") + " " + d.toLocaleDateString();
+      updatedEl.textContent = t("updated") + " " + formatLocaleDate(d);
     } else {
       updatedEl.textContent = "";
     }
@@ -6153,8 +6463,22 @@
     previewFrame = requestAnimationFrame(function () {
       previewFrame = 0;
       var data = collectFormData();
+      syncPreviewBlood(data.blood);
       if (isLivePreviewVisible()) paintCard("p_", data);
     });
+  }
+
+  function syncPreviewBlood(blood) {
+    var el = document.getElementById("p_name");
+    if (!el) return;
+    el.textContent = formatPreviewBlood(blood);
+  }
+
+  function wirePreviewForm() {
+    var blood = document.getElementById("f_blood");
+    if (!blood || blood.getAttribute("data-preview-wired") === "1") return;
+    blood.setAttribute("data-preview-wired", "1");
+    blood.addEventListener("change", refreshLivePreview);
   }
 
   /* Bracelet emergency card: smartphones only — not card readers, tablets, or desktops. */
@@ -6186,8 +6510,7 @@
     var body = document.getElementById("viewCardBody");
     if (gate) gate.hidden = false;
     if (body) body.hidden = true;
-    document.getElementById("v_name").textContent = "—";
-    document.getElementById("v_agedob").textContent = "";
+    document.getElementById("v_blood").textContent = "—";
     setActiveView("view");
     document.title = "RedMed — " + t("viewPhoneGateTitle");
   }
@@ -6321,8 +6644,30 @@
     return directions[Math.round(deg / 45) % 8];
   }
 
+  function formatLocaleDate(value) {
+    var d = value instanceof Date ? value : new Date(value);
+    if (isNaN(d.getTime())) return "";
+    try {
+      return d.toLocaleDateString(undefined, { dateStyle: "medium" });
+    } catch (e) {
+      return d.toLocaleDateString();
+    }
+  }
+
   function formatLocTimestamp(ts) {
-    return new Date(ts || Date.now()).toLocaleString();
+    var d = new Date(ts || Date.now());
+    try {
+      return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+    } catch (e) {
+      return d.toLocaleString();
+    }
+  }
+
+  function wireDobField() {
+    var dob = document.getElementById("f_dob");
+    if (!dob || dob.getAttribute("data-dob-wired") === "1") return;
+    dob.setAttribute("data-dob-wired", "1");
+    dob.max = new Date().toISOString().slice(0, 10);
   }
 
   function formatCoordsCopyText(coords) {
@@ -6419,10 +6764,6 @@
       setCoordCardCopyable(card, false);
     } else {
       setCoordCardCopyable(card, false);
-    }
-    var alertBtn = document.getElementById("locAlertContactsBtn");
-    if (alertBtn) {
-      alertBtn.disabled = !emergencyContactPhones(getProfileData()).length;
     }
     syncLocCallContactsBtn();
   }
@@ -6563,7 +6904,7 @@
   }
 
   function syncLocCallContactsBtn() {
-    var btn = document.getElementById("locCallContactsBtn");
+    var btn = document.getElementById("locAlertContactsBtn");
     if (!btn) return;
     btn.hidden = !emergencyContactsCallable(getProfileData()).length;
   }
@@ -6654,12 +6995,7 @@
 
     var alertBtn = document.getElementById("locAlertContactsBtn");
     if (alertBtn) {
-      alertBtn.addEventListener("click", openEmergencyContactAlert);
-    }
-
-    var callContactsBtn = document.getElementById("locCallContactsBtn");
-    if (callContactsBtn) {
-      callContactsBtn.addEventListener("click", openLocContactPicker);
+      alertBtn.addEventListener("click", openLocContactPicker);
     }
 
     var pickerCancel = document.getElementById("locContactPickerCancel");
@@ -7025,7 +7361,7 @@
       if (pane.cpr) {
         body.innerHTML =
           '<div class="aid-cpr-pane">' +
-            '<p class="hint aid-cpr-lead">Call 911 first. Not responding and not breathing? Push hard and fast on the center of the chest — follow the beat.</p>' +
+            '<p class="hint aid-cpr-lead" id="aidCprLead">Call 911 first. Not responding and not breathing? Push hard and fast on the center of the chest — follow the beat.</p>' +
             '<div id="cprSlot"></div>' +
           '</div>';
       } else if (topics.length === 1) {
@@ -7072,34 +7408,107 @@
     });
   }
 
-  // Hands-only CPR metronome (~110 BPM). Audio only after Start + checkbox.
+  // CPR metronome: 100–120/min (110), single rescuer 30:2 per 2025 AHA.
   var CPR_BPM = 110;
-  var CPR_INTERVAL = 60000 / CPR_BPM;
+  var CPR_TUTORIAL = {
+    summary: "How to do CPR",
+    lead: "Call 911 first. Not responding and not breathing? Push hard and fast on the center of the chest — follow the beat.",
+    steps: [
+      "<strong>Call 911</strong> (or send someone). Start CPR if the person is unresponsive and not breathing normally.",
+      "<strong>Compressions:</strong> Heel of one hand on the center of the chest. Push hard and fast — about 2 in (5 cm) deep. Follow the beat (100–120/min).",
+      "<strong>After 30 compressions</strong> the circle turns blue — that is your cue to pause and give <strong>2 rescue breaths</strong> (~1 second each). Tilt head, lift chin, pinch nose, seal lips, blow until the chest rises.",
+      "<strong>Repeat</strong> cycles of 30 compressions and 2 breaths until help arrives or they respond."
+    ],
+    note: "Trainer timing: 30 compressions at 110 BPM, then a 5-second breath window."
+  };
   var cprState = {
     running: false,
     sound: false,
+    phase: "idle",
+    compressionCount: 0,
     startedAt: 0,
     accumulated: 0,
     beatTimer: null,
     clockTimer: null,
+    breathTimer: null,
     audioCtx: null
   };
+
+  function getCprSettings() {
+    return {
+      bpm: CPR_BPM,
+      compressions: 30,
+      breathMs: 5000,
+      interval: 60000 / CPR_BPM,
+      idleCue: "Compress on beat",
+      activeCue: "Push hard & fast",
+      breathHint: "Blue after 30 compressions — give 2 rescue breaths, then resume."
+    };
+  }
+
+  function renderCprTutorial() {
+    var summary = document.getElementById("cprTutorialSummary");
+    var body = document.getElementById("cprTutorialBody");
+    var tutorial = document.getElementById("cprTutorial");
+    if (summary) summary.textContent = CPR_TUTORIAL.summary;
+    if (body) {
+      body.innerHTML =
+        "<ol>" + CPR_TUTORIAL.steps.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>" +
+        '<p class="cpr-tutorial-note">' + CPR_TUTORIAL.note + "</p>";
+    }
+    if (tutorial) tutorial.hidden = false;
+  }
+
+  function syncCprModeUi() {
+    var settings = getCprSettings();
+    var bpm = document.querySelector("#cprGuide .cpr-bpm");
+    var hint = document.getElementById("cprBreathHint");
+    var cue = document.getElementById("cprCue");
+    if (bpm) bpm.textContent = settings.bpm + " BPM · 30:2";
+    if (hint) hint.textContent = settings.breathHint;
+    renderCprTutorial();
+    var lead = document.getElementById("aidCprLead");
+    if (lead) lead.textContent = CPR_TUTORIAL.lead;
+    if (cue && !cprState.running) {
+      cue.textContent = settings.idleCue;
+      cue.classList.add("idle");
+      cue.classList.remove("is-hidden");
+    }
+  }
 
   function buildCprGuide() {
     var el = document.createElement("div");
     el.className = "cpr-guide";
     el.id = "cprGuide";
     el.innerHTML =
-      '<div class="cpr-beat">' +
-        '<div class="cpr-pulse" id="cprPulse" aria-hidden="true"></div>' +
-        '<div class="cpr-cue idle" id="cprCue">Compress on beat</div>' +
-        '<div class="cpr-elapsed" id="cprElapsed">0:00</div>' +
+      '<div class="cpr-beat" id="cprBeat">' +
+        '<div class="cpr-beat-stage" id="cprBeatStage">' +
+          '<span class="cpr-ring cpr-ring-a" aria-hidden="true"></span>' +
+          '<span class="cpr-ring cpr-ring-b" aria-hidden="true"></span>' +
+          '<div class="cpr-pulse" id="cprPulse" aria-hidden="true">' +
+            '<span class="cpr-breath-label" id="cprBreathLabel">BREATH</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cpr-beat-copy">' +
+          '<div class="cpr-cue idle" id="cprCue">Compress on beat</div>' +
+          '<div class="cpr-beat-stats">' +
+            '<span class="cpr-bpm">110 BPM · 30:2</span>' +
+            '<span class="cpr-elapsed" id="cprElapsed">0:00</span>' +
+          '</div>' +
+          '<p class="cpr-breath-hint" id="cprBreathHint">Blue after 30 compressions — give 2 rescue breaths, then resume.</p>' +
+        '</div>' +
       '</div>' +
       '<div class="cpr-controls">' +
         '<button type="button" class="cpr-btn-start" id="cprStartBtn">Start</button>' +
         '<button type="button" class="cpr-btn-reset" id="cprResetBtn">Reset</button>' +
       '</div>' +
-      '<label class="cpr-sound"><input type="checkbox" id="cprSoundChk"> Sound</label>';
+      '<div class="cpr-options">' +
+        '<label class="cpr-option"><input type="checkbox" id="cprSoundChk"> Sound</label>' +
+      '</div>' +
+      '<details class="cpr-tutorial" id="cprTutorial">' +
+        '<summary id="cprTutorialSummary">How to do CPR</summary>' +
+        '<div class="cpr-tutorial-body" id="cprTutorialBody"></div>' +
+      '</details>';
 
     el.querySelector("#cprStartBtn").addEventListener("click", function () {
       if (cprState.running) stopCpr();
@@ -7110,6 +7519,7 @@
       cprState.sound = e.target.checked;
       if (cprState.sound) ensureCprAudio();
     });
+    syncCprModeUi();
     return el;
   }
 
@@ -7155,33 +7565,130 @@
     osc.stop(t + 0.07);
   }
 
-  function fireCprBeat() {
+  function spawnCprWave() {
+    var stage = document.getElementById("cprBeatStage");
+    if (!stage || cprState.phase !== "compress") return;
+    var wave = document.createElement("span");
+    wave.className = "cpr-wave";
+    wave.setAttribute("aria-hidden", "true");
+    stage.appendChild(wave);
+    wave.addEventListener("animationend", function () {
+      if (wave.parentNode) wave.parentNode.removeChild(wave);
+    });
+  }
+
+  function pulseCompressBeat() {
     var pulse = document.getElementById("cprPulse");
+    var stage = document.getElementById("cprBeatStage");
     if (pulse) {
       pulse.classList.remove("on");
       void pulse.offsetWidth;
       pulse.classList.add("on");
     }
+    if (stage) {
+      stage.classList.remove("beat");
+      void stage.offsetWidth;
+      stage.classList.add("beat");
+    }
+    spawnCprWave();
+  }
+
+  function enterBreathPhase() {
+    if (!cprState.running || cprState.phase !== "compress") return;
+    cprState.phase = "breath";
+    if (cprState.beatTimer) clearInterval(cprState.beatTimer);
+    cprState.beatTimer = null;
+
+    var pulse = document.getElementById("cprPulse");
+    var beat = document.getElementById("cprBeat");
+    var cue = document.getElementById("cprCue");
+    var stage = document.getElementById("cprBeatStage");
+    var label = document.getElementById("cprBreathLabel");
+    if (pulse) {
+      pulse.classList.remove("on");
+      pulse.classList.add("breath");
+      pulse.setAttribute("aria-hidden", "false");
+    }
+    if (label) label.setAttribute("aria-live", "assertive");
+    if (beat) {
+      beat.classList.remove("is-active");
+      beat.classList.add("is-breath");
+    }
+    if (cue) cue.classList.add("is-hidden");
+    if (stage) {
+      stage.classList.remove("beat");
+      stage.querySelectorAll(".cpr-wave").forEach(function (w) { w.remove(); });
+    }
+
+    cprState.breathTimer = setTimeout(exitBreathPhase, getCprSettings().breathMs);
+  }
+
+  function exitBreathPhase() {
+    cprState.breathTimer = null;
+    if (!cprState.running) return;
+
+    var pulse = document.getElementById("cprPulse");
+    var beat = document.getElementById("cprBeat");
+    var cue = document.getElementById("cprCue");
+    var label = document.getElementById("cprBreathLabel");
+    if (pulse) {
+      pulse.classList.remove("breath", "on");
+      pulse.setAttribute("aria-hidden", "true");
+    }
+    if (label) label.removeAttribute("aria-live");
+    if (beat) {
+      beat.classList.remove("is-breath");
+      beat.classList.add("is-active");
+    }
+    if (cue) {
+      cue.textContent = getCprSettings().activeCue;
+      cue.classList.remove("idle", "is-hidden");
+    }
+
+    cprState.phase = "compress";
+    cprState.compressionCount = 0;
+    var settings = getCprSettings();
+    fireCprBeat();
+    cprState.beatTimer = setInterval(fireCprBeat, settings.interval);
+  }
+
+  function fireCprBeat() {
+    if (cprState.phase !== "compress") return;
+    var settings = getCprSettings();
+    pulseCompressBeat();
     if (cprState.sound) playCprClick();
+    cprState.compressionCount++;
+    if (cprState.compressionCount >= settings.compressions) enterBreathPhase();
   }
 
   function startCpr() {
+    var settings = getCprSettings();
     cprState.sound = !!(document.getElementById("cprSoundChk") || {}).checked;
     if (cprState.sound) ensureCprAudio();
     cprState.running = true;
+    cprState.phase = "compress";
+    cprState.compressionCount = 0;
     cprState.startedAt = Date.now();
     var btn = document.getElementById("cprStartBtn");
     var cue = document.getElementById("cprCue");
+    var beat = document.getElementById("cprBeat");
+    var pulse = document.getElementById("cprPulse");
     if (btn) {
       btn.textContent = "Stop";
       btn.classList.add("running");
     }
     if (cue) {
-      cue.textContent = "Push hard & fast";
-      cue.classList.remove("idle");
+      cue.textContent = settings.activeCue;
+      cue.classList.remove("idle", "is-hidden");
     }
+    if (pulse) pulse.classList.remove("breath");
+    if (beat) {
+      beat.classList.remove("is-breath");
+      beat.classList.add("is-active");
+    }
+    syncCprModeUi();
     fireCprBeat();
-    cprState.beatTimer = setInterval(fireCprBeat, CPR_INTERVAL);
+    cprState.beatTimer = setInterval(fireCprBeat, settings.interval);
     cprState.clockTimer = setInterval(updateCprClock, 250);
   }
 
@@ -7190,22 +7697,37 @@
       cprState.accumulated += Date.now() - cprState.startedAt;
     }
     cprState.running = false;
+    cprState.phase = "idle";
+    cprState.compressionCount = 0;
     if (cprState.beatTimer) clearInterval(cprState.beatTimer);
     if (cprState.clockTimer) clearInterval(cprState.clockTimer);
+    if (cprState.breathTimer) clearTimeout(cprState.breathTimer);
     cprState.beatTimer = null;
     cprState.clockTimer = null;
+    cprState.breathTimer = null;
     var btn = document.getElementById("cprStartBtn");
     var cue = document.getElementById("cprCue");
     var pulse = document.getElementById("cprPulse");
+    var beat = document.getElementById("cprBeat");
+    var stage = document.getElementById("cprBeatStage");
     if (btn) {
       btn.textContent = "Start";
       btn.classList.remove("running");
     }
     if (cue) {
-      cue.textContent = "Compress on beat";
+      cue.textContent = getCprSettings().idleCue;
       cue.classList.add("idle");
+      cue.classList.remove("is-hidden");
     }
-    if (pulse) pulse.classList.remove("on");
+    if (pulse) pulse.classList.remove("on", "breath");
+    if (pulse) pulse.setAttribute("aria-hidden", "true");
+    var label = document.getElementById("cprBreathLabel");
+    if (label) label.removeAttribute("aria-live");
+    if (beat) beat.classList.remove("is-active", "is-breath");
+    if (stage) {
+      stage.classList.remove("beat");
+      stage.querySelectorAll(".cpr-wave").forEach(function (w) { w.remove(); });
+    }
     updateCprClock();
   }
 
