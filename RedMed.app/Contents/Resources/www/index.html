@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-WmvmUSBMmdjpUoSS1GeYDLsDfKvuXZI3jhxhZ73m2w8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4i6hi2Vpk6JBVkzgEquBxhsnTy+Qs34d5+CqLPL0FZY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -3112,10 +3112,10 @@
   <div class="page-header myid">
     <div class="brand-lockup" id="appBrandLockup">
       <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+        <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
       </div>
       <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/logo-header.png" width="120" height="31" alt="RedMed">
+        <img class="brand-logo-lockup" src="assets/longlogo.png" width="120" height="35" alt="RedMed">
         <div class="brand-text">
           <h1 id="appTitle"></h1>
           <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
@@ -3405,7 +3405,7 @@
 <!-- ============ BASIC AID (QUICK REFERENCE) ============ -->
 <div id="aidView">
   <div class="page-header aid">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
     <p class="hint aid-privacy-hint" data-i18n="aidPrivacy">No name, phone, email, or address on this screen — offline only, nothing sent anywhere.</p>
@@ -3423,7 +3423,7 @@
 <!-- ============ FIND & CALL 911 ============ -->
 <div id="locView">
   <div class="page-header loc">
-    <img class="brand-wordmark brand-wordmark-hero" src="assets/logo-header.png" width="180" height="47" alt="RedMed">
+    <img class="brand-wordmark brand-wordmark-hero" src="assets/longlogo.png" width="180" height="53" alt="RedMed">
     <h1 data-i18n="locTitle">Find 911</h1>
     <p class="lead" data-i18n="locLead">No servers, no data collection. GPS &amp; compass data collected while the 911 screen is open.</p>
     <p class="hint loc-privacy-hint" data-i18n="locPrivacy">Coordinates stay on this screen. RedMed has no servers — location is not stored with us.</p>
@@ -4434,9 +4434,6 @@
     str = str.replace(/-/g, "+").replace(/_/g, "/");
     while (str.length % 4) str += "=";
     return decodeURIComponent(escape(atob(str)));
-  }
-  function linesToArray(text) {
-    return (text || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
   }
   function calcAge(dobStr) {
     if (!dobStr) return null;
@@ -5807,7 +5804,8 @@
   function initEdit() {
     setActiveView("myid");
     document.title = t("titleMyId");
-    var saved = localStorage.getItem(STORAGE_KEY);
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
     if (saved) {
       try { fillFormFrom(normalizeProfile(JSON.parse(saved))); } catch (e) {}
     }

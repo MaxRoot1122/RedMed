@@ -3,15 +3,15 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WWW="$ROOT/RedMed.app/Contents/Resources/www"
-mkdir -p "$WWW/assets"
-
-if [ -f "$ROOT/assets/logo.pdf" ] && command -v sips >/dev/null 2>&1; then
-  sips -s format png "$ROOT/assets/logo.pdf" --out "$ROOT/assets/logo-header.png" >/dev/null
-fi
-
-for page in index.html get.html manifest.json privacy-policy.html terms-of-service.html; do
-  if [ -f "$ROOT/$page" ]; then
-    cp "$ROOT/$page" "$WWW/$page"
+mkdir -p "$WWW/assets" "$WWW/config"
+cp "$ROOT/index.html" "$WWW/index.html"
+cp "$ROOT/get.html" "$WWW/get.html"
+cp "$ROOT/privacy-policy.html" "$WWW/privacy-policy.html"
+cp "$ROOT/terms-of-service.html" "$WWW/terms-of-service.html"
+cp "$ROOT/manifest.json" "$WWW/manifest.json"
+for f in logo.svg longlogo.svg longlogo.png apple-touch-icon.png favicon-32.png logo-512.png; do
+  if [ -f "$ROOT/assets/$f" ]; then
+    cp "$ROOT/assets/$f" "$WWW/assets/$f"
   fi
 done
 
