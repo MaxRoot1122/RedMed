@@ -11,6 +11,11 @@ struct RedMedApp: App {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
+                    // Own paired band: do not show emergency card on the owner's phone.
+                    let linked = BraceletLinkStore.loadURL()
+                    if isOwnPairedBand(opened: url.absoluteString, linked: linked) {
+                        return
+                    }
                     guard let profile = ProfileLinkBuilder.decodeProfile(fromURLString: url.absoluteString) else { return }
                     scannedProfile = profile
                     showingScanned = true
@@ -19,5 +24,16 @@ struct RedMedApp: App {
                     ScannedCardView(profile: scannedProfile ?? MedicalProfile())
                 }
         }
+    }
+
+    /// Match full URL or shared `#d=` payload so scheme differences still count as own band.
+    private func isOwnPairedBand(opened: String, linked: String) -> Bool {
+        guard !linked.isEmpty else { return false }
+        if opened == linked { return true }
+        guard let openHash = opened.split(separator: "#").last,
+              let linkHash = linked.split(separator: "#").last,
+              openHash.hasPrefix("d="),
+              linkHash.hasPrefix("d=") else { return false }
+        return openHash == linkHash
     }
 }
