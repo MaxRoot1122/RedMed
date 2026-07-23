@@ -1,24 +1,24 @@
 #!/bin/bash
+# macOS double-click launcher — runs the native iOS app in Simulator (SwiftUI).
+# Web index.html is for browsers / GitHub Pages / NFC cards only.
 CONTENTS="$(cd "$(dirname "$0")/.." && pwd)"
 APP_BUNDLE="$(cd "${CONTENTS}/.." && pwd -P)"
 REPO_ROOT="$(dirname "$APP_BUNDLE")"
-WWW="${CONTENTS}/Resources/www"
-SERVER_SH="${CONTENTS}/Resources/redmed-server.sh"
+LAUNCH_IOS="$REPO_ROOT/scripts/run-ios-simulator.sh"
 
-if [ ! -f "$SERVER_SH" ]; then
-  SERVER_SH="${REPO_ROOT}/scripts/redmed-server.sh"
-fi
-
-if [ ! -f "$SERVER_SH" ]; then
-  osascript -e 'display alert "RedMed" message "Server script missing. Re-download RedMed from GitHub." as critical'
-  exit 1
-fi
-
-INSTALL_SH="${REPO_ROOT}/scripts/install-desktop-shortcut.sh"
+INSTALL_SH="$REPO_ROOT/scripts/install-desktop-shortcut.sh"
 if [ ! -e "${HOME}/Desktop/RedMed.app" ] && [ -f "$INSTALL_SH" ]; then
   bash "$INSTALL_SH" --quiet >/dev/null 2>&1 || true
 fi
 
-# shellcheck source=/dev/null
-source "$SERVER_SH"
-redmed_launch "$WWW"
+if [ ! -f "$LAUNCH_IOS" ]; then
+  osascript -e 'display alert "RedMed" message "Native launcher script missing. Re-download RedMed from GitHub." as critical'
+  exit 1
+fi
+
+if ! command -v xcodebuild >/dev/null 2>&1; then
+  osascript -e 'display alert "RedMed" message "Install Xcode from the Mac App Store, then open ios/RedMed.xcodeproj and run on your iPhone or Simulator." as critical'
+  exit 1
+fi
+
+exec bash "$LAUNCH_IOS"

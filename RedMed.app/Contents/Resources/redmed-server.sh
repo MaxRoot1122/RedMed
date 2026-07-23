@@ -103,9 +103,9 @@ redmed_ensure_server() {
   return 1
 }
 
-# Desktop shell targets full HD; clamp to the primary display when smaller.
-REDMED_WINDOW_W="${REDMED_WINDOW_W:-1920}"
-REDMED_WINDOW_H="${REDMED_WINDOW_H:-1080}"
+# iPhone logical viewport (393×852) — window sized to match native spec
+REDMED_WINDOW_W="${REDMED_WINDOW_W:-393}"
+REDMED_WINDOW_H="${REDMED_WINDOW_H:-852}"
 
 _redmed_resize_front_window() {
   local min_w="$1" min_h="$2"

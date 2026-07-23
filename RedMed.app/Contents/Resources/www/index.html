@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-IWSKVzziyxbL0F9GxJOFmjT+56+eSSX6L9sivzDlVEY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xvDlS/PTOyQxIGTgnzT3fwjitSO0VG1tzlrwtLec/jA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -104,13 +104,13 @@
     --shadow: 0 1px 2px rgba(28, 25, 23, 0.04), 0 10px 28px rgba(225, 29, 72, 0.06);
     --shadow-float: var(--elevation-3);
     --gloss: none;
-    --app-max: 560px;
+    --app-max: 393px;
     --app-width: min(100vw, var(--app-max));
     --desktop-min-w: 1920px;
     --desktop-min-h: 1080px;
     --desktop-shell-max: 1680px;
-    --phone-ref-w: 402;
-    --phone-ref-h: 874;
+    --phone-ref-w: 393;
+    --phone-ref-h: 852;
     --phone-bezel: 11px;
     --phone-device-r: 52px;
     --phone-screen-r: 44px;
@@ -1708,6 +1708,9 @@
   #productSheet.show .sheet-card a {
     color: var(--accent);
   }
+  html.bracelet-sheet-open {
+    overflow: hidden;
+  }
   .sheet-head {
     display: flex;
     align-items: center;
@@ -3001,11 +3004,39 @@
     color: var(--ink);
     padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 12px);
   }
+  #locView {
+    --loc-gutter: var(--space);
+    --loc-card-pad: 14px;
+  }
+  #locView .page-header.loc,
+  #locView .loc-body {
+    max-width: var(--app-width);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: var(--loc-gutter);
+    padding-right: var(--loc-gutter);
+  }
+  #locView .page-header.loc {
+    padding-right: var(--loc-gutter);
+    padding-bottom: 10px;
+  }
+  #locView .page-header.loc h1,
+  #locView .page-header.loc .lead,
+  #locView .page-header.loc .loc-privacy-hint {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-left: var(--loc-card-pad);
+    padding-right: var(--loc-card-pad);
+    box-sizing: border-box;
+  }
 
   #locView .hint { margin: 0; }
 
   .loc-body {
-    padding: 0 var(--space) var(--space);
+    padding: 0 0 var(--space);
     max-width: var(--app-width);
     margin: 0 auto;
     display: flex;
@@ -3199,7 +3230,7 @@
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
-    padding: 16px;
+    padding: var(--loc-card-pad, 14px);
     margin: 0;
     line-height: 1.5;
     display: flex;
@@ -3287,7 +3318,7 @@
 
   .trauma-section {
     background: var(--surface-dim); border: 1px solid var(--line); border-radius: var(--radius-lg);
-    padding: 14px 14px 16px; margin: 0; box-shadow: none;
+    padding: var(--loc-card-pad, 14px); margin: 0; box-shadow: none;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -3351,7 +3382,7 @@
     background: var(--medical); padding: 8px 12px; border-radius: 999px;
   }
 
-  /* iPhone 17 class phones (~402×874 CSS px, 3× → 1206×2622 physical) — native density, not desktop Material sizing */
+  /* iPhone 15/16 native logical size (393×852 pt) — matches ios/ AppTheme LayoutMetrics */
   @media (max-width: 767px) {
     :root {
       --phone-scale: min(1, 100vw / calc(var(--phone-ref-w) * 1px));
@@ -3465,6 +3496,10 @@
     .page-header.loc {
       padding: calc(var(--safe-top) + calc(8px * var(--phone-scale))) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px)) calc(10px * var(--phone-scale)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px));
     }
+    #locView .page-header.loc {
+      padding-top: calc(var(--safe-top) + calc(8px * var(--phone-scale)));
+      padding-bottom: calc(10px * var(--phone-scale));
+    }
     .page-header.aid { padding-bottom: calc(16px * var(--phone-scale)); gap: calc(12px * var(--phone-scale)); }
     .page-header.loc { gap: calc(8px * var(--phone-scale)); }
     .page-header.loc .lead { font-size: calc(12px * var(--phone-scale)); }
@@ -3521,14 +3556,20 @@
       padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) 4px max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
     }
     .app-legal-footer a { font-size: calc(9px * var(--phone-scale)); }
-    .loc-bracelet-section { padding: calc(12px * var(--phone-scale)); gap: calc(8px * var(--phone-scale)); }
+    .loc-bracelet-section { padding: var(--loc-card-pad, calc(12px * var(--phone-scale))); gap: calc(8px * var(--phone-scale)); }
+    #locView { --loc-gutter: max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)); --loc-card-pad: calc(12px * var(--phone-scale)); }
+    #locView .page-header.loc,
+    #locView .loc-body {
+      padding-left: var(--loc-gutter);
+      padding-right: max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
+    }
     .loc-body {
       max-width: none;
-      padding: 0 max(calc(14px * var(--phone-scale)), env(safe-area-inset-left, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(calc(14px * var(--phone-scale)), env(safe-area-inset-right, 0px));
+      padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       gap: calc(14px * var(--phone-scale));
     }
     .loc-gps-panel .loc-mail-tip { font-size: calc(11px * var(--phone-scale)); padding: calc(8px * var(--phone-scale)) calc(12px * var(--phone-scale)) calc(10px * var(--phone-scale)); }
-    .trauma-section { padding: calc(12px * var(--phone-scale)); gap: calc(10px * var(--phone-scale)); }
+    .trauma-section { padding: var(--loc-card-pad, calc(12px * var(--phone-scale))); gap: calc(10px * var(--phone-scale)); }
     .trauma-section-head { gap: calc(4px * var(--phone-scale)); }
     .trauma-picker-field { gap: calc(5px * var(--phone-scale)); }
     #viewView .view-emergency-priority,
@@ -3677,36 +3718,23 @@
       box-sizing: border-box;
     }
     #editView .split-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) var(--phone-device-w);
-      gap: 24px;
-      align-items: start;
-      max-width: min(var(--desktop-shell-max), 100vw);
+      display: block;
+      max-width: min(var(--app-width), var(--app-max));
       min-width: 0;
       margin: 0 auto;
-      padding: 0 0 16px;
+      padding: 0 var(--md-inset) 16px;
       box-sizing: border-box;
     }
     #editView .split-main.wrap {
-      max-width: none;
+      max-width: 100%;
       margin: 0;
       padding: var(--md-4) 0 0;
       box-sizing: border-box;
     }
-    .split-preview {
-      display: block;
-      position: sticky;
-      top: calc(var(--safe-top) + var(--header-height));
-      padding-top: 8px;
-      width: var(--phone-device-w);
-    }
+    /* Side preview squashes the form and uses a fixed 874px tall frame — use Preview button instead */
+    .split-preview,
     #editView .split-preview {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-      box-sizing: border-box;
-      width: var(--phone-device-w);
+      display: none !important;
     }
     .preview-label {
       font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none;
@@ -3723,7 +3751,7 @@
       letter-spacing: 0.01em;
       color: rgba(255, 255, 255, 0.62);
     }
-    /* iPhone 17 chassis — 402×874 CSS px live preview on the right */
+    /* iPhone native chassis — 393×852 CSS px (matches SwiftUI LayoutMetrics baseline) */
     .phone-device {
       position: relative;
       width: var(--phone-device-w);
@@ -3776,7 +3804,8 @@
     }
     #editView .phone-frame {
       width: 100%;
-      height: calc(var(--phone-ref-h) * 1px);
+      height: auto;
+      min-height: 240px;
       max-height: min(calc(var(--phone-ref-h) * 1px), calc(100vh - 160px));
       box-sizing: border-box;
       border: none;
@@ -3848,7 +3877,7 @@
     .phone-frame .contact-card a.call { padding: 8px 12px; font-size: 13px; }
   }
 
-  /* Desktop design frame (?phone=1) — full app in iPhone 17 chassis, not split layout */
+  /* Desktop design frame — 393×852 native iPhone spec (matches ios/ LayoutMetrics) */
   html.phone-emulate {
     /* Mirror mobile typography tokens — @media (max-width:767px) does not fire on wide viewports */
     --phone-scale: 1;
@@ -3908,31 +3937,47 @@
     font-size: var(--md-type-body);
     padding-bottom: calc(var(--page-nav-clearance) + env(safe-area-inset-bottom, 0px));
   }
-  @media (min-width: 768px) {
-    html.phone-emulate .split-preview { display: none !important; }
-    html.phone-emulate #editView .split-layout {
-      display: block;
-      max-width: none;
-      padding: 0;
+  /* RedMed.app / narrow localhost — fill the window like Safari on a phone, no decorative frame */
+  @media (max-width: 480px) {
+    html.phone-emulate {
+      background: var(--bg);
+      min-height: 100dvh;
     }
-    html.phone-emulate #editView .split-main.wrap {
-      padding-top: 0;
-    }
-    html.phone-emulate #editView,
-    html.phone-emulate #aidView,
-    html.phone-emulate #locView,
-    html.phone-emulate #viewView {
+    html.phone-emulate body {
+      width: 100%;
       max-width: 100%;
+      min-height: 100dvh;
+      max-height: none;
       margin: 0;
       border: none;
+      border-radius: 0;
       box-shadow: none;
     }
-    html.phone-emulate #editView .page-header.myid,
-    html.phone-emulate #aidView .page-header.aid,
-    html.phone-emulate #locView .page-header.loc {
-      max-width: 100%;
-      margin: 0;
-    }
+  }
+  html.phone-emulate .split-preview { display: none !important; }
+  html.phone-emulate #editView .split-layout {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+  html.phone-emulate #editView .split-main.wrap {
+    padding-top: 0;
+  }
+  html.phone-emulate #editView,
+  html.phone-emulate #aidView,
+  html.phone-emulate #locView,
+  html.phone-emulate #viewView {
+    max-width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    min-height: 100dvh;
+  }
+  html.phone-emulate #editView .page-header.myid,
+  html.phone-emulate #aidView .page-header.aid,
+  html.phone-emulate #locView .page-header.loc {
+    max-width: 100%;
+    margin: 0;
   }
 </style>
 </head>
@@ -4318,7 +4363,6 @@
   <nav class="app-legal-footer" aria-label="Terms and conditions">
     <a href="terms-of-service.html" data-i18n="termsChipTerms">Terms Of Service</a>
     <a href="privacy-policy.html" data-i18n="termsChipPrivacy">Privacy Policy</a>
-    <span class="support-email-text" data-i18n="supportEmail">help.RedMed@gmail.com</span>
   </nav>
 </div>
 <div id="pinDialog" class="sheet-backdrop" hidden aria-hidden="true">
@@ -4401,11 +4445,22 @@
     return;
   }
 
-  try {
-    if (new URLSearchParams(location.search).get("phone") === "1") {
-      document.documentElement.classList.add("phone-emulate");
+  function shouldUsePhoneShell() {
+    try {
+      var phoneParam = new URLSearchParams(location.search).get("phone");
+      if (phoneParam === "0") return false;
+      if (phoneParam === "1") return true;
+      var host = location.hostname;
+      if (host === "127.0.0.1" || host === "localhost") return true;
+      return window.matchMedia("(min-width: 768px)").matches;
+    } catch (e) {
+      return false;
     }
-  } catch (e) {}
+  }
+
+  if (shouldUsePhoneShell()) {
+    document.documentElement.classList.add("phone-emulate");
+  }
 
   var STORAGE_KEY = "medicalIdData";
   var CONSENT_KEY = "redMedUseConsent";
@@ -4415,7 +4470,7 @@
   var GET_URL = "https://www.redmed.com/get.html";
   var HOSTED_URL = "https://www.redmed.com/index.html";
   var LEGACY_HOSTED_URLS = ["https://maxroot1122.github.io/RedMed/index.html"];
-  var APP_WIDTH_MAX = 560;
+  var APP_WIDTH_MAX = 393;
   var previewFrame = 0;
   var bottomBarFrame = 0;
 
@@ -4458,7 +4513,7 @@
     return document.documentElement.classList.contains("phone-emulate");
   }
 
-  /* Fill real phone screens; cap on desktop. ?phone=1 forces phone layout in a desktop frame. */
+  /* Fill real phone screens; desktop uses phone-emulate (393×852). ?phone=0 disables the frame. */
   function isPhoneLayout() {
     if (isPhoneEmulate()) return true;
     return window.matchMedia("(max-width: 767px)").matches;
@@ -4471,11 +4526,11 @@
     document.documentElement.classList.toggle("is-phone", phone);
     if (phone) {
       document.documentElement.style.setProperty("--app-width", "100%");
-      /* iPhone 17 baseline (--phone-ref-w CSS px); shrink slightly on narrower phones */
+      /* iPhone native baseline (--phone-ref-w CSS px); shrink slightly on narrower phones */
       if (isPhoneEmulate()) {
         document.documentElement.style.setProperty("--phone-scale", "1");
       } else {
-        var refW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--phone-ref-w")) || 402;
+        var refW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--phone-ref-w")) || 393;
         var scale = Math.min(1, vw / refW);
         document.documentElement.style.setProperty("--phone-scale", String(scale));
       }
@@ -4508,11 +4563,7 @@
     var loc = document.getElementById("locView");
     if (edit && !edit.classList.contains("hide")) {
       var splitMain = edit.querySelector(".split-main");
-      if (splitMain && window.matchMedia("(min-width: 1024px)").matches) {
-        anchor = splitMain;
-      } else {
-        anchor = splitMain || edit;
-      }
+      anchor = splitMain || edit;
     } else if (aid && aid.classList.contains("show")) {
       anchor = aid;
     } else if (loc && loc.classList.contains("show")) {
