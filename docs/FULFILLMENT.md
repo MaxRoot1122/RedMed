@@ -51,7 +51,7 @@ Track:
 | Card won't load | HTTPS host must be live; check canonical URL |
 | Profile too large | Shorten entries or use NTAG216; see capacity warning |
 
-Contact: `mrmax115@gmail.com` (from terms).
+Contact: `help.RedMed@gmail.com` (from terms).
 
 ## Returns / RMA
 
