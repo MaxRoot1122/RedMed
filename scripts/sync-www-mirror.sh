@@ -6,6 +6,8 @@ WWW="$ROOT/RedMed.app/Contents/Resources/www"
 mkdir -p "$WWW/assets" "$WWW/config"
 cp "$ROOT/index.html" "$WWW/index.html"
 cp "$ROOT/get.html" "$WWW/get.html"
+cp "$ROOT/privacy-policy.html" "$WWW/privacy-policy.html"
+cp "$ROOT/terms-of-service.html" "$WWW/terms-of-service.html"
 if [ -f "$ROOT/assets/trauma-hospitals.json" ]; then
   cp "$ROOT/assets/trauma-hospitals.json" "$WWW/assets/trauma-hospitals.json"
 fi

@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-x+mKP69sXcmMYwQF8Dh1j0oLNgn6YDEGRx0zn1mnESA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-iH4STqrnwBYHGnDh3R/kJL3M2Dx/vUm18o/Wifvp3P8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -4043,9 +4043,6 @@
     while (str.length % 4) str += "=";
     return decodeURIComponent(escape(atob(str)));
   }
-  function linesToArray(text) {
-    return (text || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
-  }
   function calcAge(dobStr) {
     if (!dobStr) return null;
     var dob = new Date(dobStr + "T00:00:00");
@@ -5367,7 +5364,8 @@
   function initEdit() {
     setActiveView("myid");
     document.title = t("titleMyId");
-    var saved = localStorage.getItem(STORAGE_KEY);
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
     if (saved) {
       try { fillFormFrom(normalizeProfile(JSON.parse(saved))); } catch (e) {}
     }
