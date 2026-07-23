@@ -64,3 +64,9 @@ pointing UIs.
    relying on full-screen TWA verification.
 3. Restrict Maps keys in Google Cloud Console before setting
    `GOOGLE_MAPS_API_KEY`.
+4. **Register a domain you actually own before manufacturing bracelets.**
+   `redmed.app` (referenced in `CNAME` and this doc's domain-migration plan)
+   is a live, unrelated third-party site as of 2026-07-23 — not available.
+   Universal Links for the "owner's own tap doesn't show the responder view"
+   feature, and any commercial packaging, need a domain you control. See
+   `SECURITY.md` → "Known gap: owner's own tap is not suppressed."

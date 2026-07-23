@@ -24,33 +24,105 @@ struct EditProfileView: View {
 
     private let bloodTypes = ["", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
 
+    // Ordered roughly by U.S. outpatient prescription volume (ClinCalc DrugStats
+    // Top 300) with emergency-relevant drugs — anticoagulants, insulins,
+    // epinephrine, naloxone, steroids, opioids, antiseizure — kept prominent.
     static let commonMeds = [
+        // Pain / anti-inflammatory
         "Acetaminophen (Tylenol)", "Ibuprofen (Advil/Motrin)", "Aspirin",
-        "Lisinopril", "Metformin", "Atorvastatin (Lipitor)", "Levothyroxine",
-        "Amlodipine", "Metoprolol", "Omeprazole", "Albuterol inhaler",
-        "Insulin", "Warfarin", "Losartan", "Gabapentin", "Sertraline",
-        "Hydrochlorothiazide", "Simvastatin", "Amoxicillin", "Prednisone",
-        "Epinephrine (EpiPen)", "Clopidogrel (Plavix)", "Apixaban (Eliquis)",
-        "Furosemide (Lasix)"
+        "Naproxen (Aleve)", "Meloxicam", "Cyclobenzaprine (Flexeril)",
+        // Cholesterol
+        "Atorvastatin (Lipitor)", "Rosuvastatin (Crestor)", "Simvastatin", "Pravastatin",
+        // Blood pressure / heart
+        "Lisinopril", "Losartan", "Amlodipine", "Metoprolol", "Carvedilol",
+        "Atenolol", "Hydrochlorothiazide", "Furosemide (Lasix)", "Spironolactone",
+        "Diltiazem", "Clonidine", "Digoxin",
+        // Diabetes
+        "Metformin", "Glipizide", "Insulin glargine (Lantus)", "Insulin aspart (NovoLog)",
+        "Insulin (regular)", "Semaglutide (Ozempic/Wegovy)", "Empagliflozin (Jardiance)",
+        "Dulaglutide (Trulicity)",
+        // Thyroid
+        "Levothyroxine (Synthroid)",
+        // Stomach / reflux
+        "Omeprazole (Prilosec)", "Pantoprazole (Protonix)", "Famotidine (Pepcid)",
+        // Respiratory
+        "Albuterol inhaler", "Fluticasone (Flonase/Flovent)", "Montelukast (Singulair)",
+        "Budesonide-formoterol (Symbicort)",
+        // Mental health
+        "Sertraline (Zoloft)", "Escitalopram (Lexapro)", "Fluoxetine (Prozac)",
+        "Citalopram (Celexa)", "Duloxetine (Cymbalta)", "Venlafaxine (Effexor)",
+        "Bupropion (Wellbutrin)", "Trazodone", "Mirtazapine (Remeron)",
+        // Sedatives / benzodiazepines
+        "Alprazolam (Xanax)", "Lorazepam (Ativan)", "Clonazepam (Klonopin)", "Diazepam (Valium)",
+        // Nerve / seizure
+        "Gabapentin (Neurontin)", "Pregabalin (Lyrica)", "Levetiracetam (Keppra)",
+        "Lamotrigine (Lamictal)", "Topiramate (Topamax)", "Divalproex (Depakote)",
+        "Levodopa-carbidopa (Sinemet)",
+        // Blood thinners / antiplatelet
+        "Warfarin (Coumadin)", "Apixaban (Eliquis)", "Rivaroxaban (Xarelto)",
+        "Dabigatran (Pradaxa)", "Clopidogrel (Plavix)",
+        // Steroids
+        "Prednisone", "Methylprednisolone", "Hydrocortisone",
+        // Antibiotics
+        "Amoxicillin", "Amoxicillin-clavulanate (Augmentin)", "Azithromycin (Z-Pak)",
+        "Cephalexin (Keflex)", "Doxycycline", "Ciprofloxacin",
+        "Sulfamethoxazole-trimethoprim (Bactrim)", "Nitrofurantoin (Macrobid)",
+        // Opioids / dependence
+        "Tramadol (Ultram)", "Hydrocodone-acetaminophen (Norco)", "Oxycodone (OxyContin)",
+        "Morphine", "Buprenorphine-naloxone (Suboxone)",
+        // Emergency rescue
+        "Epinephrine (EpiPen)", "Naloxone (Narcan)",
+        // Other common
+        "Tamsulosin (Flomax)", "Allopurinol", "Methotrexate",
+        "Hydroxychloroquine (Plaquenil)", "Potassium chloride"
     ]
 
+    // Grouped: drug allergies (penicillin/sulfa/NSAIDs are the most common),
+    // the FDA's 9 major food allergens (sesame added 2023), then environmental.
     static let commonAllergens = [
-        "Penicillin", "Amoxicillin", "Sulfa drugs", "Aspirin / NSAIDs",
-        "Peanuts", "Tree nuts", "Shellfish", "Fish", "Eggs", "Dairy / Milk",
-        "Wheat / Gluten", "Soy", "Latex", "Bee / Wasp stings",
-        "Iodine / Contrast dye", "Codeine / Opioids", "Pollen", "Pet dander"
+        // Drugs
+        "Penicillin", "Amoxicillin", "Cephalosporins", "Sulfa drugs (sulfonamides)",
+        "Aspirin / NSAIDs", "Codeine / Opioids", "Morphine",
+        "Local anesthetics (lidocaine)", "General anesthesia",
+        "Iodine / Contrast dye", "Erythromycin / Macrolides", "Tetracycline",
+        // Foods
+        "Peanuts", "Tree nuts", "Shellfish", "Fish", "Eggs", "Milk / Dairy",
+        "Soy", "Wheat / Gluten", "Sesame",
+        // Environmental / other
+        "Latex", "Bee / Wasp stings", "Pollen", "Dust mites", "Mold",
+        "Pet dander", "Nickel", "Adhesive / Tape"
     ]
 
+    // Most-prevalent U.S. chronic conditions (CDC) plus conditions and implants
+    // that change emergency treatment (anticoagulation, dialysis, transplant,
+    // adrenal insufficiency, immunocompromise, ICD/pacemaker).
     static let commonConditions = [
-        "Diabetes (Type 1)", "Diabetes (Type 2)", "Asthma", "COPD",
-        "Epilepsy / Seizure disorder", "Heart disease", "Coronary artery disease",
-        "Heart failure", "Hypertension", "Stroke history", "Pacemaker", "AFib",
-        "Kidney disease", "Liver disease", "Cancer (active treatment)",
-        "Alzheimer's / Dementia", "Parkinson's disease", "Multiple sclerosis",
-        "Lupus", "Rheumatoid arthritis", "Sickle cell disease", "Hemophilia",
-        "PTSD", "Anxiety disorder", "Depression", "Bipolar disorder",
-        "Autism", "Pregnancy", "Blind / Low vision", "Deaf / Hard of hearing",
-        "Mobility impairment", "Sleep apnea", "Thyroid disorder"
+        // Cardiometabolic — most prevalent
+        "Hypertension", "High cholesterol", "Diabetes (Type 1)", "Diabetes (Type 2)",
+        "Obesity", "Heart disease", "Coronary artery disease", "Heart failure",
+        "AFib", "Stroke history", "Thyroid disorder",
+        // Implants / devices
+        "Pacemaker", "ICD (implanted defibrillator)",
+        // Respiratory
+        "Asthma", "COPD", "Sleep apnea",
+        // Neurological
+        "Epilepsy / Seizure disorder", "Migraine", "Alzheimer's / Dementia",
+        "Parkinson's disease", "Multiple sclerosis",
+        // Kidney / liver
+        "Kidney disease", "On dialysis", "Liver disease", "Hepatitis",
+        // Immune / transplant / cancer
+        "Cancer (active treatment)", "Organ transplant", "Immunocompromised",
+        "HIV", "Adrenal insufficiency (Addison's)",
+        // Autoimmune / blood
+        "Lupus", "Rheumatoid arthritis", "Crohn's / IBD",
+        "Sickle cell disease", "Hemophilia", "On blood thinners / anticoagulants",
+        // Digestive / bone / eye
+        "GERD / Acid reflux", "Osteoporosis", "Glaucoma", "Chronic pain",
+        // Mental health
+        "PTSD", "Anxiety disorder", "Depression", "Bipolar disorder", "Autism",
+        // Other
+        "Pregnancy", "Blind / Low vision", "Deaf / Hard of hearing",
+        "Mobility impairment"
     ]
 
     var body: some View {

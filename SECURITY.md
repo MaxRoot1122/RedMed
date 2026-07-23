@@ -49,6 +49,49 @@ locally (gitignored path `config/google-api-key`).
 those fingerprints are pasted, App Links verification is incomplete — see
 [`docs/ANDROID_PLAY.md`](docs/ANDROID_PLAY.md). Do not invent fingerprints.
 
+## iOS Face ID edit-lock
+
+Once a bracelet is linked, editing the profile or re-writing/overwriting a tag
+in the iOS app requires Face ID / Touch ID (`BiometricGate.swift`, via Apple's
+`LocalAuthentication` — not a custom credential store). This is a **tamper
+gate** on an already-unlocked device, not new encryption: the profile is
+already Keychain-encrypted at rest. Falls back to device passcode by design,
+so an owner is never locked out of their own emergency data by a biometric
+failure. Does not gate the emergency card responders read (`ScannedCardView`
+/ web view) — gating that would defeat the app's purpose.
+
+## Known gap: owner's own tap is not suppressed for native-app users
+
+`RedMedApp.swift` has an `isOwnPairedBand` check intended to skip the
+emergency-card screen when the owner taps their own bracelet. It does not
+currently fire for tags written by the current app, for two independent
+reasons:
+
+1. **No Universal Links.** New tags use a plain HTTPS URL (required so any
+   phone can read the card without the app). Without an `apple-app-site-association`
+   file + `com.apple.developer.associated-domains` entitlement on a domain we
+   actually control, iOS has no way to route that tap to the installed app —
+   it always opens Safari, so the native dedupe logic never runs.
+2. **`redmed.app` is not ours.** It's a live, unrelated third-party storefront
+   (confirmed 2026-07-23). `CNAME` and `docs/DOMAIN.md` assumed it was
+   reserved for this project — it isn't, and a Universal Links setup can't be
+   built on it. The current GitHub Pages project-page path
+   (`maxroot1122.github.io/RedMed/`) also can't host Universal Links per
+   `docs/DOMAIN.md`'s own reasoning (`.well-known/` would need to live at the
+   *root* of `maxroot1122.github.io`, a different repo we don't control).
+3. Even with Universal Links, the **web fallback's** "is this my own band"
+   check (`isOwnPairedBraceletHash()` in `index.html`) reads `localStorage`,
+   which is isolated from the native app's Keychain — a native-app owner's
+   Safari has never seen that bracelet's fingerprint, so the web check won't
+   recognize it either.
+
+Net effect: today, an owner using the native app who taps their own bracelet
+sees the same emergency-card view a stranger would. Not a data-exposure risk
+(it's the owner's own data), but it defeats the intended UX. Fixing it for
+real requires: (a) registering a domain we actually own, (b) wiring Universal
+Links to it, and (c) bridging or replacing the localStorage-based web check
+for native-app owners. See `docs/THREAT_MODEL.md`.
+
 ## What we deliberately do not encrypt
 
 Passive NFC medical payloads are **plaintext** (`#d=` base64url JSON) so any
