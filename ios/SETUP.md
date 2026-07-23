@@ -9,6 +9,7 @@ Local-first medical ID for your iPhone: edit your profile, write it to an NFC ta
 | Bundle ID | `local.redmed.app` |
 | URL scheme | Legacy `redmed://` still registered; **new tags write HTTPS** so smartphones can open the card (not card readers) |
 | Deployment | iOS 16+ · iPhone only |
+| Layout | **393×852 pt** baseline via `LayoutMetrics` (`AppTheme.swift`); mockups also check **440×956**; safe areas ≈59 pt top / 34 pt bottom on Dynamic Island |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |
 
 ---
@@ -81,6 +82,8 @@ Full checklist: [`docs/IOS_APP_STORE.md`](../docs/IOS_APP_STORE.md).
 
 ## Notes
 
+- **Layout:** Design at **393×852 pt**. `ContentView` installs `LayoutMetrics` via `.withLayoutMetrics()`. In views and button styles, use `@Environment(\.layoutMetrics) private var layout` and tokens like `layout.screenPad`, `layout.heroTitleFont()`, or `layout.s(14)` — do not hardcode point sizes.
+- **Mockups (not code):** check layouts at **393×852** and **440×956** — see [`docs/BRAND.md`](../docs/BRAND.md) § Safe areas.
 - Profile data is stored in the iOS Keychain (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`) — not synced to iCloud.
 - Linked bracelet chip URL (includes `#d=` medical payload) is also stored in the Keychain; device display name stays in UserDefaults.
 - The app never auto-dials 911; buttons open Phone/Messages pre-filled for you to confirm.

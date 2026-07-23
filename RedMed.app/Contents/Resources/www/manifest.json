@@ -3,10 +3,10 @@
   "short_name": "RedMed",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#f8f9fb",
-  "theme_color": "#f8f9fb",
+  "background_color": "#fff5f5",
+  "theme_color": "#fff5f5",
   "icons": [
-    { "src": "assets/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "assets/logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
   ]

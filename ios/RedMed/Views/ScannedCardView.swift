@@ -5,6 +5,8 @@ import SwiftUI
 /// profile in ProfileStore. Read-only: a responder scanning a stranger's
 /// tag has no reason to edit it, and shouldn't be able to overwrite it.
 struct ScannedCardView: View {
+    @Environment(\.layoutMetrics) private var layout
+
     let profile: MedicalProfile
     @Environment(\.dismiss) private var dismiss
 
@@ -28,7 +30,7 @@ struct ScannedCardView: View {
                 VStack(spacing: 0) {
                     header
 
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: layout.s(18)) {
                         Link(destination: URL(string: "tel:911")!) {
                             Text("Call 911")
                         }
@@ -57,7 +59,7 @@ struct ScannedCardView: View {
                         }
 
                         if !profile.notes.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: layout.spaceSM) {
                                 SectionEyebrow(text: "Notes", tint: AppTheme.muted)
                                 Text(profile.notes)
                                     .font(.body)
@@ -66,8 +68,8 @@ struct ScannedCardView: View {
                             }
                         }
                     }
-                    .padding(AppTheme.screenPad)
-                    .padding(.bottom, 28)
+                    .padding(layout.screenPad)
+                    .padding(.bottom, layout.s(28))
                 }
             }
             .background(AppTheme.pageBg)
@@ -88,14 +90,14 @@ struct ScannedCardView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
             Text("REDMED")
                 .font(.caption.weight(.bold))
                 .tracking(1.6)
                 .foregroundStyle(.white.opacity(0.85))
 
             Text(profile.name.isEmpty ? "Medical ID" : profile.name)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .font(layout.emergencyNameFont())
                 .tracking(-0.5)
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
@@ -109,18 +111,18 @@ struct ScannedCardView: View {
             if profile.donor {
                 Text("Organ donor")
                     .font(.caption.weight(.bold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
+                    .padding(.horizontal, layout.s(10))
+                    .padding(.vertical, layout.s(5))
                     .background(Color.white.opacity(0.18))
                     .clipShape(Capsule())
                     .foregroundStyle(.white)
-                    .padding(.top, 4)
+                    .padding(.top, layout.spaceXS)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, AppTheme.screenPad)
-        .padding(.top, 28)
-        .padding(.bottom, 32)
+        .padding(.horizontal, layout.screenPad)
+        .padding(.top, layout.s(28))
+        .padding(.bottom, layout.screenBottomLarge)
         .background(
             LinearGradient(
                 colors: [AppTheme.accent, Color(red: 0.75, green: 0.07, blue: 0.24)],
@@ -131,15 +133,15 @@ struct ScannedCardView: View {
     }
 
     private func criticalBlock(title: String, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
             SectionEyebrow(text: title, tint: AppTheme.accent)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: layout.spaceSM) {
                 ForEach(items, id: \.self) { item in
-                    HStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .top, spacing: layout.s(10)) {
                         Circle()
                             .fill(AppTheme.accent)
-                            .frame(width: 6, height: 6)
-                            .padding(.top, 7)
+                            .frame(width: layout.bulletDot, height: layout.bulletDot)
+                            .padding(.top, layout.s(7))
                         Text(item)
                             .font(.body.weight(.semibold))
                             .foregroundStyle(AppTheme.ink)
@@ -147,23 +149,23 @@ struct ScannedCardView: View {
                     }
                 }
             }
-            .padding(14)
+            .padding(layout.s(14))
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(AppTheme.accentSoft)
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
         }
     }
 
     private func infoBlock(title: String, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
             SectionEyebrow(text: title, tint: AppTheme.muted)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: layout.spaceSM) {
                 ForEach(items, id: \.self) { item in
-                    HStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .top, spacing: layout.s(10)) {
                         Circle()
                             .fill(AppTheme.medical)
-                            .frame(width: 6, height: 6)
-                            .padding(.top, 7)
+                            .frame(width: layout.bulletDot, height: layout.bulletDot)
+                            .padding(.top, layout.s(7))
                         Text(item)
                             .font(.body.weight(.medium))
                             .foregroundStyle(AppTheme.ink)
@@ -175,12 +177,12 @@ struct ScannedCardView: View {
     }
 
     private func contactsBlock(_ contacts: [EmergencyContact]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
             SectionEyebrow(text: "Emergency contacts", tint: AppTheme.muted)
-            VStack(spacing: 10) {
+            VStack(spacing: layout.s(10)) {
                 ForEach(contacts) { contact in
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: layout.spaceMD) {
+                        VStack(alignment: .leading, spacing: layout.s(2)) {
                             Text(contact.name.isEmpty ? "Contact" : contact.name)
                                 .font(.body.weight(.bold))
                                 .foregroundStyle(AppTheme.ink)
@@ -195,21 +197,21 @@ struct ScannedCardView: View {
                                     .foregroundStyle(AppTheme.muted)
                             }
                         }
-                        Spacer(minLength: 8)
+                        Spacer(minLength: layout.spaceSM)
                         if !contact.phone.isEmpty,
                            let url = URL(string: "tel:\(contact.phone.filter { $0.isNumber || $0 == "+" })") {
                             Link(destination: url) {
                                 Text("Call")
                                     .font(.subheadline.weight(.bold))
                                     .foregroundStyle(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, layout.spaceLG)
+                                    .padding(.vertical, layout.s(10))
                                     .background(AppTheme.medical)
                                     .clipShape(Capsule())
                             }
                         }
                     }
-                    .padding(14)
+                    .padding(layout.s(14))
                     .appCard(elevated: false)
                 }
             }
@@ -217,12 +219,12 @@ struct ScannedCardView: View {
     }
 
     private var doctorInsuranceBlock: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
             SectionEyebrow(text: "Doctor & insurance", tint: AppTheme.muted)
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: layout.s(10)) {
                 if !profile.doc.name.isEmpty || !profile.doc.phone.isEmpty {
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: layout.spaceMD) {
+                        VStack(alignment: .leading, spacing: layout.s(2)) {
                             Text(profile.doc.name.isEmpty ? "Doctor" : profile.doc.name)
                                 .font(.body.weight(.bold))
                                 .foregroundStyle(AppTheme.ink)
@@ -232,15 +234,15 @@ struct ScannedCardView: View {
                                     .foregroundStyle(AppTheme.muted)
                             }
                         }
-                        Spacer(minLength: 8)
+                        Spacer(minLength: layout.spaceSM)
                         if !profile.doc.phone.isEmpty,
                            let url = URL(string: "tel:\(profile.doc.phone.filter { $0.isNumber || $0 == "+" })") {
                             Link(destination: url) {
                                 Text("Call")
                                     .font(.subheadline.weight(.bold))
                                     .foregroundStyle(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, layout.spaceLG)
+                                    .padding(.vertical, layout.s(10))
                                     .background(AppTheme.medical)
                                     .clipShape(Capsule())
                             }
@@ -248,7 +250,7 @@ struct ScannedCardView: View {
                     }
                 }
                 if !profile.insurance.provider.isEmpty || !profile.insurance.id.isEmpty {
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: layout.s(2)) {
                         Text(profile.insurance.provider.isEmpty ? "Insurance" : profile.insurance.provider)
                             .font(.body.weight(.bold))
                             .foregroundStyle(AppTheme.ink)
@@ -260,7 +262,7 @@ struct ScannedCardView: View {
                     }
                 }
             }
-            .padding(14)
+            .padding(layout.s(14))
             .frame(maxWidth: .infinity, alignment: .leading)
             .appCard(elevated: false)
         }
@@ -276,4 +278,5 @@ struct ScannedCardView: View {
 
 #Preview {
     ScannedCardView(profile: MedicalProfile())
+        .withLayoutMetrics()
 }

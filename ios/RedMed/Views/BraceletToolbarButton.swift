@@ -2,14 +2,15 @@ import SwiftUI
 
 /// Top-bar bracelet chip — dot shows linked vs recently detected on the band.
 struct BraceletToolbarButton: View {
+    @Environment(\.layoutMetrics) private var layout
     @ObservedObject var link: BraceletLinkStore
 
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: layout.s(5)) {
             Circle()
                 .fill(dotColor)
-                .frame(width: 7, height: 7)
-                .shadow(color: link.isNearby ? Color.green.opacity(0.35) : .clear, radius: 3)
+                .frame(width: layout.statusDot, height: layout.statusDot)
+                .shadow(color: link.isNearby ? Color.green.opacity(0.35) : .clear, radius: layout.s(3))
             Image(systemName: "wave.3.right")
         }
         .font(.body.weight(.semibold))

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct EditProfileView: View {
+    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @Environment(\.dismiss) private var dismiss
@@ -130,7 +131,7 @@ struct EditProfileView: View {
             Form {
                 if embedded {
                     Section {
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: layout.s(10)) {
                             if link.isLinked {
                                 BrandMark(size: .hero, titleOverride: link.deviceName)
                             } else {
@@ -142,7 +143,7 @@ struct EditProfileView: View {
                                 }
                             }
                         }
-                        .padding(.vertical, 8)
+                        .padding(.vertical, layout.spaceSM)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
@@ -185,7 +186,7 @@ struct EditProfileView: View {
                         Text("None").foregroundStyle(.secondary)
                     } else {
                         ForEach($medRows) { $row in
-                            VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: layout.s(6)) {
                                 Text(row.name).font(.body.weight(.semibold))
                                 TextField("Dose", text: $row.dose).font(.subheadline)
                             }
@@ -230,7 +231,7 @@ struct EditProfileView: View {
                 }
 
                 Section("Notes") {
-                    TextEditor(text: $draft.notes).frame(minHeight: 60)
+                    TextEditor(text: $draft.notes).frame(minHeight: layout.s(60))
                 }
 
                 Section {
@@ -369,7 +370,7 @@ struct EditProfileView: View {
         let contact = draft.contacts[index]
         let name = contact.name.trimmingCharacters(in: .whitespaces)
         let detail = contactDetail(contact)
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: layout.s(2)) {
             Text(name.isEmpty ? "Emergency contact \(index + 1)" : name)
                 .font(.subheadline.weight(.semibold))
             if !detail.isEmpty {

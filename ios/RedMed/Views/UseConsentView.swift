@@ -3,12 +3,14 @@ import SwiftUI
 /// First-launch consent — mirrors the web app's one-time banner so App Review
 /// sees the same privacy posture as GitHub Pages.
 struct UseConsentView: View {
+    @Environment(\.layoutMetrics) private var layout
+
     let onAccept: () -> Void
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: layout.spaceXL) {
             BrandMark(size: .hero)
-                .padding(.top, 8)
+                .padding(.top, layout.spaceSM)
 
             Text("Before you continue")
                 .font(.title2.bold())
@@ -26,7 +28,7 @@ struct UseConsentView: View {
             Button("Accept", action: onAccept)
                 .buttonStyle(PrimaryButtonStyle())
         }
-        .padding(24)
+        .padding(layout.space2XL)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.pageBg)
     }
@@ -34,4 +36,5 @@ struct UseConsentView: View {
 
 #Preview {
     UseConsentView(onAccept: {})
+        .withLayoutMetrics()
 }

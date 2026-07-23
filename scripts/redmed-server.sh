@@ -103,17 +103,51 @@ redmed_ensure_server() {
   return 1
 }
 
+# Desktop shell targets full HD; clamp to the primary display when smaller.
+REDMED_WINDOW_W="${REDMED_WINDOW_W:-1920}"
+REDMED_WINDOW_H="${REDMED_WINDOW_H:-1080}"
+
+_redmed_resize_front_window() {
+  local min_w="$1" min_h="$2"
+  /usr/bin/osascript <<EOF 2>/dev/null || true
+tell application "Finder"
+  set screenBounds to bounds of window of desktop
+  set screenW to (item 3 of screenBounds) - (item 1 of screenBounds)
+  set screenH to (item 4 of screenBounds) - (item 2 of screenBounds)
+end tell
+set winW to ${min_w}
+set winH to ${min_h}
+if winW > screenW then set winW to screenW
+if winH > screenH - 48 then set winH to screenH - 48
+set posX to ((screenW - winW) / 2) as integer
+set posY to 40
+tell application "System Events"
+  tell (first application process whose frontmost is true)
+    if (count of windows) > 0 then
+      tell window 1
+        set position to {posX, posY}
+        set size to {winW, winH}
+      end tell
+    end if
+  end tell
+end tell
+EOF
+}
+
 redmed_open_browser() {
   local url="${1:-$REDMED_URL}"
+  local size_args=(--window-size="${REDMED_WINDOW_W},${REDMED_WINDOW_H}")
   if [ -d "/Applications/Google Chrome.app" ]; then
-    open -na "Google Chrome" --args --app="$url" --new-window
+    open -na "Google Chrome" --args --app="$url" --new-window "${size_args[@]}"
   elif [ -d "/Applications/Microsoft Edge.app" ]; then
-    open -na "Microsoft Edge" --args --app="$url" --new-window
+    open -na "Microsoft Edge" --args --app="$url" --new-window "${size_args[@]}"
   elif [ -d "/Applications/Safari.app" ]; then
     open -a Safari "$url"
   else
     open "$url"
   fi
+  sleep 0.6
+  _redmed_resize_front_window "$REDMED_WINDOW_W" "$REDMED_WINDOW_H"
 }
 
 redmed_launch() {

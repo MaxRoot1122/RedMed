@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct WriteTagView: View {
+    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @StateObject private var writer = NFCWriter()
     @StateObject private var reader = NFCReader()
@@ -16,7 +17,7 @@ struct WriteTagView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: layout.space2XL) {
                     hero
 
                     let note = ProfileLinkBuilder.capacityNote(for: store.profile)
@@ -50,9 +51,9 @@ struct WriteTagView: View {
 
                     readSection
                 }
-                .padding(.horizontal, AppTheme.screenPad)
-                .padding(.top, 8)
-                .padding(.bottom, 32)
+                .padding(.horizontal, layout.screenPad)
+                .padding(.top, layout.spaceSM)
+                .padding(.bottom, layout.screenBottomLarge)
             }
             .screenAtmosphere()
             .navigationTitle("NFC")
@@ -105,24 +106,24 @@ struct WriteTagView: View {
     }
 
     private var hero: some View {
-        VStack(spacing: 18) {
+        VStack(spacing: layout.s(18)) {
             ZStack {
                 Circle()
                     .fill(AppTheme.medicalSoft)
-                    .frame(width: 120, height: 120)
+                    .frame(width: layout.nfcHeroInner, height: layout.nfcHeroInner)
                 Circle()
                     .stroke(AppTheme.medical.opacity(0.2), lineWidth: 1.5)
-                    .frame(width: 148, height: 148)
+                    .frame(width: layout.nfcHeroOuter, height: layout.nfcHeroOuter)
                 Image(systemName: "wave.3.right.circle.fill")
-                    .font(.system(size: 56, weight: .medium))
+                    .font(layout.nfcGlyphFont())
                     .foregroundStyle(AppTheme.medical)
                     .symbolRenderingMode(.hierarchical)
             }
-            .padding(.top, 12)
+            .padding(.top, layout.spaceMD)
 
-            VStack(spacing: 8) {
+            VStack(spacing: layout.spaceSM) {
                 Text("Write Tag")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(layout.heroTitleFont())
                     .tracking(-0.4)
                     .foregroundStyle(AppTheme.ink)
                 Text("Hold your iPhone to the bracelet once to program the passive chip. The band stores your card (no battery) until a smartphone taps to read it in a browser.")
@@ -136,7 +137,7 @@ struct WriteTagView: View {
     }
 
     private var readSection: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: layout.s(14)) {
             HStack {
                 Rectangle().fill(AppTheme.line).frame(height: 1)
                 Text("OR READ")
@@ -172,10 +173,12 @@ struct WriteTagView: View {
             .buttonStyle(SecondaryButtonStyle())
             .disabled(reader.isReading)
         }
-        .padding(.top, 8)
+        .padding(.top, layout.spaceSM)
     }
 }
 
 #Preview {
-    WriteTagView().environmentObject(ProfileStore())
+    WriteTagView()
+        .environmentObject(ProfileStore())
+        .withLayoutMetrics()
 }

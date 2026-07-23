@@ -4,6 +4,8 @@ import AudioToolbox
 
 /// Hands-only CPR metronome (~110 BPM).
 struct CPRTimerView: View {
+    @Environment(\.layoutMetrics) private var layout
+
     var embedded: Bool = false
 
     private static let bpm: Double = 110
@@ -21,10 +23,10 @@ struct CPRTimerView: View {
     private let haptics = UIImpactFeedbackGenerator(style: .heavy)
 
     var body: some View {
-        let content = VStack(spacing: 12) {
+        let content = VStack(spacing: layout.spaceMD) {
             Circle()
                 .fill(AppTheme.accent)
-                .frame(width: 56, height: 56)
+                .frame(width: layout.cprPulse, height: layout.cprPulse)
                 .scaleEffect(pulse ? 1.14 : 1)
                 .animation(.easeOut(duration: 0.08), value: pulse)
 
@@ -36,7 +38,7 @@ struct CPRTimerView: View {
                 .font(.title3.weight(.bold).monospacedDigit())
                 .foregroundStyle(AppTheme.ink)
 
-            HStack(spacing: 8) {
+            HStack(spacing: layout.spaceSM) {
                 Button(isRunning ? "Stop" : "Start") {
                     if isRunning { stop() } else { start() }
                 }
@@ -44,7 +46,7 @@ struct CPRTimerView: View {
 
                 Button("Reset") { reset() }
                     .buttonStyle(SecondaryButtonStyle())
-                    .frame(maxWidth: 80)
+                    .frame(maxWidth: layout.cprResetMaxWidth)
             }
 
             Toggle("Sound", isOn: $soundOn)
@@ -57,14 +59,14 @@ struct CPRTimerView: View {
                 }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, embedded ? 8 : 16)
+        .padding(.vertical, embedded ? layout.spaceSM : layout.spaceLG)
 
         Group {
             if embedded {
                 content
             } else {
                 content
-                    .padding(16)
+                    .padding(layout.spaceLG)
                     .appCard()
             }
         }
@@ -147,4 +149,5 @@ struct CPRTimerView: View {
         .padding()
     }
     .background(AppTheme.pageBg)
+    .withLayoutMetrics()
 }

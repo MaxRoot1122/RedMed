@@ -3,6 +3,7 @@ import CoreLocation
 import UIKit
 
 struct LocationView: View {
+    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @StateObject private var locationManager = LocationManager()
     @StateObject private var networkMonitor = NetworkPathMonitor()
@@ -13,7 +14,7 @@ struct LocationView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: layout.spaceLG) {
                     header
 
                     if networkMonitor.isOffline {
@@ -47,11 +48,6 @@ struct LocationView: View {
                     Text("Pick a saved contact to call — iPhone asks before placing the call.")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(AppTheme.muted)
-                        .multilineTextAlignment(.center)
-
-                    Text("Look for a piece of mail.")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(AppTheme.ink)
                         .multilineTextAlignment(.center)
 
                     Text("Tap when you have cell service. Satellite SOS is built into iOS — RedMed cannot start it.")
@@ -96,10 +92,10 @@ struct LocationView: View {
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
-                        .padding(.top, 4)
-                        .padding(.bottom, 28)
+                        .padding(.top, layout.spaceXS)
+                        .padding(.bottom, layout.s(28))
                 }
-                .padding(.horizontal, AppTheme.screenPad)
+                .padding(.horizontal, layout.screenPad)
             }
             .screenAtmosphere()
             .navigationTitle("911")
@@ -111,25 +107,18 @@ struct LocationView: View {
             }
             .onAppear { locationManager.requestLocation() }
             .onDisappear { locationManager.stopUpdating() }
-            .confirmationDialog(
-                "Select a contact to call",
-                isPresented: $showCallContactPicker,
-                titleVisibility: .visible
-            ) {
-                ForEach(callableContacts) { contact in
-                    Button(contact.name.isEmpty ? "Contact" : contact.name) {
-                        openPhoneCall(to: contact)
-                    }
+            .sheet(isPresented: $showCallContactPicker) {
+                EmergencyContactCallSheet(contacts: callableContacts) {
+                    showCallContactPicker = false
                 }
-                Button("Cancel", role: .cancel) {}
             }
         }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: layout.spaceSM) {
             Text("Find 911")
-                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .font(layout.heroTitleFont())
                 .tracking(-0.4)
                 .foregroundStyle(AppTheme.ink)
             Text("Call first. Share GPS second.")
@@ -137,27 +126,34 @@ struct LocationView: View {
                 .foregroundStyle(AppTheme.muted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 4)
+        .padding(.top, layout.spaceXS)
     }
 
     private var coordinateCard: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: layout.spaceSM) {
             SectionEyebrow(text: "Live GPS", tint: AppTheme.medical)
+                .frame(maxWidth: .infinity, alignment: .center)
             if let c = locationManager.coordinate {
                 Text(String(format: "%.6f, %.6f", c.latitude, c.longitude))
                     .font(.system(.title2, design: .monospaced).weight(.bold))
                     .foregroundStyle(AppTheme.ink)
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 Text(LocationFormatting.dms(latitude: c.latitude, longitude: c.longitude))
                     .font(.system(.subheadline, design: .monospaced).weight(.semibold))
                     .foregroundStyle(AppTheme.ink.opacity(0.85))
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 if let acc = locationManager.accuracy, acc > 0 {
                     Text(accuracyLabel(for: acc))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(acc > 100 ? AppTheme.accent : AppTheme.muted)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
-                HStack(spacing: 12) {
+                HStack(spacing: layout.spaceMD) {
                     if let heading = locationManager.heading {
                         Label(
                             "\(Int(heading))° \(LocationFormatting.cardinal(for: heading))",
@@ -170,33 +166,39 @@ struct LocationView: View {
                 }
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(AppTheme.muted)
-                .padding(.top, 2)
+                .padding(.top, layout.s(2))
+                .frame(maxWidth: .infinity, alignment: .center)
 
                 if let timestamp = locationManager.locationTimestamp {
                     Text("As of \(timestamp.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption2)
                         .foregroundStyle(AppTheme.muted)
-                        .padding(.top, 2)
+                        .padding(.top, layout.s(2))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
             } else if locationManager.errorMessage == nil {
                 ProgressView("Getting GPS…")
                     .tint(AppTheme.medical)
                     .foregroundStyle(AppTheme.ink)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, layout.spaceSM)
+                    .frame(maxWidth: .infinity, alignment: .center)
             } else {
                 Text("GPS unavailable")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppTheme.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
-        .padding(.vertical, 22)
-        .padding(.horizontal, 16)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.vertical, layout.s(22))
+        .padding(.horizontal, layout.spaceLG)
         .appCard()
     }
 
     private var satelliteDisclosure: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: layout.spaceMD) {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showSatelliteHelp.toggle()
@@ -217,7 +219,7 @@ struct LocationView: View {
             .buttonStyle(.plain)
 
             if showSatelliteHelp {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: layout.s(10)) {
                     Text("RedMed shows GPS only. Satellite emergency calling is built into your phone — RedMed cannot open or control it.")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
@@ -239,12 +241,12 @@ struct LocationView: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding(16)
+        .padding(layout.spaceLG)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(networkMonitor.isOffline ? AppTheme.accentSoft : AppTheme.cardBg)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
+            RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous)
                 .stroke(networkMonitor.isOffline ? AppTheme.accent.opacity(0.28) : AppTheme.line, lineWidth: 1)
         )
     }
@@ -255,14 +257,8 @@ struct LocationView: View {
 
     private var callableContacts: [EmergencyContact] {
         store.profile.contacts.filter {
-            !$0.phone.filter { $0.isNumber || $0 == "+" }.isEmpty
+            !EmergencySummaryBuilder.normalizedPhone($0.phone).isEmpty
         }
-    }
-
-    private func openPhoneCall(to contact: EmergencyContact) {
-        let digits = contact.phone.filter { $0.isNumber || $0 == "+" }
-        guard !digits.isEmpty, let url = URL(string: "tel:\(digits)") else { return }
-        UIApplication.shared.open(url)
     }
 
     private func openEmergencyContactAlert() {
@@ -285,7 +281,51 @@ struct LocationView: View {
     }
 }
 
+private struct EmergencyContactCallSheet: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let contacts: [EmergencyContact]
+    let onDismiss: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            List(contacts) { contact in
+                if let url = EmergencySummaryBuilder.telURL(phone: contact.phone) {
+                    Link(destination: url) {
+                        HStack(spacing: layout.spaceMD) {
+                            VStack(alignment: .leading, spacing: layout.spaceXS) {
+                                Text(contact.name.isEmpty ? "Contact" : contact.name)
+                                    .font(.headline)
+                                    .foregroundStyle(AppTheme.ink)
+                                if !contact.rel.isEmpty {
+                                    Text(contact.rel)
+                                        .font(.subheadline)
+                                        .foregroundStyle(AppTheme.muted)
+                                }
+                            }
+                            Spacer(minLength: layout.spaceSM)
+                            Image(systemName: "phone.fill")
+                                .foregroundStyle(AppTheme.accent)
+                        }
+                        .padding(.vertical, layout.spaceXS)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Select a contact to call")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onDismiss)
+                }
+            }
+        }
+        .presentationDetents(contacts.count <= 3 ? [.medium] : [.large])
+    }
+}
+
 #Preview {
     LocationView()
         .environmentObject(ProfileStore())
+        .withLayoutMetrics()
 }
