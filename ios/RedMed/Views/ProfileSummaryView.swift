@@ -117,18 +117,6 @@ struct ProfileSummaryView: View {
                 }
             }
 
-            Section("Doctor & insurance") {
-                summaryRow("Doctor name", profile.doc.name)
-                summaryRow("Doctor phone", profile.doc.phone)
-                summaryRow("Insurance provider", profile.insurance.provider)
-                summaryRow("Member / policy ID", profile.insurance.id)
-            }
-
-            if !profile.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Section("Notes") {
-                    Text(profile.notes)
-                }
-            }
         }
         .scrollContentBackground(.hidden)
         .screenAtmosphere()

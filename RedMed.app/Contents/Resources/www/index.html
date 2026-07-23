@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-o+LTzn0j/Ckzk/4IGTDIdiBP2YOusQwSvld4nFSl3eU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-A/ojKNusekDI7dInzdFyFhXoMPQcdnNROoNb1fgYSgs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -142,7 +142,7 @@
     --md-type-label: 11px;
     --md-type-input: 16px;
     --chip-dropdown-font: 12px;
-    --chip-search-font: 10px;
+    --chip-search-font: var(--md-type-input);
     --form-field-h: var(--md-btn);
     --form-field-pad-x: 12px;
     --control-h: var(--md-control);
@@ -297,24 +297,31 @@
   /* Single horizontal gutter on the form — not on wrap + children */
   #editView #idForm {
     box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
     padding-left: var(--md-inset);
     padding-right: var(--md-inset);
+  }
+  #editView .split-main {
+    min-width: 0;
+    max-width: 100%;
   }
   #editView #idForm .fieldset-heading,
   #editView #idForm fieldset,
   #editView #idForm fieldset.fieldset-chips,
   #editView #idForm fieldset.fieldset-contacts,
-  #editView #idForm fieldset.fieldset-care,
-  #editView #idForm fieldset.fieldset-notes,
   #editView #idForm fieldset.fieldset-chips .chip-block,
   #editView #idForm fieldset > label,
+  #editView #idForm fieldset > .fieldset-heading,
+  #editView #idForm fieldset > .name-fields,
+  #editView #idForm fieldset > .donor-row,
   #editView #idForm fieldset > input,
   #editView #idForm fieldset > textarea,
   #editView #idForm fieldset > .row2,
   #editView #idForm fieldset > .chip-list,
   #editView #idForm fieldset.fieldset-chips .chip-block .chip-list,
-  #editView #idForm fieldset > .chip-pick-select,
-  #editView #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
   #editView #idForm fieldset > .search-add,
   #editView #idForm fieldset.fieldset-chips .chip-block .search-add,
   #editView #idForm fieldset > #contactsAccordion,
@@ -335,9 +342,7 @@
   /* My ID form — flat Google-style sections, no nested card chrome */
   #editView #idForm fieldset,
   #editView #idForm fieldset.fieldset-chips,
-  #editView #idForm fieldset.fieldset-contacts,
-  #editView #idForm fieldset.fieldset-care,
-  #editView #idForm fieldset.fieldset-notes {
+  #editView #idForm fieldset.fieldset-contacts {
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -358,16 +363,21 @@
     width: 100%;
     box-sizing: border-box;
   }
+  #editView #idForm .fieldset-heading,
   #editView #idForm .chip-block-title {
-    font-size: 14px;
+    font-family: var(--font);
+    font-size: var(--md-type-title);
     font-weight: 500;
-    color: var(--google-on-surface-variant);
-    margin: var(--md-4) 0 var(--md-2);
+    font-style: normal;
+    color: var(--google-on-surface);
+    margin: var(--md-5) 0 var(--md-2);
     padding: 0;
-    letter-spacing: 0.01em;
-    line-height: 1.3;
+    letter-spacing: 0;
+    line-height: 1.25;
+    text-transform: none;
   }
-  #editView #idForm .chip-block:first-child .chip-block-title {
+  #editView #idForm .chip-block:first-child .chip-block-title,
+  #editView #idForm > .fieldset-heading:first-of-type {
     margin-top: var(--md-2);
   }
   #editView #idForm .chip-block-divider {
@@ -377,9 +387,7 @@
     height: 0;
     width: 100%;
   }
-  #editView #idForm fieldset.fieldset-contacts,
-  #editView #idForm fieldset.fieldset-care,
-  #editView #idForm fieldset.fieldset-notes {
+  #editView #idForm fieldset.fieldset-contacts {
     padding: 0;
     margin-bottom: var(--md-4);
   }
@@ -395,21 +403,12 @@
     color: var(--google-on-surface-variant);
     letter-spacing: 0.01em;
   }
-  #editView #idForm .fieldset-heading {
-    font-size: var(--md-type-title);
-    font-weight: 500;
-    color: var(--google-on-surface);
-    margin: var(--md-5) 0 var(--md-2);
-    padding: 0;
-    letter-spacing: 0;
-    line-height: 1.25;
-  }
   #editView #idForm > .fieldset-heading:first-of-type { margin-top: var(--md-2); }
-  #editView #idForm input[type=text],
+  #editView #idForm input[type=text]:not(#f_name):not(#f_lastname),
   #editView #idForm input[type=tel],
+  #editView #idForm input[type=date],
   #editView #idForm textarea,
-  #editView #idForm select,
-  #editView #idForm .chip-pick-select {
+  #editView #idForm select {
     box-shadow: none;
     border-color: var(--google-outline-variant);
     background: var(--field-bg);
@@ -419,22 +418,24 @@
     line-height: calc(var(--form-field-h) - 2px);
     height: var(--form-field-h);
     min-height: var(--form-field-h);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     text-align: center;
     text-align-last: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #editView #idForm #f_name,
+  #editView #idForm #f_lastname {
+    text-align: left;
+    text-align-last: left;
+    padding: 0 var(--form-field-pad-x) 0 1px;
   }
   #editView #idForm input[type=date] {
-    box-shadow: none;
-    border-color: var(--google-outline-variant);
-    background: var(--field-bg);
-    font-family: var(--font);
-    font-weight: 400;
-    font-size: var(--md-type-input);
     -webkit-appearance: auto;
     appearance: auto;
-    height: var(--md-touch);
-    min-height: var(--md-touch);
-    line-height: normal;
-    text-align: center;
     cursor: pointer;
   }
   #editView #idForm input[type=date]::-webkit-date-and-time-value {
@@ -464,27 +465,6 @@
     border-color: var(--google-on-surface-variant);
     background: var(--field-bg);
   }
-  #editView #idForm .donor-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--md-2);
-    margin-top: var(--md-2);
-  }
-  #editView #idForm .donor-row input[type=checkbox] {
-    width: 18px;
-    height: 18px;
-    min-height: 0;
-    margin: 0;
-    padding: 0;
-    flex-shrink: 0;
-    accent-color: var(--accent);
-  }
-  #editView #idForm .donor-row span {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--google-on-surface-variant);
-  }
   #editView #idForm input:hover,
   #editView #idForm textarea:hover,
   #editView #idForm select:hover {
@@ -497,9 +477,6 @@
   #editView #idForm select:focus {
     box-shadow: 0 0 0 1px var(--accent);
     border-color: var(--accent);
-  }
-  #editView #idForm fieldset.fieldset-chips .chip-pick-select {
-    margin: var(--md-1) 0 var(--md-2);
   }
   #editView #idForm fieldset.fieldset-chips .chip {
     border-color: var(--google-outline-variant);
@@ -529,7 +506,21 @@
     padding: 0 0 var(--md-4);
   }
   #editView #idForm fieldset:last-of-type { margin-bottom: var(--md-3); }
-  #editView #idForm fieldset.fieldset-chips .chip .chip-label { font-size: var(--md-type-body); }
+  #editView #idForm fieldset.fieldset-chips .chip .chip-label {
+    font-size: var(--md-type-body);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #editView #idForm .chip-block,
+  #editView #idForm .chip-list,
+  #editView #idForm .search-add,
+  #editView #idForm .chip-search-launcher {
+    min-width: 0;
+    max-width: 100%;
+  }
   #idForm {
     display: flex;
     flex-direction: column;
@@ -693,7 +684,6 @@
   #idForm fieldset > input,
   #idForm fieldset > .row2,
   #idForm fieldset > .chip-list,
-  #idForm fieldset > .chip-pick-select,
   #idForm fieldset > .search-add,
   #idForm fieldset > #contactsAccordion,
   #idForm fieldset > .hint,
@@ -716,8 +706,27 @@
     display: block;
   }
   #idForm fieldset.fieldset-you > label:first-child { margin-top: var(--md-4); }
-  #idForm fieldset.fieldset-you > .name-field:first-child { margin-top: var(--md-4); }
-  #idForm fieldset.fieldset-you > .name-field + .name-field { margin-top: var(--md-2); }
+  #idForm fieldset.fieldset-you > .name-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--md-2);
+    margin-top: var(--md-4);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  #idForm fieldset.fieldset-you > .name-fields + label { margin-top: var(--md-3); }
+  #idForm fieldset.fieldset-you .name-fields input[type=text],
+  #idForm #f_name,
+  #idForm #f_lastname {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    text-align: left;
+    text-align-last: left;
+    padding: 0 var(--form-field-pad-x) 0 1px;
+  }
   #idForm fieldset .chip-list { margin-top: var(--md-2); margin-bottom: var(--md-2); }
   #idForm fieldset .search-add { margin-top: var(--md-1); margin-bottom: var(--md-2); }
   #idForm fieldset.fieldset-chips {
@@ -729,10 +738,8 @@
     overflow: visible;
   }
   #idForm fieldset.fieldset-chips > .chip-list,
-  #idForm fieldset.fieldset-chips > .chip-pick-select,
   #idForm fieldset.fieldset-chips > .search-add,
   #idForm fieldset.fieldset-chips .chip-block .chip-list,
-  #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
   #idForm fieldset.fieldset-chips .chip-block .search-add {
     margin-left: 0;
     margin-right: 0;
@@ -779,11 +786,14 @@
   #idForm fieldset.fieldset-medical .chip-block-title {
     margin: var(--md-3) 0 var(--md-2);
     padding: 0;
-    font-size: var(--md-type-label);
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    font-family: var(--font);
+    font-size: var(--md-type-title);
+    font-weight: 500;
+    font-style: normal;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-transform: none;
   }
   #idForm fieldset.fieldset-medical .chip-block:first-child .chip-block-title {
     margin-top: var(--md-2);
@@ -802,22 +812,24 @@
     max-height: none;
     overflow: visible;
   }
-  #idForm fieldset.fieldset-contacts input[type=date],
   #idForm fieldset.fieldset-contacts #f_dob {
-    height: var(--md-touch);
-    min-height: var(--md-touch);
+    height: var(--form-field-h);
+    min-height: var(--form-field-h);
     font-family: var(--font);
-    font-size: var(--md-type-input);
+    font-size: var(--chip-dropdown-font);
     font-weight: 400;
-    line-height: normal;
+    line-height: calc(var(--form-field-h) - 2px);
     padding: 0 var(--form-field-pad-x);
     text-align: center;
     -webkit-appearance: auto;
     appearance: auto;
     cursor: pointer;
-    margin-bottom: var(--md-3);
+    margin-bottom: var(--md-2);
   }
-  #idForm fieldset.fieldset-you input[type=text],
+  #idForm fieldset.fieldset-contacts > .fieldset-heading {
+    margin-top: var(--md-4);
+    margin-bottom: var(--md-2);
+  }
   #idForm fieldset.fieldset-you select {
     height: var(--form-field-h);
     min-height: var(--form-field-h);
@@ -829,8 +841,7 @@
     text-align: center;
     text-align-last: center;
   }
-  #idForm select,
-  #idForm .chip-pick-select {
+  #idForm select {
     height: var(--form-field-h);
     min-height: var(--form-field-h);
     padding: 0 36px 0 var(--form-field-pad-x);
@@ -842,17 +853,6 @@
     line-height: calc(var(--form-field-h) - 2px);
     box-sizing: border-box;
   }
-  #idForm fieldset.fieldset-chips .chip-pick-select {
-    margin: var(--md-2) 0 var(--md-2);
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  #idForm fieldset.fieldset-chips .chip-pick-select option,
-  #idForm fieldset.fieldset-chips .chip-pick-select optgroup,
   #idForm select option,
   #idForm select optgroup,
   .trauma-pickers select option,
@@ -875,6 +875,8 @@
     align-items: center;
     border-color: var(--field-border);
     background: var(--field-bg);
+    -webkit-user-select: none;
+    user-select: none;
   }
   #idForm fieldset.fieldset-chips .chip .chip-label {
     pointer-events: none;
@@ -898,16 +900,6 @@
     border-radius: var(--radius-md);
     margin: 0;
     padding: 0;
-  }
-  #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
-    color: var(--muted);
-  }
-  #editView #idForm fieldset.fieldset-chips .chip-pick-select:invalid {
-    color: var(--google-on-surface-variant);
-  }
-  #idForm fieldset.fieldset-chips .chip {
-    -webkit-user-select: none;
-    user-select: none;
   }
   #idForm fieldset.fieldset-chips .chip-empty {
     display: none;
@@ -992,10 +984,42 @@
   .row2 > div { min-width: 0; }
   .row2 select { width: 100%; }
   .row2 label { margin-top: 0; }
+  #idForm fieldset.fieldset-you .donor-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--md-2);
+    margin-top: var(--md-2);
+    width: 100%;
+    min-width: 0;
+  }
+  #idForm fieldset.fieldset-you .donor-row input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 18px;
+    accent-color: var(--accent);
+  }
+  #idForm fieldset.fieldset-you .donor-row label {
+    margin: 0;
+    display: inline;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    color: var(--google-on-surface-variant);
+  }
   #idForm fieldset.fieldset-you #f_blood {
     width: 100%;
-    min-width: 100%;
-    text-overflow: clip;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .app-legal-footer {
     position: fixed;
@@ -1032,6 +1056,11 @@
     color: var(--ink);
     opacity: 1;
   }
+  /* Aid tab — legal links sit 2px above the bottom nav dock */
+  body:has(#aidView.show) #aidView .app-legal-footer {
+    bottom: calc(var(--dock-bottom) - 4px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 2px;
+  }
   .hint { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
   .contact-fold {
     margin-top: 0; border: 1px solid var(--field-border); border-radius: var(--field-radius);
@@ -1049,10 +1078,10 @@
     color: var(--ink);
   }
   .contact-fold-title {
-    font-size: 14px; font-weight: 500; color: var(--ink); flex-shrink: 0;
+    font-size: var(--md-type-input); font-weight: 500; color: var(--ink); flex-shrink: 0;
   }
   .contact-fold-summary {
-    flex: 1; font-size: 13px; color: var(--muted); font-weight: 400;
+    flex: 1; font-size: var(--md-type-body); color: var(--muted); font-weight: 400;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right;
   }
   #idForm > fieldset.fieldset-you { margin-top: 0; }
@@ -1076,7 +1105,11 @@
     min-width: 0; min-height: var(--md-chip);
     box-shadow: inset 0 1px 2px rgba(60, 64, 67, 0.03);
   }
-  .chip .chip-label { flex: 1 1 auto; font-size: var(--md-type-body); font-weight: 400; min-width: 0; color: var(--ink); }
+  .chip .chip-label {
+    flex: 1 1 auto; font-size: var(--md-type-body); font-weight: 400; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    color: var(--ink);
+  }
   .chip .chip-dose {
     flex: 0 1 96px; width: auto; min-width: 72px; max-width: 42%;
     padding: 0 var(--md-2); font-size: var(--md-type-body); border: 1px solid var(--field-border);
@@ -1157,7 +1190,7 @@
     opacity: 0.78;
     pointer-events: none;
   }
-  .chip-search-icon svg { width: 12px; height: 12px; display: block; }
+  .chip-search-icon svg { width: 14px; height: 14px; display: block; }
   .chip-search-launcher input {
     flex: 1;
     min-width: 0;
@@ -1174,6 +1207,9 @@
     font-size: var(--chip-search-font);
     font-weight: 400;
     line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -1216,13 +1252,15 @@
   .suggest-list {
     position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50;
     background: var(--surface); border: 1px solid var(--border-subtle); border-radius: var(--field-radius);
-    box-shadow: var(--shadow-card); max-height: 280px; overflow-y: auto; display: none;
+    box-shadow: var(--shadow-card); max-height: 280px; overflow-x: hidden; overflow-y: auto; display: none;
+    max-width: 100%; box-sizing: border-box;
   }
   .suggest-list.show {
     display: block;
     animation: suggestIn 0.18s var(--ease-emphasized) both;
   }
   #medSuggest { max-height: 320px; }
+  #conditionSuggest { max-height: 320px; }
   #idForm fieldset.fieldset-chips .suggest-list .suggest-item {
     min-height: var(--form-field-h);
     font-size: var(--chip-search-font);
@@ -1248,9 +1286,11 @@
     border-top: 1px solid var(--line); margin-top: 2px; padding-top: 12px;
   }
   .suggest-item {
-    display: flex; align-items: center; width: 100%; text-align: left;
+    display: flex; align-items: center; width: 100%; max-width: 100%; min-width: 0;
+    text-align: left; box-sizing: border-box;
     min-height: var(--form-field-h); padding: 0 var(--form-field-pad-x); border: none; background: none;
     font-family: var(--font); font-size: var(--chip-dropdown-font); font-weight: 400; line-height: 1.25;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     color: var(--ink); cursor: pointer; border-bottom: 1px solid var(--line);
     border-radius: 0;
   }
@@ -1719,7 +1759,7 @@
   .aid-topic-toggle:active { transform: none; opacity: 0.88; }
   .contact-fold-toggle:active { transform: none; opacity: 0.88; }
   .contact-fold-toggle .aid-chevron {
-    flex-shrink: 0; font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 2px;
+    flex-shrink: 0; font-size: var(--md-type-input); font-weight: 500; color: var(--muted); margin-left: 2px;
   }
   #contactsAccordion {
     display: flex; flex-direction: column; gap: var(--md-3);
@@ -1864,7 +1904,6 @@
     display: none;
   }
   body:has(#editView:not(.hide)) #editView #idForm select,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select,
   body:has(#locView.show) #locView .trauma-pickers select {
     color: #ffffff;
     background-color: #000000;
@@ -1877,7 +1916,6 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
   }
   body:has(#editView:not(.hide)) #editView #idForm select:hover,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:hover,
   body:has(#locView.show) #locView .trauma-pickers select:hover {
     color: #ffffff;
     background-color: #0a0a0a;
@@ -1885,7 +1923,6 @@
     box-shadow: none;
   }
   body:has(#editView:not(.hide)) #editView #idForm select:focus,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:focus,
   body:has(#locView.show) #locView .trauma-pickers select:focus {
     color: #ffffff;
     background-color: #0a0a0a;
@@ -1893,16 +1930,10 @@
     box-shadow: 0 0 0 1px var(--accent);
   }
   body:has(#editView:not(.hide)) #editView #idForm select option,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select option,
   body:has(#locView.show) #locView .trauma-pickers select option {
     color: #ffffff;
     background-color: #000000;
   }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:invalid {
-    color: rgba(255, 255, 255, 0.58);
-    background-color: #000000;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-pick-select:valid,
   body:has(#editView:not(.hide)) #editView #idForm select:valid {
     color: #ffffff;
   }
@@ -1969,7 +2000,7 @@
   body:has(#editView:not(.hide)) .app-legal-footer a:focus-visible {
     color: rgba(255, 255, 255, 0.72);
   }
-  body:has(#editView:not(.hide)) #editView #idForm .donor-row span {
+  body:has(#editView:not(.hide)) #editView #idForm .donor-row label {
     color: rgba(255, 255, 255, 0.62);
   }
   body:has(#editView:not(.hide)) input[type=text],
@@ -2183,7 +2214,7 @@
     min-height: 100dvh;
     background: var(--bg);
     color: var(--ink);
-    padding-bottom: calc(var(--page-nav-clearance) + var(--terms-footer-h) + 12px);
+    padding-bottom: calc(var(--dock-bottom) + var(--terms-footer-h) + 2px + env(safe-area-inset-bottom, 0px));
   }
 
   #aidCards {
@@ -3272,9 +3303,6 @@
       padding-left: max(var(--md-inset), env(safe-area-inset-left, 0px));
       padding-right: max(var(--md-inset), env(safe-area-inset-right, 0px));
     }
-    #editView #idForm fieldset.fieldset-chips .chip-pick-select {
-      margin: var(--md-1) 0 var(--md-2);
-    }
     #editView #idForm .form-actions .btn-primary,
     #editView #idForm .form-actions .btn-secondary {
       min-height: 40px;
@@ -3443,10 +3471,8 @@
       max-width: calc(100% - var(--md-inset) * 2);
     }
     #idForm fieldset.fieldset-chips > .chip-list,
-    #idForm fieldset.fieldset-chips > .chip-pick-select,
     #idForm fieldset.fieldset-chips > .search-add,
     #idForm fieldset.fieldset-chips .chip-block .chip-list,
-    #idForm fieldset.fieldset-chips .chip-block .chip-pick-select,
     #idForm fieldset.fieldset-chips .chip-block .search-add {
       width: 100%;
       max-width: 100%;
@@ -3516,8 +3542,10 @@
       gap: 24px;
       align-items: start;
       max-width: min(var(--desktop-shell-max), 100vw);
+      min-width: 0;
       margin: 0 auto;
       padding: 0 0 16px;
+      box-sizing: border-box;
     }
     #editView .split-main.wrap {
       max-width: none;
@@ -3672,8 +3700,10 @@
 
       <form id="idForm">
         <fieldset class="fieldset-you">
-          <input type="text" id="f_name" class="name-field" required autocomplete="given-name" data-i18n-placeholder="phFirstName" placeholder="First" aria-label="Name">
-          <input type="text" id="f_lastname" class="name-field" autocomplete="family-name" data-i18n-placeholder="phLastName" placeholder="Last" aria-label="Last name">
+          <div class="name-fields">
+            <input type="text" id="f_name" required autocomplete="given-name" data-i18n-placeholder="phFirstName" placeholder="First" aria-label="Name">
+            <input type="text" id="f_lastname" autocomplete="family-name" data-i18n-placeholder="phLastName" placeholder="Last" aria-label="Last name">
+          </div>
           <label for="f_blood" data-i18n="labelBlood">Blood type</label>
           <select id="f_blood">
             <option value="" data-i18n="bloodPlaceholder">—</option>
@@ -3693,7 +3723,6 @@
           <section class="chip-block" aria-labelledby="allergiesHeading">
             <h2 class="chip-block-title" id="allergiesHeading" data-i18n="labelAllergies">Allergies</h2>
             <div class="chip-list" id="allergiesList"></div>
-            <select id="allergyPick" class="chip-pick-select" aria-labelledby="allergiesHeading"></select>
             <div class="search-add" id="allergySearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3708,7 +3737,6 @@
           <section class="chip-block" aria-labelledby="medsHeading">
             <h2 class="chip-block-title" id="medsHeading" data-i18n="labelMeds">Medications</h2>
             <div class="chip-list" id="medsList"></div>
-            <select id="medPick" class="chip-pick-select" aria-labelledby="medsHeading"></select>
             <div class="search-add" id="medSearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3723,7 +3751,6 @@
           <section class="chip-block" aria-labelledby="conditionsHeading">
             <h2 class="chip-block-title" id="conditionsHeading" data-i18n="labelConditions">Conditions</h2>
             <div class="chip-list" id="conditionsList"></div>
-            <select id="conditionPick" class="chip-pick-select" aria-labelledby="conditionsHeading"></select>
             <div class="search-add" id="conditionSearch">
               <div class="chip-search-launcher">
                 <span class="chip-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg></span>
@@ -3734,10 +3761,10 @@
           </section>
         </fieldset>
 
-        <h1 class="fieldset-heading" id="contactsHeading" data-i18n="legendContacts">Contacts</h1>
         <fieldset class="fieldset-contacts" aria-labelledby="contactsHeading">
-          <label for="f_dob" data-i18n="labelDob">Birth date</label>
-          <input type="date" id="f_dob" autocomplete="bday" min="1900-01-01">
+          <h1 class="fieldset-heading" id="dobHeading" data-i18n="labelDob">Birth date</h1>
+          <input type="date" id="f_dob" autocomplete="bday" min="1900-01-01" aria-labelledby="dobHeading">
+          <h1 class="fieldset-heading" id="contactsHeading" data-i18n="legendContacts">Contacts</h1>
           <div id="contactsAccordion">
             <div class="contact-fold" data-contact="1">
               <button type="button" class="contact-fold-toggle" aria-expanded="false">
@@ -3787,24 +3814,6 @@
           </div>
         </fieldset>
 
-        <h1 class="fieldset-heading" id="careHeading" data-i18n="legendCare">Doctor &amp; insurance</h1>
-        <fieldset class="fieldset-care" aria-labelledby="careHeading">
-          <label for="f_doc_name" data-i18n="labelDocName">Doctor name</label>
-          <input type="text" id="f_doc_name" autocomplete="off">
-          <label for="f_doc_phone" data-i18n="labelDocPhone">Doctor phone</label>
-          <input type="tel" id="f_doc_phone" autocomplete="tel">
-          <label for="f_ins_provider" data-i18n="labelInsProvider">Insurance provider</label>
-          <input type="text" id="f_ins_provider" autocomplete="off">
-          <label for="f_ins_id" data-i18n="labelInsId">Member / policy ID</label>
-          <input type="text" id="f_ins_id" autocomplete="off">
-        </fieldset>
-
-        <h1 class="fieldset-heading" id="notesHeading" data-i18n="secNotes">Notes</h1>
-        <fieldset class="fieldset-notes" aria-labelledby="notesHeading">
-          <label for="f_notes" data-i18n="secNotes">Notes</label>
-          <textarea id="f_notes" rows="3" maxlength="500"></textarea>
-        </fieldset>
-
         <div class="form-actions">
           <button type="button" class="btn-secondary" id="clearDataBtn" data-i18n="btnClear">Clear data</button>
           <button type="submit" class="btn-primary" data-i18n="btnSave">Save</button>
@@ -3846,14 +3855,6 @@
         <div class="section" id="p_contactsSection">
           <h2 data-i18n="secContacts">Emergency contacts</h2>
           <div id="p_contacts"></div>
-        </div>
-        <div class="section" id="p_doctorSection">
-          <h2 data-i18n="secDoctor">Doctor &amp; insurance</h2>
-          <div id="p_doctor"></div>
-        </div>
-        <div class="section" id="p_notesSection">
-          <h2 data-i18n="secNotes">Notes</h2>
-          <p id="p_notes"></p>
         </div>
         <div class="updated" id="p_updated"></div>
       </div>
@@ -3966,16 +3967,6 @@
   <div class="section" id="v_contactsSection">
     <h2 data-i18n="secContacts">Emergency contacts</h2>
     <div id="v_contacts"></div>
-  </div>
-
-  <div class="section" id="v_doctorSection">
-    <h2 data-i18n="secDoctor">Doctor &amp; insurance</h2>
-    <div id="v_doctor"></div>
-  </div>
-
-  <div class="section" id="v_notesSection">
-    <h2 data-i18n="secNotes">Notes</h2>
-    <p id="v_notes"></p>
   </div>
 
   <div class="updated" id="v_updated"></div>
@@ -4715,8 +4706,6 @@
       legendContacts: "Contacts", labelPhone: "Phone", labelRelationship: "Relationship",
       phRelationship: "Spouse, parent, friend…", labelDonor: "Organ donor", donorBadge: "Organ donor",
       contact1: "Emergency contact 1", contact2: "Emergency contact 2", contact3: "Emergency contact 3",
-      legendCare: "Doctor & insurance", labelDocName: "Doctor name", labelDocPhone: "Doctor phone",
-      labelInsProvider: "Insurance provider", labelInsId: "Member / policy ID",
       hintLocalOnly: "On this device and your band only — PHI/PII never uploaded to RedMed.",
       btnClear: "Clear data", btnSave: "Save", noteSaved: "Saved.",
       clearConfirm: "Clear all saved data on this device? Removes profile, bracelet link, PIN, and preferences. This cannot be undone.",
@@ -4725,7 +4714,6 @@
       btnCopy: "Copy", btnPreview: "Preview", btnAdd: "Add", previewLabel: "Card preview",
       secAllergies: "Allergies", secMeds: "Medications", secConditions: "Medical conditions",
       secContacts: "Emergency contacts",
-      secDoctor: "Doctor & insurance", secNotes: "Notes",
       aidTitle: "Roadside Aid", aidLead: "Call 911 first. Tap a pane — expand only what you need.",
       btnCall911: "Call 911",
       locTitle: "Find 911", locLead: "No Servers, No Data Collection. GPS & Compass Data Collected While The 911 Screen Is Open.",
@@ -4757,8 +4745,6 @@
       consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our Terms Of Service and Privacy Policy. Find 911 may use location while that screen is open (not sent to us).",
       btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid", nav911: "911",
       phAllergy: "Search…", phMed: "Search…", phCondition: "Search…",
-      pickAllergy: "Choose allergy", pickMed: "Choose medication", pickCondition: "Choose condition",
-      pickOther: "Other",
       searchMinHint: "{n} more letter(s) — search starts at 2",
       searchNoMatches: "No matches — press Enter to add your own",
       medGroupCommon: "Common", medGroupRare: "Other",
@@ -4827,8 +4813,6 @@
       legendContacts: "Contactos", labelPhone: "Teléfono", labelRelationship: "Parentesco",
       phRelationship: "Cónyuge, padre, amigo…", labelDonor: "Donante de órganos", donorBadge: "Donante de órganos",
       contact1: "Contacto de emergencia 1", contact2: "Contacto de emergencia 2", contact3: "Contacto de emergencia 3",
-      legendCare: "Médico y seguro", labelDocName: "Nombre del médico", labelDocPhone: "Teléfono del médico",
-      labelInsProvider: "Aseguradora", labelInsId: "ID de póliza / miembro",
       hintLocalOnly: "Solo en este dispositivo y tu banda — PHI/PII nunca se sube a RedMed.",
       btnClear: "Borrar datos", btnSave: "Guardar", noteSaved: "Guardado.",
       cardLinkTitle: "Enlace de la tarjeta",
@@ -4836,7 +4820,6 @@
       btnCopy: "Copiar", btnPreview: "Vista previa", btnAdd: "Añadir", previewLabel: "Vista previa",
       secAllergies: "Alergias", secMeds: "Medicamentos", secConditions: "Condiciones médicas",
       secContacts: "Contactos de emergencia",
-      secDoctor: "Médico y seguro", secNotes: "Notas",
       aidTitle: "Ayuda en carretera", aidLead: "Llama al 911 primero. Toca un panel — abre solo lo que necesites.",
       btnCall911: "Llamar al 911",
       locTitle: "Buscar 911", locLead: "Sin Servidores, Sin Recopilación De Datos. GPS Y Brújula Solo Mientras La Pantalla 911 Esté Abierta.",
@@ -4868,8 +4851,6 @@
       consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros Términos de servicio y la Política de privacidad. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
       btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
       phAllergy: "Buscar…", phMed: "Buscar…", phCondition: "Buscar…",
-      pickAllergy: "Elegir alergia", pickMed: "Elegir medicamento", pickCondition: "Elegir condición",
-      pickOther: "Otro",
       searchMinHint: "{n} letra(s) más — la búsqueda empieza en 2",
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
       medGroupCommon: "Comunes", medGroupRare: "Otras",
@@ -4957,11 +4938,6 @@
       el.classList.toggle("on", el.getAttribute("data-lang-side") === currentLang);
     });
     try { refreshLivePreview(); } catch (e) {}
-    try {
-      renderAllergyPickSelect();
-      renderMedPickSelect();
-      renderConditionPickSelect();
-    } catch (e) {}
     if (traumaPickerBound) {
       Object.keys(traumaPickerBound).forEach(function (prefix) {
         populateTraumaStates(prefix);
@@ -5096,39 +5072,7 @@
     return hits.slice(0, limit == null ? SEARCH_RESULT_MAX : limit);
   }
 
-  // How many items show in a "browse" list before the user has to search.
-  var BROWSE_COMMON_MAX = 12;
-
-  // How many items show in the secondary "rare/less common" browse list.
-  var BROWSE_RARE_MAX = 8;
-
-  // Builds a browse list: the curated `seed` items first (in seed order,
-  // and only if they're actually present in `catalog`), then backfilled
-  // from the rest of `catalog` if `seed` doesn't reach `max` on its own.
-  function browseCommonFrom(catalog, seed, max) {
-    max = max == null ? BROWSE_COMMON_MAX : max;
-    var seen = {};
-    var out = [];
-    (seed || []).forEach(function (item) {
-      var key = String(item || "").trim().toLowerCase();
-      if (!key || seen[key] || catalog.indexOf(item) === -1) return;
-      seen[key] = true;
-      out.push(item);
-    });
-    if (out.length < max) {
-      catalog.forEach(function (item) {
-        if (out.length >= max) return;
-        var key = String(item || "").trim().toLowerCase();
-        if (!key || seen[key]) return;
-        seen[key] = true;
-        out.push(item);
-      });
-    }
-    return out.slice(0, max);
-  }
-
   var COMMON_ALLERGENS = dedupeCatalog([
-    /* Drug / medication */
     "Penicillin", "Amoxicillin", "Ampicillin", "Amoxicillin-clavulanate (Augmentin)", "Piperacillin-tazobactam (Zosyn)",
     "Cephalosporins", "Cefazolin", "Ceftriaxone", "Cefepime", "Carbapenems", "Meropenem", "Imipenem",
     "Sulfa drugs", "Sulfonamides", "Trimethoprim-sulfamethoxazole (Bactrim)", "Sulfasalazine",
@@ -5177,12 +5121,6 @@
     "Rubber chemicals (carba mix)", "Epoxy resin", "Isocyanates", "Ethylene oxide", "Seminal fluid allergy",
     "Bee venom immunotherapy", "Fire ant immunotherapy",
   ]);
-  var QUICK_ALLERGENS_SEED = [
-    "Penicillin", "Amoxicillin", "Sulfa drugs", "Aspirin", "Codeine / Opioids", "Iodine / Contrast dye",
-    "Peanuts", "Tree nuts", "Shellfish (crustacean)", "Fish", "Eggs", "Dairy / Milk", "Wheat / Gluten", "Soy", "Sesame",
-    "Latex", "Bee / Wasp / Hornet stings", "Chlorhexidine", "Pollen", "Horse / Cat / Dog dander"
-  ];
-  var QUICK_ALLERGENS = browseCommonFrom(COMMON_ALLERGENS, QUICK_ALLERGENS_SEED, BROWSE_COMMON_MAX);
   var RARE_ALLERGENS_RAW = dedupeCatalog([
     "Omalizumab (Xolair)", "Dupilumab (Dupixent)", "Pegaspargase (Oncaspar)", "Streptokinase", "Aprotinin",
     "Protamine sulfate", "Chymopapain", "Papain", "Bromelain", "Cremophor EL (castor oil excipient)",
@@ -5202,17 +5140,6 @@
     "Protamine zinc insulin", "Aspartame", "Mannitol", "Carrageenan",
   ]);
   var RARE_ALLERGENS = catalogMinus(RARE_ALLERGENS_RAW, COMMON_ALLERGENS);
-  var QUICK_RARE_ALLERGENS_SEED = [
-    "Omalizumab (Xolair)", "Dupilumab (Dupixent)", "Polyethylene glycol (PEG)", "Polysorbate 80",
-    "Alpha-gal (red meat / tick bite)", "Wheat-dependent exercise-induced anaphylaxis",
-    "Mosquito bite anaphylaxis", "Cetuximab (Erbitux)", "Iron dextran", "Honey bee venom extract",
-    "Yellow jacket venom", "Latex-fruit syndrome (avocado/banana/kiwi)", "Methylisothiazolinone (MI)",
-    "Balsam of Peru", "Anisakis (parasite fish allergy)", "Rituximab infusion reaction",
-    "Infliximab infusion reaction", "Protamine sulfate", "Cremophor EL (castor oil excipient)",
-    "Seminal plasma hypersensitivity", "Blood transfusion reactions (IgA)", "Lupin flour",
-    "Peanut oral immunotherapy (history)", "Chlorhexidine anaphylaxis (history)",
-  ];
-  var QUICK_RARE_ALLERGENS = browseCommonFrom(RARE_ALLERGENS, QUICK_RARE_ALLERGENS_SEED, BROWSE_COMMON_MAX);
   var COMMON_MEDS = dedupeCatalog([
   /* MEPS/ClinCalc top U.S. prescriptions 2014–2023 (Top ~225 + emergency extras) */
     "Atorvastatin (Lipitor)", "Metformin", "Levothyroxine (Synthroid)", "Lisinopril", "Amlodipine", "Metoprolol",
@@ -5279,10 +5206,6 @@
     "Emtricitabine/Tenofovir alafenamide (Descovy)", "Bictegravir/FTC/TAF (Biktarvy)", "Dolutegravir (Tivicay)",
     "Cabotegravir (Apretude/Vocabria)", "Lenacapavir", "Nirsevimab (Beyfortus)", "Palivizumab (Synagis)"
   ]);
-
-  var QUICK_MEDS_SEED = [
-    "Atorvastatin (Lipitor)", "Metformin", "Levothyroxine (Synthroid)", "Lisinopril", "Amlodipine", "Metoprolol", "Albuterol inhaler", "Losartan", "Gabapentin (Neurontin)", "Omeprazole (Prilosec)", "Sertraline (Zoloft)", "Rosuvastatin (Crestor)", "Pantoprazole (Protonix)", "Escitalopram (Lexapro)", "Amphetamine/Dextroamphetamine (Adderall)", "Hydrochlorothiazide (HCTZ)", "Bupropion (Wellbutrin)", "Fluoxetine (Prozac)", "Semaglutide (Ozempic/Wegovy)", "Montelukast (Singulair)", "Trazodone", "Simvastatin", "Amoxicillin", "Tamsulosin (Flomax)"
-  ];
 
   var RARE_MEDS_RAW = dedupeCatalog([
   /* Orphan / specialty biologics & small molecules (emergency-relevant) */
@@ -5371,18 +5294,6 @@
     "Dimethyl fumarate (Tecfidera)", "Mitoxantrone (MS — history)"
   ]);
   var RARE_MEDS = catalogMinus(RARE_MEDS_RAW, COMMON_MEDS);
-  var QUICK_RARE_MEDS_SEED = [
-    "Eculizumab (Soliris)", "Emicizumab (Hemlibra)", "C1-inhibitor (Berinert/Cinryze)", "Icatibant (Firazyr)",
-    "Elexacaftor/Tezacaftor/Ivacaftor (Trikafta)", "Nusinersen (Spinraza)", "Tafamidis (Vyndaqel)",
-    "Patisiran (Onpattro)", "IVIG (intravenous immunoglobulin)", "Glucagon nasal (Baqsimi)",
-    "Dasiglucagon (Zegalogue)", "Efgartigimod (Vyvgart)", "Satralizumab (Enspryng)", "Inebilizumab (Uplizna)",
-    "Voxelotor (Oxbryta)", "Crizanlizumab (Adakveo)", "Treprostinil (Remodulin/Tyvaso)", "Nintedanib (Ofev)",
-    "Edaravone (Radicava)", "Fenfluramine (Fintepla)", "Setmelanotide (Imcivree)",
-    "Agalsidase beta (Fabrazyme)", "Alglucosidase alfa (Myozyme/Lumizyme)", "Pegvaliase (Palynziq)",
-    "Dupilumab (Dupixent)", "Omalizumab (Xolair)"
-  ];
-  var QUICK_MEDS = browseCommonFrom(COMMON_MEDS, QUICK_MEDS_SEED, BROWSE_COMMON_MAX);
-  var QUICK_RARE_MEDS = browseCommonFrom(RARE_MEDS, QUICK_RARE_MEDS_SEED, BROWSE_COMMON_MAX);
   var COMMON_CONDITIONS = dedupeCatalog([
     /* Endocrine / metabolic */
     "Diabetes (Type 1)", "Diabetes (Type 2)", "Gestational diabetes (history)", "Prediabetes",
@@ -5475,15 +5386,6 @@
     "Metal implant / Hardware", "Factor V Leiden", "Protein C deficiency", "Protein S deficiency",
     "Heparin-induced thrombocytopenia (HIT history)",
   ]);
-  var QUICK_CONDITIONS_SEED = [
-    "Diabetes (Type 2)", "Hypertension", "Asthma", "COPD", "Sleep apnea", "Heart failure",
-    "AFib / Atrial fibrillation", "On blood thinners / Anticoagulation", "Heart attack (MI) history",
-    "Stroke history", "Epilepsy / Seizure disorder", "Chronic kidney disease", "Anxiety disorder",
-    "Depression", "GERD / Reflux", "Obesity", "Hyperlipidemia / High cholesterol", "Hypothyroidism",
-    "Osteoarthritis", "Osteoporosis", "Cancer (active treatment)", "Pregnancy", "Mobility impairment",
-    "Anaphylaxis history"
-  ];
-  var QUICK_CONDITIONS = browseCommonFrom(COMMON_CONDITIONS, QUICK_CONDITIONS_SEED, BROWSE_COMMON_MAX);
   var RARE_CONDITIONS_RAW = dedupeCatalog([
     /* Genetic / metabolic */
     "Fabry disease", "Gaucher disease", "Pompe disease", "Wilson disease", "Hereditary hemochromatosis",
@@ -5690,29 +5592,13 @@
     "Silicone filler migration risk (history)",
   ]);
   var RARE_CONDITIONS = catalogMinus(RARE_CONDITIONS_RAW, COMMON_CONDITIONS);
-  var QUICK_RARE_CONDITIONS_SEED = [
-    "Fabry disease", "Gaucher disease", "Arrhythmogenic right ventricular cardiomyopathy (ARVC)", "Neuromyelitis optica (NMOSD)", "Dravet syndrome",
-    "Tuberous sclerosis", "Malignant hyperthermia susceptibility", "Eisenmenger syndrome",
-    "Fontan circulation", "Amyloidosis", "Paroxysmal nocturnal hemoglobinuria (PNH)",
-    "Goodpasture syndrome", "Granulomatosis with polyangiitis (GPA)", "Primary sclerosing cholangitis (PSC)",
-    "Spinal cord injury (paraplegia/tetraplegia)", "Autonomic dysreflexia (SCI)",
-    "Mitochondrial disease", "Neurofibromatosis type 1", "Charcot-Marie-Tooth disease",
-    "Stiff-person syndrome", "Lennox-Gastaut syndrome", "Rett syndrome",
-    "Common variable immunodeficiency (CVID)", "Vascular EDS (vEDS)", "Lymphangioleiomyomatosis (LAM)"
-  ];
-  var QUICK_RARE_CONDITIONS = browseCommonFrom(RARE_CONDITIONS, QUICK_RARE_CONDITIONS_SEED, BROWSE_COMMON_MAX);
 
   var allergyItems = [];
   var medItems = [];
   var conditionItems = [];
 
   var CHIP_QUERY_IDS = ["allergyQuery", "medQuery", "conditionQuery"];
-  var CHIP_OTHER_VALUE = "__other__";
-  var CHIP_SEARCH_BY_SELECT = {
-    allergyPick: "allergySearch",
-    medPick: "medSearch",
-    conditionPick: "conditionSearch"
-  };
+  var CHIP_SEARCH_WRAP_IDS = ["allergySearch", "medSearch", "conditionSearch"];
 
   function closeChipSuggest(wrapId, clearInput) {
     var wrap = document.getElementById(wrapId);
@@ -5728,22 +5614,9 @@
   }
 
   function closeAllChipSuggests(clearInput) {
-    Object.keys(CHIP_SEARCH_BY_SELECT).forEach(function (selectId) {
-      closeChipSuggest(CHIP_SEARCH_BY_SELECT[selectId], clearInput);
+    CHIP_SEARCH_WRAP_IDS.forEach(function (wrapId) {
+      closeChipSuggest(wrapId, clearInput);
     });
-  }
-
-  function focusChipSearch(selectId) {
-    var wrapId = CHIP_SEARCH_BY_SELECT[selectId];
-    var wrap = document.getElementById(wrapId);
-    var sel = document.getElementById(selectId);
-    if (!wrap) return;
-    var input = wrap.querySelector("input");
-    if (input) {
-      input.focus();
-      input.dispatchEvent(new Event("focus"));
-    }
-    if (sel) sel.selectedIndex = 0;
   }
 
   function blurChipSearchInputs() {
@@ -5759,104 +5632,11 @@
     if (active && el && el.contains(active) && typeof active.blur === "function") active.blur();
   }
 
-  function renderChipPickSelect(config) {
-    var sel = document.getElementById(config.selectId);
-    if (!sel) return;
-    blurIfFocusedInside(sel);
-    sel.innerHTML = "";
-    var placeholder = document.createElement("option");
-    placeholder.value = "";
-    placeholder.disabled = true;
-    placeholder.selected = true;
-    placeholder.hidden = true;
-    placeholder.textContent = t(config.placeholderKey);
-    sel.appendChild(placeholder);
-
-    function appendGroup(label, items) {
-      var available = (items || []).filter(function (item) {
-        return item && !config.isAdded(item);
-      });
-      if (!available.length) return;
-      var group = document.createElement("optgroup");
-      group.label = label;
-      available.forEach(function (item) {
-        var opt = document.createElement("option");
-        opt.value = item;
-        opt.textContent = item;
-        group.appendChild(opt);
-      });
-      sel.appendChild(group);
-    }
-
-    appendGroup(t("medGroupCommon"), config.commonList);
-    appendGroup(t("medGroupRare"), config.rareList);
-    var otherOpt = document.createElement("option");
-    otherOpt.value = CHIP_OTHER_VALUE;
-    otherOpt.textContent = t("pickOther");
-    sel.appendChild(otherOpt);
-    sel.disabled = sel.options.length <= 1;
-  }
-
-  function wireChipPickSelect(selectId, onAdd, rerender) {
-    var sel = document.getElementById(selectId);
-    if (!sel || sel.getAttribute("data-wired") === "1") return;
-    sel.setAttribute("data-wired", "1");
-    sel.addEventListener("change", function () {
-      var val = sel.value;
-      if (!val) return;
-      if (val === CHIP_OTHER_VALUE) {
-        focusChipSearch(selectId);
-        return;
-      }
-      onAdd(val);
-      rerender();
-      sel.blur();
-      blurChipSearchInputs();
-    });
-  }
-
-  function renderAllergyPickSelect() {
-    renderChipPickSelect({
-      selectId: "allergyPick",
-      placeholderKey: "pickAllergy",
-      commonList: QUICK_ALLERGENS,
-      rareList: QUICK_RARE_ALLERGENS.slice(0, BROWSE_RARE_MAX),
-      isAdded: function (name) {
-        return allergyItems.some(function (a) { return a.toLowerCase() === name.toLowerCase(); });
-      }
-    });
-  }
-
-  function renderMedPickSelect() {
-    renderChipPickSelect({
-      selectId: "medPick",
-      placeholderKey: "pickMed",
-      commonList: QUICK_MEDS,
-      rareList: QUICK_RARE_MEDS.slice(0, BROWSE_RARE_MAX),
-      isAdded: function (name) {
-        return medItems.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); });
-      }
-    });
-  }
-
-  function renderConditionPickSelect() {
-    renderChipPickSelect({
-      selectId: "conditionPick",
-      placeholderKey: "pickCondition",
-      commonList: QUICK_CONDITIONS,
-      rareList: QUICK_RARE_CONDITIONS.slice(0, BROWSE_RARE_MAX),
-      isAdded: function (name) {
-        return conditionItems.some(function (c) { return c.toLowerCase() === name.toLowerCase(); });
-      }
-    });
-  }
-
   function renderAllergyChips() {
     var wrap = document.getElementById("allergiesList");
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!allergyItems.length) {
-      renderAllergyPickSelect();
       refreshLivePreview();
       return;
     }
@@ -5881,7 +5661,6 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderAllergyPickSelect();
     refreshLivePreview();
   }
 
@@ -5890,7 +5669,6 @@
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!medItems.length) {
-      renderMedPickSelect();
       refreshLivePreview();
       return;
     }
@@ -5928,7 +5706,6 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderMedPickSelect();
     refreshLivePreview();
   }
 
@@ -5937,7 +5714,6 @@
     blurIfFocusedInside(wrap);
     wrap.innerHTML = "";
     if (!conditionItems.length) {
-      renderConditionPickSelect();
       refreshLivePreview();
       return;
     }
@@ -5962,7 +5738,6 @@
       chip.appendChild(btn);
       wrap.appendChild(chip);
     });
-    renderConditionPickSelect();
     refreshLivePreview();
   }
 
@@ -6037,8 +5812,8 @@
     var list = document.getElementById(config.suggestId);
     if (!input || !list) return;
     var minChars = config.minChars == null ? SEARCH_MIN_CHARS : config.minChars;
-    var browseCommon = config.browseCommon || config.commonCatalog.slice(0, BROWSE_COMMON_MAX);
-    var browseRare = config.browseRare || (config.rareCatalog ? config.rareCatalog.slice(0, BROWSE_RARE_MAX) : []);
+    var browseCommon = config.browseCommon || config.commonCatalog;
+    var browseRare = config.browseRare || config.rareCatalog || [];
 
     function hide() { list.classList.remove("show"); list.innerHTML = ""; }
 
@@ -6050,10 +5825,15 @@
       if (config.searchWrapId) closeChipSuggest(config.searchWrapId, true);
     }
 
+    function browseAvailable(list) {
+      if (!config.isAdded) return list || [];
+      return (list || []).filter(function (item) { return item && !config.isAdded(item); });
+    }
+
     function showBrowse() {
       list.innerHTML = "";
-      appendSuggestGroup(list, t("medGroupCommon"), browseCommon, pick);
-      if (config.rareCatalog) appendSuggestGroup(list, t("medGroupRare"), browseRare, pick);
+      appendSuggestGroup(list, t("medGroupCommon"), browseAvailable(browseCommon), pick);
+      if (config.rareCatalog) appendSuggestGroup(list, t("medGroupRare"), browseAvailable(browseRare), pick);
       if (list.children.length) list.classList.add("show");
       else hide();
     }
@@ -6112,8 +5892,11 @@
       searchWrapId: "medSearch",
       commonCatalog: COMMON_MEDS,
       rareCatalog: RARE_MEDS,
-      browseCommon: QUICK_MEDS,
-      browseRare: QUICK_RARE_MEDS.slice(0, BROWSE_RARE_MAX),
+      browseCommon: COMMON_MEDS,
+      browseRare: RARE_MEDS,
+      isAdded: function (name) {
+        return medItems.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); });
+      },
       onAdd: addMed
     });
   }
@@ -6262,15 +6045,6 @@
           slot: i
         };
       }).filter(function (c) { return c.name || c.phone || c.address || c.rel; }),
-      doc: {
-        name: fieldVal("f_doc_name"),
-        phone: fieldVal("f_doc_phone")
-      },
-      insurance: {
-        provider: fieldVal("f_ins_provider"),
-        id: fieldVal("f_ins_id")
-      },
-      notes: fieldVal("f_notes"),
       updated: new Date().toISOString()
     };
   }
@@ -6293,9 +6067,6 @@
     contactAddress: 160,
     contactsRawMax: 4,
     contactsMax: 3, /* mirrors iOS EditProfileView's 3 contact slots — see MedicalProfile.swift */
-    docField: 120,
-    insuranceField: 120,
-    notes: 500,
     /* Encoded #d= ceiling — NFC tags are ~888 B; URL/deep-link DoS needs a hard cap before atob/JSON.parse. */
     dEncodedMax: 8192
   };
@@ -6344,8 +6115,6 @@
         slot: slot
       };
     }).filter(function (c) { return c.slot >= 1 && c.slot <= maxSlot; });
-    var doc = data.doc && typeof data.doc === "object" ? data.doc : {};
-    var insurance = data.insurance && typeof data.insurance === "object" ? data.insurance : {};
     return {
       name: clampStr(data.name, PROFILE_LIMITS.name),
       dob: clampStr(data.dob, PROFILE_LIMITS.dob),
@@ -6355,15 +6124,6 @@
       meds: clampStrList(data.meds, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       conditions: clampStrList(data.conditions, PROFILE_LIMITS.listMax, PROFILE_LIMITS.listItem),
       contacts: contacts,
-      doc: {
-        name: clampStr(doc.name, PROFILE_LIMITS.docField),
-        phone: clampStr(doc.phone, PROFILE_LIMITS.contactPhone)
-      },
-      insurance: {
-        provider: clampStr(insurance.provider, PROFILE_LIMITS.insuranceField),
-        id: clampStr(insurance.id, PROFILE_LIMITS.insuranceField)
-      },
-      notes: clampStr(data.notes, PROFILE_LIMITS.notes),
       updated: clampStr(data.updated, PROFILE_LIMITS.updated)
     };
   }
@@ -6399,18 +6159,6 @@
       if (phoneEl) phoneEl.value = c.phone || "";
       if (addressEl) addressEl.value = c.address || c.rel || "";
     });
-    var doc = data.doc || {};
-    var insurance = data.insurance || {};
-    var docNameEl = document.getElementById("f_doc_name");
-    var docPhoneEl = document.getElementById("f_doc_phone");
-    var insProviderEl = document.getElementById("f_ins_provider");
-    var insIdEl = document.getElementById("f_ins_id");
-    var notesEl = document.getElementById("f_notes");
-    if (docNameEl) docNameEl.value = doc.name || "";
-    if (docPhoneEl) docPhoneEl.value = doc.phone || "";
-    if (insProviderEl) insProviderEl.value = insurance.provider || "";
-    if (insIdEl) insIdEl.value = insurance.id || "";
-    if (notesEl) notesEl.value = data.notes || "";
     updateAllContactSummaries();
     var openedContact = false;
     CONTACT_SLOTS.forEach(function (i) {
@@ -6458,10 +6206,6 @@
     renderConditionChips();
     refreshLivePreview();
 
-    wireChipPickSelect("allergyPick", addAllergy, renderAllergyPickSelect);
-    wireChipPickSelect("medPick", addMed, renderMedPickSelect);
-    wireChipPickSelect("conditionPick", addCondition, renderConditionPickSelect);
-
     if (editWired) return;
     editWired = true;
 
@@ -6471,8 +6215,11 @@
       searchWrapId: "allergySearch",
       commonCatalog: COMMON_ALLERGENS,
       rareCatalog: RARE_ALLERGENS,
-      browseCommon: QUICK_ALLERGENS,
-      browseRare: QUICK_RARE_ALLERGENS.slice(0, BROWSE_RARE_MAX),
+      browseCommon: COMMON_ALLERGENS,
+      browseRare: RARE_ALLERGENS,
+      isAdded: function (name) {
+        return allergyItems.some(function (a) { return a.toLowerCase() === name.toLowerCase(); });
+      },
       resultMax: 36,
       rareResultMax: 28,
       onAdd: addAllergy
@@ -6484,8 +6231,11 @@
       searchWrapId: "conditionSearch",
       commonCatalog: COMMON_CONDITIONS,
       rareCatalog: RARE_CONDITIONS,
-      browseCommon: QUICK_CONDITIONS,
-      browseRare: QUICK_RARE_CONDITIONS.slice(0, BROWSE_RARE_MAX),
+      browseCommon: COMMON_CONDITIONS,
+      browseRare: RARE_CONDITIONS,
+      isAdded: function (name) {
+        return conditionItems.some(function (c) { return c.toLowerCase() === name.toLowerCase(); });
+      },
       resultMax: 36,
       rareResultMax: 28,
       onAdd: addCondition
@@ -6719,75 +6469,6 @@
         }
         contactsWrap.appendChild(card);
       });
-    }
-
-    var docSection = document.getElementById(pfx + "doctorSection");
-    var docWrap = document.getElementById(pfx + "doctor");
-    if (docSection && docWrap) {
-      docWrap.innerHTML = "";
-      var doc = data.doc || {};
-      var insurance = data.insurance || {};
-      var hasDoc = !!(doc.name || doc.phone);
-      var hasIns = !!(insurance.provider || insurance.id);
-      if (!hasDoc && !hasIns) {
-        docSection.style.display = "none";
-      } else {
-        docSection.style.display = "";
-        if (hasDoc) {
-          var docCard = document.createElement("div");
-          docCard.className = "contact-card";
-          var docInfo = document.createElement("div");
-          docInfo.className = "info";
-          var docName = document.createElement("div");
-          docName.className = "name";
-          docName.textContent = doc.name || t("secDoctor");
-          var docPhoneEl = document.createElement("div");
-          docPhoneEl.className = "rel";
-          docPhoneEl.textContent = doc.phone || "";
-          docInfo.appendChild(docName);
-          docInfo.appendChild(docPhoneEl);
-          docCard.appendChild(docInfo);
-          var docPhone = doc.phone ? normalizePhone(doc.phone) : "";
-          if (docPhone) {
-            var docActions = document.createElement("div");
-            docActions.className = "contact-actions";
-            var docCall = document.createElement("a");
-            docCall.className = "call";
-            docCall.textContent = t("call");
-            docCall.setAttribute("href", "tel:" + docPhone);
-            docActions.appendChild(docCall);
-            docCard.appendChild(docActions);
-          }
-          docWrap.appendChild(docCard);
-        }
-        if (hasIns) {
-          var insCard = document.createElement("div");
-          insCard.className = "contact-card";
-          var insInfo = document.createElement("div");
-          insInfo.className = "info";
-          var insName = document.createElement("div");
-          insName.className = "name";
-          insName.textContent = insurance.provider || "Insurance";
-          var insId = document.createElement("div");
-          insId.className = "rel";
-          insId.textContent = insurance.id ? ("ID " + insurance.id) : "";
-          insInfo.appendChild(insName);
-          insInfo.appendChild(insId);
-          insCard.appendChild(insInfo);
-          docWrap.appendChild(insCard);
-        }
-      }
-    }
-
-    var notesSection = document.getElementById(pfx + "notesSection");
-    var notesEl = document.getElementById(pfx + "notes");
-    if (notesSection && notesEl) {
-      if (data.notes) {
-        notesSection.style.display = "";
-        notesEl.textContent = data.notes;
-      } else {
-        notesSection.style.display = "none";
-      }
     }
 
     var updatedEl = document.getElementById(pfx + "updated");

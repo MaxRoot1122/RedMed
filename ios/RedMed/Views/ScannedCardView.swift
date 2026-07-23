@@ -52,21 +52,6 @@ struct ScannedCardView: View {
                         if !contacts.isEmpty {
                             contactsBlock(contacts)
                         }
-
-                        if !profile.doc.name.isEmpty || !profile.doc.phone.isEmpty
-                            || !profile.insurance.provider.isEmpty || !profile.insurance.id.isEmpty {
-                            doctorInsuranceBlock
-                        }
-
-                        if !profile.notes.isEmpty {
-                            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                                SectionEyebrow(text: "Notes", tint: AppTheme.muted)
-                                Text(profile.notes)
-                                    .font(.body)
-                                    .foregroundStyle(AppTheme.ink)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                        }
                     }
                     .padding(layout.screenPad)
                     .padding(.bottom, layout.s(28))
@@ -215,56 +200,6 @@ struct ScannedCardView: View {
                     .appCard(elevated: false)
                 }
             }
-        }
-    }
-
-    private var doctorInsuranceBlock: some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            SectionEyebrow(text: "Doctor & insurance", tint: AppTheme.muted)
-            VStack(alignment: .leading, spacing: layout.s(10)) {
-                if !profile.doc.name.isEmpty || !profile.doc.phone.isEmpty {
-                    HStack(spacing: layout.spaceMD) {
-                        VStack(alignment: .leading, spacing: layout.s(2)) {
-                            Text(profile.doc.name.isEmpty ? "Doctor" : profile.doc.name)
-                                .font(.body.weight(.bold))
-                                .foregroundStyle(AppTheme.ink)
-                            if !profile.doc.phone.isEmpty {
-                                Text(profile.doc.phone)
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(AppTheme.muted)
-                            }
-                        }
-                        Spacer(minLength: layout.spaceSM)
-                        if !profile.doc.phone.isEmpty,
-                           let url = URL(string: "tel:\(profile.doc.phone.filter { $0.isNumber || $0 == "+" })") {
-                            Link(destination: url) {
-                                Text("Call")
-                                    .font(.subheadline.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, layout.spaceLG)
-                                    .padding(.vertical, layout.s(10))
-                                    .background(AppTheme.medical)
-                                    .clipShape(Capsule())
-                            }
-                        }
-                    }
-                }
-                if !profile.insurance.provider.isEmpty || !profile.insurance.id.isEmpty {
-                    VStack(alignment: .leading, spacing: layout.s(2)) {
-                        Text(profile.insurance.provider.isEmpty ? "Insurance" : profile.insurance.provider)
-                            .font(.body.weight(.bold))
-                            .foregroundStyle(AppTheme.ink)
-                        if !profile.insurance.id.isEmpty {
-                            Text("ID \(profile.insurance.id)")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(AppTheme.muted)
-                        }
-                    }
-                }
-            }
-            .padding(layout.s(14))
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .appCard(elevated: false)
         }
     }
 
