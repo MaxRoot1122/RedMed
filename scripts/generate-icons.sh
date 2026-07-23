@@ -69,9 +69,8 @@ if command -v iconutil >/dev/null 2>&1 && [[ -f "$PNG" ]]; then
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_512x512.png" >/dev/null
   sips -z 1024 1024 "$SRC" --out "$ICONSET/icon_512x512@2x.png" >/dev/null
-  mkdir -p "$ROOT/RedMed.app/Contents/Resources/www/assets"
-  iconutil -c icns "$ICONSET" -o "$ROOT/RedMed.app/Contents/Resources/www/assets/AppIcon.icns"
-  echo "RedMed.app/Contents/Resources/www/assets/AppIcon.icns"
+  iconutil -c icns "$ICONSET" -o "$ROOT/RedMed.app/Contents/Resources/AppIcon.icns"
+  echo "RedMed.app/Contents/Resources/AppIcon.icns"
 fi
 
 echo "Done. Run ./scripts/sync-www-mirror.sh to refresh RedMed.app www/."

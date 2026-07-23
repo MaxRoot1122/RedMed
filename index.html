@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Jnaxr/6Q3+k5N9f2igMcEx3hYicCZzCAxbZgnj4nLik='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-IWSKVzziyxbL0F9GxJOFmjT+56+eSSX6L9sivzDlVEY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -111,6 +111,10 @@
     --desktop-shell-max: 1680px;
     --phone-ref-w: 402;
     --phone-ref-h: 874;
+    --phone-bezel: 11px;
+    --phone-device-r: 52px;
+    --phone-screen-r: 44px;
+    --phone-device-w: calc(var(--phone-ref-w) * 1px + var(--phone-bezel) * 2);
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
     --duration-fast: 0.1s;
@@ -1637,12 +1641,13 @@
   }
 
   .sheet-backdrop {
-    position: fixed; inset: 0; z-index: 300; background: rgba(32, 33, 36, 0.32);
+    position: fixed; inset: 0; z-index: 1000; background: rgba(32, 33, 36, 0.32);
     display: none; align-items: flex-end; justify-content: center;
     padding: 0;
     backdrop-filter: none; -webkit-backdrop-filter: none;
   }
-  .sheet-backdrop.show { display: flex; }
+  .sheet-backdrop[hidden] { display: none !important; }
+  .sheet-backdrop.show { display: flex !important; }
   .sheet-card {
     width: 100%; max-width: var(--app-width); max-height: min(88dvh, 640px); overflow: auto;
     background: var(--surface); border: none; border-radius: 28px 28px 0 0;
@@ -1663,6 +1668,48 @@
     border-radius: 2px;
     background: var(--outline);
     margin: 0 auto 16px;
+  }
+  /* Owner tabs use a dark canvas — sheets stay a readable white card when open */
+  #braceletSheet.show .sheet-card,
+  #pinDialog.show .sheet-card,
+  #productSheet.show .sheet-card {
+    --ink: #1c1917;
+    --muted: #6b6560;
+    --surface: #ffffff;
+    --surface-dim: #fff5f5;
+    --panel: rgba(255, 241, 242, 0.92);
+    --field-bg: rgba(255, 255, 255, 0.92);
+    --field-bg-focus: #ffffff;
+    --field-border: rgba(28, 25, 23, 0.12);
+    --field-border-hover: rgba(28, 25, 23, 0.22);
+    --outline: rgba(28, 25, 23, 0.14);
+    --outline-hover: rgba(28, 25, 23, 0.28);
+    --line: rgba(28, 25, 23, 0.09);
+    background: #ffffff;
+    color: var(--ink);
+    color-scheme: light;
+  }
+  #braceletSheet.show .sheet-card input[type=text],
+  #braceletSheet.show .sheet-card input[type=tel],
+  #pinDialog.show .sheet-card input[type=text],
+  #productSheet.show .sheet-card input[type=text] {
+    color: var(--ink);
+    background-color: var(--field-bg);
+    border-color: var(--field-border);
+    box-shadow: none;
+  }
+  #braceletSheet.show .sheet-card input::placeholder,
+  #pinDialog.show .sheet-card input::placeholder,
+  #productSheet.show .sheet-card input::placeholder {
+    color: rgba(28, 25, 23, 0.45);
+  }
+  #braceletSheet.show .sheet-card a,
+  #pinDialog.show .sheet-card a,
+  #productSheet.show .sheet-card a {
+    color: var(--accent);
+  }
+  html.bracelet-sheet-open {
+    overflow: hidden;
   }
   .sheet-head {
     display: flex;
@@ -2454,6 +2501,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
     margin: 0;
     font-size: 14px;
@@ -2467,6 +2515,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
     margin: 2px 0 0;
     font-size: 11px;
@@ -3632,7 +3681,7 @@
     }
     #editView .split-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) calc(var(--phone-ref-w) * 1px);
+      grid-template-columns: minmax(0, 1fr) var(--phone-device-w);
       gap: 24px;
       align-items: start;
       max-width: min(var(--desktop-shell-max), 100vw);
@@ -3652,7 +3701,7 @@
       position: sticky;
       top: calc(var(--safe-top) + var(--header-height));
       padding-top: 8px;
-      width: calc(var(--phone-ref-w) * 1px);
+      width: var(--phone-device-w);
     }
     #editView .split-preview {
       display: flex;
@@ -3660,6 +3709,7 @@
       align-items: stretch;
       gap: 8px;
       box-sizing: border-box;
+      width: var(--phone-device-w);
     }
     .preview-label {
       font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none;
@@ -3667,7 +3717,7 @@
     }
     #editView .preview-label {
       margin: 0;
-      padding: 0 16px 0 17px;
+      padding: 0 16px 0 calc(var(--phone-bezel) + 17px);
       width: 100%;
       box-sizing: border-box;
       font-size: 12px;
@@ -3675,6 +3725,47 @@
       line-height: 1.25;
       letter-spacing: 0.01em;
       color: rgba(255, 255, 255, 0.62);
+    }
+    /* iPhone 17 chassis — 402×874 CSS px live preview on the right */
+    .phone-device {
+      position: relative;
+      width: var(--phone-device-w);
+      padding: var(--phone-bezel);
+      border-radius: var(--phone-device-r);
+      box-sizing: border-box;
+      background:
+        linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 28%),
+        linear-gradient(180deg, #48484a 0%, #2c2c2e 42%, #1c1c1e 100%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.65) inset,
+        0 24px 56px rgba(0, 0, 0, 0.55),
+        0 8px 18px rgba(0, 0, 0, 0.35);
+    }
+    .phone-device-island {
+      position: absolute;
+      top: calc(var(--phone-bezel) + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 92px;
+      height: 26px;
+      border-radius: 999px;
+      background: #000;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .phone-home-indicator {
+      position: absolute;
+      bottom: calc(var(--phone-bezel) + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 108px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.34);
+      z-index: 4;
+      pointer-events: none;
     }
     .phone-frame {
       border: 1px solid var(--line);
@@ -3688,11 +3779,18 @@
     }
     #editView .phone-frame {
       width: 100%;
+      height: calc(var(--phone-ref-h) * 1px);
+      max-height: min(calc(var(--phone-ref-h) * 1px), calc(100vh - 160px));
       box-sizing: border-box;
-      border-color: rgba(255, 255, 255, 0.14);
-      border-radius: 20px;
+      border: none;
+      border-radius: var(--phone-screen-r);
       background: #0a0a0a;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-top: 34px;
+      padding-bottom: 18px;
     }
     .phone-frame .id-header { border-radius: 0; padding: 24px 16px 20px; }
     #editView .phone-frame .id-header {
@@ -4006,28 +4104,32 @@
 
     <aside class="split-preview" aria-label="Patient Information">
       <p class="preview-label" data-i18n="previewLabel">Patient Information</p>
-      <div class="phone-frame" id="liveCard">
-        <div class="id-header">
-          <h1 id="p_name">—</h1>
-          <p class="sub" id="p_blood" hidden></p>
+      <div class="phone-device" aria-label="iPhone 17 live preview">
+        <div class="phone-device-island" aria-hidden="true"></div>
+        <div class="phone-frame" id="liveCard">
+          <div class="id-header">
+            <h1 id="p_name">—</h1>
+            <p class="sub" id="p_blood" hidden></p>
+          </div>
+          <div class="section">
+            <h2 data-i18n="secAllergies">Allergies</h2>
+            <ul id="p_allergies"></ul>
+          </div>
+          <div class="section">
+            <h2 data-i18n="secMeds">Medications</h2>
+            <ul id="p_meds"></ul>
+          </div>
+          <div class="section">
+            <h2 data-i18n="secConditions">Medical conditions</h2>
+            <ul id="p_conditions"></ul>
+          </div>
+          <div class="section" id="p_contactsSection">
+            <h2 data-i18n="secContacts">Emergency contacts</h2>
+            <div id="p_contacts"></div>
+          </div>
+          <div class="updated" id="p_updated"></div>
         </div>
-        <div class="section">
-          <h2 data-i18n="secAllergies">Allergies</h2>
-          <ul id="p_allergies"></ul>
-        </div>
-        <div class="section">
-          <h2 data-i18n="secMeds">Medications</h2>
-          <ul id="p_meds"></ul>
-        </div>
-        <div class="section">
-          <h2 data-i18n="secConditions">Medical conditions</h2>
-          <ul id="p_conditions"></ul>
-        </div>
-        <div class="section" id="p_contactsSection">
-          <h2 data-i18n="secContacts">Emergency contacts</h2>
-          <div id="p_contacts"></div>
-        </div>
-        <div class="updated" id="p_updated"></div>
+        <div class="phone-home-indicator" aria-hidden="true"></div>
       </div>
     </aside>
   </div>
@@ -8380,14 +8482,15 @@
   }
 
   function openBraceletSheet() {
-    syncBraceletUi();
-    syncBraceletNfcUi();
+    try { syncBraceletUi(); } catch (e) {}
+    try { syncBraceletNfcUi(); } catch (e) {}
     var sheet = document.getElementById("braceletSheet");
     if (!sheet) return;
     sheet.removeAttribute("hidden");
     sheet.hidden = false;
     sheet.classList.add("show");
     sheet.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("bracelet-sheet-open");
   }
 
   function closeBraceletSheet() {
@@ -8395,9 +8498,11 @@
     if (!sheet) return;
     sheet.classList.remove("show");
     sheet.hidden = true;
+    sheet.setAttribute("hidden", "");
     sheet.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("bracelet-sheet-open");
     releaseBraceletNfc();
-    syncBraceletUi();
+    try { syncBraceletUi(); } catch (e) {}
   }
 
   function wireBracelet() {
@@ -8409,6 +8514,7 @@
       btn.setAttribute("data-wired", "1");
       btn.addEventListener("click", function (e) {
         e.preventDefault();
+        e.stopPropagation();
         openBraceletSheet();
       });
     }
