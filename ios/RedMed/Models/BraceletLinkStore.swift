@@ -11,24 +11,50 @@ final class BraceletLinkStore: ObservableObject {
         didSet { UserDefaults.standard.set(deviceName, forKey: Keys.name) }
     }
 
+    /// Full chip URL embeds `#d=` medical payload — Keychain, not UserDefaults.
     @Published var deviceURL: String {
-        didSet { UserDefaults.standard.set(deviceURL, forKey: Keys.url) }
+        didSet { Self.persistURL(deviceURL) }
     }
 
-    private enum Keys {
+    enum Keys {
         static let name = "redMedBraceletDeviceName"
         static let url = "redMedBraceletDeviceURL"
         static let legacyPaired = "redMedBraceletPaired"
+        static let urlAccount = "braceletDeviceURL"
     }
 
     private var nearbyTimer: Timer?
 
     init() {
         deviceName = UserDefaults.standard.string(forKey: Keys.name) ?? ""
-        deviceURL = UserDefaults.standard.string(forKey: Keys.url) ?? ""
+        deviceURL = Self.loadURL()
         if deviceURL.isEmpty, UserDefaults.standard.bool(forKey: Keys.legacyPaired) {
             deviceName = deviceName.isEmpty ? "My bracelet" : deviceName
         }
+    }
+
+    /// Shared with `RedMedApp` deep-link ignore-own-band check.
+    static func loadURL() -> String {
+        if let data = KeychainStore.load(account: Keys.urlAccount),
+           let url = String(data: data, encoding: .utf8),
+           !url.isEmpty {
+            return url
+        }
+        let legacy = UserDefaults.standard.string(forKey: Keys.url) ?? ""
+        if !legacy.isEmpty {
+            persistURL(legacy)
+            UserDefaults.standard.removeObject(forKey: Keys.url)
+        }
+        return legacy
+    }
+
+    private static func persistURL(_ url: String) {
+        if url.isEmpty {
+            KeychainStore.delete(account: Keys.urlAccount)
+        } else if let data = url.data(using: .utf8) {
+            KeychainStore.save(data, account: Keys.urlAccount)
+        }
+        UserDefaults.standard.removeObject(forKey: Keys.url)
     }
 
     var isLinked: Bool { !deviceURL.isEmpty }
