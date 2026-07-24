@@ -1,0 +1,30 @@
+{
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/RedMedApp.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/RedMedApp.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/RedMedApp.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/RedMedApp.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/RedMedApp.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/RedMedApp.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Services/BiometricGate.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/BiometricGate.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/BiometricGate.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/BiometricGate.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/BiometricGate.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/BiometricGate.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Services/EmergencySummaryBuilder.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/EmergencySummaryBuilder.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/EmergencySummaryBuilder.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/EmergencySummaryBuilder.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/EmergencySummaryBuilder.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/EmergencySummaryBuilder.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Services/KeychainStore.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/KeychainStore.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/KeychainStore.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/KeychainStore.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/KeychainStore.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/KeychainStore.swiftdeps"
+  }
+}

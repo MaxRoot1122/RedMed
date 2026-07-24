@@ -1,0 +1,264 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/EditProfileView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 233
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 233
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear all data?",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 287
+        }
+      },
+      {
+        "comment": "",
+        "key": "Allergies",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "Medications",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 184
+        }
+      },
+      {
+        "comment": "",
+        "key": "Conditions",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contacts",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 219
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add your name to unlock NFC write.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "Birth date",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "Blood type",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "You",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 167
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add allergy",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 180
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add medication",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 196
+        }
+      },
+      {
+        "comment": "",
+        "key": "Dose",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 191
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add condition",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 215
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear data",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "On this device and your band only. Never uploaded.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 228
+        }
+      },
+      {
+        "comment": "",
+        "key": "Bracelet setup",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 243
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 248
+        }
+      },
+      {
+        "comment": "",
+        "key": "Saved",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 252
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 288
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 347
+        }
+      },
+      {
+        "comment": "",
+        "key": "Relationship",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 348
+        }
+      },
+      {
+        "comment": "",
+        "key": "Phone",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 349
+        }
+      },
+      {
+        "comment": "",
+        "key": "Type at least %lld characters to search.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 446
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add \"%@\"",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 451
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 464
+        }
+      }
+    ]
+  },
+  "version": 1
+}
