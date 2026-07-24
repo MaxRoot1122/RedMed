@@ -64,7 +64,7 @@ When adding rows: include **`co`** (county). One-time Census geocoder was used t
 
 ## i18n keys (web)
 
-`locTraumaTitle`, `locTraumaLead`, `locTraumaHint`, `locTraumaState`, `locTraumaCounty`, `locTraumaPickState`, `locTraumaPickCounty`, `locTraumaVerify`, `locTraumaMaps` — English and Spanish in `STRINGS`; other langs fall back to English.
+`locTraumaTitle`, `locTraumaLead`, `locTraumaHint`, `locTraumaState`, `locTraumaCounty`, `locTraumaPickState`, `locTraumaPickCounty`, `locTraumaVerify`, `locTraumaMaps` — English, Spanish, and French in `STRINGS`; other langs fall back to English.
 
 ## Sync scripts
 
