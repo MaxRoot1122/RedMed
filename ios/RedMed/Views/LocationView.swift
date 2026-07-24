@@ -98,7 +98,9 @@ struct LocationView: View {
                         .padding(.bottom, layout.s(28))
                 }
                 .padding(.horizontal, layout.screenPad)
+                .reactiveScrollTrack()
             }
+            .reactiveScrollChrome()
             .screenAtmosphere()
             .navigationTitle("911")
             .navigationBarTitleDisplayMode(.inline)

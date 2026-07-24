@@ -82,7 +82,9 @@ struct BraceletSetupView: View {
                 }
                 .padding(layout.screenPad)
                 .padding(.bottom, layout.screenBottom)
+                .reactiveScrollTrack()
             }
+            .reactiveScrollChrome()
             .screenAtmosphere()
             .navigationTitle("Bracelet")
             .navigationBarTitleDisplayMode(.inline)
