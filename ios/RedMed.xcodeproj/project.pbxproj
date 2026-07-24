@@ -41,6 +41,8 @@
 		F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F919F5A31247B2B0CB18DB /* NFCReader.swift */; };
 		F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */; };
 		FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */; };
+		8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BD85593584556B6843D30 /* AppLockView.swift */; };
+		FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE1D0000014A1D00000001 /* BiometricGate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +83,8 @@
 		E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTagView.swift; sourceTree = "<group>"; };
 		F904DC2367104A3595DC5468 /* BasicAidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAidView.swift; sourceTree = "<group>"; };
 		FAA5420A418C4467938AA432 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
+		4D5BD85593584556B6843D30 /* AppLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
+		FACE1D0000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricGate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
+				4D5BD85593584556B6843D30 /* AppLockView.swift */,
 				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
 				B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */,
@@ -166,6 +171,7 @@
 		C7428494040244ACB57B9038 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FACE1D0000014A1D00000001 /* BiometricGate.swift */,
 				8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */,
 				A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */,
 				57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */,
@@ -281,6 +287,8 @@
 				25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */,
 				C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */,
 				A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */,
+				8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */,
+				FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
