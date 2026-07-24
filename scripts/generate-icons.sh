@@ -24,15 +24,16 @@ render() {
   fi
 }
 
-for size in 32 180 512; do
-  render "$size" "$ROOT/assets/logo-${size}.png"
-  echo "assets/logo-${size}.png"
-done
+render 32 "$ROOT/assets/favicon-32.png"
+echo "assets/favicon-32.png"
+render 180 "$ROOT/assets/apple-touch-icon.png"
+echo "assets/apple-touch-icon.png"
+render 512 "$ROOT/assets/icon-512.png"
+echo "assets/icon-512.png"
 
-cp "$ROOT/assets/logo-32.png" "$ROOT/assets/favicon-32.png"
-cp "$ROOT/assets/logo-180.png" "$ROOT/assets/apple-touch-icon.png"
 mkdir -p "$ROOT/play/listing"
-cp "$ROOT/assets/logo-512.png" "$ROOT/play/listing/play-store-icon-512.png"
+cp "$ROOT/assets/icon-512.png" "$ROOT/play/listing/play-store-icon-512.png"
+echo "play/listing/play-store-icon-512.png"
 
 APPICON="$ROOT/ios/RedMed/Assets.xcassets/AppIcon.appiconset"
 render 1024 "$APPICON/AppIcon.png"
@@ -48,6 +49,16 @@ for size in 120 240 360; do
   render "$size" "$out"
   echo "$out"
 done
+
+# Optional: BrandWordmark rasters from the iOS wordmark source (tagline baked in).
+WORDMARK_IOS="$ROOT/assets/wordmark-ios.svg"
+BRAND_WM="$ROOT/ios/RedMed/Assets.xcassets/BrandWordmark.imageset"
+if [[ -f "$WORDMARK_IOS" ]] && command -v rsvg-convert >/dev/null 2>&1; then
+  rsvg-convert -w 360 -h 88 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark.png"
+  rsvg-convert -w 720 -h 176 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark@2x.png"
+  rsvg-convert -w 1080 -h 264 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark@3x.png"
+  echo "BrandWordmark PNGs from wordmark-ios.svg"
+fi
 
 if [[ -f "$PNG" ]]; then
   cp "$PNG" "$ROOT/assets/cpr-trainer-icon.png"

@@ -20,7 +20,6 @@
 		40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572AFAA69FD048659B137D3A /* LocationView.swift */; };
 		5AEAD51967FE43B28F510E5B /* MedicalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */; };
 		61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */; };
-		B10METR000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10METR000014A1D00000001 /* BiometricGate.swift */; };
 		8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */; };
 		98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1381A61F1B3645C98CB67182 /* MyIDView.swift */; };
 		9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F510000014A1D00000001 /* ProfileSummaryView.swift */; };
@@ -43,6 +42,8 @@
 		F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F919F5A31247B2B0CB18DB /* NFCReader.swift */; };
 		F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */; };
 		FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */; };
+		8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BD85593584556B6843D30 /* AppLockView.swift */; };
+		FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE1D0000014A1D00000001 /* BiometricGate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,7 +54,6 @@
 		4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstAidTopic.swift; sourceTree = "<group>"; };
 		572AFAA69FD048659B137D3A /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
-		B10METR000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricGate.swift; sourceTree = "<group>"; };
 		5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLinkBuilder.swift; sourceTree = "<group>"; };
 		6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
@@ -85,6 +85,8 @@
 		E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTagView.swift; sourceTree = "<group>"; };
 		F904DC2367104A3595DC5468 /* BasicAidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAidView.swift; sourceTree = "<group>"; };
 		FAA5420A418C4467938AA432 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
+		4D5BD85593584556B6843D30 /* AppLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
+		FACE1D0000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricGate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
+				4D5BD85593584556B6843D30 /* AppLockView.swift */,
 				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
 				B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */,
@@ -171,7 +174,7 @@
 		C7428494040244ACB57B9038 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				B10METR000014A1D00000001 /* BiometricGate.swift */,
+				FACE1D0000014A1D00000001 /* BiometricGate.swift */,
 				8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */,
 				A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */,
 				57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */,
@@ -268,7 +271,6 @@
 				A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */,
 				287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */,
 				61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */,
-				B10METR000014A1D00000002 /* BiometricGate.swift in Sources */,
 				283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */,
 				FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */,
 				F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */,
@@ -289,6 +291,8 @@
 				S1CAN000014A1D00000002 /* ScanEmergencyCardControl.swift in Sources */,
 				C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */,
 				A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */,
+				8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */,
+				FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

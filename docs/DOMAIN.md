@@ -1,12 +1,12 @@
 # Custom domain for RedMed
 
-**Active canonical host:** `https://www.redmed.com/` (see [`config/canonical-url`](../config/canonical-url) and [`CNAME`](../CNAME)).
+**Active canonical host (live):** `https://maxroot1122.github.io/RedMed/` — see [`config/canonical-url`](../config/canonical-url).
 
-GitHub project Pages (`https://maxroot1122.github.io/RedMed/`) remains listed as a **legacy** host in config until field bracelets are re-flashed — it is not written to new tags.
+**`www.redmed.com` is NOT live yet.** As of 2026-07-24 it returns a registrar parking `/lander` page, not this app. Do not write NFC tags to that host until DNS points at GitHub Pages and `index.html` / AASA serve correctly. Repo [`CNAME`](../CNAME) is the intended future target only.
 
 **Do not use `redmed.app`** — unrelated third-party storefront (see [`SECURITY.md`](../SECURITY.md)).
 
-## Why switch later
+## Why switch to a custom domain later
 
 - Shorter NDEF URI → more medical data fits on NTAG215/216
 - Professional URL on packaging and bracelets
@@ -59,9 +59,18 @@ Bracelet taps stay **HTTPS** so any phone without the app still gets the emergen
 - [Google Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator) passes for `local.redmed.app`
 - Write a test tag; tap on iPhone + Android
 
-## Until domain is live
+## Until custom domain is live
 
-Confirm `https://www.redmed.com/index.html` loads over HTTPS before manufacturing new bracelets. Keep the `legacy:` line in `config/canonical-url` until old GitHub-hosted tags are re-flashed.
+Confirm before flipping `config/canonical-url` off GitHub Pages:
+
+```bash
+curl -sI https://www.redmed.com/index.html   # must be this app, not a /lander redirect
+curl -s  https://www.redmed.com/.well-known/apple-app-site-association  # must be JSON
+```
+
+Until then, new tags use `https://maxroot1122.github.io/RedMed/index.html`. Keep `legacy:https://www.redmed.com/index.html` so pairing still recognizes the domain once it goes live.
+
+**Universal Links caveat:** Apple’s AASA must sit at the **domain apex** `/.well-known/…`. A GitHub *project* Pages site (`username.github.io/RedMed/`) cannot publish that apex file without a custom domain (or a forbidden second user-site repo). So “tap opens the iOS app” needs `www.redmed.com` → Pages + AASA from this repo — not github.io alone.
 
 ## Single repo rule
 
