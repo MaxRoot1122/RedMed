@@ -50,7 +50,7 @@ pointing UIs.
 
 - CSP on `index.html` and `get.html` (hash-pinned script; `object-src 'none'`).
 - `#d=` pre-parse size gate + schema coercion / length caps before render.
-- Contact `tel:` / `sms:` links built via DOM APIs (not string `innerHTML` hrefs).
+- Contact `tel:` links built via DOM APIs (not string `innerHTML` hrefs).
 - PIN stored with PBKDF2 (Web Crypto) + attempt lockout; set fails closed without SubtleCrypto.
 - When PIN-locked, NFC write and disconnect require unlock (NFC chip data stays readable).
 - iOS profile + bracelet URL in Keychain (`WhenUnlockedThisDeviceOnly`); decode path size-capped.

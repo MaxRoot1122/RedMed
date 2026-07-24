@@ -43,7 +43,7 @@ medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
 
 ## Support URL
 
-Use hosted privacy/contact: `https://maxroot1122.github.io/RedMed/privacy-policy.html` or custom domain equivalent.
+Use hosted privacy/contact: `https://www.redmed.com/privacy-policy.html`.
 
 ## Review messaging
 

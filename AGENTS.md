@@ -27,7 +27,7 @@ Double-clicking `RedMed.app` in the file tree does nothing useful — it is an a
 2. Terminal: `./scripts/run-ios-simulator.sh`
 3. Ask the agent: "launch RedMed"
 
-**Product UI for iPhone owners** lives in `ios/RedMed/` (SwiftUI). `index.html` is the public NFC emergency card (+ Android TWA / browser fallback) — do not delete it or try to "replace" it with Swift; bracelet taps need a hosted HTTPS HTML page. Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
+**Product UI for iPhone owners** lives in `ios/RedMed/` (SwiftUI) — Face ID app lock, Keychain, CoreNFC. `index.html` is the public NFC emergency card (+ Android TWA / browser fallback); bracelet taps need that hosted HTTPS page (do not delete it or try to replace it with Swift). Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
 
 Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`. Never commit `build/ios-DerivedData/` or other DerivedData trees into the repo.
 
@@ -43,7 +43,7 @@ Then open `http://127.0.0.1:8934/index.html`. Port `8934` matches the macOS wrap
 If the Desktop browser shows CSP errors but `curl http://127.0.0.1:8934/index.html` has the correct `sha256-` hash, hard-refresh or confirm you are on **localhost** (not the GitHub Pages URL).
 
 ### Public host (any-phone NFC)
-Bracelet taps open `https://maxroot1122.github.io/RedMed/`. That requires GitHub Pages (Source: GitHub Actions). Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`, which routes iOS → App Store, Samsung → Galaxy Store, Huawei → AppGallery, other Android → Play, with web fallback. Canonical URL config: `config/canonical-url` + `scripts/sync-canonical-url.sh`. Commercial launch docs: `docs/`.
+Bracelet taps open the canonical card URL from [`config/canonical-url`](config/canonical-url) (currently `https://www.redmed.com/index.html`). iOS `AppConfig.medicalCardBaseURL`, web `HOSTED_URL`, and Android TWA launch URL must stay in sync via `./scripts/sync-canonical-url.sh`. GitHub Pages (`https://maxroot1122.github.io/RedMed/`) remains a **legacy** host for older tags. Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`.
 
 ### NFC / passive chip only
 RedMed programs a **passive** bracelet chip (NDEF URI + `#d=` payload) — no battery, no broadcast. The phone energizes the chip on tap. **Passive NFC only:** do not add BLE, active RFID, UHF, or battery-powered tags. iOS uses CoreNFC with post-write read-back verify; Android Chrome can write via Web NFC in the Bracelet sheet when `NDEFReader` is available. See [`docs/BRACELET.md`](docs/BRACELET.md).

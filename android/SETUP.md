@@ -1,7 +1,7 @@
 # RedMed — Android app (Google Play)
 
 This wraps the same web app already hosted at
-`https://maxroot1122.github.io/RedMed/index.html` as an installable Android
+`https://www.redmed.com/index.html` as an installable Android
 app — no separate codebase to maintain, and it updates automatically
 whenever you update and redeploy `index.html`. It's a **Trusted Web
 Activity (TWA)**: Google's official, supported way to publish a web app on
@@ -24,10 +24,9 @@ Web NFC on the hosted `index.html` (Bracelet sheet → Write to bracelet)
 when the TWA wraps the same site.
 
 **NFC any-device (current):** iOS writes tags as
-`https://…/RedMed/index.html#d=…` so **smartphones** can open the emergency
-card in a browser (not card readers or other NFC devices). This Android TWA already wraps that hosted site — once
-GitHub Pages is live, new bracelet taps work on Android without a native
-NFC rewrite. Older `redmed://` tags still need the iOS app.
+`https://www.redmed.com/index.html#d=…` so **smartphones** can open the emergency
+card in a browser (not card readers or other NFC devices). This Android TWA already wraps that hosted site — new bracelet taps work on Android without a native
+NFC rewrite. Older `redmed://` tags and legacy GitHub Pages URLs still open the card.
 
 ## 1. Install Android Studio
 
@@ -63,11 +62,12 @@ via Pages workflow. Do not invent fingerprints.
 
 GitHub project Pages serve under `/RedMed/...`, so Android cannot verify
 `https://maxroot1122.github.io/.well-known/assetlinks.json` from this repo
-alone. Skip full-screen verification for now — the TWA still works; Chrome may
-show a thin address-bar strip instead of true full-screen. That is a
-cosmetic downgrade only.
+alone. Full-screen TWA verification needs the custom domain
+(`https://www.redmed.com/.well-known/assetlinks.json`) — see
+[`docs/DOMAIN.md`](../docs/DOMAIN.md). Until then the TWA still works; Chrome may
+show a thin address-bar strip (cosmetic only).
 
-**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied to the site root on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)). It takes effect for **custom domain** hosting per [`docs/DOMAIN.md`](../docs/DOMAIN.md).
+**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied to the site root on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)). It takes effect for **custom domain** hosting (`www.redmed.com`).
 
 Full Play checklist: [`docs/ANDROID_PLAY.md`](../docs/ANDROID_PLAY.md).
 
@@ -80,7 +80,7 @@ keystore from step 2. This produces the `.aab` file Google Play wants.
 
 1. Create a [Google Play Console](https://play.google.com/console) account — **$25 one-time**, your own Google account.
 2. **Create app** → fill in name ("RedMed"), category (Medical), free.
-3. **App content** section: fill in the Data Safety form — **Location: Precise location**, used on **Find 911** for **App functionality** (emergency coordinates on screen, only while that screen is open), **not shared with third parties**, **not used for advertising or tracking**, **processed on-device only — not sent to developer servers**. User agreement is in `privacy-policy.html` and `terms-of-service.html` (download/install/use = consent to on-device use while the app is open; web shows a one-time first-open consent banner). Also declare on-device medical profile fields per the privacy policy, and paste the privacy policy URL: `https://maxroot1122.github.io/RedMed/privacy-policy.html`.
+3. **App content** section: fill in the Data Safety form — **Location: Precise location**, used on **Find 911** for **App functionality** (emergency coordinates on screen, only while that screen is open), **not shared with third parties**, **not used for advertising or tracking**, **processed on-device only — not sent to developer servers**. User agreement is in `privacy-policy.html` and `terms-of-service.html` (download/install/use = consent to on-device use while the app is open; web shows a one-time first-open consent banner). Also declare on-device medical profile fields per the privacy policy, and paste the privacy policy URL: `https://www.redmed.com/privacy-policy.html`.
 4. **Store listing**: short/full description, screenshots (take these from the running app — at least 2, phone-sized), the icon at `play/listing/play-store-icon-512.png`.
 5. **Production → Create release**, upload the `.aab` from step 5, roll out.
 6. Google reviews it — typically a few hours to a few days for a first submission.

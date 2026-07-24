@@ -90,7 +90,7 @@ Implement bracelet v2 industrial design + app SOS / PIN / device management:
 
 > Consolidate all outstanding draft PRs into a single trunk-ready revision on `main`.
 >
-> Include: Cloud `verify-web.sh` + `initLang` boot fix; emergency SMS from Find 911; bracelet live link; modern UI; RedMed nav label; trauma hospitals; commercial launch docs/assets.
+> Include: Cloud `verify-web.sh` + `initLang` boot fix; Find 911 contact dialer; bracelet live link; modern UI; RedMed nav label; trauma hospitals; commercial launch docs/assets.
 >
 > Supersede / close superseded drafts; resolve conflicts against current `main` (keep 3-contact accordion, local-only privacy, condition chips).
 >
