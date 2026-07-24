@@ -4,9 +4,9 @@ Two intentional marks — **do not swap them**.
 
 | Asset | File | Use |
 |-------|------|-----|
-| **App cover / icon** | `assets/icon.svg` (+ PNG/ICNS exports) | Home screen, favicon, PWA manifest, App Store, `get.html` hero, iOS `AppIcon`, linked-device emblem in header |
-| **In-app wordmark** | `assets/wordmark.svg` (+ `BrandWordmark` on iOS) | My ID header, Aid chrome, anywhere the product name “RedMed” appears inside the app |
-| **Symbol only** | `assets/mark.svg` | Optional tiny contexts (future: NFC sheet, loading splash) — not the full cover plate |
+| **App cover / icon** | `assets/icon.svg` (+ PNG/ICNS exports) | Home screen, favicon, PWA manifest, App Store, iOS `AppIcon`, linked-device emblem |
+| **Web hero wordmark** | `assets/heading.svg` | `index.html` / `get.html` headers |
+| **iOS wordmark source** | `assets/wordmark.svg` → `BrandWordmark` | Native My ID / Aid chrome (regenerate PNGs after edit) |
 
 `icon.svg` is the **only** source for raster app icons. Regenerate PNGs/ICNS after editing it (`sips` / `iconutil` on macOS).
 
@@ -137,10 +137,7 @@ On Linux CI (this environment): `rsvg-convert` works for the same commands.
 
 | Location | Asset |
 |----------|--------|
-| `index.html` header (default) | `wordmark.svg` |
-| `index.html` header (bracelet linked) | `icon.svg` + device name |
-| `index.html` Aid header | `wordmark.svg` + Aid title |
-| `get.html` | `icon.svg` (cover) |
+| `index.html` / `get.html` headers | `heading.svg` |
 | `manifest.json` / favicon | PNG from `icon.svg` |
-| iOS `BrandMark` default | `BrandWordmark` image |
-| iOS `BrandMark` device override | `BrandLogo` (cover icon) + name |
+| iOS `BrandMark` default | `BrandWordmark` (from `wordmark.svg`) |
+| iOS `BrandMark` device override | `BrandLogo` (from `icon.svg`) + name |

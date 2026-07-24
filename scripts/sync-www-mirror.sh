@@ -12,11 +12,14 @@ cp "$ROOT/terms-of-service.html" "$WWW/terms-of-service.html"
 cp "$ROOT/manifest.json" "$WWW/manifest.json"
 
 if [ -d "$ROOT/assets" ]; then
-  rsync -a --delete "$ROOT/assets/" "$WWW/assets/"
+  rm -rf "$WWW/assets"
+  mkdir -p "$WWW/assets"
+  cp -a "$ROOT/assets/." "$WWW/assets/"
 fi
 
 if [ -d "$ROOT/config" ]; then
-  rsync -a "$ROOT/config/" "$WWW/config/"
+  mkdir -p "$WWW/config"
+  cp -a "$ROOT/config/." "$WWW/config/"
 fi
 
 # Legacy duplicates at www root — legal pages and HTML use assets/ paths only.
