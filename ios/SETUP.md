@@ -29,7 +29,7 @@ NFC does **not** work in Simulator — use a physical iPhone.
 | Tab | What it does |
 |-----|----------------|
 | **My ID** | Read-only summary by default; top-right **Edit** opens the form. Edit name, blood type, allergies, meds, conditions, 3 emergency contacts (PCP + 2), notes. Saves to Keychain on this device. |
-| **Find 911** | Call 911, live GPS coordinates, compass heading, copy dispatch summary, trauma hospitals by state for transport when waiting may not be survivable (county picker only when 30+ in that state; offline bundled list). When offline, factual guidance for native Emergency SOS via satellite (OS-level — RedMed cannot initiate it). |
+| **Find 911** | Call 911, live GPS coordinates, compass heading, copy coordinates, trauma hospitals by state for transport when waiting may not be survivable (county picker only when 30+ in that state; offline bundled list). When offline, factual guidance for native Emergency SOS via satellite (OS-level — RedMed cannot initiate it). |
 | **Aid** | Offline first-aid topics + CPR compression timer. |
 | **Write Tag** | Writes your profile onto a blank **passive** NFC bracelet as an HTTPS card link (`#d=…` on the chip). A smartphone that taps powers the chip and opens the emergency card in a browser — RedMed not required. Also reads tags back onto this phone. |
 
@@ -86,6 +86,6 @@ Full checklist: [`docs/IOS_APP_STORE.md`](../docs/IOS_APP_STORE.md).
 - **Mockups (not code):** check layouts at **393×852** and **440×956** — see [`docs/BRAND.md`](../docs/BRAND.md) § Safe areas.
 - Profile data is stored in the iOS Keychain (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`) — not synced to iCloud.
 - Linked bracelet chip URL (includes `#d=` medical payload) is also stored in the Keychain; device display name stays in UserDefaults.
-- The app never auto-dials 911; buttons open Phone/Messages pre-filled for you to confirm.
-- **Find 911 and satellite emergency:** RedMed shows on-device GPS coordinates and a copyable dispatch summary. It does not connect to satellites or simulate satellite pointing. If you have no cell service, iPhone Emergency SOS via satellite and Android Satellite SOS are built into the operating system (Settings → Emergency SOS on iPhone 14+, or your phone's native emergency dialer on supported Android devices). RedMed's Find 911 screen explains that path when you're offline — it cannot open or control those OS features.
+- The app never auto-dials 911; buttons open the Phone dialer pre-filled for you to confirm.
+- **Find 911 and satellite emergency:** RedMed shows on-device GPS coordinates you can copy. It does not connect to satellites or simulate satellite pointing. If you have no cell service, iPhone Emergency SOS via satellite and Android Satellite SOS are built into the operating system (Settings → Emergency SOS on iPhone 14+, or your phone's native emergency dialer on supported Android devices). RedMed's Find 911 screen explains that path when you're offline — it cannot open or control those OS features.
 - First aid content is general public guidance, not personalized medical advice.

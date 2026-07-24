@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xvDlS/PTOyQxIGTgnzT3fwjitSO0VG1tzlrwtLec/jA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-421e5EopPY3HzEGcOVCWn+Mk0iWwLKePXUrpdvh/Q3Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -7254,7 +7254,8 @@
   function placeLocContactCall(phone) {
     var dialog = document.getElementById("locContactPicker");
     if (dialog && dialog.open) dialog.close();
-    if (phone) window.location.href = "tel:" + phone;
+    var normalized = normalizePhone(phone);
+    if (normalized) window.location.href = "tel:" + normalized;
   }
 
   function initLoc() {

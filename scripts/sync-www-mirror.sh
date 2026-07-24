@@ -11,12 +11,24 @@ cp "$ROOT/privacy-policy.html" "$WWW/privacy-policy.html"
 cp "$ROOT/terms-of-service.html" "$WWW/terms-of-service.html"
 cp "$ROOT/manifest.json" "$WWW/manifest.json"
 
+# Prefer rsync when available; fall back to cp so Linux CI/agents without rsync still sync.
+sync_dir() {
+  local src="$1" dest="$2"
+  mkdir -p "$dest"
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a --delete "$src/" "$dest/"
+  else
+    # Best-effort mirror without rsync: refresh files, leave orphan cleanup to verify-web.
+    cp -a "$src"/. "$dest"/
+  fi
+}
+
 if [ -d "$ROOT/assets" ]; then
-  rsync -a --delete "$ROOT/assets/" "$WWW/assets/"
+  sync_dir "$ROOT/assets" "$WWW/assets"
 fi
 
 if [ -d "$ROOT/config" ]; then
-  rsync -a "$ROOT/config/" "$WWW/config/"
+  sync_dir "$ROOT/config" "$WWW/config"
 fi
 
 # Legacy duplicates at www root — legal pages and HTML use assets/ paths only.

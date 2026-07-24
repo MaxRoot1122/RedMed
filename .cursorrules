@@ -18,8 +18,9 @@ This product lives in **one** GitHub repo only:
 Do not create, recommend, or depend on a second repo (including a
 `MaxRoot1122.github.io` user-site, a fork used as the "real" source, or
 a multi-repo Cursor environment). Hosting, Android TWA, iOS, docs, and
-agent work all stay inside this repo. GitHub Pages path is
-`https://maxroot1122.github.io/RedMed/`.
+agent work all stay inside this repo. Canonical public host is
+`https://www.redmed.com/` (NFC card = `/index.html`). GitHub Pages
+`https://maxroot1122.github.io/RedMed/` is legacy for older tags only.
 
 ## Where things live
 
