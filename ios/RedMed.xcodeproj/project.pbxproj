@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F904DC2367104A3595DC5468 /* BasicAidView.swift */; };
+		8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BD85593584556B6843D30 /* AppLockView.swift */; };
 		18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C18F62ABD454BB6B2392009 /* ContentView.swift */; };
 		1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */; };
 		1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CC2B3234F946E992AF8294 /* EditProfileView.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		4D5BD85593584556B6843D30 /* AppLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
 		1381A61F1B3645C98CB67182 /* MyIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyIDView.swift; sourceTree = "<group>"; };
 		349B554805D54C418E202B76 /* RedMed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedMed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F919F5A31247B2B0CB18DB /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 		2833C727D3F24F4AB759151E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4D5BD85593584556B6843D30 /* AppLockView.swift */,
 				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
 				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
@@ -254,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */,
+				8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */,
 				18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */,
 				A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */,
 				B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */,
