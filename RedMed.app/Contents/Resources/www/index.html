@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-AruZVGdA9j8IyeJvn3wn5RqLAFmNdlAm0GMNN/nFMqo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-LyNRCTs+U+Sb3nf13xfCKrJZ4BGFBypdTnkboDbJWCk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -4399,8 +4399,8 @@
   </button>
     </nav>
     <div class="bottombar-lang" aria-label="Language">
-      <button type="button" class="lang-toggle" id="langToggleEnEs" title="English / Spanish" aria-label="Toggle English and Spanish">
-        <span data-lang-side="en">ENGLISH</span><span class="lang-toggle-sep" aria-hidden="true">·</span><span data-lang-side="es">SPANISH</span>
+      <button type="button" class="lang-toggle" id="langToggleEnEs" title="English / Spanish / French" aria-label="Cycle English, Spanish, and French">
+        <span data-lang-side="en">EN</span><span class="lang-toggle-sep" aria-hidden="true">·</span><span data-lang-side="es">ES</span><span class="lang-toggle-sep" aria-hidden="true">·</span><span data-lang-side="fr">FR</span>
       </button>
     </div>
   </div>
@@ -5117,7 +5117,7 @@
       medGroupCommon: "Comunes", medGroupRare: "Otras",
       dose: "Dosis", none: "Ninguno", blood: "Sangre", unknown: "Desconocido",
       yrs: "años", updated: "Perfil actualizado:", call: "Llamar",
-      copied: "¡Copiado!", clearConfirm: "¿Borrar todos los datos guardados? Elimina perfil, pulsera, PIN y preferencias. No se puede deshacer.",
+      copied: "¡Copiado!",
       capTooLarge: "caracteres — demasiado grande para la mayoría de tags.", cap216: "caracteres — necesita NTAG216.",
       cap215: "caracteres — necesita NTAG215+.", capOk: "caracteres — cabe en tags estándar.",
       titleMyId: "RedMed", titleAid: "Ayuda — RedMed", title911: "Buscar 911 — RedMed",
@@ -5169,7 +5169,115 @@
       productConnected: "Conectada",
       productDisconnected: "Desconectada",
       productAddNew: "Añadir nuevo",
-      productComingSoon: "Próximamente"
+      productComingSoon: "Próximamente",
+      clearConfirm: "¿Borrar todos los datos guardados? Elimina perfil, pulsera, PIN y preferencias. No se puede deshacer."
+    },
+    fr: {
+      termsChipTerms: "Conditions d’utilisation",
+      termsChipPrivacy: "Politique de confidentialité",
+      supportEmail: "help.RedMed@gmail.com",
+      labelName: "Nom *", phFirstName: "Prénom", phLastName: "Nom", labelNamePlain: "Nom", labelDob: "Date de naissance", labelBlood: "Groupe sanguin",
+      bloodUnknown: "Inconnu", bloodPlaceholder: "—", labelAllergies: "Allergies", labelMeds: "Médicaments",
+      labelConditions: "Conditions", legendMedical: "Informations médicales",
+      legendContacts: "Contacts", labelPhone: "Téléphone", labelRelationship: "Lien",
+      phRelationship: "Conjoint, parent, ami…", labelDonor: "Donneur d’organes", donorBadge: "Donneur d’organes",
+      contact1: "Contact d’urgence 1", contact2: "Contact d’urgence 2", contact3: "Contact d’urgence 3",
+      hintLocalOnly: "Sur cet appareil et votre bracelet seulement — les PHI/PII ne sont jamais envoyées à RedMed.",
+      btnClear: "Effacer les données", btnSave: "Enregistrer", noteSaved: "Enregistré.",
+      clearConfirm: "Effacer toutes les données enregistrées sur cet appareil ? Supprime le profil, le lien bracelet, le PIN et les préférences. Irréversible.",
+      cardLinkTitle: "Lien de la carte",
+      hintCardLink: "Votre carte est encodée sur la puce passive. Quand un smartphone la touche, il alimente la puce et lit votre profil. Tablettes et ordinateurs n’affichent pas la carte.",
+      btnCopy: "Copier", btnPreview: "Aperçu", btnAdd: "Ajouter", previewLabel: "Informations patient",
+      secAllergies: "Allergies", secMeds: "Médicaments", secConditions: "Conditions médicales",
+      secContacts: "Contacts d’urgence",
+      aidTitle: "Aide routière", aidLead: "Appelez le 911 d’abord. Touchez un panneau — n’ouvrez que ce dont vous avez besoin.",
+      btnCall911: "Appeler le 911",
+      locTitle: "Trouver le 911", locLead: "Pas de serveurs, pas de collecte. GPS et boussole uniquement tant que l’écran 911 est ouvert.",
+      locCallContacts: "Appeler les contacts d’urgence",
+      locPickContact: "Choisissez un contact à appeler",
+      btnCancel: "Annuler",
+      alertNoContacts: "Ajoutez d’abord des contacts d’urgence avec numéro dans RedMed.",
+      locMailTip: "Courrier, panneau de rue, repères — communiquez-les au 911",
+      locPrivacy: "Les coordonnées restent sur cet écran. RedMed n’a pas de serveurs — la position n’est pas stockée chez nous.",
+      gpsGetting: "Obtention de la position GPS/satellite…",
+      gpsTapCopy: "Toucher pour copier",
+      gpsTapCopyAria: "Copier les coordonnées GPS dans le presse-papiers",
+      locOffline: "Vous êtes hors ligne. Les coordonnées GPS ci-dessus fonctionnent toujours.", locNoSignal: "Pas de signal ?",
+      locSatOnly: "RedMed n’affiche que le GPS. L’appel d’urgence par satellite est intégré à votre téléphone — RedMed ne peut pas l’ouvrir ni le contrôler.",
+      locBraceletHint: "Configurez ou mettez à jour votre bracelet NFC.",
+      locBraceletLinkedHint: "Lié — touchez pour lire ou reprogrammer le bracelet.",
+      locIosTip: "<strong>iPhone 14+ (iOS 16.1+) :</strong> Utilisez l’<strong>SOS d’urgence par satellite</strong> d’Apple — maintenez latéral + volume jusqu’au curseur SOS, ou allez dans <strong>Réglages → SOS d’urgence</strong>. RedMed ne peut pas le lancer. Guide : https://support.apple.com/en-us/102669",
+      locAndroidTip: "<strong>Android (Pixel, Samsung, etc.) :</strong> Si votre opérateur et appareil prennent en charge le SOS satellitaire, utilisez le composeur d’urgence du téléphone — pas RedMed.",
+      locTraumaTitle: "Centres de traumatologie à proximité",
+      locTraumaLead: "Quand un hôpital plus proche peut ne pas suffire — choisissez votre État.",
+      locTraumaState: "État", locTraumaCounty: "Comté",
+      locTraumaPickState: "Choisir l’État", locTraumaPickCounty: "Choisir le comté",
+      locTraumaVerify: "Appelez d’abord le 911. Dites au répartiteur que vous avez besoin d’un transport vers un centre de traumatologie et votre position. S’il faut les déplacer, gardez tête et colonne immobiles si possible — déplacez-les d’un seul bloc.",
+      locTraumaMaps: "Cartes",
+      locTraumaGoogleRegion: "Région via GPS (Google) — centres de traumatologie hors ligne ci-dessous.",
+      locTraumaGoogleVerified: "Vérifié par Google",
+      locTraumaGoogleHint: "Avec une clé API Google, le GPS fixe l’État et chaque hôpital est vérifié dans Google Places.",
+      consentBody: "RedMed est local uniquement : pas de comptes, pas de serveurs RedMed. Vos PHI/PII restent sur ce téléphone et ce bracelet. En touchant Accepter, vous acceptez nos Conditions d’utilisation et notre Politique de confidentialité. Trouver le 911 peut utiliser la position tant que cet écran est ouvert (pas envoyée chez nous).",
+      btnAccept: "Accepter", btnBackMyId: "Retour à Mon ID", btnEdit: "Modifier", btnDone: "Terminé", editSheetTitle: "Modifier l’ID médicale", summaryYou: "Vous", summaryEmptyHint: "Touchez Modifier pour ajouter votre nom et configurer le bracelet.", summaryNotSet: "Non renseigné", navMyId: "RedMed", navAid: "Aide", nav911: "911",
+      phAllergy: "Rechercher…", phMed: "Rechercher…", phCondition: "Rechercher…",
+      searchMinHint: "{n} lettre(s) de plus — la recherche commence à 2",
+      searchNoMatches: "Aucune correspondance — Entrée pour ajouter la vôtre",
+      medGroupCommon: "Courants", medGroupRare: "Autres",
+      dose: "Dose", none: "Aucun", blood: "Sang", unknown: "Inconnu",
+      yrs: "ans", updated: "Profil mis à jour :", call: "Appeler",
+      copied: "Copié !",
+      capTooLarge: "caractères — trop grand pour la plupart des tags.", cap216: "caractères — nécessite NTAG216.",
+      cap215: "caractères — nécessite NTAG215+.", capOk: "caractères — convient aux tags standards.",
+      titleMyId: "RedMed", titleAid: "Aide — RedMed", title911: "Trouver le 911 — RedMed",
+      titleEmergency: "RedMed — Urgence",
+      btnBracelet: "Bracelet", brandLinked: "Bracelet lié", braceletTitle: "Votre bracelet",
+      braceletLead: "Puce NFC passive uniquement — pas de batterie, pas de Bluetooth. Quand un smartphone touche, il alimente brièvement la puce et ouvre votre carte d’urgence pour les secours et les passants. Après l’appairage, ce téléphone ignore la carte d’urgence de votre propre bande (les autres téléphones l’ouvrent toujours).",
+      braceletStep1: "Remplissez le formulaire (nom, allergies, contacts).",
+      braceletStep2: "Touchez Enregistrer — l’aperçu à droite est ce que les autres verront.",
+      braceletStep3: "Programmez une fois : 911 → <strong>Bracelet</strong> → approchez la bande. Ensuite, la <strong>puce passive conserve vos données</strong> jusqu’à ce qu’un smartphone la touche (pas les lecteurs ni d’autres appareils).",
+      braceletGetApp: "Besoin de l’app ? Scannez le QR de la boîte ou ouvrez <a href=\"get.html\">Get RedMed</a>.",
+      braceletNfcHint: "Vous écrivez la puce une fois. Ensuite, la puce passive conserve votre carte jusqu’à ce qu’un smartphone la touche pour la lire.",
+      braceletNoScanNote: "RedMed ne laisse pas le téléphone scanner la bande en continu. Le NFC ne s’active que lorsque vous touchez Lire ou Écrire.",
+      braceletWriteNfc: "Écrire sur le bracelet (ce téléphone)",
+      braceletNfcWriting: "Approchez le téléphone du bracelet…",
+      braceletNfcOk: "Puce programmée — la puce passive conserve votre carte. Touchez avec un autre smartphone pour tester.",
+      braceletNfcWarn: "Écrit — touchez la bande avec un autre smartphone ; il devrait lire votre carte.",
+      braceletNfcFail: "Impossible d’écrire le tag. Réessayez ou utilisez l’app RedMed.",
+      braceletMarkPaired: "J’ai écrit mon bracelet", braceletGetStore: "Obtenir l’app",
+      braceletDeviceNameLabel: "Nom de l’appareil", braceletDeviceNamePh: "Mon bracelet",
+      braceletReadNfc: "Lire le bracelet (ajouter un appareil)", braceletReadOk: "Bracelet lié — puce reconnue.",
+      braceletReadFail: "Impossible de lire un bracelet RedMed. Approchez la bande du téléphone et réessayez.",
+      braceletReadInvalid: "Ce tag n’est pas une carte d’urgence RedMed. Programmez ou lisez uniquement des bandes RedMed officielles.",
+      braceletLinked: "Bracelet lié",
+      braceletStatusNote: "Puce passive — pas de batterie. NFC uniquement quand vous touchez Lire ou Écrire.",
+      viewPhoneGateTitle: "Smartphone requis",
+      viewPhoneGateLead: "Ce bracelet fonctionne uniquement avec des smartphones — pas les lecteurs de cartes ni d’autres appareils NFC.",
+      viewPhoneGateHint: "Utilisez uniquement un iPhone ou un téléphone Android — pas un lecteur de cartes, un terminal de paiement, une tablette, un ordinateur ou un autre appareil NFC.",
+      pinTitle: "PIN du bracelet",
+      pinSetPrompt: "Définissez un PIN à 4 chiffres pour verrouiller votre bracelet.",
+      pinEnterPrompt: "Entrez votre PIN pour déverrouiller.",
+      pinConfirmPrompt: "Confirmez votre PIN.",
+      pinSet: "PIN défini. Bracelet verrouillé.",
+      pinCleared: "PIN effacé. Bracelet déverrouillé.",
+      pinWrong: "PIN incorrect. Réessayez.",
+      pinMismatch: "Les PIN ne correspondent pas. Réessayez.",
+      pinLockedOut: "Trop de tentatives. Réessayez dans une minute.",
+      pinNeedUnlock: "Déverrouillez d’abord avec votre PIN.",
+      pinCryptoRequired: "Le verrouillage PIN nécessite un contexte sécurisé (HTTPS ou localhost).",
+      braceletLock: "Verrouiller avec PIN",
+      braceletUnlock: "Déverrouiller (entrer le PIN)",
+      braceletDisconnect: "Déconnecter le bracelet",
+      braceletReconnect: "Reconnecter le bracelet",
+      braceletDisconnected: "Bracelet déconnecté.",
+      braceletNeedsRewrite: "Profil enregistré. Réécrivez votre bracelet pour que la puce corresponde à ce téléphone.",
+      cardCorrupt: "Ce lien de bracelet n’a pas pu être lu. Les données de la puce peuvent être incomplètes — réécrivez la bande depuis Mon ID.",
+      locTraumaGoogleOffline: "Google Maps indisponible ici — liste de trauma hors ligne. Choisissez votre État ci-dessous.",
+      productsTitle: "Mes appareils",
+      productBand: "Bande RedMed",
+      productConnected: "Connecté",
+      productDisconnected: "Déconnecté",
+      productAddNew: "Ajouter",
+      productComingSoon: "Bientôt disponible"
     }
   };
 
@@ -5211,8 +5319,19 @@
     try { syncLocCallContactsBtn(); } catch (e) {}
   }
 
+  var LANG_ORDER = ["en", "es", "fr"];
+
+  function normalizeLang(code) {
+    return LANG_ORDER.indexOf(code) >= 0 ? code : "en";
+  }
+
+  function nextLang(code) {
+    var i = LANG_ORDER.indexOf(normalizeLang(code));
+    return LANG_ORDER[(i + 1) % LANG_ORDER.length];
+  }
+
   function setLang(code) {
-    currentLang = code === "es" ? "es" : "en";
+    currentLang = normalizeLang(code);
     try { localStorage.setItem(LANG_KEY, currentLang); } catch (e) {}
     applyI18n();
   }
@@ -5231,7 +5350,7 @@
       toggle.setAttribute("data-wired", "1");
       toggle.addEventListener("click", function () {
         flashToggleGlow(toggle);
-        setLang(currentLang === "es" ? "en" : "es");
+        setLang(nextLang(currentLang));
       });
     }
   }
@@ -5239,9 +5358,11 @@
   function initLang() {
     var saved = "";
     try { saved = localStorage.getItem(LANG_KEY) || ""; } catch (e) {}
-    if (saved !== "en" && saved !== "es") {
+    if (LANG_ORDER.indexOf(saved) < 0) {
       var nav = (navigator.language || "en").toLowerCase();
-      saved = nav.indexOf("es") === 0 ? "es" : "en";
+      if (nav.indexOf("fr") === 0) saved = "fr";
+      else if (nav.indexOf("es") === 0) saved = "es";
+      else saved = "en";
     }
     currentLang = saved;
     wireLangControls();
@@ -6483,7 +6604,7 @@
     var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     if (isNaN(d.getTime())) return dob;
     try {
-      return d.toLocaleDateString(currentLang === "es" ? "es" : "en", { year: "numeric", month: "long", day: "numeric" });
+      return d.toLocaleDateString(currentLang === "fr" ? "fr" : (currentLang === "es" ? "es" : "en"), { year: "numeric", month: "long", day: "numeric" });
     } catch (e) {
       return dob;
     }
