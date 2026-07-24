@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name">
 
-        <!-- Verified App Links for www.redmed.com (and legacy GitHub Pages path while tags migrate) -->
+        <!-- App Links for the live GitHub Pages host (custom domain later — see docs/DOMAIN.md) -->
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
@@ -55,15 +55,6 @@
                     android:scheme="https"
                     android:host="maxroot1122.github.io"
                     android:pathPrefix="/RedMed" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="www.redmed.com"
-                    android:pathPrefix="/" />
             </intent-filter>
         </activity>
     </application>

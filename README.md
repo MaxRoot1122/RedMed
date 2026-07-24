@@ -16,7 +16,7 @@ Fill in allergies, meds, contacts, and notes once. Save. Write the link to a **p
 
 The standard RedMed bracelet is a **passive NFC tag** with no battery. It does not need charging; the reader phone powers it briefly during a tap.
 
-**Out of the box:** print a QR code to `https://maxroot1122.github.io/RedMed/get.html` — it detects iPhone vs Android and opens the right app store. Only the **purchaser** needs RedMed to fill the form and write the bracelet (My ID → **Bracelet**, top right). (`www.redmed.com` is not live yet — see [`docs/DOMAIN.md`](docs/DOMAIN.md).)
+**Out of the box:** print a QR code to `https://maxroot1122.github.io/RedMed/get.html` — it detects iPhone vs Android and opens the right app store. Only the **purchaser** needs RedMed to fill the form and write the bracelet (My ID → **Bracelet**, top right).
 
 Your data lives in:
 

@@ -18,11 +18,11 @@ This product lives in **one** GitHub repo only:
 Do not create, recommend, or depend on a second repo (including a
 `MaxRoot1122.github.io` user-site, a fork used as the "real" source, or
 a multi-repo Cursor environment). Hosting, Android TWA, iOS, docs, and
-agent work all stay inside this repo. Canonical public host (live) is
+agent work all stay inside this repo. Canonical public host is
 `https://maxroot1122.github.io/RedMed/` (NFC card = `/index.html`).
-`www.redmed.com` is **not** live yet (parking lander) — keep it in
-`config/CNAME.future` / `legacy:` until DNS → Pages is verified
-(see `docs/DOMAIN.md`). Do not write new tags to www until then.
+No separate marketing website; support is email only
+(`help.RedMed@gmail.com`). Optional custom domain later — see
+`docs/DOMAIN.md`.
 
 ## Where things live
 

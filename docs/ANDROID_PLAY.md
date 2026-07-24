@@ -42,7 +42,7 @@ Bump `versionCode` / `versionName` in [`android/app/build.gradle`](../android/ap
 |---------|-------|
 | Category | Medical |
 | Data Safety | Precise location (Find 911, on-device, not sent to developer); on-device medical profile fields per privacy policy |
-| Privacy policy | `https://maxroot1122.github.io/RedMed/privacy-policy.html` (switch to `www.redmed.com` when that host serves this app) |
+| Privacy policy | `https://maxroot1122.github.io/RedMed/privacy-policy.html` |
 | Store listing | Copy in [`play/listing/`](../play/listing/); screenshots per [`docs/STORE_ASSETS.md`](STORE_ASSETS.md) |
 | Feature graphic | `play/listing/feature-graphic.svg` → export 1024×500 PNG |
 

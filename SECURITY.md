@@ -36,7 +36,7 @@ Before enabling the secret:
 |-------------|--------|
 | APIs | Geocoding + Places only |
 | Web referrer (live Pages host) | `https://maxroot1122.github.io/RedMed/*` |
-| Web referrer (when custom domain is live) | `https://www.redmed.com/*` |
+| Web referrer (custom domain, later) | `https://YOUR.DOMAIN/*` when that host serves this app |
 | Local dev (optional) | `http://127.0.0.1:*/*` |
 | iOS | Bundle ID `local.redmed.app` (**separate key** preferred) |
 | Quotas | Hard daily caps + billing alerts |
@@ -58,17 +58,16 @@ GitHub **project** Pages (`username.github.io/RedMed/`) cannot publish
 need a custom domain (or equivalent) serving this file at the domain root — see
 [`docs/DOMAIN.md`](docs/DOMAIN.md).
 
-## Known gap: Universal Links need a live custom domain
+## Known gap: Universal Links need a custom domain you control
 
 **Active NFC card host today:** `https://maxroot1122.github.io/RedMed/index.html`
-(see [`config/canonical-url`](config/canonical-url)). `www.redmed.com` remains a
-future target until DNS → Pages is verified (not a parking lander).
+(see [`config/canonical-url`](config/canonical-url)). No marketing website / custom
+domain in production yet. Support contact is email only.
 
-`apple-app-site-association` + `applinks:` entitlement are wired in-repo, but Apple
-requires AASA at the **domain apex**. A project Pages path alone cannot satisfy that.
-When `www.redmed.com` points at this deploy and AASA returns JSON:
+Apple requires AASA at the **domain apex**. A project Pages path alone cannot satisfy
+that. When you add a domain (see [`docs/DOMAIN.md`](docs/DOMAIN.md)):
 
-1. Passive taps without the app still open Safari (correct).
+1. Browser taps without the app still open Safari (correct).
 2. Installed iPhone users can get the native emergency card via Universal Links.
 3. In-app **Scan emergency bracelet** always shows native `ScannedCardView`.
 
