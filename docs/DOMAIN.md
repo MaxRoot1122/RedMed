@@ -52,7 +52,7 @@ Bracelet taps stay **HTTPS** so any phone without the app still gets the emergen
 4. Uncomment/add your domain intent-filter in [`android/app/src/main/AndroidManifest.xml`](../android/app/src/main/AndroidManifest.xml)
 5. Update `asset_statements` site in [`android/app/src/main/res/values/strings.xml`](../android/app/src/main/res/values/strings.xml) via sync script
 
-### 5. Verify
+### 6. Verify
 
 - `https://your-domain/index.html` loads the app
 - `https://your-domain/.well-known/assetlinks.json` returns JSON
