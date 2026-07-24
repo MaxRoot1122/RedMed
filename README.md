@@ -31,7 +31,7 @@ Your data lives in:
 | [`index.html`](index.html) | NFC emergency card (any phone that taps the band) + Android/web owner fallback |
 | [`android/`](android/) | Trusted Web Activity wrapper around the hosted page |
 | [`RedMed.app/`](RedMed.app/) | macOS launcher — builds/runs native iOS in Simulator (`scripts/run-ios-simulator.sh`) |
-| [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); **in-app wordmark** `wordmark.svg`; symbol `mark.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
+| [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); web `wordmark.svg`; iOS `wordmark-ios.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
 | [`docs/`](docs/) | Commercial launch, brand, trauma finder, stores, fulfillment |
 
 ## Quick start
@@ -57,7 +57,6 @@ iOS: [`ios/SETUP.md`](ios/SETUP.md) · Android: [`android/SETUP.md`](android/SET
 | [`docs/STORE_ASSETS.md`](docs/STORE_ASSETS.md) | Screenshots & listing copy |
 | [`docs/PACKAGING.md`](docs/PACKAGING.md) | Box insert & checkout disclaimers |
 | [`docs/FULFILLMENT.md`](docs/FULFILLMENT.md) | E-commerce & support workflow |
-| [`docs/WIRELESS_CHARGING.md`](docs/WIRELESS_CHARGING.md) | Passive vs powered bracelet charging paths |
 | [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers — agent handoff (state/county UX, bundled data) |
 | [`SECURITY.md`](SECURITY.md) | Secrets, Pages trust root, Maps key locks, reporting |
 | [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) | What we protect / deliberately do not |

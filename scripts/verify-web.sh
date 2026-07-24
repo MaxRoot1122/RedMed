@@ -55,7 +55,7 @@ import os
 REQUIRED_ASSETS = (
     "assets/icon.svg", "assets/icon-512.png", "assets/cpr-trainer-icon.png",
     "assets/favicon-32.png", "assets/apple-touch-icon.png",
-    "assets/logo-512.png", "assets/heading.svg", "assets/fonts/dm-sans-latin.woff2",
+    "assets/icon-512.png", "assets/wordmark.svg", "assets/fonts/dm-sans-latin.woff2",
 )
 missing_assets = [p for p in REQUIRED_ASSETS if not os.path.isfile(p)]
 if missing_assets:
