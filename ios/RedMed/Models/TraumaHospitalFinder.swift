@@ -33,19 +33,25 @@ struct TraumaHospital: Identifiable, Codable, Equatable {
 }
 
 /// Offline trauma lookup by state, with county only when the state list is long.
+/// JSON + index load on first use (911 / scanned card), not at app launch.
 enum TraumaHospitalFinder {
     static let countyThreshold = 30
 
-    private static let catalog: [TraumaHospital] = {
+    private static var cachedIndex: [String: [String: [TraumaHospital]]]?
+
+    private static var regionIndex: [String: [String: [TraumaHospital]]] {
+        if let cachedIndex { return cachedIndex }
+        let loaded = Self.loadRegionIndex()
+        cachedIndex = loaded
+        return loaded
+    }
+
+    private static func loadRegionIndex() -> [String: [String: [TraumaHospital]]] {
         guard let url = Bundle.main.url(forResource: "trauma-hospitals", withExtension: "json"),
               let data = try? Data(contentsOf: url),
-              let decoded = try? JSONDecoder().decode([TraumaHospital].self, from: data) else {
-            return []
+              let catalog = try? JSONDecoder().decode([TraumaHospital].self, from: data) else {
+            return [:]
         }
-        return decoded
-    }()
-
-    private static let regionIndex: [String: [String: [TraumaHospital]]] = {
         var index: [String: [String: [TraumaHospital]]] = [:]
         for hospital in catalog {
             index[hospital.state, default: [:]][hospital.county, default: []].append(hospital)
@@ -56,7 +62,7 @@ enum TraumaHospitalFinder {
             }
         }
         return index
-    }()
+    }
 
     static var states: [String] {
         regionIndex.keys.sorted()
