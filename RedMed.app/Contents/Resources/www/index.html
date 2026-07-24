@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-e1ix66q0I0BWxpTbonohg+5PNUKz8qYtfTDVlcLGNhs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BgnuvghHQCea47ZzLmuzkzY+lx9eizNKrJImBgObgfU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -5347,10 +5347,16 @@
   function filterCatalog(catalog, query, limit) {
     var q = String(query || "").trim().toLowerCase();
     if (q.length < SEARCH_MIN_CHARS) return [];
-    var hits = catalog.filter(function (item) {
-      return item.toLowerCase().indexOf(q) !== -1;
-    });
-    return hits.slice(0, limit == null ? SEARCH_RESULT_MAX : limit);
+    var max = limit == null ? SEARCH_RESULT_MAX : limit;
+    var hits = [];
+    for (var i = 0; i < catalog.length; i++) {
+      var item = catalog[i];
+      if (item.toLowerCase().indexOf(q) !== -1) {
+        hits.push(item);
+        if (hits.length >= max) break;
+      }
+    }
+    return hits;
   }
 
   var COMMON_ALLERGENS_RAW = [
