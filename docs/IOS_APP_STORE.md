@@ -7,7 +7,7 @@ Operational steps — requires your Apple Developer account and a Mac with Xcode
 - [ ] [Apple Developer Program](https://developer.apple.com/programs) enrolled ($99/yr)
 - [ ] Physical iPhone (NFC does not work in Simulator)
 - [ ] NTAG215/216 test tags
-- [ ] Privacy policy live: `https://www.redmed.com/privacy-policy.html`
+- [ ] Privacy policy live: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
 
 ## Build on device
 

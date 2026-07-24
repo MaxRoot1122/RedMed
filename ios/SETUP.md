@@ -7,7 +7,7 @@ Local-first medical ID for your iPhone: edit your profile, write it to an NFC ta
 | Setting | Value |
 |--------|--------|
 | Bundle ID | `local.redmed.app` |
-| URL scheme | Legacy `redmed://` + **Universal Links** on `www.redmed.com` (HTTPS tags). Installed app → native card; no app → Safari HTML card. |
+| URL scheme | Legacy `redmed://` + HTTPS NFC tags (`github.io/RedMed` today). **Universal Links** need live `www.redmed.com` + AASA (not ready yet). No app → Safari HTML card. |
 | Deployment | iOS 16+ · iPhone only |
 | Layout | **393×852 pt** baseline via `LayoutMetrics` (`AppTheme.swift`); mockups also check **440×956**; safe areas ≈59 pt top / 34 pt bottom on Dynamic Island |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |

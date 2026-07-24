@@ -2,7 +2,7 @@
 
 **Active canonical host (live):** `https://maxroot1122.github.io/RedMed/` — see [`config/canonical-url`](../config/canonical-url).
 
-**`www.redmed.com` is NOT live yet.** As of 2026-07-24 it returns a registrar parking `/lander` page, not this app. Do not write NFC tags to that host until DNS points at GitHub Pages and `index.html` / AASA serve correctly. Repo [`CNAME`](../CNAME) is the intended future target only.
+**`www.redmed.com` is NOT live yet.** As of 2026-07-24 it returns a registrar parking `/lander` page, not this app. Do not write NFC tags to that host until DNS points at GitHub Pages and `index.html` / AASA serve correctly. Intended hostname is stored in [`config/CNAME.future`](../config/CNAME.future) — **not** deployed as root `CNAME` until DNS is ready (shipping a CNAME while the domain parks confuses Pages).
 
 **Do not use `redmed.app`** — unrelated third-party storefront (see [`SECURITY.md`](../SECURITY.md)).
 
@@ -21,9 +21,9 @@ Register your apex (e.g. `yourbrand.com`) at any registrar (~$12–30/yr). **Do 
 
 ### 2. GitHub Pages custom domain
 
-1. Repo **Settings → Pages → Custom domain** → enter `www.redmed.com` (matches [`CNAME`](../CNAME))
-2. At registrar, add DNS records GitHub shows (typically `CNAME` `www` → `maxroot1122.github.io`, plus apex redirect if desired)
-3. Enable **Enforce HTTPS** in Pages settings after DNS propagates
+1. At registrar, point `www` at GitHub Pages (`CNAME` → `maxroot1122.github.io`) and confirm `curl -sI https://www.redmed.com/index.html` is **not** a `/lander` redirect
+2. `cp config/CNAME.future CNAME` at repo root and push — Pages workflow publishes root `CNAME`
+3. Repo **Settings → Pages → Custom domain** → `www.redmed.com` → enable **Enforce HTTPS** after DNS propagates
 
 ### 3. Update canonical URL in code
 

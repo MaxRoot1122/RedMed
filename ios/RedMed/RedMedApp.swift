@@ -45,7 +45,7 @@ struct RedMedApp: App {
             return
         }
 
-        // Owner deep links: https://www.redmed.com/index.html#911 etc.
+        // Owner deep links: …/index.html#911 etc. (canonical host from AppConfig).
         let tab = ownerTab(from: url)
         NotificationCenter.default.post(name: .redMedOpenOwnerTab, object: tab)
     }

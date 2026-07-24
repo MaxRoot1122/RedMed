@@ -19,4 +19,4 @@ RedMed is not a medical device and does not provide medical advice. Always call 
 
 Works with NTAG215/216 NFC wristbands, wallet cards, and keychain tags.
 
-Privacy policy: https://www.redmed.com/privacy-policy.html
+Privacy policy: https://maxroot1122.github.io/RedMed/privacy-policy.html
