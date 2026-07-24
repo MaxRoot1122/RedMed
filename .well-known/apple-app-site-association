@@ -1,0 +1,28 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "33F9FQ4VBU.local.redmed.app",
+        "paths": [
+          "/",
+          "/index.html",
+          "/index.html*"
+        ]
+      },
+      {
+        "appIDs": ["33F9FQ4VBU.local.redmed.app"],
+        "components": [
+          {
+            "/": "/index.html",
+            "comment": "NFC emergency card — opens native ScannedCardView when RedMed is installed"
+          },
+          {
+            "/": "/",
+            "comment": "Canonical card root"
+          }
+        ]
+      }
+    ]
+  }
+}

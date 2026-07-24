@@ -5,6 +5,11 @@ struct ContentView: View {
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
     @AppStorage("redMedUseConsent") private var useConsentAccepted = false
+    @State private var selectedTab: AppTab = .myID
+
+    private enum AppTab: Hashable {
+        case myID, find911, aid, nfc
+    }
 
     init() {
         let appearance = UITabBarAppearance()
@@ -33,23 +38,36 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             MyIDView()
                 .tabItem { Label("RedMed", systemImage: "person.crop.circle.fill") }
+                .tag(AppTab.myID)
 
             LocationView()
                 .tabItem { Label("911", systemImage: "phone.fill") }
+                .tag(AppTab.find911)
 
             BasicAidView()
                 .tabItem { Label("Aid", systemImage: "cross.case.fill") }
+                .tag(AppTab.aid)
 
             WriteTagView()
                 .tabItem { Label("NFC", systemImage: "wave.3.right.circle.fill") }
+                .tag(AppTab.nfc)
         }
         .environmentObject(store)
         .environmentObject(braceletLink)
         .tint(AppTheme.accent)
         .preferredColorScheme(.light)
+        .onReceive(NotificationCenter.default.publisher(for: .redMedOpenOwnerTab)) { note in
+            guard let raw = note.object as? String else { return }
+            switch raw {
+            case "911": selectedTab = .find911
+            case "aid": selectedTab = .aid
+            case "nfc": selectedTab = .nfc
+            default: selectedTab = .myID
+            }
+        }
         .fullScreenCover(isPresented: Binding(
             get: { !useConsentAccepted },
             set: { _ in }
