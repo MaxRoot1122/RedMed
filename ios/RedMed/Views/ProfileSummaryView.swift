@@ -152,6 +152,7 @@ struct ProfileSummaryView: View {
             }
         }
         .scrollContentBackground(.hidden)
+        .reactiveScrollChrome()
         .screenAtmosphere()
     }
 
