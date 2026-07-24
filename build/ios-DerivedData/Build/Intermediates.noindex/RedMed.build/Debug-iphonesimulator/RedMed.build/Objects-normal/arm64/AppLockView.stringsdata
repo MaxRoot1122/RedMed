@@ -1,0 +1,40 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/AppLockView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Couldn't verify it's you. Try again.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your medical profile stays on this device only. Anyone scanning your NFC card or emergency link still sees it — locking the app does not affect that.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Double tap if RedMed didn't prompt automatically.",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "RedMed is locked",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 31
+        }
+      }
+    ]
+  },
+  "version": 1
+}

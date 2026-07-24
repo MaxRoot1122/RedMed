@@ -1,0 +1,104 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/ProfileSummaryView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "You",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 90
+        }
+      },
+      {
+        "comment": "",
+        "key": "Allergies",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "Medications",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 104
+        }
+      },
+      {
+        "comment": "",
+        "key": "Conditions",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contacts",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap Edit to add your name and set up your bracelet.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "None",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turn this off if Face ID, Touch ID, or your passcode aren't reliable for you. Your profile is still stored only on this device.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "App lock",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 150
+        }
+      }
+    ]
+  },
+  "version": 1
+}

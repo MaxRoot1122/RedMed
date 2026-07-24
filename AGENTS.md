@@ -20,6 +20,17 @@ Only the **web app** (`index.html`) is runnable in this Linux environment. It is
 ### Dependencies / update script
 There are **no installable dependencies**. The Cloud Agent update script is a no-op (`true`). Do not add `npm install`, package managers, or service startup to it.
 
+### Run the native iOS app (Cursor on Mac — preferred)
+Double-clicking `RedMed.app` in the file tree does nothing useful — it is an app bundle (folder). Use one of:
+
+1. **Cmd+Shift+P** → **Tasks: Run Task** → **RedMed: Launch iOS Simulator**
+2. Terminal: `./scripts/run-ios-simulator.sh`
+3. Ask the agent: "launch RedMed"
+
+Edits to the product UI live in `ios/RedMed/` (SwiftUI), not `index.html`. Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
+
+Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`.
+
 ### Run the web app (dev)
 Serve over localhost (not `file://` — geolocation on Find 911 requires a secure context, which localhost provides):
 

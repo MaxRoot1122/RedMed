@@ -1,0 +1,30 @@
+{
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/ScannedCardView.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/ScannedCardView.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/ScannedCardView.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/ScannedCardView.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/ScannedCardView.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/ScannedCardView.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/UseConsentView.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/UseConsentView.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/UseConsentView.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/UseConsentView.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/UseConsentView.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/UseConsentView.swiftdeps"
+  },
+  "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/WriteTagView.swift" : {
+    "const-values" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/WriteTagView.swiftconstvalues",
+    "dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/WriteTagView.d",
+    "diagnostics" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/WriteTagView.dia",
+    "object" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/WriteTagView.o",
+    "swift-dependencies" : "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/build/ios-DerivedData/Build/Intermediates.noindex/RedMed.build/Debug-iphonesimulator/RedMed.build/Objects-normal/arm64/WriteTagView.swiftdeps"
+  }
+}

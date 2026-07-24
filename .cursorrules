@@ -34,9 +34,7 @@ agent work all stay inside this repo. GitHub Pages path is
   copy of `index.html`. Zero native UI code exists — see `android/SETUP.md`
   for NFC write gap (iOS native; Android Chrome Web NFC on hosted page).
 - `get.html` — store-routing QR landing (iOS / Samsung / Huawei / Play).
-- `RedMed.app/` — macOS wrapper: bash launcher serves `Contents/Resources/www/`
-  (a mirror of root `index.html`) over `localhost` (required for GPS —
-  `file://` blocks geolocation) and opens it in Chrome/Edge/Safari app mode.
+- `RedMed.app/` — macOS launcher: runs **`scripts/run-ios-simulator.sh`** (native iOS in Simulator). Not a web browser. Web mirror at `Contents/Resources/www/` is for hosted/NFC card only — sync with `./scripts/sync-www-mirror.sh` after `index.html` edits.
 - `assets/icon.svg` — source of truth for the **app cover / home-screen icon**
   (bronze cross + red serpent on the rose plate). All PNG/ICNS variants are
   generated from this — regenerate after editing, don't hand-edit the rasters.

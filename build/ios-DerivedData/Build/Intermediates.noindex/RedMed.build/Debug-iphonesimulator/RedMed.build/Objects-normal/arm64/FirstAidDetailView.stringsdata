@@ -1,0 +1,32 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/FirstAidDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Until EMS arrives",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 44
+        }
+      }
+    ]
+  },
+  "version": 1
+}

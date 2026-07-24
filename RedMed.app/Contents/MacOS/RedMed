@@ -1,24 +1,36 @@
 #!/bin/bash
 # macOS double-click launcher — runs the native iOS app in Simulator (SwiftUI).
-# Web index.html is for browsers / GitHub Pages / NFC cards only.
 CONTENTS="$(cd "$(dirname "$0")/.." && pwd)"
 APP_BUNDLE="$(cd "${CONTENTS}/.." && pwd -P)"
 REPO_ROOT="$(dirname "$APP_BUNDLE")"
 LAUNCH_IOS="$REPO_ROOT/scripts/run-ios-simulator.sh"
+LOG_DIR="${HOME}/Library/Logs/RedMed"
+LOG_FILE="${LOG_DIR}/launch.log"
 
-INSTALL_SH="$REPO_ROOT/scripts/install-desktop-shortcut.sh"
-if [ ! -e "${HOME}/Desktop/RedMed.app" ] && [ -f "$INSTALL_SH" ]; then
-  bash "$INSTALL_SH" --quiet >/dev/null 2>&1 || true
-fi
+mkdir -p "$LOG_DIR"
+{
+  echo "=== $(date '+%Y-%m-%d %H:%M:%S') RedMed.app ==="
+  echo "REPO_ROOT=$REPO_ROOT"
+} >> "$LOG_FILE"
+
+fail() {
+  local msg="$1"
+  echo "ERROR: $msg" >> "$LOG_FILE"
+  osascript -e "display alert \"RedMed\" message \"${msg}\n\nDetails: ${LOG_FILE}\" as critical"
+  exit 1
+}
+
+# Do not open RedMed.app inside Cursor/VS Code — it is an app bundle (folder), not a text file.
+# Double-click this app in Finder, or use RedMed.command on the Desktop.
 
 if [ ! -f "$LAUNCH_IOS" ]; then
-  osascript -e 'display alert "RedMed" message "Native launcher script missing. Re-download RedMed from GitHub." as critical'
-  exit 1
+  fail "Launcher script missing at scripts/run-ios-simulator.sh"
 fi
 
 if ! command -v xcodebuild >/dev/null 2>&1; then
-  osascript -e 'display alert "RedMed" message "Install Xcode from the Mac App Store, then open ios/RedMed.xcodeproj and run on your iPhone or Simulator." as critical'
-  exit 1
+  fail "Xcode not found. Install Xcode, then open ios/RedMed.xcodeproj and press Run."
 fi
 
-exec bash "$LAUNCH_IOS"
+if ! bash "$LAUNCH_IOS" >> "$LOG_FILE" 2>&1; then
+  fail "Simulator launch failed. Open the log file for the build error."
+fi

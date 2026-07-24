@@ -1,0 +1,56 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/ScannedCardView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Call 911",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "EMERGENCY CARD",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "REDMED",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "Organ donor",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "Call",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 189
+        }
+      }
+    ]
+  },
+  "version": 1
+}

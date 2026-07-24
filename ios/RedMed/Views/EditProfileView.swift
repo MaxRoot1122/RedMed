@@ -22,6 +22,8 @@ struct EditProfileView: View {
     @State private var openContactIndex: Int?
     @State private var savedFlash = false
     @State private var showingBraceletSetup = false
+    @State private var firstName = ""
+    @State private var lastName = ""
 
     private let bloodTypes = ["", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
 
@@ -136,7 +138,7 @@ struct EditProfileView: View {
                                 BrandMark(size: .hero, titleOverride: link.deviceName)
                             } else {
                                 BrandMark(size: .hero, showTagline: true)
-                                if draft.name.trimmingCharacters(in: .whitespaces).isEmpty {
+                                if Self.joinProfileName(first: firstName, last: lastName).isEmpty {
                                     Text("Add your name to unlock NFC write.")
                                         .font(.subheadline.weight(.medium))
                                         .foregroundStyle(AppTheme.muted)
@@ -146,12 +148,25 @@ struct EditProfileView: View {
                         .padding(.vertical, layout.spaceSM)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
+                        .listRowInsets(EdgeInsets(
+                            top: layout.spaceXS,
+                            leading: layout.spaceXS,
+                            bottom: layout.spaceSM,
+                            trailing: layout.spaceXS
+                        ))
                     }
                 }
 
                 Section {
-                    TextField("Name", text: $draft.name)
+                    HStack(spacing: layout.spaceSM) {
+                        TextField("First", text: $firstName)
+                            .textContentType(.givenName)
+                            .autocorrectionDisabled()
+                        TextField("Last", text: $lastName)
+                            .textContentType(.familyName)
+                            .autocorrectionDisabled()
+                    }
+                    .padding(.top, layout.spaceMD)
                     DatePicker("Birth date", selection: dobBinding, displayedComponents: .date)
                     Picker("Blood type", selection: $draft.blood) {
                         ForEach(bloodTypes, id: \.self) { bt in
@@ -297,6 +312,7 @@ struct EditProfileView: View {
     }
 
     private func save() {
+        draft.name = Self.joinProfileName(first: firstName, last: lastName)
         draft.meds = medRows.compactMap(Self.formatMed)
         draft.allergies = draft.allergies.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
         draft.conditions = draft.conditions.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
@@ -322,6 +338,9 @@ struct EditProfileView: View {
 
     private func loadDraft() {
         draft = store.profile
+        let nameParts = Self.splitProfileName(draft.name)
+        firstName = nameParts.first
+        lastName = nameParts.last
         if draft.contacts.count < 3 {
             while draft.contacts.count < 3 { draft.contacts.append(EmergencyContact()) }
         }
@@ -387,6 +406,24 @@ struct EditProfileView: View {
             set: {
                 draft.dob = Self.dobFormatter.string(from: $0)
             }
+        )
+    }
+
+    /// Matches web `joinProfileName` / `splitProfileName` in index.html for NFC `#d=` parity.
+    private static func joinProfileName(first: String, last: String) -> String {
+        [first, last]
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    private static func splitProfileName(_ full: String) -> (first: String, last: String) {
+        let trimmed = full.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return ("", "") }
+        guard let space = trimmed.firstIndex(of: " ") else { return (trimmed, "") }
+        return (
+            String(trimmed[..<space]).trimmingCharacters(in: .whitespaces),
+            String(trimmed[trimmed.index(after: space)...]).trimmingCharacters(in: .whitespaces)
         )
     }
 

@@ -1,0 +1,120 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/WriteTagView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "NFC",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Replace this device's RedMed with the tag's data?",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add your name on My ID before writing a tag.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hold near tag…",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Write to NFC tag",
+        "location": {
+          "startingColumn": 69,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Replace",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "This overwrites what's currently saved on My ID with what was read from the tag.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Write Tag",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hold your iPhone to the bracelet once to program the passive chip. The band stores your card (no battery) until a smartphone taps to read it in a browser.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 129
+        }
+      },
+      {
+        "comment": "",
+        "key": "Already have a written tag? Pull it onto this phone.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "OR READ",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hold near tag…",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 169
+        }
+      },
+      {
+        "comment": "",
+        "key": "Read tag onto this phone",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 169
+        }
+      }
+    ]
+  },
+  "version": 1
+}
