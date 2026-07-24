@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Mpp7DTYQcVFBAqUJ6Uq2CKfDR3NaF2ZTbUXvXjnaNm4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4VvBBXNjmIzwur93HqzDyHqkHDr+400Vznrr7qpowkE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -2117,6 +2117,16 @@
   .page-header.loc .lead { color: var(--muted); margin: 0; }
   .page-header.aid .lead { text-align: center; max-width: 36em; margin-left: auto; margin-right: auto; }
   .page-header.aid h1 { width: 100%; text-align: center; margin: 0; }
+  .page-header.aid .btn-call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 22em;
+    margin: 4px auto 0;
+    box-sizing: border-box;
+    text-decoration: none;
+  }
 
   /* Swift MyID: toolbar + summary home + edit sheet */
   .myid-toolbar {
@@ -4270,6 +4280,7 @@
     <img class="brand-wordmark brand-wordmark-hero" src="assets/wordmark.svg" width="300" height="78" alt="RedMed">
     <h1 data-i18n="aidTitle">Roadside Aid</h1>
     <p class="lead" data-i18n="aidLead" data-highlight>Call 911 first. Tap a pane — expand only what you need.</p>
+    <a href="tel:911" class="btn-call" data-i18n="btnCall911">Call 911</a>
   </div>
   <div id="aidCards"></div>
   <div class="aid-prayer-box">
@@ -4298,7 +4309,7 @@
     </div>
 
     <div class="loc-action-block">
-      <a href="tel:911" class="btn-call" data-i18n="btnCall911">Call 911</a>
+      <a href="tel:911" class="btn-call" id="locCall911Btn" data-i18n="btnCall911">Call 911</a>
       <button type="button" class="btn-secondary btn-call-contacts" id="locAlertContactsBtn" data-i18n="locCallContacts">Call Emergency Contacts</button>
     </div>
     <dialog class="loc-contact-picker" id="locContactPicker" aria-labelledby="locContactPickerTitle">
@@ -7540,6 +7551,24 @@
     if (normalized) window.location.href = "tel:" + normalized;
   }
 
+  /** Open the phone dialer for emergency services (native confirm on iOS/Android). */
+  function dial911() {
+    window.location.href = "tel:911";
+  }
+
+  function wireCall911Buttons() {
+    document.querySelectorAll("a.btn-call").forEach(function (el) {
+      if (el.getAttribute("data-dial911-wired") === "1") return;
+      el.setAttribute("data-dial911-wired", "1");
+      el.setAttribute("href", "tel:911");
+      el.addEventListener("click", function (e) {
+        /* Keep href for accessibility / long-press; assign for embedded webviews. */
+        e.preventDefault();
+        dial911();
+      });
+    });
+  }
+
   function initLoc() {
     updateLocUI();
     loadGoogleApiKey().then(function (key) {
@@ -7553,6 +7582,8 @@
     window.addEventListener("offline", function () {
       updateLocUI();
     });
+
+    wireCall911Buttons();
 
     var alertBtn = document.getElementById("locAlertContactsBtn");
     if (alertBtn) {
@@ -9214,6 +9245,7 @@
   wireBracelet();
   wireNewControls();
   wireAidDismiss();
+  wireCall911Buttons();
   boot();
   requestAnimationFrame(function () {
     syncBottomBar();

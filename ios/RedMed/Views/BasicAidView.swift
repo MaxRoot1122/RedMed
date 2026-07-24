@@ -32,6 +32,11 @@ struct BasicAidView: View {
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
 
+                        Link(destination: URL(string: "tel:911")!) {
+                            Text("Call 911")
+                        }
+                        .buttonStyle(PrimaryButtonStyle(prominent: true))
+
                         HStack(spacing: layout.spaceSM) {
                             Text("tap to expand")
                                 .font(.caption2.weight(.bold))
