@@ -34,7 +34,17 @@ Edit [`config/canonical-url`](../config/canonical-url) to the new HTTPS card URL
 ./scripts/sync-www-mirror.sh
 ```
 
-### 4. Android TWA
+### 4. iOS Universal Links (open RedMed app on tap)
+
+Bracelet taps stay **HTTPS** so any phone without the app still gets the emergency card in Safari. When RedMed is installed, iOS should open the native `ScannedCardView` instead.
+
+1. Confirm `https://www.redmed.com/.well-known/apple-app-site-association` returns JSON (deployed from this repo via Pages)
+2. Xcode signing team must match AASA `appID` prefix (`33F9FQ4VBU` in [`.well-known/apple-app-site-association`](../.well-known/apple-app-site-association) — update if your Team ID changes)
+3. Entitlement `applinks:www.redmed.com` is in [`ios/RedMed/RedMed.entitlements`](../ios/RedMed/RedMed.entitlements)
+4. On a physical iPhone: delete/reinstall RedMed after AASA is live, then tap a written bracelet — should open the app, not Safari
+5. Validate with Apple’s [CDN checker](https://search.developer.apple.com/cdn/services/v1/app-site-association/?path=www.redmed.com) once DNS/HTTPS are solid
+
+### 5. Android TWA
 
 1. Build signed `.aab` and get **Play App Signing** SHA-256 (Play Console → App integrity) plus upload-keystore SHA-256 (`keytool -list -v`)
 2. Replace `REPLACE_WITH_PLAY_APP_SIGNING_SHA256` and `REPLACE_WITH_UPLOAD_KEYSTORE_SHA256` in [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) — do not invent fingerprints

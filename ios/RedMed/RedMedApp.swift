@@ -1,9 +1,13 @@
 import SwiftUI
 
+extension Notification.Name {
+    /// Posted when a Universal Link / deep link asks for an owner tab (`aid`, `911`, or empty → My ID).
+    static let redMedOpenOwnerTab = Notification.Name("redMedOpenOwnerTab")
+}
+
 @main
 struct RedMedApp: App {
-    /// Set when the app opens a bracelet URL (`redmed://` legacy or HTTPS `#d=`)
-    /// — holds THAT tag's decoded profile, separate from the owner's ProfileStore.
+    /// Bracelet tap / Universal Link `#d=` — THAT tag's profile, not the owner's.
     @State private var scannedProfile: MedicalProfile?
     @State private var showingScanned = false
 
@@ -11,12 +15,11 @@ struct RedMedApp: App {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
-                    presentScannedCard(from: url.absoluteString)
+                    handleIncomingURL(url)
                 }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
-                    // Universal Links path (when associated domains are live).
                     guard let url = activity.webpageURL else { return }
-                    presentScannedCard(from: url.absoluteString)
+                    handleIncomingURL(url)
                 }
                 .fullScreenCover(isPresented: $showingScanned) {
                     ScannedCardView(profile: scannedProfile ?? MedicalProfile())
@@ -25,19 +28,35 @@ struct RedMedApp: App {
         }
     }
 
-    /// Decode `#d=` from any scheme and show the first-responder card.
-    /// Own paired band is skipped so the owner's phone stays on My ID.
-    private func presentScannedCard(from urlString: String) {
-        let linked = BraceletLinkStore.loadURL()
-        if isOwnPairedBand(opened: urlString, linked: linked) {
+    /// HTTPS card URLs (Universal Links) and legacy `redmed://` both land here.
+    private func handleIncomingURL(_ url: URL) {
+        let urlString = url.absoluteString
+
+        // Emergency card payload on the chip / shared link.
+        if urlString.contains("#d=") || urlString.contains("d=") {
+            let linked = BraceletLinkStore.loadURL()
+            if isOwnPairedBand(opened: urlString, linked: linked) {
+                NotificationCenter.default.post(name: .redMedOpenOwnerTab, object: "myid")
+                return
+            }
+            guard let profile = ProfileLinkBuilder.decodeProfile(fromURLString: urlString) else { return }
+            scannedProfile = profile
+            showingScanned = true
             return
         }
-        guard let profile = ProfileLinkBuilder.decodeProfile(fromURLString: urlString) else { return }
-        scannedProfile = profile
-        showingScanned = true
+
+        // Owner deep links: https://www.redmed.com/index.html#911 etc.
+        let tab = ownerTab(from: url)
+        NotificationCenter.default.post(name: .redMedOpenOwnerTab, object: tab)
     }
 
-    /// Match full URL or shared `#d=` payload so scheme differences still count as own band.
+    private func ownerTab(from url: URL) -> String {
+        let fragment = (url.fragment ?? "").lowercased()
+        if fragment == "911" || fragment.hasPrefix("911") { return "911" }
+        if fragment == "aid" || fragment.hasPrefix("aid") { return "aid" }
+        return "myid"
+    }
+
     private func isOwnPairedBand(opened: String, linked: String) -> Bool {
         guard !linked.isEmpty else { return false }
         if opened == linked { return true }

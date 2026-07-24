@@ -28,6 +28,9 @@ jobs:
           cp index.html privacy-policy.html terms-of-service.html manifest.json get.html _site/
           cp -R assets _site/assets
           cp .well-known/assetlinks.json _site/.well-known/assetlinks.json
+          # Universal Links — must be at domain root with no file extension
+          cp .well-known/apple-app-site-association _site/.well-known/apple-app-site-association
+          cp .well-known/apple-app-site-association _site/apple-app-site-association
           if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
           if [ -n "${{ secrets.GOOGLE_MAPS_API_KEY }}" ]; then
             printf '%s' "${{ secrets.GOOGLE_MAPS_API_KEY }}" > _site/config/google-api-key

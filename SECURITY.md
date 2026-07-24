@@ -49,37 +49,21 @@ locally (gitignored path `config/google-api-key`).
 those fingerprints are pasted, App Links verification is incomplete — see
 [`docs/ANDROID_PLAY.md`](docs/ANDROID_PLAY.md). Do not invent fingerprints.
 
-## Known gap: owner's own tap is not suppressed for native-app users
+## Known gap: Universal Links need a live custom domain
 
-`RedMedApp.swift` has an `isOwnPairedBand` check intended to skip the
-emergency-card screen when the owner taps their own bracelet. It does not
-currently fire for tags written by the current app, for two independent
-reasons:
+New tags write HTTPS (`www.redmed.com`) so any phone can open the card. With
+`apple-app-site-association` + `applinks:` entitlement wired in-repo, **installed**
+iPhone users should get the native emergency card when the domain is live and
+AASA is reachable at `/.well-known/apple-app-site-association`.
 
-1. **No Universal Links.** New tags use a plain HTTPS URL (required so any
-   phone can read the card without the app). Without an `apple-app-site-association`
-   file + `com.apple.developer.associated-domains` entitlement on a domain we
-   actually control, iOS has no way to route that tap to the installed app —
-   it always opens Safari, so the native dedupe logic never runs.
-2. **`redmed.app` is not ours.** It's a live, unrelated third-party storefront
-   (confirmed 2026-07-23). `CNAME` and `docs/DOMAIN.md` assumed it was
-   reserved for this project — it isn't, and a Universal Links setup can't be
-   built on it. The current GitHub Pages project-page path
-   (`maxroot1122.github.io/RedMed/`) also can't host Universal Links per
-   `docs/DOMAIN.md`'s own reasoning (`.well-known/` would need to live at the
-   *root* of `maxroot1122.github.io`, a different repo we don't control).
-3. Even with Universal Links, the **web fallback's** "is this my own band"
-   check (`isOwnPairedBraceletHash()` in `index.html`) reads `localStorage`,
-   which is isolated from the native app's Keychain — a native-app owner's
-   Safari has never seen that bracelet's fingerprint, so the web check won't
-   recognize it either.
+Until HTTPS + AASA are verified on device:
 
-Net effect: today, an owner using the native app who taps their own bracelet
-sees the same emergency-card view a stranger would. Not a data-exposure risk
-(it's the owner's own data), but it defeats the intended UX. Fixing it for
-real requires: (a) registering a domain we actually own, (b) wiring Universal
-Links to it, and (c) bridging or replacing the localStorage-based web check
-for native-app owners. See `docs/THREAT_MODEL.md`.
+1. Passive taps without the app still open Safari (correct).
+2. In-app **Scan emergency bracelet** always shows native `ScannedCardView`.
+3. Owner own-band skip (`isOwnPairedBand`) only runs when the URL opens in-app.
+
+Do **not** switch tag writes to `redmed://` only — that bricks Android and
+any phone without RedMed installed.
 
 ## What we deliberately do not encrypt
 
