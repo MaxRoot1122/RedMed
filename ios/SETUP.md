@@ -28,7 +28,7 @@ NFC does **not** work in Simulator — use a physical iPhone.
 
 | Tab | What it does |
 |-----|----------------|
-| **My ID** | Read-only summary by default; top-right **Edit** opens the form. Edit name, blood type, allergies, meds, conditions, 3 emergency contacts (PCP + 2), notes. Saves to Keychain on this device. |
+| **My ID** | Read-only summary by default; **Edit** opens the form. First setup on a new device is unlocked; after a profile name is saved on this phone, Edit requires Face ID / Touch ID (passcode fallback). Clearing the profile starts setup over on that device. |
 | **Find 911** | Call 911, **Scan emergency bracelet** (native first-responder card), live GPS, trauma hospitals by state. When offline, factual guidance for Emergency SOS via satellite (OS-level — RedMed cannot initiate it). |
 | **Aid** | Offline first-aid topics + CPR compression timer. |
 | **Write Tag** | Writes your profile onto a blank **passive** NFC bracelet. **Scan emergency bracelet** opens the native first-responder card (`ScannedCardView`) without touching My ID. **Import** pulls a tag onto this phone. Passive phone taps without the app still open the hosted HTTPS card in Safari. |
