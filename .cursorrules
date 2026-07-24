@@ -66,12 +66,14 @@ agent work all stay inside this repo. GitHub Pages path is
   broadcast — the phone powers the chip on tap. App code: CoreNFC + Web NFC
   write only; do not add Bluetooth, UHF, or live-tracking radios.
 - **NFC opens on smartphones, on purpose.** `AppConfig.medicalCardBaseURL`
-  is the hosted HTTPS card page (`…/RedMed/index.html`). Tags store that
-  URL plus `#d=` profile data on the bracelet chip — no account, no cloud
-  sync. A stranger's **smartphone** taps the band and the emergency card opens
-  in the phone browser (tablets/desktops see a gate screen). Keep `redmed://`
-  registered only as a legacy deep-link; don't switch writes back to app-only
-  without an explicit ask.
+  points at the hosted root **`index.html`** (canonical: `https://www.redmed.com/index.html`;
+  sync via `config/canonical-url`). Tags store that URL plus `#d=` profile data
+  on the bracelet chip — no account, no cloud sync. SwiftUI is the owner
+  companion (write/read NFC, Face ID, Keychain); the emergency card UI is the
+  hosted `index.html`, not an in-app WebView. A stranger's **smartphone** taps
+  the band and the card opens in the phone browser (tablets/desktops see a gate
+  screen). Keep `redmed://` registered only as a legacy deep-link; don't switch
+  writes back to app-only without an explicit ask.
 - **Never fake satellite-tracking/pointing UI.** No public API (iOS or
   Android) exposes real satellite position/connectivity data to
   third-party apps — Apple's Emergency SOS via satellite (Globalstar) and
