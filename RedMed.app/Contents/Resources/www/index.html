@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#fff5f5">
+<meta name="theme-color" content="#fff7f7">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xvDlS/PTOyQxIGTgnzT3fwjitSO0VG1tzlrwtLec/jA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
@@ -47,7 +47,7 @@
     --google-outline: rgba(28, 25, 23, 0.18);
     --google-outline-variant: rgba(28, 25, 23, 0.09);
     --google-on-surface: #1c1917;
-    --google-on-surface-variant: #6b6560;
+    --google-on-surface-variant: #78716c;
     --google-state-hover: rgba(225, 29, 72, 0.08);
     --google-state-pressed: rgba(225, 29, 72, 0.12);
     --brand: #e11d48;
@@ -70,21 +70,21 @@
     --teal: #9f1239;
     --teal-soft: rgba(159, 18, 57, 0.08);
     --ink: #1c1917;
-    --muted: #6b6560;
+    --muted: #78716c;
     --outline: rgba(28, 25, 23, 0.14);
     --outline-hover: rgba(28, 25, 23, 0.28);
     --line: rgba(28, 25, 23, 0.09);
     --surface: rgba(255, 255, 255, 0.86);
-    --surface-dim: #fff5f5;
-    --panel: rgba(255, 241, 242, 0.92);
-    --bg: #fff5f5;
-    --shell: #1c1917;
+    --surface-dim: #fff7f7;
+    --panel: rgba(255, 255, 255, 0.92);
+    --bg: #fff7f7;
+    --shell: #fff7f7;
     --field-bg: rgba(255, 255, 255, 0.92);
     --field-bg-focus: #ffffff;
     --field-border: rgba(28, 25, 23, 0.12);
     --field-border-hover: rgba(28, 25, 23, 0.22);
     --field-radius: 12px;
-    --card-radius: 16px;
+    --card-radius: 24px;
     --border-subtle: rgba(28, 25, 23, 0.06);
     --border-medium: rgba(28, 25, 23, 0.12);
     --shadow-soft: 0 1px 2px rgba(28, 25, 23, 0.04), 0 4px 14px rgba(225, 29, 72, 0.05);
@@ -165,10 +165,7 @@
   }
   * { box-sizing: border-box; }
   html {
-    background:
-      radial-gradient(1200px 600px at 10% -10%, rgba(251, 113, 133, 0.18), transparent 55%),
-      radial-gradient(900px 500px at 100% 0%, rgba(225, 29, 72, 0.10), transparent 50%),
-      #1c1917;
+    background: var(--bg);
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -177,12 +174,13 @@
   body {
     margin: 0 auto;
     width: 100%;
-    max-width: var(--app-width);
+    max-width: min(100%, var(--app-max));
     min-height: 100dvh;
-    font-family: var(--font);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", system-ui, sans-serif;
     font-size: 16px;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 180px),
+      radial-gradient(280px 280px at 0% 0%, rgba(225, 29, 72, 0.05), transparent 70%),
+      radial-gradient(320px 320px at 100% 100%, rgba(255, 115, 140, 0.04), transparent 72%),
       var(--bg);
     color: var(--ink);
     line-height: 1.5;
@@ -193,29 +191,10 @@
     text-rendering: auto;
     position: relative;
     overflow-x: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: none;
   }
   body::before,
-  body::after {
-    content: "";
-    position: fixed;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 50%;
-    filter: blur(36px);
-    opacity: 0.28;
-    display: block;
-  }
-  body::before {
-    width: min(280px, 70vw); height: min(280px, 70vw);
-    top: -90px; left: -60px;
-    background: radial-gradient(circle, rgba(251, 113, 133, 0.42), transparent 72%);
-  }
-  body::after {
-    width: min(240px, 65vw); height: min(240px, 65vw);
-    right: -70px; bottom: 100px;
-    background: radial-gradient(circle, rgba(225, 29, 72, 0.22), transparent 72%);
-  }
+  body::after { display: none; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1987,187 +1966,12 @@
     color: var(--ink);
   }
 
-  /* Owner tabs (My ID, Aid, 911) — black canvas, white type */
+  /* Owner tabs use Swift light rose (#fff7f7) — same as ios AppTheme.pageBg */
   html:has(#editView:not(.hide)),
   html:has(#aidView.show),
   html:has(#locView.show) {
-    background: #000;
-    color-scheme: dark;
-  }
-  body:has(#editView:not(.hide)),
-  body:has(#aidView.show),
-  body:has(#locView.show) {
-    --ink: #ffffff;
-    --muted: rgba(255, 255, 255, 0.62);
-    --bg: #000000;
-    --surface: rgba(255, 255, 255, 0.1);
-    --surface-dim: #111111;
-    --panel: rgba(255, 255, 255, 0.08);
-    --field-bg: #111111;
-    --field-bg-focus: #1a1a1a;
-    --field-border: rgba(255, 255, 255, 0.2);
-    --field-border-hover: rgba(255, 255, 255, 0.32);
-    --outline: rgba(255, 255, 255, 0.14);
-    --outline-hover: rgba(255, 255, 255, 0.28);
-    --line: rgba(255, 255, 255, 0.1);
-    --google-on-surface: #ffffff;
-    --google-on-surface-variant: rgba(255, 255, 255, 0.62);
-    --google-outline-variant: rgba(255, 255, 255, 0.16);
-    --google-surface-high: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    background: #000;
-    background-image: none;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide))::before,
-  body:has(#editView:not(.hide))::after,
-  body:has(#aidView.show)::before,
-  body:has(#aidView.show)::after,
-  body:has(#locView.show)::before,
-  body:has(#locView.show)::after {
-    display: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select,
-  body:has(#locView.show) #locView .trauma-pickers select {
-    color: #ffffff;
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-    opacity: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:hover,
-  body:has(#locView.show) #locView .trauma-pickers select:hover {
-    color: #ffffff;
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:focus,
-  body:has(#locView.show) #locView .trauma-pickers select:focus {
-    color: #ffffff;
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select option,
-  body:has(#locView.show) #locView .trauma-pickers select option {
-    color: #ffffff;
-    background-color: #000000;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:valid {
-    color: #ffffff;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name:hover,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:hover {
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name:focus,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:focus {
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:hover {
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:focus-within,
-  body:has(#editView:not(.hide)) #editView #idForm .search-add.is-open .chip-search-launcher {
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-icon {
-    color: rgba(255, 255, 255, 0.62);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-list {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item {
-    color: #ffffff;
-    background-color: #000000;
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:hover,
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:focus {
-    color: #ffffff;
-    background-color: #141414;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-hint,
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-group-label {
-    color: rgba(255, 255, 255, 0.62);
-    background-color: #000000;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item + .suggest-group-label {
-    border-top-color: rgba(255, 255, 255, 0.1);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:hover,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:focus {
-    color: #ffffff;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    outline: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) .app-legal-footer a {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) .app-legal-footer a:hover,
-  body:has(#editView:not(.hide)) .app-legal-footer a:focus-visible {
-    color: rgba(255, 255, 255, 0.72);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .donor-row label {
-    color: rgba(255, 255, 255, 0.62);
-  }
-  body:has(#editView:not(.hide)) input[type=text],
-  body:has(#editView:not(.hide)) input[type=tel],
-  body:has(#editView:not(.hide)) input[type=search],
-  body:has(#editView:not(.hide)) textarea {
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) input[type=date] {
-    color: #fff;
-    color-scheme: dark;
-    -webkit-appearance: auto;
-    appearance: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) input::placeholder,
-  body:has(#editView:not(.hide)) textarea::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) #editView .chip-block-divider {
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--bg);
+    color-scheme: light;
   }
 
   /* Bottom bar keeps its own light palette — not My ID dark-theme text or selection */
@@ -2294,11 +2098,131 @@
   .page-header.loc .lead { color: var(--muted); margin: 0; }
   .page-header.aid .lead { text-align: center; max-width: 36em; margin-left: auto; margin-right: auto; }
   .page-header.aid h1 { width: 100%; text-align: center; margin: 0; }
-  body:has(#editView:not(.hide)) .page-header.myid,
-  body:has(#aidView.show) .page-header.aid,
-  body:has(#locView.show) .page-header.loc {
-    background: #000;
+
+  /* Swift MyID: toolbar + summary home + edit sheet */
+  .myid-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
   }
+  .myid-toolbar .brand-lockup { flex: 1 1 auto; min-width: 0; }
+  .myid-toolbar .brand-wordmark-hero { height: 40px; max-width: min(220px, 52vw); }
+  .myid-tool-btn {
+    flex: 0 0 auto;
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px 4px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .myid-tool-btn:active { opacity: 0.75; }
+  .myid-tool-btn.bracelet {
+    color: var(--ink);
+    padding: 8px;
+    border-radius: 12px;
+  }
+  .myid-tool-btn.bracelet svg { width: 22px; height: 22px; display: block; }
+  .profile-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 4px 0 24px;
+  }
+  .profile-summary[hidden] { display: none !important; }
+  .summary-hint {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .summary-card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-soft);
+  }
+  .summary-card h2 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+  }
+  .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .summary-row .lab { color: var(--muted); font-weight: 500; }
+  .summary-row .val { color: var(--ink); font-weight: 600; text-align: right; }
+  .summary-list { margin: 0; padding: 0; list-style: none; }
+  .summary-list li {
+    padding: 6px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+  .summary-list li:last-child { border-bottom: none; }
+  .summary-list li.empty { color: var(--muted); font-style: normal; font-weight: 500; }
+  .summary-contact { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .summary-contact:last-child { border-bottom: none; }
+  .summary-contact .nm { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .summary-contact .dt { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+
+  #editFormPanel {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: none;
+    flex-direction: column;
+    background: var(--bg);
+    padding: calc(var(--safe-top) + 8px) 0 env(safe-area-inset-bottom, 0px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #editFormPanel.open { display: flex; }
+  html.edit-sheet-open { overflow: hidden; }
+  .edit-form-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 16px 12px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 2;
+  }
+  .edit-form-panel-head h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .edit-form-panel-body {
+    flex: 1 1 auto;
+    padding: 0 16px 28px;
+    max-width: var(--app-max);
+    width: 100%;
+    margin: 0 auto;
+  }
+  body.edit-sheet-open .bottombar-shell { opacity: 0; pointer-events: none; }
+
   .page-header.myid .brand-lockup { width: 100%; }
   .page-header.myid .brand-default {
     display: flex;
@@ -3969,20 +3893,26 @@
 </head>
 <body>
 
-<!-- ============ MY ID (owner editable) ============ -->
+<!-- ============ MY ID (Swift-parity: summary home + Edit sheet) ============ -->
 <div id="editView">
   <div class="page-header myid">
-    <div class="brand-lockup" id="appBrandLockup">
-      <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
-      </div>
-      <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
-        <div class="brand-text">
-          <h1 id="appTitle"></h1>
-          <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
+    <div class="myid-toolbar">
+      <button type="button" class="myid-tool-btn bracelet" id="myidBraceletBtn" aria-label="Bracelet setup">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="7" y="8" width="10" height="8" rx="2.5" stroke="currentColor" stroke-width="1.75"/><path d="M9 8V6.5A2.5 2.5 0 0 1 12 4v0a2.5 2.5 0 0 1 3 2.5V8M9 16v1.5A2.5 2.5 0 0 0 12 20v0a2.5 2.5 0 0 0 3-2.5V16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
+      <div class="brand-lockup" id="appBrandLockup">
+        <div class="brand-default" aria-label="RedMed">
+          <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
+        </div>
+        <div class="brand-device" id="appDeviceBrand">
+          <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
+          <div class="brand-text">
+            <h1 id="appTitle"></h1>
+            <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
+          </div>
         </div>
       </div>
+      <button type="button" class="myid-tool-btn" id="myidEditBtn" data-i18n="btnEdit">Edit</button>
     </div>
   </div>
   <div class="split-layout">
@@ -3994,6 +3924,39 @@
         </div>
       </div>
 
+      <div id="profileSummary" class="profile-summary" aria-live="polite">
+        <p class="summary-hint" id="summaryEmptyHint" data-i18n="summaryEmptyHint">Tap Edit to add your name and set up your bracelet.</p>
+        <div class="summary-card" id="summaryYouCard">
+          <h2 data-i18n="summaryYou">You</h2>
+          <div class="summary-row"><span class="lab" data-i18n="labelNamePlain">Name</span><span class="val" id="s_name">—</span></div>
+          <div class="summary-row"><span class="lab" data-i18n="labelDob">Birth date</span><span class="val" id="s_dob">—</span></div>
+          <div class="summary-row"><span class="lab" data-i18n="labelBlood">Blood type</span><span class="val" id="s_blood">—</span></div>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelAllergies">Allergies</h2>
+          <ul class="summary-list" id="s_allergies"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelMeds">Medications</h2>
+          <ul class="summary-list" id="s_meds"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelConditions">Conditions</h2>
+          <ul class="summary-list" id="s_conditions"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="legendContacts">Contacts</h2>
+          <div id="s_contacts"><p class="summary-hint" data-i18n="none">None</p></div>
+        </div>
+      </div>
+
+      <div id="editFormPanel" aria-hidden="true">
+        <div class="edit-form-panel-head">
+          <button type="button" class="myid-tool-btn" id="editFormDone" data-i18n="btnDone">Done</button>
+          <h2 data-i18n="editSheetTitle">Edit medical ID</h2>
+          <span style="width:48px" aria-hidden="true"></span>
+        </div>
+        <div class="edit-form-panel-body">
       <form id="idForm">
         <fieldset class="fieldset-you">
           <div class="name-fields">
@@ -4125,6 +4088,8 @@
         <div class="result-actions">
           <button type="button" class="btn-secondary" id="copyBtn" data-i18n="btnCopy">Copy</button>
           <a class="btn-secondary" id="previewBtn" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" data-i18n="btnPreview">Preview</a>
+        </div>
+      </div>
         </div>
       </div>
 
@@ -5050,7 +5015,7 @@
       locTraumaGoogleVerified: "Google verified",
       locTraumaGoogleHint: "With a Google API key, GPS sets your state and each hospital is checked against Google Places.",
       consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our Terms Of Service and Privacy Policy. Find 911 may use location while that screen is open (not sent to us).",
-      btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid", nav911: "911",
+      btnAccept: "Accept", btnBackMyId: "Back to My ID", btnEdit: "Edit", btnDone: "Done", editSheetTitle: "Edit medical ID", summaryYou: "You", summaryEmptyHint: "Tap Edit to add your name and set up your bracelet.", summaryNotSet: "Not set", navMyId: "RedMed", navAid: "Aid", nav911: "911",
       phAllergy: "Search…", phMed: "Search…", phCondition: "Search…",
       searchMinHint: "{n} more letter(s) — search starts at 2",
       searchNoMatches: "No matches — press Enter to add your own",
@@ -5156,7 +5121,7 @@
       locTraumaGoogleVerified: "Verificado por Google",
       locTraumaGoogleHint: "Con clave de Google API, el GPS fija el estado y cada hospital se comprueba en Google Places.",
       consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros Términos de servicio y la Política de privacidad. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
-      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
+      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", btnEdit: "Editar", btnDone: "Listo", editSheetTitle: "Editar ID médica", summaryYou: "Tú", summaryEmptyHint: "Toca Editar para añadir tu nombre y configurar la pulsera.", summaryNotSet: "Sin definir", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
       phAllergy: "Buscar…", phMed: "Buscar…", phCondition: "Buscar…",
       searchMinHint: "{n} letra(s) más — la búsqueda empieza en 2",
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
@@ -6496,6 +6461,119 @@
   }
 
 
+
+  function formatDobDisplay(dob) {
+    if (!dob) return t("summaryNotSet");
+    var parts = String(dob).split("-");
+    if (parts.length !== 3) return dob;
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (isNaN(d.getTime())) return dob;
+    try {
+      return d.toLocaleDateString(currentLang === "es" ? "es" : "en", { year: "numeric", month: "long", day: "numeric" });
+    } catch (e) {
+      return dob;
+    }
+  }
+
+  function fillSummaryList(el, items) {
+    if (!el) return;
+    el.innerHTML = "";
+    if (!items || !items.length) {
+      var empty = document.createElement("li");
+      empty.className = "empty";
+      empty.textContent = t("none");
+      el.appendChild(empty);
+      return;
+    }
+    items.forEach(function (item) {
+      var li = document.createElement("li");
+      li.textContent = item;
+      el.appendChild(li);
+    });
+  }
+
+  function paintProfileSummary(data) {
+    data = data || {};
+    var name = (data.name || "").trim();
+    var hint = document.getElementById("summaryEmptyHint");
+    if (hint) hint.hidden = !!name;
+    var nameEl = document.getElementById("s_name");
+    var dobEl = document.getElementById("s_dob");
+    var bloodEl = document.getElementById("s_blood");
+    if (nameEl) nameEl.textContent = name || t("summaryNotSet");
+    if (dobEl) dobEl.textContent = formatDobDisplay(data.dob || "");
+    if (bloodEl) bloodEl.textContent = data.blood ? data.blood : t("unknown");
+    fillSummaryList(document.getElementById("s_allergies"), data.allergies || []);
+    fillSummaryList(document.getElementById("s_meds"), data.meds || []);
+    fillSummaryList(document.getElementById("s_conditions"), data.conditions || []);
+    var contactsWrap = document.getElementById("s_contacts");
+    if (contactsWrap) {
+      contactsWrap.innerHTML = "";
+      var contacts = (data.contacts || []).filter(function (c) {
+        return c && ((c.name || "").trim() || (c.phone || "").trim() || (c.rel || c.address || "").trim());
+      });
+      if (!contacts.length) {
+        var p = document.createElement("p");
+        p.className = "summary-hint";
+        p.textContent = t("none");
+        contactsWrap.appendChild(p);
+      } else {
+        contacts.forEach(function (c) {
+          var row = document.createElement("div");
+          row.className = "summary-contact";
+          var nm = document.createElement("div");
+          nm.className = "nm";
+          nm.textContent = (c.name || "").trim() || t("unknown");
+          row.appendChild(nm);
+          var detail = [(c.rel || c.address || "").trim(), (c.phone || "").trim()].filter(Boolean).join(" · ");
+          if (detail) {
+            var dt = document.createElement("div");
+            dt.className = "dt";
+            dt.textContent = detail;
+            row.appendChild(dt);
+          }
+          contactsWrap.appendChild(row);
+        });
+      }
+    }
+  }
+
+  function loadSavedProfile() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return null;
+      return normalizeProfile(JSON.parse(saved));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function openEditSheet() {
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (!panel) return;
+    panel.classList.add("open");
+    panel.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("edit-sheet-open");
+    document.body.classList.add("edit-sheet-open");
+    if (summary) summary.hidden = true;
+    var first = document.getElementById("f_name");
+    if (first) setTimeout(function () { first.focus(); }, 50);
+  }
+
+  function closeEditSheet() {
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (!panel) return;
+    panel.classList.remove("open");
+    panel.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("edit-sheet-open");
+    document.body.classList.remove("edit-sheet-open");
+    if (summary) summary.hidden = false;
+    paintProfileSummary(loadSavedProfile() || collectPersistedFormData());
+    syncAppHeaderTitle();
+  }
+
   var editWired = false;
 
   function initEdit() {
@@ -6503,18 +6581,28 @@
     document.title = t("titleMyId");
     wirePreviewForm();
     wireDobField();
-    var saved = null;
-    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    if (saved) {
-      try { fillFormFrom(normalizeProfile(JSON.parse(saved))); } catch (e) {}
-    }
+    var savedProfile = loadSavedProfile();
+    if (savedProfile) fillFormFrom(savedProfile);
     renderAllergyChips();
     renderMedChips();
     renderConditionChips();
     refreshLivePreview();
+    paintProfileSummary(savedProfile || {});
+    closeEditSheet();
 
     if (editWired) return;
     editWired = true;
+
+    var editBtn = document.getElementById("myidEditBtn");
+    if (editBtn) editBtn.addEventListener("click", openEditSheet);
+    var doneBtn = document.getElementById("editFormDone");
+    if (doneBtn) doneBtn.addEventListener("click", closeEditSheet);
+    var myidBracelet = document.getElementById("myidBraceletBtn");
+    if (myidBracelet) {
+      myidBracelet.addEventListener("click", function () {
+        openBraceletSheet();
+      });
+    }
 
     wireChipSearch({
       queryId: "allergyQuery",
@@ -6605,6 +6693,7 @@
         setTimeout(function () { savedNote.classList.remove("show"); }, 2500);
       }
       syncBraceletUi();
+      paintProfileSummary(data);
 
       document.getElementById("resultBox").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -6646,6 +6735,7 @@
       });
       document.getElementById("resultBox").classList.remove("show");
       refreshLivePreview();
+      paintProfileSummary({});
       syncBraceletUi();
       syncBraceletLockUi();
       syncDisconnectUi();
