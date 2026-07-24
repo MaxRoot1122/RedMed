@@ -1,3 +1,11 @@
 # Optional. Leave config/google-api-key empty (or omit key lines) for offline trauma list only.
 # If you add a Maps key, put the raw key on its own line (no quotes). Never commit a real key.
+#
+# Before enabling GOOGLE_MAPS_API_KEY / pasting a real key here:
+#   1. Google Cloud → restrict key to Geocoding + Places only
+#   2. HTTP referrer: https://maxroot1122.github.io/RedMed/*
+#      (add https://www.redmed.com/* only after that host serves this app)
+#   3. Prefer a separate iOS key locked to bundle ID local.redmed.app
+#   4. Set daily quotas + billing alerts
+# See SECURITY.md.
 # YOUR_GOOGLE_MAPS_API_KEY

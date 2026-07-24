@@ -35,12 +35,16 @@ Before enabling the secret:
 | Restriction | Value |
 |-------------|--------|
 | APIs | Geocoding + Places only |
-| Web referrer | `https://www.redmed.com/*` (and `http://127.0.0.1:*/*` for local dev if needed) |
-| iOS | Bundle ID `local.redmed.app` (separate key preferred) |
+| Web referrer (live Pages host) | `https://maxroot1122.github.io/RedMed/*` |
+| Web referrer (when custom domain is live) | `https://www.redmed.com/*` |
+| Local dev (optional) | `http://127.0.0.1:*/*` |
+| iOS | Bundle ID `local.redmed.app` (**separate key** preferred) |
 | Quotas | Hard daily caps + billing alerts |
 
 Never commit a real key. Use [`config/google-api-key.example`](config/google-api-key.example)
-locally (gitignored path `config/google-api-key`).
+locally (gitignored path `config/google-api-key`). The web client rejects empty keys and
+`YOUR_GOOGLE…` placeholders. CSP `connect-src` allows `https://maps.googleapis.com`
+for Find 911 only.
 
 ## Android Digital Asset Links
 
@@ -49,21 +53,27 @@ locally (gitignored path `config/google-api-key`).
 those fingerprints are pasted, App Links verification is incomplete — see
 [`docs/ANDROID_PLAY.md`](docs/ANDROID_PLAY.md). Do not invent fingerprints.
 
+GitHub **project** Pages (`username.github.io/RedMed/`) cannot publish
+`/.well-known/assetlinks.json` at the github.io **apex**. Full-screen TWA App Links
+need a custom domain (or equivalent) serving this file at the domain root — see
+[`docs/DOMAIN.md`](docs/DOMAIN.md).
+
 ## Known gap: Universal Links need a live custom domain
 
-New tags write HTTPS (`www.redmed.com`) so any phone can open the card. With
-`apple-app-site-association` + `applinks:` entitlement wired in-repo, **installed**
-iPhone users should get the native emergency card when the domain is live and
-AASA is reachable at `/.well-known/apple-app-site-association`.
+**Active NFC card host today:** `https://maxroot1122.github.io/RedMed/index.html`
+(see [`config/canonical-url`](config/canonical-url)). `www.redmed.com` remains a
+future target until DNS → Pages is verified (not a parking lander).
 
-Until HTTPS + AASA are verified on device:
+`apple-app-site-association` + `applinks:` entitlement are wired in-repo, but Apple
+requires AASA at the **domain apex**. A project Pages path alone cannot satisfy that.
+When `www.redmed.com` points at this deploy and AASA returns JSON:
 
 1. Passive taps without the app still open Safari (correct).
-2. In-app **Scan emergency bracelet** always shows native `ScannedCardView`.
-3. Owner own-band skip (`isOwnPairedBand`) only runs when the URL opens in-app.
+2. Installed iPhone users can get the native emergency card via Universal Links.
+3. In-app **Scan emergency bracelet** always shows native `ScannedCardView`.
 
 Do **not** switch tag writes to `redmed://` only — that bricks Android and
-any phone without RedMed installed.
+any phone without RedMed installed. Do **not** use `redmed.app` (unrelated third-party).
 
 ## What we deliberately do not encrypt
 
@@ -76,3 +86,10 @@ device only — it does **not** protect NFC reads.
 
 Do not log `location.hash`, NFC URLs, profile JSON, or PIN material. Prefer UI
 status text over `console.*` for user-facing failures.
+
+## Dependencies
+
+Almost no runtime deps (no npm, no CocoaPods). On Android release bumps, re-check
+`androidbrowserhelper` / AppCompat advisories in
+[`android/app/build.gradle`](android/app/build.gradle). Do **not** add analytics or
+crash SDKs that phone home profile or location without an explicit product decision.

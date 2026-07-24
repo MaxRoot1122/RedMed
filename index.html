@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-LyNRCTs+U+Sb3nf13xfCKrJZ4BGFBypdTnkboDbJWCk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-cRq7H1/XS3uN7S+/hj/ngMsxBH4m/Ira7ohIGBC+kho='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -4643,7 +4643,8 @@
           key = t;
           return true;
         });
-        if (!key || key.indexOf("YOUR_GOOGLE") >= 0) key = "";
+        // Reject empty / example placeholders so a mistaken deploy does nothing.
+        if (!key || /YOUR_GOOGLE|EXAMPLE|REPLACE|changeme/i.test(key) || key.length < 20) key = "";
         googleApiKey = key;
         googleApiKeyLoaded = true;
         return googleApiKey;
