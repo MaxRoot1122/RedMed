@@ -90,34 +90,8 @@ enum EmergencySummaryBuilder {
         return lines.joined(separator: "\n")
     }
 
-    static func contactAlertMessage(
-        profile: MedicalProfile,
-        coordinate: CLLocationCoordinate2D? = nil
-    ) -> String {
-        var lines = ["I need help — emergency alert from RedMed."]
-        if !profile.name.isEmpty { lines.append("Name: \(profile.name)") }
-        if let coordinate {
-            lines.append(String(format: "Location: %.6f, %.6f", coordinate.latitude, coordinate.longitude))
-            lines.append("Map: https://maps.google.com/?q=\(coordinate.latitude),\(coordinate.longitude)")
-        } else {
-            lines.append("Location: call me — GPS not available yet")
-        }
-        if !profile.blood.isEmpty { lines.append("Blood: \(profile.blood)") }
-        if !profile.allergies.isEmpty { lines.append("Allergies: \(profile.allergies.joined(separator: ", "))") }
-        if !profile.conditions.isEmpty { lines.append("Conditions: \(profile.conditions.joined(separator: ", "))") }
-        lines.append("Please call 911 if you can. Reply when you see this.")
-        return lines.joined(separator: "\n")
-    }
-
     static func normalizedPhone(_ phone: String) -> String {
         phone.filter { $0.isNumber || $0 == "+" }
-    }
-
-    static func emergencyContactPhones(in profile: MedicalProfile) -> [String] {
-        profile.contacts
-            .map(\.phone)
-            .map(normalizedPhone)
-            .filter { !$0.isEmpty }
     }
 
     /// `telprompt:` asks iPhone to confirm before placing the call — required for in-app contact dialing.
@@ -126,24 +100,5 @@ enum EmergencySummaryBuilder {
         guard !digits.isEmpty else { return nil }
         let scheme = prompt ? "telprompt" : "tel"
         return URL(string: "\(scheme):\(digits)")
-    }
-
-    /// Percent-encode like JS `encodeURIComponent` so `&` / `=` in medical text
-    /// cannot break out of the SMS `body=` query parameter.
-    private static func encodeURIComponent(_ string: String) -> String {
-        var allowed = CharacterSet.alphanumerics
-        allowed.insert(charactersIn: "-_.!~*'()")
-        return string.addingPercentEncoding(withAllowedCharacters: allowed) ?? ""
-    }
-
-    static func smsURL(phones: [String], body: String) -> URL? {
-        guard !phones.isEmpty else { return nil }
-        let encoded = encodeURIComponent(body)
-        if phones.count > 1 {
-            let addresses = phones.joined(separator: ",")
-            let encodedAddresses = encodeURIComponent(addresses)
-            return URL(string: "sms:/open?addresses=\(encodedAddresses)&body=\(encoded)")
-        }
-        return URL(string: "sms:\(phones[0])&body=\(encoded)")
     }
 }
