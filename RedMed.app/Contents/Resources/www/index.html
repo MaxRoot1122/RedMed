@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Mpp7DTYQcVFBAqUJ6Uq2CKfDR3NaF2ZTbUXvXjnaNm4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-LJlcUl486FwBFuPrB89iEmUFjwlPUiCAOyv0xm9AUlQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://maps.googleapis.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -184,6 +184,12 @@
       radial-gradient(280px 280px at 0% 0%, rgba(225, 29, 72, 0.05), transparent 70%),
       radial-gradient(320px 320px at 100% 100%, rgba(255, 115, 140, 0.04), transparent 72%),
       var(--bg);
+    /* Gradients drift with scroll progress — distance scales with page height via --scroll-p. */
+    background-position:
+      calc(0% + var(--scroll-p) * 12%) calc(0% + var(--scroll-p) * 18%),
+      calc(100% - var(--scroll-p) * 10%) calc(100% - var(--scroll-p) * 14%),
+      0 0;
+    background-repeat: no-repeat;
     color: var(--ink);
     line-height: 1.5;
     letter-spacing: -0.011em;
@@ -211,6 +217,63 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+    html {
+      --scroll-shift: 0px;
+      --scroll-hero: 1;
+    }
+    .page-header.myid .brand-wordmark-hero,
+    .page-header.aid .brand-wordmark-hero,
+    .page-header.loc .brand-wordmark-hero,
+    .page-header.myid .brand-cover-hero,
+    .page-header.aid .brand-cover-hero,
+    .page-header.loc .brand-cover-hero {
+      transform: none !important;
+    }
+    body {
+      background-position: 0% 0%, 100% 100%, 0 0 !important;
+    }
+  }
+
+  /* Scroll progress 0–1 of current page height; drives reactive chrome. */
+  html {
+    --scroll-p: 0;
+    --scroll-max: 0;
+    --scroll-shift: 0px;
+    --scroll-hero: 1;
+  }
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, var(--app-max));
+    height: 3px;
+    z-index: 120;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(28, 25, 23, 0.06);
+    cursor: pointer;
+    touch-action: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .scroll-progress:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .scroll-progress__fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform-origin: left center;
+    transform: scaleX(var(--scroll-p, 0));
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-pressed) 100%);
+    pointer-events: none;
+    will-change: transform;
+  }
+  html.is-scrolled .scroll-progress {
+    box-shadow: 0 1px 0 rgba(225, 29, 72, 0.08);
   }
   mark.hi, .hi {
     background: linear-gradient(180deg, transparent 8%, var(--highlight) 8%, var(--highlight) 92%, transparent 92%);
@@ -592,10 +655,13 @@
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 245, 245, 0.78) 100%);
     color: var(--ink);
-    border-bottom: 1px solid rgba(28, 25, 23, 0.06);
+    border-bottom: 1px solid rgba(28, 25, 23, calc(0.06 + var(--scroll-p) * 0.06));
     position: sticky; top: 0; z-index: 40;
-    backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 10px 28px rgba(225, 29, 72, 0.05);
+    backdrop-filter: blur(calc(16px + var(--scroll-p) * 10px)) saturate(calc(1.2 + var(--scroll-p) * 0.3));
+    -webkit-backdrop-filter: blur(calc(16px + var(--scroll-p) * 10px)) saturate(calc(1.2 + var(--scroll-p) * 0.3));
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 calc(6px + var(--scroll-p) * 10px) calc(20px + var(--scroll-p) * 12px) rgba(225, 29, 72, calc(0.04 + var(--scroll-p) * 0.06));
   }
   header.app .brand-default { gap: 6px; align-items: center; min-height: var(--header-chip-h); }
   header.app .brand-wordmark-text {
@@ -2075,8 +2141,16 @@
     gap: 10px;
     box-sizing: border-box;
     background: var(--bg);
+    background: color-mix(in srgb, var(--bg) calc(100% - var(--scroll-p) * 18%), #fff);
+    box-shadow:
+      0 1px 0 rgba(28, 25, 23, calc(0.04 + var(--scroll-p) * 0.06)),
+      0 calc(6px * var(--scroll-p)) calc(20px * var(--scroll-p)) rgba(225, 29, 72, calc(var(--scroll-p) * 0.07));
+    transition: box-shadow var(--duration-fast) var(--ease-out);
   }
+  body.responder-mode .scroll-progress { opacity: 0.9; }
   .page-header.aid { gap: 14px; padding-bottom: 16px; align-items: center; text-align: center; }
+  .page-header.aid .brand-wordmark-hero,
+  .page-header.aid .brand-cover-hero { transform-origin: center center; }
   .page-header.aid h1 .brand-red,
   .page-header.aid h1 .brand-med,
   .page-header.aid h1 {
@@ -2102,6 +2176,9 @@
     margin: 0;
     object-fit: contain;
     object-position: left center;
+    transform: translateY(var(--scroll-shift)) scale(var(--scroll-hero));
+    transform-origin: left center;
+    will-change: transform;
   }
   .page-header.aid .brand-cover-hero,
   .page-header.aid .brand-wordmark-hero {
@@ -3917,6 +3994,9 @@
 </style>
 </head>
 <body>
+<button type="button" class="scroll-progress" id="scrollProgress" aria-label="Scroll position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Drag or tap to scroll">
+  <span class="scroll-progress__fill" aria-hidden="true"></span>
+</button>
 
 <!-- ============ MY ID (Swift-parity: summary home + Edit sheet) ============ -->
 <div id="editView">
@@ -4573,6 +4653,113 @@
     window.visualViewport.addEventListener("resize", syncAppWidth);
     window.visualViewport.addEventListener("scroll", syncBottomBar);
   }
+
+  /* ---- Reactive scroll: progress is scrollY / (pageHeight − viewport) ---- */
+  var scrollProgressRaf = 0;
+  var scrollScrubbing = false;
+
+  function scrollMetrics() {
+    var el = document.scrollingElement || document.documentElement;
+    var max = Math.max(0, el.scrollHeight - el.clientHeight);
+    var top = el.scrollTop || 0;
+    var p = max > 0 ? Math.min(1, Math.max(0, top / max)) : 0;
+    return { el: el, max: max, top: top, p: p };
+  }
+
+  function syncScrollProgress() {
+    var m = scrollMetrics();
+    var root = document.documentElement;
+    root.style.setProperty("--scroll-p", m.p.toFixed(4));
+    root.style.setProperty("--scroll-max", String(Math.round(m.max)));
+    /* Parallax distances stay small; scale with page progress (not raw px). */
+    root.style.setProperty("--scroll-shift", (-6 * m.p).toFixed(2) + "px");
+    root.style.setProperty("--scroll-hero", (1 - 0.045 * m.p).toFixed(4));
+    root.classList.toggle("is-scrolled", m.p > 0.02);
+    root.classList.toggle("is-scroll-end", m.p > 0.97);
+    var bar = document.getElementById("scrollProgress");
+    if (bar) {
+      bar.setAttribute("aria-valuenow", String(Math.round(m.p * 100)));
+      bar.hidden = m.max < 8;
+    }
+  }
+
+  function requestScrollProgressSync() {
+    if (scrollProgressRaf) return;
+    scrollProgressRaf = requestAnimationFrame(function () {
+      scrollProgressRaf = 0;
+      syncScrollProgress();
+    });
+  }
+
+  function setScrollProgress(p) {
+    var m = scrollMetrics();
+    if (m.max <= 0) return;
+    var next = Math.min(1, Math.max(0, p));
+    m.el.scrollTop = next * m.max;
+    syncScrollProgress();
+  }
+
+  function progressFromPointer(e, bar) {
+    var rect = bar.getBoundingClientRect();
+    if (rect.width <= 0) return 0;
+    var clientX = e.clientX;
+    if (e.touches && e.touches[0]) clientX = e.touches[0].clientX;
+    return (clientX - rect.left) / rect.width;
+  }
+
+  function wireScrollProgress() {
+    var bar = document.getElementById("scrollProgress");
+    if (!bar || bar.getAttribute("data-wired") === "1") return;
+    bar.setAttribute("data-wired", "1");
+
+    function scrubTo(e) {
+      setScrollProgress(progressFromPointer(e, bar));
+    }
+
+    bar.addEventListener("pointerdown", function (e) {
+      scrollScrubbing = true;
+      try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+      scrubTo(e);
+      e.preventDefault();
+    });
+    bar.addEventListener("pointermove", function (e) {
+      if (!scrollScrubbing) return;
+      scrubTo(e);
+    });
+    function endScrub() { scrollScrubbing = false; }
+    bar.addEventListener("pointerup", endScrub);
+    bar.addEventListener("pointercancel", endScrub);
+
+    bar.addEventListener("keydown", function (e) {
+      var step = e.shiftKey ? 0.15 : 0.08;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        setScrollProgress(scrollMetrics().p + step);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        setScrollProgress(scrollMetrics().p - step);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        setScrollProgress(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        setScrollProgress(1);
+      }
+    });
+
+    window.addEventListener("scroll", requestScrollProgressSync, { passive: true });
+    window.addEventListener("resize", requestScrollProgressSync);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", requestScrollProgressSync);
+    }
+    if (typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(requestScrollProgressSync);
+      ro.observe(document.documentElement);
+      if (document.body) ro.observe(document.body);
+    }
+    syncScrollProgress();
+  }
+  wireScrollProgress();
 
   var TRAUMA_REGION_KEY = "redMedTraumaRegion";
   var TRAUMA_COUNTY_THRESHOLD = 30;
@@ -7167,7 +7354,10 @@
     releaseBraceletNfc();
     syncBraceletUi();
     syncBottomBar();
+    requestScrollProgressSync();
     if (name === "aid") renderAid();
+    /* Aid/trauma lists can change page height after paint. */
+    requestAnimationFrame(requestScrollProgressSync);
   }
 
   function setAppHash(fragment) {

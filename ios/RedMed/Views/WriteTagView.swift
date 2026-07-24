@@ -49,7 +49,9 @@ struct WriteTagView: View {
                 .padding(.horizontal, layout.screenPad)
                 .padding(.top, layout.spaceSM)
                 .padding(.bottom, layout.screenBottomLarge)
+                .reactiveScrollTrack()
             }
+            .reactiveScrollChrome()
             .screenAtmosphere()
             .navigationTitle("NFC")
             .navigationBarTitleDisplayMode(.inline)

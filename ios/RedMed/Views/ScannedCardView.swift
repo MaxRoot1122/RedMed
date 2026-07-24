@@ -84,7 +84,9 @@ struct ScannedCardView: View {
                     .padding(layout.screenPad)
                     .padding(.bottom, layout.s(28))
                 }
+                .reactiveScrollTrack()
             }
+            .reactiveScrollChrome()
             .background(AppTheme.pageBg)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
