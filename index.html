@@ -8,6 +8,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
+<link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eMnPUkMbRSfZFBBVEpAcrneESghxUjcGUFzW1Db1VvE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
@@ -1958,6 +1960,13 @@
   .capacity-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
   .capacity-note.warn { color: #b06000; font-weight: 500; }
 
+
+  /* Skip layout/paint work for inactive owner tabs */
+  #aidView:not(.show),
+  #locView:not(.show) {
+    content-visibility: hidden;
+    contain-intrinsic-size: auto 600px;
+  }
   #viewView { display: none; }
   #viewView.show { display: block; }
   #editView.hide { display: none; }
@@ -5338,13 +5347,19 @@
   function filterCatalog(catalog, query, limit) {
     var q = String(query || "").trim().toLowerCase();
     if (q.length < SEARCH_MIN_CHARS) return [];
-    var hits = catalog.filter(function (item) {
-      return item.toLowerCase().indexOf(q) !== -1;
-    });
-    return hits.slice(0, limit == null ? SEARCH_RESULT_MAX : limit);
+    var max = limit == null ? SEARCH_RESULT_MAX : limit;
+    var hits = [];
+    for (var i = 0; i < catalog.length; i++) {
+      var item = catalog[i];
+      if (item.toLowerCase().indexOf(q) !== -1) {
+        hits.push(item);
+        if (hits.length >= max) break;
+      }
+    }
+    return hits;
   }
 
-  var COMMON_ALLERGENS = dedupeCatalog([
+  var COMMON_ALLERGENS_RAW = [
     "Penicillin", "Amoxicillin", "Ampicillin", "Amoxicillin-clavulanate (Augmentin)", "Piperacillin-tazobactam (Zosyn)",
     "Cephalosporins", "Cefazolin", "Ceftriaxone", "Cefepime", "Carbapenems", "Meropenem", "Imipenem",
     "Sulfa drugs", "Sulfonamides", "Trimethoprim-sulfamethoxazole (Bactrim)", "Sulfasalazine",
@@ -5392,8 +5407,8 @@
     "Aspergillus mold", "Penicillium mold", "Cockroach (allergic)", "Lanolin", "Parabens", "Thimerosal",
     "Rubber chemicals (carba mix)", "Epoxy resin", "Isocyanates", "Ethylene oxide", "Seminal fluid allergy",
     "Bee venom immunotherapy", "Fire ant immunotherapy",
-  ]);
-  var RARE_ALLERGENS_RAW = dedupeCatalog([
+  ];
+  var RARE_ALLERGENS_SRC = [
     "Omalizumab (Xolair)", "Dupilumab (Dupixent)", "Pegaspargase (Oncaspar)", "Streptokinase", "Aprotinin",
     "Protamine sulfate", "Chymopapain", "Papain", "Bromelain", "Cremophor EL (castor oil excipient)",
     "Paclitaxel (Taxol) excipient allergy", "Egg lecithin", "Fish gelatin",
@@ -5410,9 +5425,9 @@
     "Infliximab infusion reaction", "Cetuximab (Erbitux)", "Abatacept (Orencia)", "Belimumab (Benlysta)",
     "Eculizumab (Soliris)", "Iron dextran", "Ferumoxytol", "Dextran", "Hydroxyethyl starch",
     "Protamine zinc insulin", "Aspartame", "Mannitol", "Carrageenan",
-  ]);
-  var RARE_ALLERGENS = catalogMinus(RARE_ALLERGENS_RAW, COMMON_ALLERGENS);
-  var COMMON_MEDS = dedupeCatalog([
+  ];
+  /* RARE_ALLERGENS built in ensureSearchCatalogs() */
+  var COMMON_MEDS_RAW = [
   /* MEPS/ClinCalc top U.S. prescriptions 2014–2023 (Top ~225 + emergency extras) */
     "Atorvastatin (Lipitor)", "Metformin", "Levothyroxine (Synthroid)", "Lisinopril", "Amlodipine", "Metoprolol",
     "Albuterol inhaler", "Losartan", "Gabapentin (Neurontin)", "Omeprazole (Prilosec)", "Sertraline (Zoloft)", "Rosuvastatin (Crestor)",
@@ -5477,9 +5492,9 @@
     "Ocrelizumab (Ocrevus)", "Ofatumumab (Kesimpta)", "Siponimod (Mayzent)", "Fingolimod (Gilenya)",
     "Emtricitabine/Tenofovir alafenamide (Descovy)", "Bictegravir/FTC/TAF (Biktarvy)", "Dolutegravir (Tivicay)",
     "Cabotegravir (Apretude/Vocabria)", "Lenacapavir", "Nirsevimab (Beyfortus)", "Palivizumab (Synagis)"
-  ]);
+  ];
 
-  var RARE_MEDS_RAW = dedupeCatalog([
+  var RARE_MEDS_SRC = [
   /* Orphan / specialty biologics & small molecules (emergency-relevant) */
     "Eculizumab (Soliris)", "Ravulizumab (Ultomiris)", "Pegcetacoplan (Empaveli)",
     "Emicizumab (Hemlibra)", "Factor VIII concentrate", "Factor IX concentrate", "Desmopressin (DDAVP)",
@@ -5564,9 +5579,9 @@
     "Colchicine (FMF / pericarditis)", "Interferon beta-1a (Avonex/Rebif)",
     "Interferon beta-1b (Betaseron)", "Glatiramer (Copaxone)", "Teriflunomide (Aubagio)",
     "Dimethyl fumarate (Tecfidera)", "Mitoxantrone (MS — history)"
-  ]);
-  var RARE_MEDS = catalogMinus(RARE_MEDS_RAW, COMMON_MEDS);
-  var COMMON_CONDITIONS = dedupeCatalog([
+  ];
+  /* RARE_MEDS built in ensureSearchCatalogs() */
+  var COMMON_CONDITIONS_RAW = [
     /* Endocrine / metabolic */
     "Diabetes (Type 1)", "Diabetes (Type 2)", "Gestational diabetes (history)", "Prediabetes",
     "Hypoglycemia risk", "Hyperglycemia risk", "Insulin pump", "Continuous glucose monitor (CGM)",
@@ -5657,8 +5672,8 @@
     "Implantable loop recorder", "Implanted drug pump", "Spinal cord stimulator", "Deep brain stimulator",
     "Metal implant / Hardware", "Factor V Leiden", "Protein C deficiency", "Protein S deficiency",
     "Heparin-induced thrombocytopenia (HIT history)",
-  ]);
-  var RARE_CONDITIONS_RAW = dedupeCatalog([
+  ];
+  var RARE_CONDITIONS_SRC = [
     /* Genetic / metabolic */
     "Fabry disease", "Gaucher disease", "Pompe disease", "Wilson disease", "Hereditary hemochromatosis",
     "Congenital adrenal hyperplasia", "Maple syrup urine disease (MSUD)", "MCADD",
@@ -5862,8 +5877,27 @@
     "Transgender — estrogen therapy", "Transgender — testosterone therapy",
     "Post-phalloplasty / vaginoplasty surgical history",
     "Silicone filler migration risk (history)",
-  ]);
-  var RARE_CONDITIONS = catalogMinus(RARE_CONDITIONS_RAW, COMMON_CONDITIONS);
+  ];
+  /* RARE_CONDITIONS built in ensureSearchCatalogs() */
+
+
+  var COMMON_ALLERGENS = null;
+  var RARE_ALLERGENS = null;
+  var COMMON_MEDS = null;
+  var RARE_MEDS = null;
+  var COMMON_CONDITIONS = null;
+  var RARE_CONDITIONS = null;
+
+  /** Heavy catalog normalize — only when Edit search UI is opened. */
+  function ensureSearchCatalogs() {
+    if (COMMON_ALLERGENS) return;
+    COMMON_ALLERGENS = dedupeCatalog(COMMON_ALLERGENS_RAW);
+    RARE_ALLERGENS = catalogMinus(RARE_ALLERGENS_SRC, COMMON_ALLERGENS);
+    COMMON_MEDS = dedupeCatalog(COMMON_MEDS_RAW);
+    RARE_MEDS = catalogMinus(RARE_MEDS_SRC, COMMON_MEDS);
+    COMMON_CONDITIONS = dedupeCatalog(COMMON_CONDITIONS_RAW);
+    RARE_CONDITIONS = catalogMinus(RARE_CONDITIONS_SRC, COMMON_CONDITIONS);
+  }
 
   var allergyItems = [];
   var medItems = [];
@@ -6549,6 +6583,7 @@
   }
 
   function openEditSheet() {
+    prepareEditForm();
     var panel = document.getElementById("editFormPanel");
     var summary = document.getElementById("profileSummary");
     if (!panel) return;
@@ -6570,25 +6605,29 @@
     document.documentElement.classList.remove("edit-sheet-open");
     document.body.classList.remove("edit-sheet-open");
     if (summary) summary.hidden = false;
-    paintProfileSummary(loadSavedProfile() || collectPersistedFormData());
+    paintProfileSummary(loadSavedProfile() || (editFormPrepared ? collectPersistedFormData() : {}));
     syncAppHeaderTitle();
   }
 
   var editWired = false;
+  var editFormPrepared = false;
 
   function initEdit() {
     setActiveView("myid");
     document.title = t("titleMyId");
-    wirePreviewForm();
-    wireDobField();
     var savedProfile = loadSavedProfile();
-    if (savedProfile) fillFormFrom(savedProfile);
-    renderAllergyChips();
-    renderMedChips();
-    renderConditionChips();
-    refreshLivePreview();
     paintProfileSummary(savedProfile || {});
-    closeEditSheet();
+    /* Keep edit sheet closed — do not touch the heavy form until Edit. */
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (panel) {
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+    document.documentElement.classList.remove("edit-sheet-open");
+    document.body.classList.remove("edit-sheet-open");
+    if (summary) summary.hidden = false;
+    syncAppHeaderTitle();
 
     if (editWired) return;
     editWired = true;
@@ -6603,6 +6642,31 @@
         openBraceletSheet();
       });
     }
+
+    maybeOpenSetupFromQuery();
+  }
+
+  /** Chip catalogs + form wiring — deferred until first Edit open. */
+  function prepareEditForm() {
+    if (editFormPrepared) {
+      var saved = loadSavedProfile();
+      if (saved) fillFormFrom(saved);
+      renderAllergyChips();
+      renderMedChips();
+      renderConditionChips();
+      refreshLivePreview();
+      return;
+    }
+    editFormPrepared = true;
+    ensureSearchCatalogs();
+    wirePreviewForm();
+    wireDobField();
+    var savedProfile = loadSavedProfile();
+    if (savedProfile) fillFormFrom(savedProfile);
+    renderAllergyChips();
+    renderMedChips();
+    renderConditionChips();
+    refreshLivePreview();
 
     wireChipSearch({
       queryId: "allergyQuery",
@@ -6640,7 +6704,6 @@
 
     document.getElementById("idForm").addEventListener("input", refreshLivePreview);
     document.getElementById("idForm").addEventListener("change", refreshLivePreview);
-
     document.getElementById("idForm").addEventListener("submit", function (e) {
       e.preventDefault();
       var data = collectPersistedFormData();
@@ -6741,8 +6804,8 @@
       syncDisconnectUi();
     });
 
-    maybeOpenSetupFromQuery();
   }
+
 
   function renderList(ul, items, emptyText, emphasize) {
     ul.innerHTML = "";
@@ -9037,7 +9100,6 @@
 
   initUseConsent();
   initReactiveUi();
-  wireContactsAccordion();
   patchLegalHrefs();
   wireBottomNav();
   wireBracelet();
