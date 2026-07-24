@@ -28,7 +28,7 @@ NFC does **not** work in Simulator — use a physical iPhone.
 
 | Tab | What it does |
 |-----|----------------|
-| **My ID** | Read-only summary by default; top-right **Edit** opens the form. Edit name, blood type, allergies, meds, conditions, 3 emergency contacts (PCP + 2), notes. Saves to Keychain on this device. Once a bracelet is linked (see `BiometricGate.swift`), Edit requires Face ID / Touch ID (device-passcode fallback) — open before that so initial setup isn't blocked. |
+| **My ID** | Read-only summary by default; top-right **Edit** opens the form. Edit name, blood type, allergies, meds, conditions, 3 emergency contacts (PCP + 2), notes. Saves to Keychain on this device. |
 | **Find 911** | Call 911, live GPS coordinates, compass heading, copy dispatch summary, trauma hospitals by state for transport when waiting may not be survivable (county picker only when 30+ in that state; offline bundled list). When offline, factual guidance for native Emergency SOS via satellite (OS-level — RedMed cannot initiate it). |
 | **Aid** | Offline first-aid topics + CPR compression timer. |
 | **Write Tag** | Writes your profile onto a blank **passive** NFC bracelet as an HTTPS card link (`#d=…` on the chip). A smartphone that taps powers the chip and opens the emergency card in a browser — RedMed not required. Also reads tags back onto this phone. |

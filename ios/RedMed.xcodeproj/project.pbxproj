@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F904DC2367104A3595DC5468 /* BasicAidView.swift */; };
-		8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BD85593584556B6843D30 /* AppLockView.swift */; };
 		18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C18F62ABD454BB6B2392009 /* ContentView.swift */; };
 		1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */; };
 		1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CC2B3234F946E992AF8294 /* EditProfileView.swift */; };
@@ -41,13 +40,11 @@
 		E491D7ADA2744DCF80D3C865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 949BF96AEE164413B602D23E /* Assets.xcassets */; };
 		F191D73ECD4048A78CC9AFE7 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F919F5A31247B2B0CB18DB /* NFCReader.swift */; };
 		F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */; };
-		FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE1D0000014A1D00000001 /* BiometricGate.swift */; };
 		FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478990ABCDEF /* NetworkPathMonitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		4D5BD85593584556B6843D30 /* AppLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
 		1381A61F1B3645C98CB67182 /* MyIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyIDView.swift; sourceTree = "<group>"; };
 		349B554805D54C418E202B76 /* RedMed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedMed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F919F5A31247B2B0CB18DB /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -84,7 +81,6 @@
 		E6F9DDEE313E422AA1720C54 /* WriteTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTagView.swift; sourceTree = "<group>"; };
 		F904DC2367104A3595DC5468 /* BasicAidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAidView.swift; sourceTree = "<group>"; };
 		FAA5420A418C4467938AA432 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
-		FACE1D0000014A1D00000001 /* BiometricGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricGate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +119,6 @@
 		2833C727D3F24F4AB759151E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4D5BD85593584556B6843D30 /* AppLockView.swift */,
 				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
 				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
@@ -171,7 +166,6 @@
 		C7428494040244ACB57B9038 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				FACE1D0000014A1D00000001 /* BiometricGate.swift */,
 				8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */,
 				A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */,
 				57666E1CF83E47EBAB03ECE7 /* KeychainStore.swift */,
@@ -257,7 +251,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */,
-				8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */,
 				18D3461C846942F0B2F82B21 /* ContentView.swift in Sources */,
 				A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */,
 				B2CELET000014A1D00000002 /* BraceletLinkStore.swift in Sources */,
@@ -268,7 +261,6 @@
 				B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */,
 				A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */,
 				287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */,
-				FACE1D0000014A1D00000002 /* BiometricGate.swift in Sources */,
 				61798B5E5A964F51A8092C59 /* KeychainStore.swift in Sources */,
 				283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */,
 				FEDCBA0987654321A0B1C2D3 /* NetworkPathMonitor.swift in Sources */,

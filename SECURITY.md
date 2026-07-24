@@ -49,17 +49,6 @@ locally (gitignored path `config/google-api-key`).
 those fingerprints are pasted, App Links verification is incomplete — see
 [`docs/ANDROID_PLAY.md`](docs/ANDROID_PLAY.md). Do not invent fingerprints.
 
-## iOS Face ID edit-lock
-
-Once a bracelet is linked, editing the profile or re-writing/overwriting a tag
-in the iOS app requires Face ID / Touch ID (`BiometricGate.swift`, via Apple's
-`LocalAuthentication` — not a custom credential store). This is a **tamper
-gate** on an already-unlocked device, not new encryption: the profile is
-already Keychain-encrypted at rest. Falls back to device passcode by design,
-so an owner is never locked out of their own emergency data by a biometric
-failure. Does not gate the emergency card responders read (`ScannedCardView`
-/ web view) — gating that would defeat the app's purpose.
-
 ## Known gap: owner's own tap is not suppressed for native-app users
 
 `RedMedApp.swift` has an `isOwnPairedBand` check intended to skip the
