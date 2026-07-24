@@ -6,7 +6,7 @@ app — no separate codebase to maintain, and it updates automatically
 whenever you update and redeploy `index.html`. It's a **Trusted Web
 Activity (TWA)**: Google's official, supported way to publish a web app on
 Play, using Chrome under the hood but with zero browser chrome (no address
-bar) so it looks and feels like a native app. (`www.redmed.com` is not live yet.)
+bar) so it looks and feels like a native app.
 
 I couldn't build or run this here — no Android SDK/Android Studio in this
 environment. Everything below is the source Android Studio needs; the
@@ -61,13 +61,11 @@ via Pages workflow. Do not invent fingerprints.
 `MaxRoot1122.github.io` user-site just for Digital Asset Links.
 
 GitHub project Pages serve under `/RedMed/...`, so Android cannot verify
-`https://maxroot1122.github.io/.well-known/assetlinks.json` from this repo
-alone. Full-screen TWA verification needs the custom domain
-(`https://www.redmed.com/.well-known/assetlinks.json`) — see
-[`docs/DOMAIN.md`](../docs/DOMAIN.md). Until then the TWA still works; Chrome may
-show a thin address-bar strip (cosmetic only).
+apex `/.well-known/assetlinks.json` from this repo alone. Full-screen TWA
+verification needs a custom domain you control — see [`docs/DOMAIN.md`](../docs/DOMAIN.md).
+Until then the TWA still works; Chrome may show a thin address-bar strip (cosmetic only).
 
-**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied to the site root on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)). It takes effect for **custom domain** hosting (`www.redmed.com`).
+**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)).
 
 Full Play checklist: [`docs/ANDROID_PLAY.md`](../docs/ANDROID_PLAY.md).
 

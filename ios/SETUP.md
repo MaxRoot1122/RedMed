@@ -7,7 +7,7 @@ Local-first medical ID for your iPhone: edit your profile, write it to an NFC ta
 | Setting | Value |
 |--------|--------|
 | Bundle ID | `local.redmed.app` |
-| URL scheme | Legacy `redmed://` + HTTPS NFC tags (`github.io/RedMed` today). **Universal Links** need live `www.redmed.com` + AASA (not ready yet). No app → Safari HTML card. |
+| URL scheme | Legacy `redmed://` + HTTPS NFC tags (`github.io/RedMed`). Universal Links need a custom domain you control (none yet). No app → Safari HTML card. |
 | Deployment | iOS 16+ · iPhone only |
 | Layout | **393×852 pt** baseline via `LayoutMetrics` (`AppTheme.swift`); mockups also check **440×956**; safe areas ≈59 pt top / 34 pt bottom on Dynamic Island |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |
@@ -33,7 +33,7 @@ NFC does **not** work in Simulator — use a physical iPhone.
 | **Aid** | Offline first-aid topics + CPR compression timer. |
 | **Write Tag** | Writes your profile onto a blank **passive** NFC bracelet. **Scan emergency bracelet** opens the native first-responder card (`ScannedCardView`) without touching My ID. **Import** pulls a tag onto this phone. Passive phone taps without the app still open the hosted HTTPS card in Safari. |
 
-Tapping a written tag opens `https://maxroot1122.github.io/RedMed/index.html#d=…` in the phone's browser (works on iPhone, Android, etc.). That hosted `index.html` is the emergency card — the Swift app writes the link; it does not embed the card UI. `www.redmed.com` is not live yet (parking lander) — do not point new tags there until DNS → Pages is confirmed (see [`docs/DOMAIN.md`](../docs/DOMAIN.md)).
+Tapping a written tag opens `https://maxroot1122.github.io/RedMed/index.html#d=…` in the phone's browser (works on iPhone, Android, etc.). That hosted `index.html` is the emergency card — the Swift app writes the link; it does not embed the card UI.
 
 ---
 

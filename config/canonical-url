@@ -3,14 +3,8 @@
 #
 # Active host (first uncommented https:// line).
 # MUST be a host that actually serves this repo's Pages deploy.
-# www.redmed.com is currently a registrar parking lander — do NOT use it
-# for tag writes until DNS → GitHub Pages is live (see docs/DOMAIN.md).
 https://maxroot1122.github.io/RedMed/index.html
 #
-# Future custom domain — uncomment and make active only after:
-#   curl -sI https://www.redmed.com/index.html  → this app (not /lander)
-#   curl -s https://www.redmed.com/.well-known/apple-app-site-association → JSON
-# future:https://www.redmed.com/index.html
-#
-# Keep as legacy so old tags / pairing still recognize the domain once it goes live:
-legacy:https://www.redmed.com/index.html
+# Optional: add legacy:https://… lines if old bracelets still use another host.
+# Optional later: switch the active line to a custom domain you control once
+# DNS → GitHub Pages serves this app (see docs/DOMAIN.md).

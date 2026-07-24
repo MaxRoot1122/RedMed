@@ -66,6 +66,6 @@ pointing UIs.
    relying on full-screen TWA verification ([`docs/ANDROID_PLAY.md`](ANDROID_PLAY.md)).
 3. Restrict Maps keys in Google Cloud Console before setting
    `GOOGLE_MAPS_API_KEY` ([`SECURITY.md`](../SECURITY.md)).
-4. Confirm custom domain (`www.redmed.com`) serves this app + AASA before flipping
-   [`config/canonical-url`](../config/canonical-url) off GitHub Pages — see
+4. If you add a custom domain later, confirm it serves this app + AASA before
+   flipping [`config/canonical-url`](../config/canonical-url) — see
    [`docs/DOMAIN.md`](DOMAIN.md). Do not use `redmed.app` (unrelated third-party).
