@@ -2,6 +2,9 @@
 .DS_Store
 build/icon.iconset/
 build/DerivedData/
+# Local Xcode DerivedData dumps (never commit — ~115MB landed here once by mistake)
+build/ios-DerivedData/
+build/
 .AppleDouble
 .LSOverride
 
