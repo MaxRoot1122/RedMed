@@ -14,7 +14,12 @@ final class NFCReader: NSObject, ObservableObject {
     private var onProfile: ((MedicalProfile, String) -> Void)?
     private var didDeliver = false
 
-    func readTag(onProfile: @escaping (MedicalProfile, String) -> Void) {
+    /// - Parameter alertMessage: System NFC sheet prompt. Use a first-responder
+    ///   wording when scanning a stranger's band (not importing onto My ID).
+    func readTag(
+        alertMessage: String = "Hold your iPhone near the tag to read your medical ID.",
+        onProfile: @escaping (MedicalProfile, String) -> Void
+    ) {
         guard NFCNDEFReaderSession.readingAvailable else {
             statusMessage = "This device doesn't support NFC tag reading."
             return
@@ -25,7 +30,7 @@ final class NFCReader: NSObject, ObservableObject {
         statusMessage = "Hold your iPhone near the NFC tag."
 
         let session = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
-        session.alertMessage = "Hold your iPhone near the tag to read your medical ID."
+        session.alertMessage = alertMessage
         self.session = session
         session.begin()
     }
