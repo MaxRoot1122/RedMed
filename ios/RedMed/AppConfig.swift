@@ -19,9 +19,9 @@ enum AppConfig {
     static let amazonStoreURL = "https://www.amazon.com/gp/mas/dl/android?p=local.redmed.app"
 
     /// Canonical HTTPS card page written to NFC tags (`#d=…` profile on chip).
-    /// Any phone that taps the tag opens this URL in a browser — app not required.
-    /// When a custom domain is live, run `scripts/sync-canonical-url.sh` so iOS,
-    /// web, and Android all match. See `docs/DOMAIN.md`.
+    /// Points at the hosted root `index.html` — any phone that taps opens that
+    /// file in a browser (Swift does not embed the emergency card). Keep in
+    /// sync with `config/canonical-url` via `scripts/sync-canonical-url.sh`.
     static let medicalCardBaseURL = "https://www.redmed.com/index.html"
 
     /// Registered in Info.plist for marketing deep links and legacy tags written
