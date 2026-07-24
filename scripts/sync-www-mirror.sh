@@ -23,7 +23,8 @@ if [ -d "$ROOT/config" ]; then
 fi
 
 # Legacy duplicates at www root — legal pages and HTML use assets/ paths only.
-rm -f "$WWW/heading.svg" "$WWW/heading.png" "$WWW/wordmark.svg" "$WWW/legal-doc.css"
+rm -f "$WWW/heading.svg" "$WWW/heading.png" "$WWW/wordmark.svg" "$WWW/legal-doc.css" \
+  "$WWW/logo-32.png" "$WWW/logo-180.png" "$WWW/logo-512.png"
 
 cp "$ROOT/scripts/redmed-server.sh" "$ROOT/RedMed.app/Contents/Resources/redmed-server.sh"
 

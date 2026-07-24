@@ -31,7 +31,7 @@ Your data lives in:
 | [`index.html`](index.html) | NFC emergency card (any phone that taps the band) + Android/web owner fallback |
 | [`android/`](android/) | Trusted Web Activity wrapper around the hosted page |
 | [`RedMed.app/`](RedMed.app/) | macOS launcher — builds/runs native iOS in Simulator (`scripts/run-ios-simulator.sh`) |
-| [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); web hero `heading.svg`; iOS wordmark source `wordmark.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
+| [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); web `wordmark.svg`; iOS `wordmark-ios.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
 | [`docs/`](docs/) | Commercial launch, brand, trauma finder, stores, fulfillment |
 
 ## Quick start
