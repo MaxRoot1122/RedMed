@@ -8,12 +8,6 @@ struct WriteTagView: View {
     @State private var pendingRead: MedicalProfile?
     @State private var showingReadConfirm = false
 
-    /// Same latch as the My ID edit-lock: flips true once `BraceletLinkStore`
-    /// links a bracelet (see MyIDView). Before that, initial NFC tag setup
-    /// stays open; after, re-writing or overwriting-from-tag requires Face ID.
-    @AppStorage("redMedEditLockArmed") private var lockArmed = false
-    @State private var authInProgress = false
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -32,15 +26,15 @@ struct WriteTagView: View {
                     }
 
                     Button {
-                        Task { await gatedWrite() }
+                        writeTag()
                     } label: {
                         Label(
                             writer.isWriting ? "Hold near tag…" : "Write to NFC tag",
                             systemImage: "wave.3.right"
                         )
                     }
-                    .buttonStyle(PrimaryButtonStyle(enabled: !store.profile.name.isEmpty && !writer.isWriting && !authInProgress))
-                    .disabled(store.profile.name.isEmpty || writer.isWriting || authInProgress)
+                    .buttonStyle(PrimaryButtonStyle(enabled: !store.profile.name.isEmpty && !writer.isWriting))
+                    .disabled(store.profile.name.isEmpty || writer.isWriting)
 
                     if store.profile.name.isEmpty {
                         Text("Add your name on My ID before writing a tag.")
@@ -69,7 +63,7 @@ struct WriteTagView: View {
                 titleVisibility: .visible
             ) {
                 Button("Replace", role: .destructive) {
-                    Task { await gatedReplace() }
+                    replaceFromTag()
                 }
                 Button("Cancel", role: .cancel) { pendingRead = nil }
             } message: {
@@ -78,31 +72,14 @@ struct WriteTagView: View {
         }
     }
 
-    /// Authenticates (only if the edit-lock is armed) then writes the profile to a tag.
-    @MainActor
-    private func gatedWrite() async {
+    private func writeTag() {
         guard let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
-        guard await passesGate() else { return }
         writer.writeURL(url.absoluteString)
     }
 
-    /// Authenticates (only if the edit-lock is armed) then overwrites the local profile from a read tag.
-    @MainActor
-    private func gatedReplace() async {
-        guard await passesGate() else { pendingRead = nil; return }
+    private func replaceFromTag() {
         if let pendingRead { store.profile = pendingRead }
         pendingRead = nil
-    }
-
-    /// Returns true if the action may proceed: open during initial setup,
-    /// otherwise requires Face ID / Touch ID (with passcode fallback).
-    @MainActor
-    private func passesGate() async -> Bool {
-        guard lockArmed else { return true }
-        authInProgress = true
-        let ok = await BiometricGate.authenticate(reason: "Unlock to update your medical ID")
-        authInProgress = false
-        return ok
     }
 
     private var hero: some View {

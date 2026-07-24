@@ -37,8 +37,6 @@
 	<true/>
 	<key>NFCReaderUsageDescription</key>
 	<string>Used to read and write your medical ID on an NFC tag.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Unlocks RedMed and protects editing of your medical ID so only you can open or change it.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Shows your GPS coordinates on Find 911 so you can share your location with emergency dispatch.</string>
 	<key>UIApplicationSceneManifest</key>
