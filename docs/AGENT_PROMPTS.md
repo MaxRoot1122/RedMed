@@ -27,6 +27,7 @@ Executable plan copies (for re-runs that look for an “attached plan”):
 - [`docs/plans/meds-conditions-research.md`](plans/meds-conditions-research.md)
 - [`docs/plans/final-integration.md`](plans/final-integration.md)
 - [`docs/plans/dev-environment.md`](plans/dev-environment.md)
+- [`docs/plans/french-i18n.md`](plans/french-i18n.md)
 
 Historical research recovered from git (deleted from product docs on purpose — keep under `plans/recovered/` only):
 
