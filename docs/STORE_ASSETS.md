@@ -41,9 +41,12 @@ Source: [`assets/icon.svg`](../assets/icon.svg). Regenerate PNGs with `./scripts
 
 medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
 
-## Support URL
+## Support contact
 
-Use hosted privacy/contact: `https://maxroot1122.github.io/RedMed/privacy-policy.html` (switch to `www.redmed.com` when that host serves this app).
+**Email only:** `help.RedMed@gmail.com` (no support phone number; no separate marketing website).
+
+Support / privacy URL for store forms: `https://maxroot1122.github.io/RedMed/privacy-policy.html`  
+(`www.redmed.com` is not live — do not list it as the business website.)
 
 ## Review messaging
 
