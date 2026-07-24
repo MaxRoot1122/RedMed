@@ -2,6 +2,7 @@
 .DS_Store
 build/icon.iconset/
 build/DerivedData/
+build/ios-DerivedData/
 .AppleDouble
 .LSOverride
 
