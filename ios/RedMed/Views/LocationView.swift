@@ -37,14 +37,6 @@ struct LocationView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(callableContacts.isEmpty)
 
-                    Button {
-                        openEmergencyContactAlert()
-                    } label: {
-                        Text("Text emergency contacts")
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .disabled(emergencyPhones.isEmpty)
-
                     Text("Pick a saved contact to call — iPhone asks before placing the call.")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(AppTheme.muted)
@@ -105,7 +97,10 @@ struct LocationView: View {
                     BrandMark(size: .nav)
                 }
             }
-            .onAppear { locationManager.requestLocation() }
+            .onAppear {
+                locationManager.requestLocation()
+                promptCall911()
+            }
             .onDisappear { locationManager.stopUpdating() }
             .sheet(isPresented: $showCallContactPicker) {
                 EmergencyContactCallSheet(contacts: callableContacts) {
@@ -251,24 +246,19 @@ struct LocationView: View {
         )
     }
 
-    private var emergencyPhones: [String] {
-        EmergencySummaryBuilder.emergencyContactPhones(in: store.profile)
-    }
-
     private var callableContacts: [EmergencyContact] {
         store.profile.contacts.filter {
             !EmergencySummaryBuilder.normalizedPhone($0.phone).isEmpty
         }
     }
 
-    private func openEmergencyContactAlert() {
-        let phones = emergencyPhones
-        guard !phones.isEmpty else { return }
-        let body = EmergencySummaryBuilder.contactAlertMessage(
-            profile: store.profile,
-            coordinate: locationManager.coordinate
-        )
-        guard let url = EmergencySummaryBuilder.smsURL(phones: phones, body: body) else { return }
+    /// Opening a tel: URL for 911 makes iOS itself show its native
+    /// "Call 911? / Cancel / Call" confirmation before dialing — that's the
+    /// automatic popup. We just need to trigger the open; no custom alert
+    /// needed (a second, app-level alert would just be a redundant step
+    /// between the user and the real call).
+    private func promptCall911() {
+        guard let url = URL(string: "tel:911") else { return }
         UIApplication.shared.open(url)
     }
 
