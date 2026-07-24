@@ -11,7 +11,7 @@
 <link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-YhKrqpdGvdgstcz5rj2Z48lY6Ro7bCdrrnINhTYi/pg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-pmn47zEjK6hCF8DBAEh4HFcTdDuOq83IHd4ROJsmcBA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -1550,25 +1550,25 @@
   }
   @media (min-width: 1024px) {
     :root {
-      --page-nav-item-h: 38px;
-      --page-nav-pad: 3px;
-      --page-nav-inset: 16px;
+      --page-nav-item-h: 49px;
+      --page-nav-pad: 0px;
+      --page-nav-inset: 0px;
     }
-    .bottombar { padding: var(--page-nav-pad); gap: 3px; }
-    .bottombar-tabs { gap: 3px; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; align-items: stretch; }
+    .bottombar { padding: 0; padding-bottom: env(safe-area-inset-bottom, 0px); gap: 0; }
+    .bottombar-tabs { gap: 0; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; align-items: stretch; }
     .bb-item {
       flex: 1 1 0;
       width: auto;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: var(--page-nav-item-h);
-      height: var(--page-nav-item-h);
-      font-size: 13px;
-      padding: 4px 10px;
-      gap: 3px;
+      min-height: 49px;
+      height: 49px;
+      font-size: 11px;
+      padding: 2px 4px 1px;
+      gap: 2px;
     }
-    .bb-label { font-size: 13px; }
+    .bb-label { font-size: 11px; }
   }
 
   .consent-banner {
@@ -4531,46 +4531,10 @@
   function syncBottomBarNow() {
     var shell = document.getElementById("bottombarShell");
     if (!shell || document.body.classList.contains("responder-mode")) return;
-
-    var anchor = null;
-    var edit = document.getElementById("editView");
-    var view = document.getElementById("viewView");
-    var aid = document.getElementById("aidView");
-    var loc = document.getElementById("locView");
-    if (edit && !edit.classList.contains("hide")) {
-      var splitMain = edit.querySelector(".split-main");
-      anchor = splitMain || edit;
-    } else if (aid && aid.classList.contains("show")) {
-      anchor = aid;
-    } else if (loc && loc.classList.contains("show")) {
-      anchor = loc;
-    } else if (view && view.classList.contains("show")) {
-      anchor = view;
-    }
-    if (!anchor) anchor = edit || document.body;
-
-    var phone = isPhoneLayout();
-
-    if (phone) {
-      shell.classList.add("is-phone-dock");
-      shell.style.width = "";
-      shell.style.left = "";
-      return;
-    }
-
-    shell.classList.remove("is-phone-dock");
-
-    var anchorRect = anchor.getBoundingClientRect();
-    var inset = 14; /* matches --page-nav-inset */
-    var parsedInset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--page-nav-inset"));
-    if (!isNaN(parsedInset)) inset = parsedInset;
-    var vw = (window.visualViewport && window.visualViewport.width) || window.innerWidth || anchorRect.width;
-    var width = Math.max(240, Math.round(anchorRect.width) - inset * 2);
-    var left = Math.round(anchorRect.left) + inset;
-    left = Math.max(inset, Math.min(left, vw - width - inset));
-
-    shell.style.width = width + "px";
-    shell.style.left = left + "px";
+    /* Full-bleed UITabBar sizing — CSS owns width/position; clear old float insets. */
+    shell.classList.toggle("is-phone-dock", isPhoneLayout());
+    shell.style.width = "";
+    shell.style.left = "";
     shell.style.right = "";
   }
 
