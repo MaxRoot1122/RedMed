@@ -48,9 +48,11 @@ pointing UIs.
 
 ## Mitigations in product
 
-- CSP on `index.html` and `get.html` (hash-pinned script; `object-src 'none'`).
+- CSP on `index.html` and `get.html` (hash-pinned script; `object-src 'none'`;
+  Maps `connect-src` exception for Find 911 only).
 - `#d=` pre-parse size gate + schema coercion / length caps before render.
-- Contact `tel:` links built via DOM APIs (not string `innerHTML` hrefs).
+- Contact `tel:` links built via DOM APIs + `normalizePhone` (not string `innerHTML` hrefs).
+- Emergency card `document.title` is generic (`RedMed — Emergency`) — no patient name.
 - PIN stored with PBKDF2 (Web Crypto) + attempt lockout; set fails closed without SubtleCrypto.
 - When PIN-locked, NFC write and disconnect require unlock (NFC chip data stays readable).
 - iOS profile + bracelet URL in Keychain (`WhenUnlockedThisDeviceOnly`); decode path size-capped.
@@ -61,12 +63,9 @@ pointing UIs.
 
 1. Branch protection on `main` (GitHub settings — not in-repo).
 2. Paste real Play signing SHA-256 into `.well-known/assetlinks.json` before
-   relying on full-screen TWA verification.
+   relying on full-screen TWA verification ([`docs/ANDROID_PLAY.md`](ANDROID_PLAY.md)).
 3. Restrict Maps keys in Google Cloud Console before setting
-   `GOOGLE_MAPS_API_KEY`.
-4. **Register a domain you actually own before manufacturing bracelets.**
-   `redmed.app` (referenced in `CNAME` and this doc's domain-migration plan)
-   is a live, unrelated third-party site as of 2026-07-23 — not available.
-   Universal Links for the "owner's own tap doesn't show the responder view"
-   feature, and any commercial packaging, need a domain you control. See
-   `SECURITY.md` → "Known gap: owner's own tap is not suppressed."
+   `GOOGLE_MAPS_API_KEY` ([`SECURITY.md`](../SECURITY.md)).
+4. Confirm custom domain (`www.redmed.com`) serves this app + AASA before flipping
+   [`config/canonical-url`](../config/canonical-url) off GitHub Pages — see
+   [`docs/DOMAIN.md`](DOMAIN.md). Do not use `redmed.app` (unrelated third-party).
