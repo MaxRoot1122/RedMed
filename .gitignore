@@ -2,7 +2,9 @@
 .DS_Store
 build/icon.iconset/
 build/DerivedData/
+# Local Xcode DerivedData dumps (never commit — ~115MB landed here once by mistake)
 build/ios-DerivedData/
+build/
 .AppleDouble
 .LSOverride
 
@@ -14,6 +16,8 @@ build/ios-DerivedData/
 .idea/
 *.swp
 *~
+# SweetPad / xcode-build-server — machine-local paths
+buildServer.json
 
 # Xcode (created once the project is set up per ios/SETUP.md — sources
 # themselves live in ios/RedMed/ and stay tracked)
@@ -36,4 +40,3 @@ android/.idea/
 android/*.iml
 android/captures/
 android/.cxx/
-

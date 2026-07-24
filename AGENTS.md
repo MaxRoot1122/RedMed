@@ -4,18 +4,10 @@ Local-first emergency medical ID app. See `.cursorrules` for architecture, invar
 
 **One repo, one trunk:** all product work lives on `main` in `MaxRoot1122/RedMed`. Do not keep long-lived feature forks; land changes on `main`.
 
-### RedMed group agent prompts
-Other Cursor agents’ transcripts are often **not API-accessible** from a later cloud run. Opened prompts/plans for the RedMed Agents group live in-repo:
-
-- [`docs/AGENT_PROMPTS.md`](docs/AGENT_PROMPTS.md) — catalog + recovered prompts
-- [`docs/plans/`](docs/plans/) — executable plan copies for re-runs
-
-Paste new prompts there (and/or add a plan file) instead of relying on another agent’s `bc-…` id.
-
 ## Cursor Cloud specific instructions
 
 ### What runs here
-Only the **web app** (`index.html`) is runnable in this Linux environment. It is a single, self-contained static file — no build step, no framework, no package manager, no dependencies. The iOS (`ios/`) and Android (`android/`) targets require Xcode / the Android SDK and **cannot be built or run here**; the macOS wrapper (`RedMed.app/`) is a bash launcher for macOS only.
+Only the **web NFC card** (`index.html`) is runnable in this Linux environment. It is a single, self-contained static file — no build step, no framework, no package manager, no dependencies. The **primary owner app** is native iOS (`ios/`) and **cannot be built or run here** (needs Xcode). Android (`android/`) needs the Android SDK. The macOS wrapper (`RedMed.app/`) is a bash launcher for macOS only (starts the iOS Simulator).
 
 ### Dependencies / update script
 There are **no installable dependencies**. The Cloud Agent update script is a no-op (`true`). Do not add `npm install`, package managers, or service startup to it.
@@ -27,11 +19,11 @@ Double-clicking `RedMed.app` in the file tree does nothing useful — it is an a
 2. Terminal: `./scripts/run-ios-simulator.sh`
 3. Ask the agent: "launch RedMed"
 
-Edits for the **hosted NFC emergency card** and web product live in root [`index.html`](index.html) (CSP hash + `./scripts/sync-www-mirror.sh`). The iOS app is a **native companion**: it **points NFC writes at** `AppConfig.medicalCardBaseURL` → the same hosted `index.html#d=…` card. Owner UI (Face ID lock, Keychain, CoreNFC) lives in `ios/RedMed/` (SwiftUI). Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
+**Product UI for iPhone owners** lives in `ios/RedMed/` (SwiftUI) — Face ID app lock, Keychain, CoreNFC. `index.html` is the public NFC emergency card (+ Android TWA / browser fallback); bracelet taps need that hosted HTTPS page (do not delete it or try to replace it with Swift). Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
 
-Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`.
+Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`. Never commit `build/ios-DerivedData/` or other DerivedData trees into the repo.
 
-### Run the web app (dev)
+### Run the web NFC card (dev)
 Serve over localhost (not `file://` — geolocation on Find 911 requires a secure context, which localhost provides):
 
 ```
@@ -43,7 +35,7 @@ Then open `http://127.0.0.1:8934/index.html`. Port `8934` matches the macOS wrap
 If the Desktop browser shows CSP errors but `curl http://127.0.0.1:8934/index.html` has the correct `sha256-` hash, hard-refresh or confirm you are on **localhost** (not the GitHub Pages URL).
 
 ### Public host (any-phone NFC)
-Bracelet taps open the canonical card URL from [`config/canonical-url`](config/canonical-url) (currently `https://www.redmed.com/index.html`). iOS `AppConfig.medicalCardBaseURL`, web `HOSTED_URL`, and Android TWA launch URL must stay in sync via `./scripts/sync-canonical-url.sh`. GitHub Pages (`https://maxroot1122.github.io/RedMed/`) remains a **legacy** host for older tags. Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`.
+Bracelet taps open the canonical card URL from [`config/canonical-url`](config/canonical-url) (currently `https://maxroot1122.github.io/RedMed/index.html`). iOS `AppConfig.medicalCardBaseURL`, web `HOSTED_URL`, and Android TWA launch URL must stay in sync via `./scripts/sync-canonical-url.sh`. `www.redmed.com` is reserved for later (DNS not pointing at Pages yet — see `docs/DOMAIN.md`). Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`.
 
 ### NFC / passive chip only
 RedMed programs a **passive** bracelet chip (NDEF URI + `#d=` payload) — no battery, no broadcast. The phone energizes the chip on tap. **Passive NFC only:** do not add BLE, active RFID, UHF, or battery-powered tags. iOS uses CoreNFC with post-write read-back verify; Android Chrome can write via Web NFC in the Bracelet sheet when `NDEFReader` is available. See [`docs/BRACELET.md`](docs/BRACELET.md).
