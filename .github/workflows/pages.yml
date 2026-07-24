@@ -31,6 +31,8 @@ jobs:
           # Universal Links — must be at domain root with no file extension
           cp .well-known/apple-app-site-association _site/.well-known/apple-app-site-association
           cp .well-known/apple-app-site-association _site/apple-app-site-association
+          # Only publish root CNAME when DNS → Pages is live. Until then keep
+          # the future hostname in config/CNAME.future (www is a parking lander).
           if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
           if [ -n "${{ secrets.GOOGLE_MAPS_API_KEY }}" ]; then
             printf '%s' "${{ secrets.GOOGLE_MAPS_API_KEY }}" > _site/config/google-api-key

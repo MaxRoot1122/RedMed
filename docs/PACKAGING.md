@@ -19,7 +19,7 @@ RedMed stores your allergies, medications, and emergency contacts on a **passive
 
 ## Setup steps (insert card)
 
-1. Download RedMed (optional) or open [the web app](https://www.redmed.com/).
+1. Download RedMed (optional) or open [the web app](https://maxroot1122.github.io/RedMed/).
 2. Fill in your profile → **Save**.
 3. Write the card link to this bracelet (iOS **Write Tag** or NFC Tools app).
 4. Tap the bracelet with your phone to test.
@@ -30,7 +30,7 @@ When your information changes, **rewrite the tag**.
 
 Use a required checkbox before payment:
 
-> I understand that medical information I provide may be encoded on an NFC tag that **anyone can read by tapping**, that RedMed does not verify this information, and that the bracelet is **not a medical device**. I agree to the [Terms of Use](https://www.redmed.com/terms-of-service.html) and [Privacy Policy](https://www.redmed.com/privacy-policy.html).
+> I understand that medical information I provide may be encoded on an NFC tag that **anyone can read by tapping**, that RedMed does not verify this information, and that the bracelet is **not a medical device**. I agree to the [Terms of Use](https://maxroot1122.github.io/RedMed/terms-of-service.html) and [Privacy Policy](https://maxroot1122.github.io/RedMed/privacy-policy.html).
 
 For **pre-encoded** orders, add:
 

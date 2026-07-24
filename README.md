@@ -3,7 +3,7 @@
 Local-first emergency medical ID for NFC bracelets. No accounts. No backend. Profile data stays on your device and on the tag you write.
 
 <p align="center">
-  <a href="https://www.redmed.com/">Live demo</a>
+  <a href="https://maxroot1122.github.io/RedMed/">Live demo</a>
   ·
   <a href="privacy-policy.html">Privacy</a>
   ·
@@ -16,7 +16,7 @@ Fill in allergies, meds, contacts, and notes once. Save. Write the link to a **p
 
 The standard RedMed bracelet is a **passive NFC tag** with no battery. It does not need charging; the reader phone powers it briefly during a tap.
 
-**Out of the box:** print a QR code to `https://www.redmed.com/get.html` — it detects iPhone vs Android and opens the right app store. Only the **purchaser** needs RedMed to fill the form and write the bracelet (My ID → **Bracelet**, top right).
+**Out of the box:** print a QR code to `https://maxroot1122.github.io/RedMed/get.html` — it detects iPhone vs Android and opens the right app store. Only the **purchaser** needs RedMed to fill the form and write the bracelet (My ID → **Bracelet**, top right). (`www.redmed.com` is not live yet — see [`docs/DOMAIN.md`](docs/DOMAIN.md).)
 
 Your data lives in:
 

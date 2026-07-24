@@ -18,9 +18,11 @@ This product lives in **one** GitHub repo only:
 Do not create, recommend, or depend on a second repo (including a
 `MaxRoot1122.github.io` user-site, a fork used as the "real" source, or
 a multi-repo Cursor environment). Hosting, Android TWA, iOS, docs, and
-agent work all stay inside this repo. Canonical public host is
-`https://www.redmed.com/` (NFC card = `/index.html`). GitHub Pages
-`https://maxroot1122.github.io/RedMed/` is legacy for older tags only.
+agent work all stay inside this repo. Canonical public host (live) is
+`https://maxroot1122.github.io/RedMed/` (NFC card = `/index.html`).
+`www.redmed.com` is **not** live yet (parking lander) — keep it in
+`config/CNAME.future` / `legacy:` until DNS → Pages is verified
+(see `docs/DOMAIN.md`). Do not write new tags to www until then.
 
 ## Where things live
 
@@ -70,8 +72,9 @@ agent work all stay inside this repo. Canonical public host is
   broadcast — the phone powers the chip on tap. App code: CoreNFC + Web NFC
   write only; do not add Bluetooth, UHF, or live-tracking radios.
 - **NFC opens on smartphones, on purpose.** `AppConfig.medicalCardBaseURL`
-  points at the hosted root **`index.html`** (canonical: `https://www.redmed.com/index.html`;
-  sync via `config/canonical-url`). Tags store that URL plus `#d=` profile data
+  points at the hosted root **`index.html`** (canonical today:
+  `https://maxroot1122.github.io/RedMed/index.html`; sync via
+  `config/canonical-url`). Tags store that URL plus `#d=` profile data
   on the bracelet chip — no account, no cloud sync. SwiftUI is the owner
   companion (write/read NFC, Face ID, Keychain); the emergency card UI is the
   hosted `index.html`, not an in-app WebView. A stranger's **smartphone** taps
