@@ -62,11 +62,12 @@ via Pages workflow. Do not invent fingerprints.
 
 GitHub project Pages serve under `/RedMed/...`, so Android cannot verify
 `https://maxroot1122.github.io/.well-known/assetlinks.json` from this repo
-alone. Skip full-screen verification for now — the TWA still works; Chrome may
-show a thin address-bar strip instead of true full-screen. That is a
-cosmetic downgrade only.
+alone. Full-screen TWA verification needs the custom domain
+(`https://www.redmed.com/.well-known/assetlinks.json`) — see
+[`docs/DOMAIN.md`](../docs/DOMAIN.md). Until then the TWA still works; Chrome may
+show a thin address-bar strip (cosmetic only).
 
-**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied to the site root on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)). It takes effect for **custom domain** hosting per [`docs/DOMAIN.md`](../docs/DOMAIN.md).
+**Deployed asset links:** [`.well-known/assetlinks.json`](../.well-known/assetlinks.json) is copied to the site root on each `main` push (see [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)). It takes effect for **custom domain** hosting (`www.redmed.com`).
 
 Full Play checklist: [`docs/ANDROID_PLAY.md`](../docs/ANDROID_PLAY.md).
 
