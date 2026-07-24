@@ -92,7 +92,7 @@ legacy_blocks = ""
 for legacy in legacy_urls:
     lp = urlparse(legacy)
     legacy_host = lp.hostname or ""
-    legacy_path = lp.path.removesuffix("/index.html") or "/RedMed"
+    legacy_path = lp.path.removesuffix("/index.html") or "/"
     legacy_blocks += f"""
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -104,11 +104,9 @@ for legacy in legacy_urls:
                     android:pathPrefix="{legacy_path}" />
             </intent-filter>"""
 
-# Replace existing intent-filter block(s) for https VIEW after LAUNCHER filter
+# Replace ALL https App Link intent-filters after LAUNCHER with primary + legacy set.
 pattern = re.compile(
-    r"\n            <intent-filter android:autoVerify=\"true\">.*?</intent-filter>"
-    r"(?:\s*<!-- After custom domain is live.*?-->\s*)?"
-    r"(?:\s*<!--\s*<intent-filter android:autoVerify=\"true\">.*?</intent-filter>\s*-->)?",
+    r"(?:\n            <intent-filter android:autoVerify=\"true\">.*?</intent-filter>)+",
     re.DOTALL,
 )
 if not pattern.search(text):
