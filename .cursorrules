@@ -23,13 +23,16 @@ agent work all stay inside this repo. GitHub Pages path is
 
 ## Where things live
 
-- `index.html` — the entire web app: single file, inline `<style>`/`<script>`,
-  no build step, no framework, no dependencies. Views (My ID / Aid / 911)
-  are plain divs toggled via `location.hash` routing.
-- `ios/RedMed/` — SwiftUI sources. Open **`ios/RedMed.xcodeproj`** in Xcode
-  (NFC capability, `redmed://` URL scheme, bundle ID `local.redmed.app` are
-  preconfigured — see `ios/SETUP.md`). Nothing here has ever been compiled in
-  this environment; treat any Swift edit as unverified until built on a real Mac.
+- `ios/RedMed/` — **primary owner app** (SwiftUI). Open **`ios/RedMed.xcodeproj`**
+  in Xcode (NFC capability, `redmed://` URL scheme, bundle ID `local.redmed.app`
+  are preconfigured — see `ios/SETUP.md`). Product UI edits for iPhone owners
+  land here first. Nothing here has ever been compiled in this Linux cloud
+  environment; treat any Swift edit as unverified until built on a real Mac.
+- `index.html` — **NFC emergency card** + Android/web fallback. Single file,
+  inline `<style>`/`<script>`, no build step. Bracelet taps open this hosted
+  page with `#d=` profile data. Also carries owner tabs (My ID / Aid / 911) for
+  Android TWA and browsers. Do **not** delete or replace with Swift — any-phone
+  NFC requires a public HTTPS HTML card. Views toggle via `location.hash`.
 - `android/` — a bare Trusted Web Activity (TWA) wrapper around a hosted
   copy of `index.html`. Zero native UI code exists — see `android/SETUP.md`
   for NFC write gap (iOS native; Android Chrome Web NFC on hosted page).

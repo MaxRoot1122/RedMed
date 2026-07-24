@@ -27,20 +27,22 @@ Your data lives in:
 
 | Path | Role |
 |------|------|
-| [`index.html`](index.html) | Web / PWA — edit card, Aid, Find 911 (incl. offline trauma centers by state) |
-| [`ios/`](ios/) | SwiftUI companion — Keychain profile, NFC read/write, first-launch consent |
+| [`ios/`](ios/) | **Primary owner app** (SwiftUI) — Keychain profile, NFC read/write, Aid, Find 911, first-launch consent |
+| [`index.html`](index.html) | NFC emergency card (any phone that taps the band) + Android/web owner fallback |
 | [`android/`](android/) | Trusted Web Activity wrapper around the hosted page |
-| [`RedMed.app/`](RedMed.app/) | macOS launcher (serves the web app on localhost) |
+| [`RedMed.app/`](RedMed.app/) | macOS launcher — builds/runs native iOS in Simulator (`scripts/run-ios-simulator.sh`) |
 | [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); **in-app wordmark** `wordmark.svg`; symbol `mark.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
 | [`docs/`](docs/) | Commercial launch, brand, trauma finder, stores, fulfillment |
 
 ## Quick start
 
-**Web:** [Hosted demo](https://maxroot1122.github.io/RedMed/) or double-click [`RedMed.app`](RedMed.app/) on a Mac (port 8934).
+**iPhone (preferred):** open [`ios/RedMed.xcodeproj`](ios/SETUP.md) → Run, or double-click [`RedMed.app`](RedMed.app/) on a Mac (Simulator).
 
-1. Fill in your info → **Save**
-2. Copy the card link or use **iOS Write Tag** to write a blank NTAG bracelet
-3. Tap the band — card opens in the phone's browser
+1. Fill in your info → save
+2. **Write Tag** / Bracelet setup → blank NTAG bracelet
+3. Tap the band — emergency card opens in the phone's browser (`index.html#d=…`)
+
+**Web / Android fallback:** [hosted card](https://maxroot1122.github.io/RedMed/) · [`android/SETUP.md`](android/SETUP.md)
 
 iOS: [`ios/SETUP.md`](ios/SETUP.md) · Android: [`android/SETUP.md`](android/SETUP.md)
 

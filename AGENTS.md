@@ -15,7 +15,7 @@ Paste new prompts there (and/or add a plan file) instead of relying on another a
 ## Cursor Cloud specific instructions
 
 ### What runs here
-Only the **web app** (`index.html`) is runnable in this Linux environment. It is a single, self-contained static file — no build step, no framework, no package manager, no dependencies. The iOS (`ios/`) and Android (`android/`) targets require Xcode / the Android SDK and **cannot be built or run here**; the macOS wrapper (`RedMed.app/`) is a bash launcher for macOS only.
+Only the **web NFC card** (`index.html`) is runnable in this Linux environment. It is a single, self-contained static file — no build step, no framework, no package manager, no dependencies. The **primary owner app** is native iOS (`ios/`) and **cannot be built or run here** (needs Xcode). Android (`android/`) needs the Android SDK. The macOS wrapper (`RedMed.app/`) is a bash launcher for macOS only (starts the iOS Simulator).
 
 ### Dependencies / update script
 There are **no installable dependencies**. The Cloud Agent update script is a no-op (`true`). Do not add `npm install`, package managers, or service startup to it.
@@ -27,11 +27,11 @@ Double-clicking `RedMed.app` in the file tree does nothing useful — it is an a
 2. Terminal: `./scripts/run-ios-simulator.sh`
 3. Ask the agent: "launch RedMed"
 
-Edits to the product UI live in `ios/RedMed/` (SwiftUI), not `index.html`. Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
+**Product UI for iPhone owners** lives in `ios/RedMed/` (SwiftUI). `index.html` is the public NFC emergency card (+ Android TWA / browser fallback) — do not delete it or try to "replace" it with Swift; bracelet taps need a hosted HTTPS HTML page. Physical iPhone + NFC: **RedMed: Open in Xcode**, pick your device, **⌘R**.
 
-Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`.
+Build output stays at `~/Library/Developer/Xcode/DerivedData/RedMed-local` (outside iCloud). Log: `~/Library/Logs/RedMed/launch.log`. Never commit `build/ios-DerivedData/` or other DerivedData trees into the repo.
 
-### Run the web app (dev)
+### Run the web NFC card (dev)
 Serve over localhost (not `file://` — geolocation on Find 911 requires a secure context, which localhost provides):
 
 ```
