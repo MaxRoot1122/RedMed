@@ -1,0 +1,184 @@
+{
+  "source": "/Users/maximilianaguilar-aasted/Library/Mobile Documents/com~apple~CloudDocs/RedMed Mac Mimi/RedMed/ios/RedMed/Views/LocationView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "911",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pick a saved contact to call — iPhone asks before placing the call.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap when you have cell service. Satellite SOS is built into iOS — RedMed cannot start it.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Read decimal coordinates to the dispatcher first, then accuracy.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Coordinates show on this screen only. RedMed has no servers.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Call 911",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "Call emergency contacts",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copied!",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy coordinates",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 69
+        }
+      },
+      {
+        "comment": "",
+        "key": "Find 911",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Call first. Share GPS second.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "As of %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "GPS unavailable",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Getting GPS…",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 176
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld° %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "No cell signal?",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 205
+        }
+      },
+      {
+        "comment": "",
+        "key": "RedMed shows GPS only. Satellite emergency calling is built into your phone — RedMed cannot open or control it.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 218
+        }
+      },
+      {
+        "comment": "",
+        "key": "iPhone 14+ (iOS 16.1+): hold Side + Volume until Emergency SOS appears, or Settings → Emergency SOS. Guide: https://support.apple.com/en-us/102669",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 222
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tell the dispatcher street names or landmarks if you can, even with GPS.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Phone · dial 911",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 231
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select a contact to call",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 305
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 309
+        }
+      }
+    ]
+  },
+  "version": 1
+}
