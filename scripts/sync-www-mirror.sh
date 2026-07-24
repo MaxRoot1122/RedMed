@@ -11,28 +11,20 @@ cp "$ROOT/privacy-policy.html" "$WWW/privacy-policy.html"
 cp "$ROOT/terms-of-service.html" "$WWW/terms-of-service.html"
 cp "$ROOT/manifest.json" "$WWW/manifest.json"
 
-# Prefer rsync when available; fall back to cp so Linux CI/agents without rsync still sync.
-sync_dir() {
-  local src="$1" dest="$2"
-  mkdir -p "$dest"
-  if command -v rsync >/dev/null 2>&1; then
-    rsync -a --delete "$src/" "$dest/"
-  else
-    # Best-effort mirror without rsync: refresh files, leave orphan cleanup to verify-web.
-    cp -a "$src"/. "$dest"/
-  fi
-}
-
 if [ -d "$ROOT/assets" ]; then
-  sync_dir "$ROOT/assets" "$WWW/assets"
+  rm -rf "$WWW/assets"
+  mkdir -p "$WWW/assets"
+  cp -a "$ROOT/assets/." "$WWW/assets/"
 fi
 
 if [ -d "$ROOT/config" ]; then
-  sync_dir "$ROOT/config" "$WWW/config"
+  mkdir -p "$WWW/config"
+  cp -a "$ROOT/config/." "$WWW/config/"
 fi
 
 # Legacy duplicates at www root — legal pages and HTML use assets/ paths only.
-rm -f "$WWW/heading.svg" "$WWW/heading.png" "$WWW/wordmark.svg" "$WWW/legal-doc.css"
+rm -f "$WWW/heading.svg" "$WWW/heading.png" "$WWW/wordmark.svg" "$WWW/legal-doc.css" \
+  "$WWW/logo-32.png" "$WWW/logo-180.png" "$WWW/logo-512.png"
 
 cp "$ROOT/scripts/redmed-server.sh" "$ROOT/RedMed.app/Contents/Resources/redmed-server.sh"
 

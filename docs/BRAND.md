@@ -4,11 +4,11 @@ Two intentional marks — **do not swap them**.
 
 | Asset | File | Use |
 |-------|------|-----|
-| **App cover / icon** | `assets/icon.svg` (+ PNG/ICNS exports) | Home screen, favicon, PWA manifest, App Store, `get.html` hero, iOS `AppIcon`, linked-device emblem in header |
-| **In-app wordmark** | `assets/wordmark.svg` (+ `BrandWordmark` on iOS) | My ID header, Aid chrome, anywhere the product name “RedMed” appears inside the app |
-| **Symbol only** | `assets/mark.svg` | Optional tiny contexts (future: NFC sheet, loading splash) — not the full cover plate |
+| **App cover / icon** | `assets/icon.svg` (+ PNG/ICNS exports) | Home screen, favicon, PWA manifest, App Store, iOS `AppIcon`, linked-device emblem |
+| **Web wordmark** | `assets/wordmark.svg` | `index.html` / `get.html` headers (CSS: `brand-wordmark`) |
+| **iOS wordmark source** | `assets/wordmark-ios.svg` → `BrandWordmark` | Native My ID / Aid chrome (includes MEDICAL ID subtitle) |
 
-`icon.svg` is the **only** source for raster app icons. Regenerate PNGs/ICNS after editing it (`sips` / `iconutil` on macOS).
+`icon.svg` is the **only** source for raster app icons. Regenerate PNGs/ICNS after editing it (`./scripts/generate-icons.sh`).
 
 ---
 
@@ -19,7 +19,7 @@ Two intentional marks — **do not swap them**.
 | Asset kind | Approach | Why |
 |------------|----------|-----|
 | **UI affordances** (Aid tiles, chevrons, phone, NFC, remove chips) | **SF Symbols** (`Image(systemName:)`) | Already wired in `BasicAidView`, `IconWell`, toolbars. Scales with Dynamic Type, tintable, no export pipeline. |
-| **Brand cover + wordmark** (`BrandLogo`, `BrandWordmark`) | **Single PDF per imageset** in Xcode with **Preserve Vector Data** | Export once from `icon.svg` / `wordmark.svg`. Xcode scales — no `@1x/@2x/@3x` PNG maintenance. |
+| **Brand cover + wordmark** (`BrandLogo`, `BrandWordmark`) | **Single PDF per imageset** in Xcode with **Preserve Vector Data** | Export once from `icon.svg` / `wordmark-ios.svg`. Xcode scales — no `@1x/@2x/@3x` PNG maintenance. |
 | **App Store / home-screen icon** | **Single raster PNG** — `AppIcon.appiconset/AppIcon.png` at **1024×1024** | Apple requires PNG for the app icon slot; Xcode generates all installed sizes from this one file. |
 | **Web / Play / favicon** | **Raster PNG** from same SVG via `./scripts/generate-icons.sh` | Browsers and Play Console don't use xcassets PDFs. |
 
@@ -29,9 +29,9 @@ Two intentional marks — **do not swap them**.
 - **Brand in xcassets:** replace three PNG slots with one vector PDF each:
 
 ```bash
-# macOS — after editing icon.svg or wordmark.svg
+# macOS — after editing icon.svg or wordmark-ios.svg
 rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandLogo.imageset/BrandLogo.pdf assets/icon.svg
-rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.pdf assets/wordmark.svg
+rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.pdf assets/wordmark-ios.svg
 ```
 
 In each imageset `Contents.json`: one universal PDF entry + `"preserves-vector-representation": true`. Delete `BrandLogo.png`, `@2x`, `@3x` once PDF is in place.
@@ -71,7 +71,7 @@ Only if you hit a rare PDF rendering glitch on a specific device, or you need pi
 
 ### A — **Shipped for tonight** ✓
 - **Cover** = full squircle plate + bronze cross + serpent (`icon.svg`) — unchanged identity on stores and install.
-- **In-app** = horizontal **wordmark** (`wordmark.svg`): mini cover plate + “RedMed” + “MEDICAL ID” subtitle.
+- **In-app** = horizontal **wordmark** (`wordmark.svg` on web; `wordmark-ios.svg` → `BrandWordmark` on iOS with MEDICAL ID subtitle).
 - **Linked bracelet** = header switches to **device name** + small **cover icon** (same as home screen) so the band reads as “this app on this device.”
 
 *Pros:* Clear separation; wordmark reads at header size; cover stays iconic.  
@@ -84,9 +84,9 @@ Only if you hit a rare PDF rendering glitch on a specific device, or you need pi
 *Cons:* Less tied to bracelet/cover story; weaker at a glance in emergencies.
 
 ### C — Wordmark + tagline lockup variants
-- `wordmark.svg` — default My ID  
-- `wordmark-aid.svg` — “RedMed · Roadside Aid” for Aid tab  
-- `wordmark-911.svg` — “RedMed · Find 911” muted
+- `wordmark.svg` — web default  
+- `wordmark-ios.svg` — native BrandWordmark (MEDICAL ID)  
+- future: Aid / 911 lockups if headers feel samey
 
 *Pros:* Per-screen context without changing the cover.  
 *Cons:* More files/translations to maintain.
@@ -114,16 +114,16 @@ Duplicate wordmarks for OLED / outdoor readability.
 ```bash
 # App icon set (cover) — single 1024×1024 for iOS; other web/Play sizes below
 rsvg-convert -w 1024 -h 1024 assets/icon.svg -o ios/RedMed/Assets.xcassets/AppIcon.appiconset/AppIcon.png
-# Or: ./scripts/generate-icons.sh (writes AppIcon.png + favicon, apple-touch, Play 512)
+# Or: ./scripts/generate-icons.sh (favicon, apple-touch, icon-512, Play 512, BrandLogo, BrandWordmark)
 
 # Optional: iOS brand vectors (preferred over PNG triplets)
-rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.pdf assets/wordmark.svg
+rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.pdf assets/wordmark-ios.svg
 rsvg-convert -f pdf -o ios/RedMed/Assets.xcassets/BrandLogo.imageset/BrandLogo.pdf assets/icon.svg
 
 # Legacy PNG triplets (only if not using PDF in xcassets)
-rsvg-convert -w 360 -h 88 assets/wordmark.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.png
-rsvg-convert -w 720 -h 176 assets/wordmark.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark@2x.png
-rsvg-convert -w 1080 -h 264 assets/wordmark.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark@3x.png
+rsvg-convert -w 360 -h 88 assets/wordmark-ios.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark.png
+rsvg-convert -w 720 -h 176 assets/wordmark-ios.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark@2x.png
+rsvg-convert -w 1080 -h 264 assets/wordmark-ios.svg -o ios/RedMed/Assets.xcassets/BrandWordmark.imageset/BrandWordmark@3x.png
 rsvg-convert -w 120 -h 120 assets/icon.svg -o ios/RedMed/Assets.xcassets/BrandLogo.imageset/BrandLogo.png
 rsvg-convert -w 240 -h 240 assets/icon.svg -o ios/RedMed/Assets.xcassets/BrandLogo.imageset/BrandLogo@2x.png
 rsvg-convert -w 360 -h 360 assets/icon.svg -o ios/RedMed/Assets.xcassets/BrandLogo.imageset/BrandLogo@3x.png
@@ -137,10 +137,7 @@ On Linux CI (this environment): `rsvg-convert` works for the same commands.
 
 | Location | Asset |
 |----------|--------|
-| `index.html` header (default) | `wordmark.svg` |
-| `index.html` header (bracelet linked) | `icon.svg` + device name |
-| `index.html` Aid header | `wordmark.svg` + Aid title |
-| `get.html` | `icon.svg` (cover) |
-| `manifest.json` / favicon | PNG from `icon.svg` |
-| iOS `BrandMark` default | `BrandWordmark` image |
-| iOS `BrandMark` device override | `BrandLogo` (cover icon) + name |
+| `index.html` / `get.html` headers | `wordmark.svg` |
+| `manifest.json` / favicon | `icon-512.png` / `favicon-32.png` / `apple-touch-icon.png` from `icon.svg` |
+| iOS `BrandMark` default | `BrandWordmark` (from `wordmark-ios.svg`) |
+| iOS `BrandMark` device override | `BrandLogo` (from `icon.svg`) + name |
