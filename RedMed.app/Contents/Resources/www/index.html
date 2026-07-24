@@ -8,8 +8,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#fff5f5">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xvDlS/PTOyQxIGTgnzT3fwjitSO0VG1tzlrwtLec/jA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta name="theme-color" content="#fff7f7">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-421e5EopPY3HzEGcOVCWn+Mk0iWwLKePXUrpdvh/Q3Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -47,7 +47,7 @@
     --google-outline: rgba(28, 25, 23, 0.18);
     --google-outline-variant: rgba(28, 25, 23, 0.09);
     --google-on-surface: #1c1917;
-    --google-on-surface-variant: #6b6560;
+    --google-on-surface-variant: #78716c;
     --google-state-hover: rgba(225, 29, 72, 0.08);
     --google-state-pressed: rgba(225, 29, 72, 0.12);
     --brand: #e11d48;
@@ -75,16 +75,16 @@
     --outline-hover: rgba(28, 25, 23, 0.28);
     --line: rgba(28, 25, 23, 0.09);
     --surface: rgba(255, 255, 255, 0.86);
-    --surface-dim: #fff5f5;
-    --panel: rgba(255, 241, 242, 0.92);
-    --bg: #fff5f5;
-    --shell: #1c1917;
+    --surface-dim: #fff7f7;
+    --panel: rgba(255, 255, 255, 0.92);
+    --bg: #fff7f7;
+    --shell: #fff7f7;
     --field-bg: rgba(255, 255, 255, 0.92);
     --field-bg-focus: #ffffff;
     --field-border: rgba(28, 25, 23, 0.12);
     --field-border-hover: rgba(28, 25, 23, 0.22);
     --field-radius: 12px;
-    --card-radius: 16px;
+    --card-radius: 24px;
     --border-subtle: rgba(28, 25, 23, 0.06);
     --border-medium: rgba(28, 25, 23, 0.12);
     --shadow-soft: 0 1px 2px rgba(28, 25, 23, 0.04), 0 4px 14px rgba(225, 29, 72, 0.05);
@@ -165,10 +165,7 @@
   }
   * { box-sizing: border-box; }
   html {
-    background:
-      radial-gradient(1200px 600px at 10% -10%, rgba(251, 113, 133, 0.18), transparent 55%),
-      radial-gradient(900px 500px at 100% 0%, rgba(225, 29, 72, 0.10), transparent 50%),
-      #1c1917;
+    background: var(--bg);
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -177,12 +174,13 @@
   body {
     margin: 0 auto;
     width: 100%;
-    max-width: var(--app-width);
+    max-width: min(100%, var(--app-max));
     min-height: 100dvh;
-    font-family: var(--font);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Text", system-ui, sans-serif;
     font-size: 16px;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 180px),
+      radial-gradient(280px 280px at 0% 0%, rgba(225, 29, 72, 0.05), transparent 70%),
+      radial-gradient(320px 320px at 100% 100%, rgba(255, 115, 140, 0.04), transparent 72%),
       var(--bg);
     color: var(--ink);
     line-height: 1.5;
@@ -193,29 +191,10 @@
     text-rendering: auto;
     position: relative;
     overflow-x: hidden;
-    box-shadow: var(--shadow);
+    box-shadow: none;
   }
   body::before,
-  body::after {
-    content: "";
-    position: fixed;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 50%;
-    filter: blur(36px);
-    opacity: 0.28;
-    display: block;
-  }
-  body::before {
-    width: min(280px, 70vw); height: min(280px, 70vw);
-    top: -90px; left: -60px;
-    background: radial-gradient(circle, rgba(251, 113, 133, 0.42), transparent 72%);
-  }
-  body::after {
-    width: min(240px, 65vw); height: min(240px, 65vw);
-    right: -70px; bottom: 100px;
-    background: radial-gradient(circle, rgba(225, 29, 72, 0.22), transparent 72%);
-  }
+  body::after { display: none; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
@@ -7275,7 +7254,8 @@
   function placeLocContactCall(phone) {
     var dialog = document.getElementById("locContactPicker");
     if (dialog && dialog.open) dialog.close();
-    if (phone) window.location.href = "tel:" + phone;
+    var normalized = normalizePhone(phone);
+    if (normalized) window.location.href = "tel:" + normalized;
   }
 
   function initLoc() {
