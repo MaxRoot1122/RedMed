@@ -8,8 +8,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
+<link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/dm-sans-latin-700.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#fff7f7">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-421e5EopPY3HzEGcOVCWn+Mk0iWwLKePXUrpdvh/Q3Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-pmn47zEjK6hCF8DBAEh4HFcTdDuOq83IHd4ROJsmcBA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -70,7 +72,7 @@
     --teal: #9f1239;
     --teal-soft: rgba(159, 18, 57, 0.08);
     --ink: #1c1917;
-    --muted: #6b6560;
+    --muted: #78716c;
     --outline: rgba(28, 25, 23, 0.14);
     --outline-hover: rgba(28, 25, 23, 0.28);
     --line: rgba(28, 25, 23, 0.09);
@@ -150,16 +152,16 @@
     --form-field-h: var(--md-btn);
     --form-field-pad-x: 12px;
     --control-h: var(--md-control);
-    --page-nav-item-h: 50px;
+    --page-nav-item-h: 49px; /* UITabBar content height (iOS) */
     --page-nav-tab-w: 4rem;
-    --page-nav-pad: 4px;
-    --page-nav-offset: 8px;
+    --page-nav-pad: 0px;
+    --page-nav-offset: 0px;
     --page-nav-gap: 0px;
     --page-nav-h: calc(var(--page-nav-pad) * 2 + var(--page-nav-item-h));
     --page-nav-clearance: calc(var(--page-nav-offset) + var(--page-nav-dock-h) + var(--page-nav-gap) + env(safe-area-inset-bottom, 0px) + 8px);
     --dock-bottom: calc(var(--page-nav-offset) + var(--page-nav-dock-h));
-    --page-nav-inset: 8px;
-    --page-nav-radius: 22px;
+    --page-nav-inset: 0px;
+    --page-nav-radius: 0px;
     --terms-footer-h: 18px;
     --content-pad-bottom: var(--page-nav-clearance);
   }
@@ -1365,17 +1367,26 @@
 
   .bottombar-shell {
     position: fixed;
-    bottom: calc(var(--page-nav-offset) + env(safe-area-inset-bottom, 0));
-    left: max(var(--page-nav-inset), env(safe-area-inset-left, 0px));
-    right: max(var(--page-nav-inset), env(safe-area-inset-right, 0px));
-    width: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, var(--app-width, var(--app-max)));
+    max-width: var(--app-max);
     z-index: 200;
     pointer-events: none;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    transition: left 0.28s var(--ease-emphasized), width 0.28s var(--ease-emphasized);
+    transition: none;
     box-sizing: border-box;
+  }
+  html.is-phone .bottombar-shell,
+  .bottombar-shell.is-phone-dock {
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
   }
   .bottombar {
     position: relative;
@@ -1389,14 +1400,16 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(28, 25, 23, 0.08);
+    gap: 0;
+    background: #ffffff;
+    border: none;
+    border-top: 1px solid rgba(28, 25, 23, 0.09);
     border-radius: var(--page-nav-radius);
     padding: var(--page-nav-pad);
-    box-shadow: 0 12px 32px rgba(28, 25, 23, 0.10);
-    backdrop-filter: blur(18px) saturate(1.35);
-    -webkit-backdrop-filter: blur(18px) saturate(1.35);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
   .bottombar-tabs {
     display: grid;
@@ -1472,13 +1485,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
     min-height: var(--page-nav-item-h);
     height: var(--page-nav-item-h);
-    padding: 4px 2px;
+    padding: 2px 4px 1px;
     text-decoration: none;
-    color: var(--muted);
-    font-size: var(--md-type-label);
+    color: #5f6368;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0;
     line-height: 1;
@@ -1486,45 +1499,44 @@
     background: transparent;
     font-family: inherit;
     cursor: pointer;
-    border-radius: var(--radius-pill);
+    border-radius: 0;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     box-shadow: none;
-    transition: color var(--duration-med) var(--ease-out), background-color var(--duration-med) var(--ease-out),
-      box-shadow var(--duration-med) var(--ease-out);
+    transition: color var(--duration-fast) var(--ease-out);
   }
   .bb-item:active { transform: none; opacity: 0.88; }
   .bb-item.active {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--accent);
-    background: var(--accent-soft);
-    box-shadow: var(--accent-glow-ring), 0 0 14px rgba(225, 29, 72, 0.24);
-    padding: 4px 2px;
+    background: transparent;
+    box-shadow: none;
+    padding: 2px 4px 1px;
   }
   .bb-item.active .bb-label {
     color: var(--accent);
-    font-weight: 700;
+    font-weight: 600;
   }
   .bb-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    flex: 0 0 20px;
-    color: var(--ink);
-    opacity: 0.55;
+    width: 25px;
+    height: 25px;
+    flex: 0 0 25px;
+    color: #5f6368;
+    opacity: 1;
     flex-shrink: 0;
     line-height: 0;
   }
   .bb-item.active .bb-icon { color: var(--accent); opacity: 1; }
-  .bb-icon svg { width: 20px; height: 20px; display: block; flex-shrink: 0; }
+  .bb-icon svg { width: 25px; height: 25px; display: block; flex-shrink: 0; }
   .bb-label {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: inherit;
     line-height: 1;
     min-height: 1em;
@@ -1538,25 +1550,25 @@
   }
   @media (min-width: 1024px) {
     :root {
-      --page-nav-item-h: 38px;
-      --page-nav-pad: 3px;
-      --page-nav-inset: 16px;
+      --page-nav-item-h: 49px;
+      --page-nav-pad: 0px;
+      --page-nav-inset: 0px;
     }
-    .bottombar { padding: var(--page-nav-pad); gap: 3px; }
-    .bottombar-tabs { gap: 3px; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; align-items: stretch; }
+    .bottombar { padding: 0; padding-bottom: env(safe-area-inset-bottom, 0px); gap: 0; }
+    .bottombar-tabs { gap: 0; display: flex; flex: 1 1 auto; width: auto; max-width: none; grid-template-columns: none; align-items: stretch; }
     .bb-item {
       flex: 1 1 0;
       width: auto;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: var(--page-nav-item-h);
-      height: var(--page-nav-item-h);
-      font-size: 13px;
-      padding: 4px 10px;
-      gap: 3px;
+      min-height: 49px;
+      height: 49px;
+      font-size: 11px;
+      padding: 2px 4px 1px;
+      gap: 2px;
     }
-    .bb-label { font-size: 13px; }
+    .bb-label { font-size: 11px; }
   }
 
   .consent-banner {
@@ -1958,6 +1970,13 @@
   .capacity-note { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
   .capacity-note.warn { color: #b06000; font-weight: 500; }
 
+
+  /* Skip layout/paint work for inactive owner tabs */
+  #aidView:not(.show),
+  #locView:not(.show) {
+    content-visibility: hidden;
+    contain-intrinsic-size: auto 600px;
+  }
   #viewView { display: none; }
   #viewView.show { display: block; }
   #editView.hide { display: none; }
@@ -1966,196 +1985,21 @@
     color: var(--ink);
   }
 
-  /* Owner tabs (My ID, Aid, 911) — black canvas, white type */
+  /* Owner tabs use Swift light rose (#fff7f7) — same as ios AppTheme.pageBg */
   html:has(#editView:not(.hide)),
   html:has(#aidView.show),
   html:has(#locView.show) {
-    background: #000;
-    color-scheme: dark;
-  }
-  body:has(#editView:not(.hide)),
-  body:has(#aidView.show),
-  body:has(#locView.show) {
-    --ink: #ffffff;
-    --muted: rgba(255, 255, 255, 0.62);
-    --bg: #000000;
-    --surface: rgba(255, 255, 255, 0.1);
-    --surface-dim: #111111;
-    --panel: rgba(255, 255, 255, 0.08);
-    --field-bg: #111111;
-    --field-bg-focus: #1a1a1a;
-    --field-border: rgba(255, 255, 255, 0.2);
-    --field-border-hover: rgba(255, 255, 255, 0.32);
-    --outline: rgba(255, 255, 255, 0.14);
-    --outline-hover: rgba(255, 255, 255, 0.28);
-    --line: rgba(255, 255, 255, 0.1);
-    --google-on-surface: #ffffff;
-    --google-on-surface-variant: rgba(255, 255, 255, 0.62);
-    --google-outline-variant: rgba(255, 255, 255, 0.16);
-    --google-surface-high: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    background: #000;
-    background-image: none;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide))::before,
-  body:has(#editView:not(.hide))::after,
-  body:has(#aidView.show)::before,
-  body:has(#aidView.show)::after,
-  body:has(#locView.show)::before,
-  body:has(#locView.show)::after {
-    display: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select,
-  body:has(#locView.show) #locView .trauma-pickers select {
-    color: #ffffff;
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-    opacity: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.5 1.5 6 6l4.5-4.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:hover,
-  body:has(#locView.show) #locView .trauma-pickers select:hover {
-    color: #ffffff;
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:focus,
-  body:has(#locView.show) #locView .trauma-pickers select:focus {
-    color: #ffffff;
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select option,
-  body:has(#locView.show) #locView .trauma-pickers select option {
-    color: #ffffff;
-    background-color: #000000;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm select:valid {
-    color: #ffffff;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name:hover,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:hover {
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm #f_name:focus,
-  body:has(#editView:not(.hide)) #editView #idForm #f_lastname:focus {
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:hover {
-    background-color: #0a0a0a;
-    border-color: rgba(255, 255, 255, 0.32);
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher:focus-within,
-  body:has(#editView:not(.hide)) #editView #idForm .search-add.is-open .chip-search-launcher {
-    background-color: #0a0a0a;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-icon {
-    color: rgba(255, 255, 255, 0.62);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-list {
-    background-color: #000000;
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item {
-    color: #ffffff;
-    background-color: #000000;
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:hover,
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item:focus {
-    color: #ffffff;
-    background-color: #141414;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-hint,
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-group-label {
-    color: rgba(255, 255, 255, 0.62);
-    background-color: #000000;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .suggest-item + .suggest-group-label {
-    border-top-color: rgba(255, 255, 255, 0.1);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:hover,
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input:focus {
-    color: #ffffff;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    outline: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .chip-search-launcher input::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) .app-legal-footer a {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) .app-legal-footer a:hover,
-  body:has(#editView:not(.hide)) .app-legal-footer a:focus-visible {
-    color: rgba(255, 255, 255, 0.72);
-  }
-  body:has(#editView:not(.hide)) #editView #idForm .donor-row label {
-    color: rgba(255, 255, 255, 0.62);
-  }
-  body:has(#editView:not(.hide)) input[type=text],
-  body:has(#editView:not(.hide)) input[type=tel],
-  body:has(#editView:not(.hide)) input[type=search],
-  body:has(#editView:not(.hide)) textarea {
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) input[type=date] {
-    color: #fff;
-    color-scheme: dark;
-    -webkit-appearance: auto;
-    appearance: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-shadow: none;
-  }
-  body:has(#editView:not(.hide)) input::placeholder,
-  body:has(#editView:not(.hide)) textarea::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-  }
-  body:has(#editView:not(.hide)) #editView .chip-block-divider {
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--bg);
+    color-scheme: light;
   }
 
-  /* Bottom bar keeps its own light palette — not My ID dark-theme text or selection */
-  .bottombar .bb-item { color: #6b6560; }
-  .bottombar .bb-icon { color: #1c1917; opacity: 0.55; }
+  /* Bottom bar — iOS UITabBar sizing (49pt / 11pt / 25pt icons) */
+  .bottombar .bb-item { color: #5f6368; }
+  .bottombar .bb-icon { color: #5f6368; opacity: 1; }
   .bottombar .bb-item.active {
     color: #e11d48;
-    background: rgba(225, 29, 72, 0.10);
-    box-shadow: var(--accent-glow-ring), 0 0 14px rgba(225, 29, 72, 0.24);
+    background: transparent;
+    box-shadow: none;
   }
   .bottombar .bb-item.active .bb-label,
   .bottombar .bb-item.active .bb-icon {
@@ -2163,14 +2007,14 @@
     opacity: 1;
   }
   .bottombar .bottombar-lang { border-left-color: rgba(28, 25, 23, 0.09); }
-  .bottombar .lang-toggle { background-color: rgba(255, 241, 242, 0.92); border-color: rgba(28, 25, 23, 0.09); }
-  .bottombar .lang-toggle [data-lang-side] { color: #6b6560; }
+  .bottombar .lang-toggle { background-color: transparent; border-color: transparent; }
+  .bottombar .lang-toggle [data-lang-side] { color: #5f6368; }
   .bottombar .lang-toggle [data-lang-side].on {
     background: #e11d48;
     color: #fff;
-    box-shadow: 0 1px 2px rgba(225, 29, 72, 0.28);
+    box-shadow: none;
   }
-  .bottombar .lang-toggle .lang-toggle-sep { color: #6b6560; opacity: 0.42; }
+  .bottombar .lang-toggle .lang-toggle-sep { color: #5f6368; opacity: 0.42; }
 
   .id-header {
     background: var(--accent);
@@ -2273,11 +2117,131 @@
   .page-header.loc .lead { color: var(--muted); margin: 0; }
   .page-header.aid .lead { text-align: center; max-width: 36em; margin-left: auto; margin-right: auto; }
   .page-header.aid h1 { width: 100%; text-align: center; margin: 0; }
-  body:has(#editView:not(.hide)) .page-header.myid,
-  body:has(#aidView.show) .page-header.aid,
-  body:has(#locView.show) .page-header.loc {
-    background: #000;
+
+  /* Swift MyID: toolbar + summary home + edit sheet */
+  .myid-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
   }
+  .myid-toolbar .brand-lockup { flex: 1 1 auto; min-width: 0; }
+  .myid-toolbar .brand-wordmark-hero { height: 40px; max-width: min(220px, 52vw); }
+  .myid-tool-btn {
+    flex: 0 0 auto;
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px 4px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .myid-tool-btn:active { opacity: 0.75; }
+  .myid-tool-btn.bracelet {
+    color: var(--ink);
+    padding: 8px;
+    border-radius: 12px;
+  }
+  .myid-tool-btn.bracelet svg { width: 22px; height: 22px; display: block; }
+  .profile-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 4px 0 24px;
+  }
+  .profile-summary[hidden] { display: none !important; }
+  .summary-hint {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .summary-card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow-soft);
+  }
+  .summary-card h2 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+  }
+  .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .summary-row .lab { color: var(--muted); font-weight: 500; }
+  .summary-row .val { color: var(--ink); font-weight: 600; text-align: right; }
+  .summary-list { margin: 0; padding: 0; list-style: none; }
+  .summary-list li {
+    padding: 6px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+  .summary-list li:last-child { border-bottom: none; }
+  .summary-list li.empty { color: var(--muted); font-style: normal; font-weight: 500; }
+  .summary-contact { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .summary-contact:last-child { border-bottom: none; }
+  .summary-contact .nm { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .summary-contact .dt { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+
+  #editFormPanel {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: none;
+    flex-direction: column;
+    background: var(--bg);
+    padding: calc(var(--safe-top) + 8px) 0 env(safe-area-inset-bottom, 0px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #editFormPanel.open { display: flex; }
+  html.edit-sheet-open { overflow: hidden; }
+  .edit-form-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 16px 12px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 2;
+  }
+  .edit-form-panel-head h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .edit-form-panel-body {
+    flex: 1 1 auto;
+    padding: 0 16px 28px;
+    max-width: var(--app-max);
+    width: 100%;
+    margin: 0 auto;
+  }
+  body.edit-sheet-open .bottombar-shell { opacity: 0; pointer-events: none; }
+
   .page-header.myid .brand-lockup { width: 100%; }
   .page-header.myid .brand-default {
     display: flex;
@@ -3377,15 +3341,15 @@
       --header-row: calc(44px * var(--phone-scale));
       --header-chip-h: calc(28px * var(--phone-scale));
       --safe-top: env(safe-area-inset-top, 0px);
-      --page-nav-offset: calc(12px * var(--phone-scale));
-      --page-nav-pad: 4px;
-      --page-nav-item-h: calc(44px * var(--phone-scale));
-      --page-nav-tab-w: calc(4rem * var(--phone-scale));
-      --page-nav-gap: calc(10px * var(--phone-scale));
+      --page-nav-offset: 0px;
+      --page-nav-pad: 0px;
+      --page-nav-item-h: 49px;
+      --page-nav-tab-w: 4rem;
+      --page-nav-gap: 0px;
       --page-nav-dock-h: calc(var(--page-nav-pad) * 2 + var(--page-nav-item-h));
       --dock-bottom: calc(var(--page-nav-offset) + var(--page-nav-dock-h));
-      --page-nav-clearance: calc(var(--dock-bottom) + var(--page-nav-gap));
-      --page-nav-inset: max(12px, env(safe-area-inset-left, 0px));
+      --page-nav-clearance: calc(var(--dock-bottom) + env(safe-area-inset-bottom, 0px) + 8px);
+      --page-nav-inset: 0px;
       --terms-footer-h: 20px;
       --content-pad-bottom: 0px;
     }
@@ -3545,60 +3509,66 @@
     }
     .bottombar-shell,
     .bottombar-shell.is-phone-dock {
-      left: max(var(--page-nav-inset), env(safe-area-inset-left, 0px)) !important;
-      right: max(var(--page-nav-inset), env(safe-area-inset-right, 0px));
-      width: auto !important;
-      bottom: calc(var(--page-nav-offset) + env(safe-area-inset-bottom, 0px));
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      bottom: 0;
     }
     .bottombar {
-      border-radius: calc(16px * var(--phone-scale));
-      padding: var(--page-nav-pad);
-      gap: calc(6px * var(--phone-scale));
+      border-radius: 0;
+      padding: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      gap: 0;
+      border-top: 1px solid rgba(28, 25, 23, 0.09);
+      background: #ffffff;
+      box-shadow: none;
     }
     .bottombar-tabs {
-      grid-template-columns: repeat(3, minmax(var(--page-nav-tab-w), 1fr));
-      flex: 0 0 auto;
-      width: max-content;
-      max-width: calc(100% - calc(5.5rem * var(--phone-scale)));
-      gap: calc(2px * var(--phone-scale));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      flex: 1 1 auto;
+      width: auto;
+      max-width: none;
+      gap: 0;
       min-width: 0;
       align-items: stretch;
       justify-items: stretch;
     }
     .bottombar-lang {
-      margin-left: auto;
-      padding-left: calc(6px * var(--phone-scale));
+      margin-left: 0;
+      padding-left: 6px;
     }
     .bottombar-lang .lang-toggle {
-      font-size: calc(8px * var(--phone-scale));
-      padding: calc(2px * var(--phone-scale)) calc(3px * var(--phone-scale));
-      gap: calc(2px * var(--phone-scale));
+      font-size: 9px;
+      padding: 2px 3px;
+      gap: 2px;
       letter-spacing: 0.03em;
     }
     .bottombar-lang .lang-toggle [data-lang-side] {
-      min-width: calc(1.6em * var(--phone-scale));
-      height: calc(var(--page-nav-item-h) - calc(8px * var(--phone-scale)));
-      padding: 0 calc(4px * var(--phone-scale));
+      min-width: 1.6em;
+      height: 28px;
+      padding: 0 5px;
     }
     .bottombar-lang .lang-toggle .lang-toggle-sep {
-      font-size: calc(7px * var(--phone-scale));
+      font-size: 7px;
     }
     .bb-item {
       width: 100%;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: calc(3px * var(--phone-scale));
-      min-height: var(--page-nav-item-h);
-      height: var(--page-nav-item-h);
-      padding: calc(4px * var(--phone-scale)) calc(2px * var(--phone-scale));
+      gap: 2px;
+      min-height: 49px;
+      height: 49px;
+      padding: 2px 4px 1px;
+      font-size: 11px;
+      border-radius: 0;
     }
     .bb-icon {
-      width: calc(20px * var(--phone-scale));
-      height: calc(20px * var(--phone-scale));
+      width: 25px;
+      height: 25px;
     }
-    .bb-icon svg { width: calc(20px * var(--phone-scale)); height: calc(20px * var(--phone-scale)); }
-    .bb-label { font-size: var(--md-type-label); letter-spacing: 0; }
+    .bb-icon svg { width: 25px; height: 25px; }
+    .bb-label { font-size: 11px; letter-spacing: 0; }
     .sheet-card {
       max-width: none;
       width: 100%;
@@ -3641,8 +3611,8 @@
   }
   @media (max-width: 359px) {
     .row2 { grid-template-columns: 1fr; }
-    .bb-label { font-size: 9px; }
-    .bb-icon, .bb-icon svg { width: 20px; height: 20px; }
+    .bb-label { font-size: 10px; }
+    .bb-icon, .bb-icon svg { width: 24px; height: 24px; }
   }
 
   /* Live phone card preview on the right (wide desktops only) */
@@ -3870,15 +3840,15 @@
     --header-pad-y: 6px;
     --header-row: 44px;
     --header-chip-h: 28px;
-    --page-nav-offset: 12px;
-    --page-nav-pad: 4px;
-    --page-nav-item-h: 44px;
+    --page-nav-offset: 0px;
+    --page-nav-pad: 0px;
+    --page-nav-item-h: 49px;
     --page-nav-tab-w: 4rem;
-    --page-nav-gap: 10px;
+    --page-nav-gap: 0px;
     --page-nav-dock-h: calc(var(--page-nav-pad) * 2 + var(--page-nav-item-h));
     --dock-bottom: calc(var(--page-nav-offset) + var(--page-nav-dock-h));
-    --page-nav-clearance: calc(var(--dock-bottom) + var(--page-nav-gap));
-    --page-nav-inset: 12px;
+    --page-nav-clearance: calc(var(--dock-bottom) + env(safe-area-inset-bottom, 0px) + 8px);
+    --page-nav-inset: 0px;
     --terms-footer-h: 20px;
     --content-pad-bottom: 0px;
     background:
@@ -3948,20 +3918,26 @@
 </head>
 <body>
 
-<!-- ============ MY ID (owner editable) ============ -->
+<!-- ============ MY ID (Swift-parity: summary home + Edit sheet) ============ -->
 <div id="editView">
   <div class="page-header myid">
-    <div class="brand-lockup" id="appBrandLockup">
-      <div class="brand-default" aria-label="RedMed">
-        <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
-      </div>
-      <div class="brand-device" id="appDeviceBrand">
-        <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
-        <div class="brand-text">
-          <h1 id="appTitle"></h1>
-          <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
+    <div class="myid-toolbar">
+      <button type="button" class="myid-tool-btn bracelet" id="myidBraceletBtn" aria-label="Bracelet setup">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="7" y="8" width="10" height="8" rx="2.5" stroke="currentColor" stroke-width="1.75"/><path d="M9 8V6.5A2.5 2.5 0 0 1 12 4v0a2.5 2.5 0 0 1 3 2.5V8M9 16v1.5A2.5 2.5 0 0 0 12 20v0a2.5 2.5 0 0 0 3-2.5V16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
+      <div class="brand-lockup" id="appBrandLockup">
+        <div class="brand-default" aria-label="RedMed">
+          <img class="brand-wordmark brand-wordmark-hero" src="assets/heading.svg" width="300" height="78" alt="RedMed">
+        </div>
+        <div class="brand-device" id="appDeviceBrand">
+          <img class="brand-logo-lockup" src="assets/icon.svg" width="34" height="34" alt="">
+          <div class="brand-text">
+            <h1 id="appTitle"></h1>
+            <p class="brand-tag linked" id="appTagline" data-i18n="brandLinked">Linked bracelet</p>
+          </div>
         </div>
       </div>
+      <button type="button" class="myid-tool-btn" id="myidEditBtn" data-i18n="btnEdit">Edit</button>
     </div>
   </div>
   <div class="split-layout">
@@ -3973,6 +3949,39 @@
         </div>
       </div>
 
+      <div id="profileSummary" class="profile-summary" aria-live="polite">
+        <p class="summary-hint" id="summaryEmptyHint" data-i18n="summaryEmptyHint">Tap Edit to add your name and set up your bracelet.</p>
+        <div class="summary-card" id="summaryYouCard">
+          <h2 data-i18n="summaryYou">You</h2>
+          <div class="summary-row"><span class="lab" data-i18n="labelNamePlain">Name</span><span class="val" id="s_name">—</span></div>
+          <div class="summary-row"><span class="lab" data-i18n="labelDob">Birth date</span><span class="val" id="s_dob">—</span></div>
+          <div class="summary-row"><span class="lab" data-i18n="labelBlood">Blood type</span><span class="val" id="s_blood">—</span></div>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelAllergies">Allergies</h2>
+          <ul class="summary-list" id="s_allergies"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelMeds">Medications</h2>
+          <ul class="summary-list" id="s_meds"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="labelConditions">Conditions</h2>
+          <ul class="summary-list" id="s_conditions"><li class="empty" data-i18n="none">None</li></ul>
+        </div>
+        <div class="summary-card">
+          <h2 data-i18n="legendContacts">Contacts</h2>
+          <div id="s_contacts"><p class="summary-hint" data-i18n="none">None</p></div>
+        </div>
+      </div>
+
+      <div id="editFormPanel" aria-hidden="true">
+        <div class="edit-form-panel-head">
+          <button type="button" class="myid-tool-btn" id="editFormDone" data-i18n="btnDone">Done</button>
+          <h2 data-i18n="editSheetTitle">Edit medical ID</h2>
+          <span style="width:48px" aria-hidden="true"></span>
+        </div>
+        <div class="edit-form-panel-body">
       <form id="idForm">
         <fieldset class="fieldset-you">
           <div class="name-fields">
@@ -4104,6 +4113,8 @@
         <div class="result-actions">
           <button type="button" class="btn-secondary" id="copyBtn" data-i18n="btnCopy">Copy</button>
           <a class="btn-secondary" id="previewBtn" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" data-i18n="btnPreview">Preview</a>
+        </div>
+      </div>
         </div>
       </div>
 
@@ -4520,46 +4531,10 @@
   function syncBottomBarNow() {
     var shell = document.getElementById("bottombarShell");
     if (!shell || document.body.classList.contains("responder-mode")) return;
-
-    var anchor = null;
-    var edit = document.getElementById("editView");
-    var view = document.getElementById("viewView");
-    var aid = document.getElementById("aidView");
-    var loc = document.getElementById("locView");
-    if (edit && !edit.classList.contains("hide")) {
-      var splitMain = edit.querySelector(".split-main");
-      anchor = splitMain || edit;
-    } else if (aid && aid.classList.contains("show")) {
-      anchor = aid;
-    } else if (loc && loc.classList.contains("show")) {
-      anchor = loc;
-    } else if (view && view.classList.contains("show")) {
-      anchor = view;
-    }
-    if (!anchor) anchor = edit || document.body;
-
-    var phone = isPhoneLayout();
-
-    if (phone) {
-      shell.classList.add("is-phone-dock");
-      shell.style.width = "";
-      shell.style.left = "";
-      return;
-    }
-
-    shell.classList.remove("is-phone-dock");
-
-    var anchorRect = anchor.getBoundingClientRect();
-    var inset = 14; /* matches --page-nav-inset */
-    var parsedInset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--page-nav-inset"));
-    if (!isNaN(parsedInset)) inset = parsedInset;
-    var vw = (window.visualViewport && window.visualViewport.width) || window.innerWidth || anchorRect.width;
-    var width = Math.max(240, Math.round(anchorRect.width) - inset * 2);
-    var left = Math.round(anchorRect.left) + inset;
-    left = Math.max(inset, Math.min(left, vw - width - inset));
-
-    shell.style.width = width + "px";
-    shell.style.left = left + "px";
+    /* Full-bleed UITabBar sizing — CSS owns width/position; clear old float insets. */
+    shell.classList.toggle("is-phone-dock", isPhoneLayout());
+    shell.style.width = "";
+    shell.style.left = "";
     shell.style.right = "";
   }
 
@@ -5029,7 +5004,7 @@
       locTraumaGoogleVerified: "Google verified",
       locTraumaGoogleHint: "With a Google API key, GPS sets your state and each hospital is checked against Google Places.",
       consentBody: "RedMed is local-only: no accounts, no RedMed servers. Your PHI/PII stays on this phone and bracelet. By tapping Accept you agree to our Terms Of Service and Privacy Policy. Find 911 may use location while that screen is open (not sent to us).",
-      btnAccept: "Accept", btnBackMyId: "Back to My ID", navMyId: "RedMed", navAid: "Aid", nav911: "911",
+      btnAccept: "Accept", btnBackMyId: "Back to My ID", btnEdit: "Edit", btnDone: "Done", editSheetTitle: "Edit medical ID", summaryYou: "You", summaryEmptyHint: "Tap Edit to add your name and set up your bracelet.", summaryNotSet: "Not set", navMyId: "RedMed", navAid: "Aid", nav911: "911",
       phAllergy: "Search…", phMed: "Search…", phCondition: "Search…",
       searchMinHint: "{n} more letter(s) — search starts at 2",
       searchNoMatches: "No matches — press Enter to add your own",
@@ -5135,7 +5110,7 @@
       locTraumaGoogleVerified: "Verificado por Google",
       locTraumaGoogleHint: "Con clave de Google API, el GPS fija el estado y cada hospital se comprueba en Google Places.",
       consentBody: "RedMed es solo local: sin cuentas, sin servidores RedMed. Tu PHI/PII queda en este teléfono y pulsera. Al tocar Aceptar aceptas nuestros Términos de servicio y la Política de privacidad. Buscar 911 puede usar ubicación mientras esa pantalla esté abierta (no se nos envía).",
-      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
+      btnAccept: "Aceptar", btnBackMyId: "Volver a Mi ID", btnEdit: "Editar", btnDone: "Listo", editSheetTitle: "Editar ID médica", summaryYou: "Tú", summaryEmptyHint: "Toca Editar para añadir tu nombre y configurar la pulsera.", summaryNotSet: "Sin definir", navMyId: "RedMed", navAid: "Ayuda", nav911: "911",
       phAllergy: "Buscar…", phMed: "Buscar…", phCondition: "Buscar…",
       searchMinHint: "{n} letra(s) más — la búsqueda empieza en 2",
       searchNoMatches: "Sin coincidencias — Enter para añadir la tuya",
@@ -5352,13 +5327,19 @@
   function filterCatalog(catalog, query, limit) {
     var q = String(query || "").trim().toLowerCase();
     if (q.length < SEARCH_MIN_CHARS) return [];
-    var hits = catalog.filter(function (item) {
-      return item.toLowerCase().indexOf(q) !== -1;
-    });
-    return hits.slice(0, limit == null ? SEARCH_RESULT_MAX : limit);
+    var max = limit == null ? SEARCH_RESULT_MAX : limit;
+    var hits = [];
+    for (var i = 0; i < catalog.length; i++) {
+      var item = catalog[i];
+      if (item.toLowerCase().indexOf(q) !== -1) {
+        hits.push(item);
+        if (hits.length >= max) break;
+      }
+    }
+    return hits;
   }
 
-  var COMMON_ALLERGENS = dedupeCatalog([
+  var COMMON_ALLERGENS_RAW = [
     "Penicillin", "Amoxicillin", "Ampicillin", "Amoxicillin-clavulanate (Augmentin)", "Piperacillin-tazobactam (Zosyn)",
     "Cephalosporins", "Cefazolin", "Ceftriaxone", "Cefepime", "Carbapenems", "Meropenem", "Imipenem",
     "Sulfa drugs", "Sulfonamides", "Trimethoprim-sulfamethoxazole (Bactrim)", "Sulfasalazine",
@@ -5406,8 +5387,8 @@
     "Aspergillus mold", "Penicillium mold", "Cockroach (allergic)", "Lanolin", "Parabens", "Thimerosal",
     "Rubber chemicals (carba mix)", "Epoxy resin", "Isocyanates", "Ethylene oxide", "Seminal fluid allergy",
     "Bee venom immunotherapy", "Fire ant immunotherapy",
-  ]);
-  var RARE_ALLERGENS_RAW = dedupeCatalog([
+  ];
+  var RARE_ALLERGENS_SRC = [
     "Omalizumab (Xolair)", "Dupilumab (Dupixent)", "Pegaspargase (Oncaspar)", "Streptokinase", "Aprotinin",
     "Protamine sulfate", "Chymopapain", "Papain", "Bromelain", "Cremophor EL (castor oil excipient)",
     "Paclitaxel (Taxol) excipient allergy", "Egg lecithin", "Fish gelatin",
@@ -5424,9 +5405,9 @@
     "Infliximab infusion reaction", "Cetuximab (Erbitux)", "Abatacept (Orencia)", "Belimumab (Benlysta)",
     "Eculizumab (Soliris)", "Iron dextran", "Ferumoxytol", "Dextran", "Hydroxyethyl starch",
     "Protamine zinc insulin", "Aspartame", "Mannitol", "Carrageenan",
-  ]);
-  var RARE_ALLERGENS = catalogMinus(RARE_ALLERGENS_RAW, COMMON_ALLERGENS);
-  var COMMON_MEDS = dedupeCatalog([
+  ];
+  /* RARE_ALLERGENS built in ensureSearchCatalogs() */
+  var COMMON_MEDS_RAW = [
   /* MEPS/ClinCalc top U.S. prescriptions 2014–2023 (Top ~225 + emergency extras) */
     "Atorvastatin (Lipitor)", "Metformin", "Levothyroxine (Synthroid)", "Lisinopril", "Amlodipine", "Metoprolol",
     "Albuterol inhaler", "Losartan", "Gabapentin (Neurontin)", "Omeprazole (Prilosec)", "Sertraline (Zoloft)", "Rosuvastatin (Crestor)",
@@ -5491,9 +5472,9 @@
     "Ocrelizumab (Ocrevus)", "Ofatumumab (Kesimpta)", "Siponimod (Mayzent)", "Fingolimod (Gilenya)",
     "Emtricitabine/Tenofovir alafenamide (Descovy)", "Bictegravir/FTC/TAF (Biktarvy)", "Dolutegravir (Tivicay)",
     "Cabotegravir (Apretude/Vocabria)", "Lenacapavir", "Nirsevimab (Beyfortus)", "Palivizumab (Synagis)"
-  ]);
+  ];
 
-  var RARE_MEDS_RAW = dedupeCatalog([
+  var RARE_MEDS_SRC = [
   /* Orphan / specialty biologics & small molecules (emergency-relevant) */
     "Eculizumab (Soliris)", "Ravulizumab (Ultomiris)", "Pegcetacoplan (Empaveli)",
     "Emicizumab (Hemlibra)", "Factor VIII concentrate", "Factor IX concentrate", "Desmopressin (DDAVP)",
@@ -5578,9 +5559,9 @@
     "Colchicine (FMF / pericarditis)", "Interferon beta-1a (Avonex/Rebif)",
     "Interferon beta-1b (Betaseron)", "Glatiramer (Copaxone)", "Teriflunomide (Aubagio)",
     "Dimethyl fumarate (Tecfidera)", "Mitoxantrone (MS — history)"
-  ]);
-  var RARE_MEDS = catalogMinus(RARE_MEDS_RAW, COMMON_MEDS);
-  var COMMON_CONDITIONS = dedupeCatalog([
+  ];
+  /* RARE_MEDS built in ensureSearchCatalogs() */
+  var COMMON_CONDITIONS_RAW = [
     /* Endocrine / metabolic */
     "Diabetes (Type 1)", "Diabetes (Type 2)", "Gestational diabetes (history)", "Prediabetes",
     "Hypoglycemia risk", "Hyperglycemia risk", "Insulin pump", "Continuous glucose monitor (CGM)",
@@ -5671,8 +5652,8 @@
     "Implantable loop recorder", "Implanted drug pump", "Spinal cord stimulator", "Deep brain stimulator",
     "Metal implant / Hardware", "Factor V Leiden", "Protein C deficiency", "Protein S deficiency",
     "Heparin-induced thrombocytopenia (HIT history)",
-  ]);
-  var RARE_CONDITIONS_RAW = dedupeCatalog([
+  ];
+  var RARE_CONDITIONS_SRC = [
     /* Genetic / metabolic */
     "Fabry disease", "Gaucher disease", "Pompe disease", "Wilson disease", "Hereditary hemochromatosis",
     "Congenital adrenal hyperplasia", "Maple syrup urine disease (MSUD)", "MCADD",
@@ -5876,8 +5857,27 @@
     "Transgender — estrogen therapy", "Transgender — testosterone therapy",
     "Post-phalloplasty / vaginoplasty surgical history",
     "Silicone filler migration risk (history)",
-  ]);
-  var RARE_CONDITIONS = catalogMinus(RARE_CONDITIONS_RAW, COMMON_CONDITIONS);
+  ];
+  /* RARE_CONDITIONS built in ensureSearchCatalogs() */
+
+
+  var COMMON_ALLERGENS = null;
+  var RARE_ALLERGENS = null;
+  var COMMON_MEDS = null;
+  var RARE_MEDS = null;
+  var COMMON_CONDITIONS = null;
+  var RARE_CONDITIONS = null;
+
+  /** Heavy catalog normalize — only when Edit search UI is opened. */
+  function ensureSearchCatalogs() {
+    if (COMMON_ALLERGENS) return;
+    COMMON_ALLERGENS = dedupeCatalog(COMMON_ALLERGENS_RAW);
+    RARE_ALLERGENS = catalogMinus(RARE_ALLERGENS_SRC, COMMON_ALLERGENS);
+    COMMON_MEDS = dedupeCatalog(COMMON_MEDS_RAW);
+    RARE_MEDS = catalogMinus(RARE_MEDS_SRC, COMMON_MEDS);
+    COMMON_CONDITIONS = dedupeCatalog(COMMON_CONDITIONS_RAW);
+    RARE_CONDITIONS = catalogMinus(RARE_CONDITIONS_SRC, COMMON_CONDITIONS);
+  }
 
   var allergyItems = [];
   var medItems = [];
@@ -6475,25 +6475,184 @@
   }
 
 
+
+  function formatDobDisplay(dob) {
+    if (!dob) return t("summaryNotSet");
+    var parts = String(dob).split("-");
+    if (parts.length !== 3) return dob;
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (isNaN(d.getTime())) return dob;
+    try {
+      return d.toLocaleDateString(currentLang === "es" ? "es" : "en", { year: "numeric", month: "long", day: "numeric" });
+    } catch (e) {
+      return dob;
+    }
+  }
+
+  function fillSummaryList(el, items) {
+    if (!el) return;
+    el.innerHTML = "";
+    if (!items || !items.length) {
+      var empty = document.createElement("li");
+      empty.className = "empty";
+      empty.textContent = t("none");
+      el.appendChild(empty);
+      return;
+    }
+    items.forEach(function (item) {
+      var li = document.createElement("li");
+      li.textContent = item;
+      el.appendChild(li);
+    });
+  }
+
+  function paintProfileSummary(data) {
+    data = data || {};
+    var name = (data.name || "").trim();
+    var hint = document.getElementById("summaryEmptyHint");
+    if (hint) hint.hidden = !!name;
+    var nameEl = document.getElementById("s_name");
+    var dobEl = document.getElementById("s_dob");
+    var bloodEl = document.getElementById("s_blood");
+    if (nameEl) nameEl.textContent = name || t("summaryNotSet");
+    if (dobEl) dobEl.textContent = formatDobDisplay(data.dob || "");
+    if (bloodEl) bloodEl.textContent = data.blood ? data.blood : t("unknown");
+    fillSummaryList(document.getElementById("s_allergies"), data.allergies || []);
+    fillSummaryList(document.getElementById("s_meds"), data.meds || []);
+    fillSummaryList(document.getElementById("s_conditions"), data.conditions || []);
+    var contactsWrap = document.getElementById("s_contacts");
+    if (contactsWrap) {
+      contactsWrap.innerHTML = "";
+      var contacts = (data.contacts || []).filter(function (c) {
+        return c && ((c.name || "").trim() || (c.phone || "").trim() || (c.rel || c.address || "").trim());
+      });
+      if (!contacts.length) {
+        var p = document.createElement("p");
+        p.className = "summary-hint";
+        p.textContent = t("none");
+        contactsWrap.appendChild(p);
+      } else {
+        contacts.forEach(function (c) {
+          var row = document.createElement("div");
+          row.className = "summary-contact";
+          var nm = document.createElement("div");
+          nm.className = "nm";
+          nm.textContent = (c.name || "").trim() || t("unknown");
+          row.appendChild(nm);
+          var detail = [(c.rel || c.address || "").trim(), (c.phone || "").trim()].filter(Boolean).join(" · ");
+          if (detail) {
+            var dt = document.createElement("div");
+            dt.className = "dt";
+            dt.textContent = detail;
+            row.appendChild(dt);
+          }
+          contactsWrap.appendChild(row);
+        });
+      }
+    }
+  }
+
+  function loadSavedProfile() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return null;
+      return normalizeProfile(JSON.parse(saved));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Prefer live form when Edit has been opened; otherwise Keychain/localStorage snapshot. */
+  function profileDataForWrite() {
+    if (editFormPrepared) return collectPersistedFormData();
+    return loadSavedProfile() || collectPersistedFormData();
+  }
+
+  function openEditSheet() {
+    prepareEditForm();
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (!panel) return;
+    panel.classList.add("open");
+    panel.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("edit-sheet-open");
+    document.body.classList.add("edit-sheet-open");
+    if (summary) summary.hidden = true;
+    var first = document.getElementById("f_name");
+    if (first) setTimeout(function () { first.focus(); }, 50);
+  }
+
+  function closeEditSheet() {
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (!panel) return;
+    panel.classList.remove("open");
+    panel.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("edit-sheet-open");
+    document.body.classList.remove("edit-sheet-open");
+    if (summary) summary.hidden = false;
+    paintProfileSummary(loadSavedProfile() || (editFormPrepared ? collectPersistedFormData() : {}));
+    syncAppHeaderTitle();
+  }
+
   var editWired = false;
+  var editFormPrepared = false;
 
   function initEdit() {
     setActiveView("myid");
     document.title = t("titleMyId");
+    var savedProfile = loadSavedProfile();
+    paintProfileSummary(savedProfile || {});
+    /* Keep edit sheet closed — do not touch the heavy form until Edit. */
+    var panel = document.getElementById("editFormPanel");
+    var summary = document.getElementById("profileSummary");
+    if (panel) {
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+    document.documentElement.classList.remove("edit-sheet-open");
+    document.body.classList.remove("edit-sheet-open");
+    if (summary) summary.hidden = false;
+    syncAppHeaderTitle();
+
+    if (editWired) return;
+    editWired = true;
+
+    var editBtn = document.getElementById("myidEditBtn");
+    if (editBtn) editBtn.addEventListener("click", openEditSheet);
+    var doneBtn = document.getElementById("editFormDone");
+    if (doneBtn) doneBtn.addEventListener("click", closeEditSheet);
+    var myidBracelet = document.getElementById("myidBraceletBtn");
+    if (myidBracelet) {
+      myidBracelet.addEventListener("click", function () {
+        openBraceletSheet();
+      });
+    }
+
+    maybeOpenSetupFromQuery();
+  }
+
+  /** Chip catalogs + form wiring — deferred until first Edit open. */
+  function prepareEditForm() {
+    if (editFormPrepared) {
+      var saved = loadSavedProfile();
+      if (saved) fillFormFrom(saved);
+      renderAllergyChips();
+      renderMedChips();
+      renderConditionChips();
+      refreshLivePreview();
+      return;
+    }
+    editFormPrepared = true;
+    ensureSearchCatalogs();
     wirePreviewForm();
     wireDobField();
-    var saved = null;
-    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    if (saved) {
-      try { fillFormFrom(normalizeProfile(JSON.parse(saved))); } catch (e) {}
-    }
+    var savedProfile = loadSavedProfile();
+    if (savedProfile) fillFormFrom(savedProfile);
     renderAllergyChips();
     renderMedChips();
     renderConditionChips();
     refreshLivePreview();
-
-    if (editWired) return;
-    editWired = true;
 
     wireChipSearch({
       queryId: "allergyQuery",
@@ -6531,7 +6690,6 @@
 
     document.getElementById("idForm").addEventListener("input", refreshLivePreview);
     document.getElementById("idForm").addEventListener("change", refreshLivePreview);
-
     document.getElementById("idForm").addEventListener("submit", function (e) {
       e.preventDefault();
       var data = collectPersistedFormData();
@@ -6584,6 +6742,7 @@
         setTimeout(function () { savedNote.classList.remove("show"); }, 2500);
       }
       syncBraceletUi();
+      paintProfileSummary(data);
 
       document.getElementById("resultBox").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -6625,13 +6784,14 @@
       });
       document.getElementById("resultBox").classList.remove("show");
       refreshLivePreview();
+      paintProfileSummary({});
       syncBraceletUi();
       syncBraceletLockUi();
       syncDisconnectUi();
     });
 
-    maybeOpenSetupFromQuery();
   }
+
 
   function renderList(ul, items, emptyText, emphasize) {
     ul.innerHTML = "";
@@ -7254,8 +7414,7 @@
   function placeLocContactCall(phone) {
     var dialog = document.getElementById("locContactPicker");
     if (dialog && dialog.open) dialog.close();
-    var normalized = normalizePhone(phone);
-    if (normalized) window.location.href = "tel:" + normalized;
+    if (phone) window.location.href = "tel:" + phone;
   }
 
   function initLoc() {
@@ -8363,7 +8522,7 @@
     if (!requireBraceletUnlocked()) return;
     var status = document.getElementById("braceletNfcStatus");
     var writeBtn = document.getElementById("braceletWriteNfc");
-    var data = collectPersistedFormData();
+    var data = profileDataForWrite();
     if (!data.name) {
       document.getElementById("f_name").focus();
       return;
@@ -8492,7 +8651,7 @@
     if (mark && mark.getAttribute("data-wired") !== "1") {
       mark.setAttribute("data-wired", "1");
       mark.addEventListener("click", function () {
-        var data = collectPersistedFormData();
+        var data = profileDataForWrite();
         if (!data.name) {
           document.getElementById("f_name").focus();
           return;
@@ -8927,7 +9086,6 @@
 
   initUseConsent();
   initReactiveUi();
-  wireContactsAccordion();
   patchLegalHrefs();
   wireBottomNav();
   wireBracelet();

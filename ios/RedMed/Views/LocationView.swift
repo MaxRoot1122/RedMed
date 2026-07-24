@@ -29,6 +29,16 @@ struct LocationView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle(prominent: true))
 
+                    ScanEmergencyCardControl(
+                        title: "Scan emergency bracelet",
+                        prominent: false
+                    )
+
+                    Text("Responder with RedMed: scan the person's band to open their medical card in-app.")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(AppTheme.muted)
+                        .multilineTextAlignment(.center)
+
                     Button {
                         showCallContactPicker = true
                     } label: {

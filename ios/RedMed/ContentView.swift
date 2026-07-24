@@ -5,17 +5,11 @@ struct ContentView: View {
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
     @AppStorage("redMedUseConsent") private var useConsentAccepted = false
+    @State private var selectedTab: AppTab = .myID
 
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var isUnlocked = false
-    @State private var isAuthenticating = false
-    @State private var authFailed = false
-    private let lockAvailability = BiometricGate.availability()
-
-    /// Owner override, set from the "App lock" toggle in ProfileSummaryView.
-    /// Defaults to on. Turning it off is a deliberate accessibility escape
-    /// hatch — see the comment on that toggle for why some owners need it.
-    @AppStorage("redMedRequireAppLock") private var requireAppLock = true
+    private enum AppTab: Hashable {
+        case myID, find911, aid, nfc
+    }
 
     init() {
         let appearance = UITabBarAppearance()
@@ -44,49 +38,36 @@ struct ContentView: View {
     }
 
     var body: some View {
-        Group {
-            if isUnlocked {
-                tabContent
-            } else {
-                AppLockView(
-                    availability: lockAvailability,
-                    isAuthenticating: isAuthenticating,
-                    failed: authFailed,
-                    onUnlock: authenticate
-                )
-                .withLayoutMetrics()
-            }
-        }
-        .onAppear { authenticate() }
-        .onChange(of: scenePhase) { phase in
-            // Re-lock whenever the app leaves the foreground so a phone left
-            // unlocked doesn't leave the medical profile exposed too.
-            // Skipped entirely when the owner has turned the lock off.
-            if phase == .background && requireAppLock {
-                isUnlocked = false
-                authFailed = false
-            }
-        }
-    }
-
-    private var tabContent: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             MyIDView()
                 .tabItem { Label("RedMed", systemImage: "person.crop.circle.fill") }
+                .tag(AppTab.myID)
 
             LocationView()
                 .tabItem { Label("911", systemImage: "phone.fill") }
+                .tag(AppTab.find911)
 
             BasicAidView()
                 .tabItem { Label("Aid", systemImage: "cross.case.fill") }
+                .tag(AppTab.aid)
 
             WriteTagView()
                 .tabItem { Label("NFC", systemImage: "wave.3.right.circle.fill") }
+                .tag(AppTab.nfc)
         }
         .environmentObject(store)
         .environmentObject(braceletLink)
         .tint(AppTheme.accent)
         .preferredColorScheme(.light)
+        .onReceive(NotificationCenter.default.publisher(for: .redMedOpenOwnerTab)) { note in
+            guard let raw = note.object as? String else { return }
+            switch raw {
+            case "911": selectedTab = .find911
+            case "aid": selectedTab = .aid
+            case "nfc": selectedTab = .nfc
+            default: selectedTab = .myID
+            }
+        }
         .fullScreenCover(isPresented: Binding(
             get: { !useConsentAccepted },
             set: { _ in }
@@ -96,29 +77,6 @@ struct ContentView: View {
             }
         }
         .withLayoutMetrics()
-    }
-
-    private func authenticate() {
-        guard !isUnlocked, !isAuthenticating else { return }
-        guard requireAppLock else {
-            isUnlocked = true
-            return
-        }
-        isAuthenticating = true
-        authFailed = false
-        Task {
-            let success = await BiometricGate.authenticate(
-                reason: "Unlock RedMed to view your medical profile"
-            )
-            await MainActor.run {
-                isAuthenticating = false
-                if success {
-                    isUnlocked = true
-                } else {
-                    authFailed = true
-                }
-            }
-        }
     }
 }
 
