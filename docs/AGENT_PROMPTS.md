@@ -15,7 +15,7 @@ Cursor cloud agents **cannot always read each other’s transcripts** across run
 | Final codebase integration | Merged | `bc-019f83cc-ba7c-7abf-88a1-d21f5c664af8` | `cursor/final-integration-4af8` → [#25](https://github.com/MaxRoot1122/RedMed/pull/25) | [§ Final codebase integration](#3-final-codebase-integration) |
 | Wireless charging research | Active — meds/conditions catalogs on current main | `bc-019f83d7-b36f-7eac-86f0-604c0164a8f0` | `cursor/wireless-charging-guidance-a8f0` → [#3](https://github.com/MaxRoot1122/RedMed/pull/3) | [§ Wireless charging research](#4-wireless-charging-research) · [§ Meds & conditions](#4b-medicines--conditions-research) |
 | Development environment setup | Merged | `bc-b3048808-2d8b-4ce4-9fe5-9a487c02ecc0` | `cursor/setup-dev-environment-ecc0` → [#21](https://github.com/MaxRoot1122/RedMed/pull/21) (+ many `*-ecc0` PRs) | [§ Development environment setup](#5-development-environment-setup) |
-| RedMed fr | In repo (same workspace) | this run | `cursor/add-french-i18n-5baf` | [§ French (FR) i18n](#6-redmed-fr--french-i18n) |
+| RedMed fr | Merged on `main` | this run | `28c650f` | [§ French (FR) i18n](#6-redmed-fr--french-i18n) |
 
 **Access note:** those historical `bc-…` ids are often **not fetchable** from a later cloud run (`batch-fetch-details` → not found / not accessible). Use this doc + `docs/plans/` instead of relying on cross-agent transcript APIs.
 
@@ -183,7 +183,7 @@ This file + `docs/plans/*.md` are the durable substitutes for those missing atta
 3. Date formatting uses `fr` locale when French is active.
 4. CSP hash + `./scripts/sync-www-mirror.sh` + `./scripts/verify-web.sh`.
 
-**Status:** landed with this agent (same sole workspace as RedMed EN).
+**Status:** merged to `main` (`28c650f`).
 
 ---
 
