@@ -35,7 +35,7 @@ Then open `http://127.0.0.1:8934/index.html`. Port `8934` matches the macOS wrap
 If the Desktop browser shows CSP errors but `curl http://127.0.0.1:8934/index.html` has the correct `sha256-` hash, hard-refresh or confirm you are on **localhost** (not the GitHub Pages URL).
 
 ### Public host (any-phone NFC)
-Bracelet taps open the canonical card URL from [`config/canonical-url`](config/canonical-url) (currently `https://www.redmed.com/index.html`). iOS `AppConfig.medicalCardBaseURL`, web `HOSTED_URL`, and Android TWA launch URL must stay in sync via `./scripts/sync-canonical-url.sh`. GitHub Pages (`https://maxroot1122.github.io/RedMed/`) remains a **legacy** host for older tags. Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`.
+Bracelet taps open the canonical card URL from [`config/canonical-url`](config/canonical-url) (currently `https://maxroot1122.github.io/RedMed/index.html`). iOS `AppConfig.medicalCardBaseURL`, web `HOSTED_URL`, and Android TWA launch URL must stay in sync via `./scripts/sync-canonical-url.sh`. `www.redmed.com` is reserved for later (DNS not pointing at Pages yet — see `docs/DOMAIN.md`). Deploy workflow: `.github/workflows/pages.yml`. QR onboarding lands on `get.html`.
 
 ### NFC / passive chip only
 RedMed programs a **passive** bracelet chip (NDEF URI + `#d=` payload) — no battery, no broadcast. The phone energizes the chip on tap. **Passive NFC only:** do not add BLE, active RFID, UHF, or battery-powered tags. iOS uses CoreNFC with post-write read-back verify; Android Chrome can write via Web NFC in the Bracelet sheet when `NDEFReader` is available. See [`docs/BRACELET.md`](docs/BRACELET.md).

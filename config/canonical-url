@@ -1,8 +1,16 @@
 # Canonical NFC card base URL (no #d= fragment).
 # Run scripts/sync-canonical-url.sh after editing this file.
 #
-# Active host (first uncommented https:// line):
-https://www.redmed.com/index.html
+# Active host (first uncommented https:// line).
+# MUST be a host that actually serves this repo's Pages deploy.
+# www.redmed.com is currently a registrar parking lander — do NOT use it
+# for tag writes until DNS → GitHub Pages is live (see docs/DOMAIN.md).
+https://maxroot1122.github.io/RedMed/index.html
 #
-# Legacy hosts — optional; keep while field bracelets still use old URLs:
-legacy:https://maxroot1122.github.io/RedMed/index.html
+# Future custom domain — uncomment and make active only after:
+#   curl -sI https://www.redmed.com/index.html  → this app (not /lander)
+#   curl -s https://www.redmed.com/.well-known/apple-app-site-association → JSON
+# future:https://www.redmed.com/index.html
+#
+# Keep as legacy so old tags / pairing still recognize the domain once it goes live:
+legacy:https://www.redmed.com/index.html
