@@ -41,8 +41,8 @@ agent work all stay inside this repo. GitHub Pages path is
 - `assets/icon.svg` — source of truth for the **app cover / home-screen icon**
   (bronze cross + red serpent on the rose plate). All PNG/ICNS variants are
   generated from this — regenerate after editing, don't hand-edit the rasters.
-- `assets/wordmark.svg` — in-app **RedMed** wordmark; `assets/mark.svg` — symbol
-  only. See `docs/BRAND.md` for which asset goes where.
+- `assets/heading.svg` — web hero wordmark; `assets/wordmark.svg` — iOS
+  `BrandWordmark` source. See `docs/BRAND.md` for which asset goes where.
 - `assets/trauma-hospitals.{json,js}` — bundled offline trauma center
   directory for **Find 911** (see `docs/TRAUMA_FINDER.md`). Web loads
   `.js` via `<script src>`; iOS bundles `.json`. Keep copies in sync.

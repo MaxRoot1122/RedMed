@@ -16,6 +16,8 @@ build/
 .idea/
 *.swp
 *~
+# SweetPad / xcode-build-server — machine-local paths
+buildServer.json
 
 # Xcode (created once the project is set up per ios/SETUP.md — sources
 # themselves live in ios/RedMed/ and stay tracked)

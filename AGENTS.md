@@ -4,14 +4,6 @@ Local-first emergency medical ID app. See `.cursorrules` for architecture, invar
 
 **One repo, one trunk:** all product work lives on `main` in `MaxRoot1122/RedMed`. Do not keep long-lived feature forks; land changes on `main`.
 
-### RedMed group agent prompts
-Other Cursor agents’ transcripts are often **not API-accessible** from a later cloud run. Opened prompts/plans for the RedMed Agents group live in-repo:
-
-- [`docs/AGENT_PROMPTS.md`](docs/AGENT_PROMPTS.md) — catalog + recovered prompts
-- [`docs/plans/`](docs/plans/) — executable plan copies for re-runs
-
-Paste new prompts there (and/or add a plan file) instead of relying on another agent’s `bc-…` id.
-
 ## Cursor Cloud specific instructions
 
 ### What runs here
