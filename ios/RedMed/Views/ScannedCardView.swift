@@ -1,14 +1,16 @@
 import SwiftUI
+import UIKit
 
-/// Shown when the app is opened via a legacy `redmed://` deep link —
-/// displays THAT tag's decoded profile, not the device owner's own saved
-/// profile in ProfileStore. Read-only: a responder scanning a stranger's
-/// tag has no reason to edit it, and shouldn't be able to overwrite it.
+/// First-responder emergency card — shown when a bracelet is scanned in-app
+/// (NFC session or legacy `redmed://` / HTTPS `#d=` deep link). Displays THAT
+/// tag's decoded profile, never the device owner's `ProfileStore`. Read-only:
+/// a responder must not be able to overwrite the owner's My ID from here.
 struct ScannedCardView: View {
     @Environment(\.layoutMetrics) private var layout
 
     let profile: MedicalProfile
     @Environment(\.dismiss) private var dismiss
+    @State private var copiedSummary = false
 
     private var ageLine: String {
         var parts: [String] = []
@@ -31,10 +33,26 @@ struct ScannedCardView: View {
                     header
 
                     VStack(alignment: .leading, spacing: layout.s(18)) {
+                        SoftStatusChip(
+                            text: "First responder view — from the bracelet chip. Not saved to this phone.",
+                            warning: false
+                        )
+
                         Link(destination: URL(string: "tel:911")!) {
                             Text("Call 911")
                         }
                         .buttonStyle(PrimaryButtonStyle(prominent: true))
+
+                        Button {
+                            UIPasteboard.general.string = EmergencySummaryBuilder.build(profile: profile)
+                            copiedSummary = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                copiedSummary = false
+                            }
+                        } label: {
+                            Text(copiedSummary ? "Copied!" : "Copy medical summary")
+                        }
+                        .buttonStyle(InkButtonStyle())
 
                         TraumaHospitalsSection()
 
@@ -51,6 +69,16 @@ struct ScannedCardView: View {
                         let contacts = profile.contacts.filter { !$0.name.isEmpty || !$0.phone.isEmpty }
                         if !contacts.isEmpty {
                             contactsBlock(contacts)
+                        }
+
+                        if profile.allergies.isEmpty,
+                           profile.meds.isEmpty,
+                           profile.conditions.isEmpty,
+                           contacts.isEmpty {
+                            Text("No allergies, meds, conditions, or contacts were written to this band.")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(AppTheme.muted)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     .padding(layout.screenPad)
@@ -212,6 +240,15 @@ struct ScannedCardView: View {
 }
 
 #Preview {
-    ScannedCardView(profile: MedicalProfile())
-        .withLayoutMetrics()
+    ScannedCardView(profile: MedicalProfile(
+        name: "Alex Rivera",
+        dob: "1990-04-12",
+        blood: "O+",
+        donor: true,
+        allergies: ["Penicillin"],
+        meds: ["Metformin 500mg"],
+        conditions: ["Type 2 diabetes"],
+        contacts: [EmergencyContact(name: "Sam Rivera", rel: "Spouse", phone: "5551234567")]
+    ))
+    .withLayoutMetrics()
 }

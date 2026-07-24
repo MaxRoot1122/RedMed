@@ -12,6 +12,7 @@
 		1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */; };
 		1E59F48574E34977B954C78C /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CC2B3234F946E992AF8294 /* EditProfileView.swift */; };
 		25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F177F3DB4549588AF855B5 /* ScannedCardView.swift */; };
+		S1CAN000014A1D00000002 /* ScanEmergencyCardControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = S1CAN000014A1D00000001 /* ScanEmergencyCardControl.swift */; };
 		272E340D430D45A1B65C115A /* FirstAidDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */; };
 		283D100AA9004A80AEF659C0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0B97AEEBC2469E97A215A7 /* LocationManager.swift */; };
 		287AA6EF991F46F6B0F315AF /* EmergencySummaryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */; };
@@ -55,6 +56,7 @@
 		6DDA4B01DEB34D8BB8E3D7D0 /* ProfileLinkBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLinkBuilder.swift; sourceTree = "<group>"; };
 		6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		84F177F3DB4549588AF855B5 /* ScannedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedCardView.swift; sourceTree = "<group>"; };
+		S1CAN000014A1D00000001 /* ScanEmergencyCardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanEmergencyCardControl.swift; sourceTree = "<group>"; };
 		8C1441B8AF5840C7BFC971AD /* EmergencySummaryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencySummaryBuilder.swift; sourceTree = "<group>"; };
 		8C18F62ABD454BB6B2392009 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedMedApp.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				572AFAA69FD048659B137D3A /* LocationView.swift */,
 				1381A61F1B3645C98CB67182 /* MyIDView.swift */,
 				84F177F3DB4549588AF855B5 /* ScannedCardView.swift */,
+				S1CAN000014A1D00000001 /* ScanEmergencyCardControl.swift */,
 				E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */,
 				D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */,
 				9F510000014A1D00000001 /* ProfileSummaryView.swift */,
@@ -279,6 +282,7 @@
 				98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */,
 				9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */,
 				25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */,
+				S1CAN000014A1D00000002 /* ScanEmergencyCardControl.swift in Sources */,
 				C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */,
 				A9E1088F0A754AB6A1F352FF /* WriteTagView.swift in Sources */,
 			);
