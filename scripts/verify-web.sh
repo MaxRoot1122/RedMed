@@ -72,30 +72,42 @@ if css.count("{") != css.count("}"):
     sys.exit(1)
 print("OK: index.html CSS braces balanced")
 
-# Canonical URL — shipping surfaces must match config/canonical-url
+# Canonical URL — shipping surfaces must match config/canonical-url.
+# Product is iOS-only: the active write target is the `redmed://` scheme
+# (checked only against AppConfig.medicalCardBaseURL). The commented
+# `legacy:https://` line is the older hosted-Pages fallback that index.html,
+# get.html, and the retired Android TWA strings.xml still reference for
+# bracelets written before the iOS-only pivot.
 from urllib.parse import urlparse
 cfg_lines = [ln.strip() for ln in open("config/canonical-url", encoding="utf-8")]
-card_url = next((ln for ln in cfg_lines if ln.startswith("https://")), "")
-legacy_urls = [ln.split(":", 1)[1] for ln in cfg_lines if ln.startswith("legacy:https://")]
+card_url = next((ln for ln in cfg_lines if ln and not ln.startswith("#") and not ln.startswith("legacy:")), "")
+legacy_urls = [
+    ln.lstrip("#").strip().split(":", 1)[1]
+    for ln in cfg_lines
+    if ln.lstrip("#").strip().startswith("legacy:https://")
+]
 if not card_url:
-    print("FAIL: no https:// in config/canonical-url"); sys.exit(1)
-get_url = card_url.replace("/index.html", "/get.html")
-privacy_url = card_url.replace("/index.html", "/privacy-policy.html")
-origin = f"{urlparse(card_url).scheme}://{urlparse(card_url).netloc}"
+    print("FAIL: no active target in config/canonical-url"); sys.exit(1)
+legacy_url = legacy_urls[0] if legacy_urls else ""
+if not legacy_url:
+    print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
+get_url = legacy_url.replace("/index.html", "/get.html")
+privacy_url = legacy_url.replace("/index.html", "/privacy-policy.html")
+origin = f"{urlparse(legacy_url).scheme}://{urlparse(legacy_url).netloc}"
 checks = [
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
-    ("ios/RedMed/AppConfig.swift", get_url, "getStartedURL"),
+    ("ios/RedMed/AppConfig.swift", legacy_url, "legacyHostedCardBaseURL"),
     ("ios/RedMed/AppConfig.swift", privacy_url, "privacyPolicyURL"),
-    ("index.html", card_url, "HOSTED_URL"),
+    ("index.html", legacy_url, "HOSTED_URL"),
     ("index.html", get_url, "GET_URL"),
-    ("android/app/src/main/res/values/strings.xml", card_url, "launch_url"),
+    ("android/app/src/main/res/values/strings.xml", legacy_url, "launch_url"),
     ("android/app/src/main/res/values/strings.xml", origin, "asset_statements site"),
 ]
 for path, needle, label in checks:
     body = open(path, encoding="utf-8").read()
     if needle not in body:
         print(f"FAIL: {label} mismatch in {path} (expected {needle})"); sys.exit(1)
-legacy_js = json.dumps(legacy_urls, ensure_ascii=False)
+legacy_js = json.dumps(legacy_urls[1:], ensure_ascii=False)
 if legacy_js not in open("index.html", encoding="utf-8").read():
     print("FAIL: LEGACY_HOSTED_URLS out of sync in index.html"); sys.exit(1)
 if "hostedCardOrigins" not in open("index.html", encoding="utf-8").read():
