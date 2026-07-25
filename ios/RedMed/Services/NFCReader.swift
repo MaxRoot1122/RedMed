@@ -1,11 +1,9 @@
 import CoreNFC
 
-/// Reads a tag written by this app (or the web app's "Write tag" flow) back
-/// into a MedicalProfile — entirely on-device. The NDEF payload is a URI
-/// record whose "#d=" fragment already holds the full profile as base64;
-/// ProfileLinkBuilder.decodeProfile decodes that locally, so this never
-/// needs network access or the hosted page to be reachable, only physical
-/// proximity to the tag.
+/// Reads a tag written by this app back into a MedicalProfile — entirely
+/// on-device. The NDEF payload is a URI whose `#d=` fragment holds the
+/// profile as base64url (`redmed://card` for new writes; legacy HTTPS OK).
+/// ProfileLinkBuilder.decodeProfile is local — only physical proximity needed.
 final class NFCReader: NSObject, ObservableObject {
     @Published var statusMessage: String = ""
     @Published var isReading = false

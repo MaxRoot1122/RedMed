@@ -1,13 +1,13 @@
 # RedMed — iOS app
 
-Local-first medical ID for your iPhone: edit your profile, write it to an NFC tag, read tags back, offline first-aid guide, and Find 911 with GPS. Everything stays on-device — no accounts, no server.
+Local-first medical ID **iPhone app**: edit your profile, write it to an NFC tag, read tags back, offline first-aid guide, and Find 911 with GPS. Everything stays on-device — no accounts, no server. RedMed is iOS-only (not web, not Android).
 
 **Double-click to open:** `ios/RedMed.xcodeproj`
 
 | Setting | Value |
 |--------|--------|
 | Bundle ID | `local.redmed.app` |
-| URL scheme | Legacy `redmed://` + HTTPS NFC tags (`github.io/RedMed`). Universal Links need a custom domain you control (none yet). No app → Safari HTML card. |
+| URL scheme | `redmed://` — new NFC writes are `redmed://card#d=…`. Emergency card is native in-app. |
 | Deployment | iOS 16+ · iPhone only |
 | Layout | **393×852 pt** baseline via `LayoutMetrics` (`AppTheme.swift`); mockups also check **440×956**; safe areas ≈59 pt top / 34 pt bottom on Dynamic Island |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |
@@ -31,9 +31,9 @@ NFC does **not** work in Simulator — use a physical iPhone.
 | **My ID** | Read-only summary by default; **Edit** opens the form (name, blood, allergies, meds, conditions, 3 contacts, notes → Keychain). App lock (Face ID) gates the whole app when enabled; Edit also re-auths after a profile exists on this device. |
 | **Find 911** | Call 911, **Scan emergency bracelet** (native first-responder card), live GPS, trauma hospitals by state (county picker when 30+). Offline: factual Emergency SOS via satellite guidance (OS-level — RedMed cannot initiate it). |
 | **Aid** | Offline first-aid topics + CPR compression timer. |
-| **Write Tag** | Writes your profile onto a blank **passive** NFC bracelet. **Scan emergency bracelet** opens the native first-responder card (`ScannedCardView`) without touching My ID. **Import** pulls a tag onto this phone. Passive phone taps without the app still open the hosted HTTPS card in Safari. |
+| **NFC** | Writes your profile onto a blank **passive** NFC bracelet as `redmed://card#d=…`. **Scan emergency bracelet** opens the native first-responder card (`ScannedCardView`) without touching My ID. **Import** pulls a tag onto this phone. |
 
-Tapping a written tag opens `https://maxroot1122.github.io/RedMed/index.html#d=…` in the phone's browser (works on iPhone, Android, etc.). That hosted `index.html` is the emergency card — the Swift app writes the link; it does not embed the card UI.
+Tapping a newly written tag opens **RedMed** on an iPhone that has the app installed. The emergency card is native SwiftUI (`ScannedCardView`). Phones without RedMed cannot open new tags. Legacy HTTPS tags still decode when scanned inside the app.
 
 ---
 
@@ -63,7 +63,7 @@ You should not need to add these manually:
 | App icon | `Assets.xcassets` (Rod of Asclepius mark) |
 | Launch screen | Auto-generated (portrait) |
 
-`AppConfig.medicalCardBaseURL` is `https://maxroot1122.github.io/RedMed/index.html` (any-device NFC — same file as root `index.html` on the public host). Keep it in sync with [`config/canonical-url`](../config/canonical-url) via `./scripts/sync-canonical-url.sh`. Legacy `redmed://` remains in Info.plist for older tags.
+`AppConfig.medicalCardBaseURL` is `redmed://card` (iOS-only NFC). Keep it in sync with [`config/canonical-url`](../config/canonical-url). The `redmed` URL scheme is registered in Info.plist.
 
 ---
 

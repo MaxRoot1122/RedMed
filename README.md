@@ -1,9 +1,9 @@
 # RedMed
 
-Local-first emergency medical ID for NFC bracelets. No accounts. No backend. Profile data stays on your device and on the tag you write.
+Local-first emergency medical ID for **iPhone**. No accounts. No backend. Profile data stays on your device and on the passive NFC tag you write.
 
 <p align="center">
-  <a href="https://maxroot1122.github.io/RedMed/">Live demo</a>
+  <a href="ios/SETUP.md">iOS setup</a>
   ·
   <a href="privacy-policy.html">Privacy</a>
   ·
@@ -12,62 +12,47 @@ Local-first emergency medical ID for NFC bracelets. No accounts. No backend. Pro
 
 ## What it is
 
-Fill in allergies, meds, contacts, and notes once. Save. Write the link to a **passive NTAG215/216** bracelet (no battery — your phone powers the chip on tap). Only a **smartphone** that taps sees the emergency card — no app required for them.
+Fill in allergies, meds, contacts, and notes once in the **RedMed iOS app**. Save. Write the link to a **passive NTAG215/216** bracelet (no battery — your phone powers the chip on tap). Another **iPhone with RedMed** can scan the band to open the emergency card in-app.
 
-The standard RedMed bracelet is a **passive NFC tag** with no battery. It does not need charging; the reader phone powers it briefly during a tap.
-
-**Out of the box:** print a QR code to `https://maxroot1122.github.io/RedMed/get.html` — it detects iPhone vs Android and opens the right app store. Only the **purchaser** needs RedMed to fill the form and write the bracelet (My ID → **Bracelet**, top right).
-
-Your data lives in:
-
-- the browser's **local storage** on this device, and
-- the **URL itself** (`#d=` base64), which is what goes on the tag
+**Product surface:** iOS only (`ios/`). Not a web app, not Android, not a desktop product.
 
 ## Surfaces
 
 | Path | Role |
 |------|------|
-| [`ios/`](ios/) | **Primary owner app** (SwiftUI) — Keychain profile, NFC read/write, Aid, Find 911, first-launch consent |
-| [`index.html`](index.html) | NFC emergency card (any phone that taps the band) + Android/web owner fallback |
-| [`android/`](android/) | Trusted Web Activity wrapper around the hosted page |
-| [`RedMed.app/`](RedMed.app/) | macOS launcher — builds/runs native iOS in Simulator (`scripts/run-ios-simulator.sh`) |
-| [`assets/`](assets/) | **App cover** `icon.svg` (+ PNGs/ICNS); web `wordmark.svg`; iOS `wordmark-ios.svg`. See [`docs/BRAND.md`](docs/BRAND.md). |
-| [`docs/`](docs/) | Commercial launch, brand, trauma finder, stores, fulfillment |
+| [`ios/`](ios/) | **The RedMed app** (SwiftUI) — Keychain profile, NFC read/write, Aid, Find 911, Face ID lock |
+| [`get.html`](get.html) | Packaging QR → App Store (iPhone only) |
+| [`privacy-policy.html`](privacy-policy.html) / [`terms-of-service.html`](terms-of-service.html) | App Store / legal host |
+| [`android/`](android/) | **Retired** — see [`android/RETIRED.md`](android/RETIRED.md) |
+| [`index.html`](index.html) | Legacy HTTPS emergency card for older tags only — not the product UI |
+| [`RedMed.app/`](RedMed.app/) | Optional Mac helper to launch iOS Simulator |
 
 ## Quick start
 
-**iPhone (preferred):** open [`ios/RedMed.xcodeproj`](ios/SETUP.md) → Run, or double-click [`RedMed.app`](RedMed.app/) on a Mac (Simulator). Web card: [GitHub Pages](https://maxroot1122.github.io/RedMed/) (custom domain when DNS is live).
+1. Open [`ios/RedMed.xcodeproj`](ios/SETUP.md) in Xcode → Run on your iPhone
+2. Fill in your info → save
+3. **NFC** tab → write a blank NTAG bracelet
+4. Scan with RedMed on an iPhone to open the native emergency card
 
-1. Fill in your info → save
-2. **Write Tag** / Bracelet setup → blank NTAG bracelet
-3. Tap the band — emergency card opens in the phone's browser (`index.html#d=…`)
+NFC does not work in Simulator — use a physical iPhone.
 
-**Web / Android fallback:** [hosted card](https://maxroot1122.github.io/RedMed/) · [`android/SETUP.md`](android/SETUP.md)
-
-iOS: [`ios/SETUP.md`](ios/SETUP.md) · Android: [`android/SETUP.md`](android/SETUP.md)
-
-## Commercial bracelet launch
+## Docs
 
 | Doc | Purpose |
 |-----|---------|
-| [`docs/BRACELET.md`](docs/BRACELET.md) | NTAG216 spec, encoding SOP, QA matrix |
-| [`docs/DOMAIN.md`](docs/DOMAIN.md) | Custom domain + Android asset links |
+| [`ios/SETUP.md`](ios/SETUP.md) | Xcode / device install |
+| [`docs/BRACELET.md`](docs/BRACELET.md) | NTAG216 spec, encoding SOP, QA |
 | [`docs/IOS_APP_STORE.md`](docs/IOS_APP_STORE.md) | TestFlight / App Store checklist |
-| [`docs/ANDROID_PLAY.md`](docs/ANDROID_PLAY.md) | Play Console checklist |
-| [`docs/STORE_ASSETS.md`](docs/STORE_ASSETS.md) | Screenshots & listing copy |
-| [`docs/PACKAGING.md`](docs/PACKAGING.md) | Box insert & checkout disclaimers |
-| [`docs/FULFILLMENT.md`](docs/FULFILLMENT.md) | E-commerce & support workflow |
-| [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers — agent handoff (state/county UX, bundled data) |
-| [`SECURITY.md`](SECURITY.md) | Secrets, Pages trust root, Maps key locks, reporting |
-| [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) | What we protect / deliberately do not |
+| [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers |
+| [`SECURITY.md`](SECURITY.md) | Threat posture & reporting |
 
-Canonical NFC URL: [`config/canonical-url`](config/canonical-url) — run `./scripts/sync-canonical-url.sh` after changes.
+New bracelet writes use `redmed://card#d=…` (see [`config/canonical-url`](config/canonical-url)).
 
 ## Privacy
 
-- Tag data is **not encrypted** — anyone who taps can read (intentional for responders).
+- Tag data is **not encrypted** — intentional for emergency responders with RedMed.
 - No cloud sync of profile data.
-- Keep entries short; the UI warns when the full URI exceeds tag capacity.
+- Keep entries short; the app warns when the full URI exceeds tag capacity.
 
 ## License
 
