@@ -1,5 +1,7 @@
 # NFC bracelet — hardware & encoding
 
+> **Product:** RedMed is an **iPhone app**. New bracelet writes use `redmed://card#d=…` and open in RedMed. Legacy HTTPS tags remain readable when scanned in-app.
+
 Manufacturing spec for RedMed commercial bracelets. Software writes the same NDEF URI everywhere; this doc is the factory/QA source of truth.
 
 ## Passive NFC only (product rule)
@@ -92,9 +94,9 @@ Trauma data is bundled offline in the page — no extra network call. See [`docs
 ### Blank bracelet (recommended v1)
 
 1. Ship **blank** NTAG216 bracelets.
-2. Owner fills profile in web app or iOS app → **Save**.
+2. Owner fills profile in the **iOS app** → **Save**.
 3. Write tag via **iOS Write Tag** tab or third-party app (NFC Tools) using the HTTPS card link.
-4. Owner taps bracelet to verify card opens in browser.
+4. Owner taps bracelet to verify the card opens in RedMed (native `ScannedCardView`).
 
 ### Pre-encoded at fulfillment (optional)
 
