@@ -12,7 +12,11 @@ if ./scripts/run-ios-simulator.sh 2>&1 | tee -a "$LOG"; then
   echo "RedMed is running in Simulator."
 else
   echo ""
-  echo "Launch failed. See: $LOG"
+  echo "Launch failed. Last log lines:"
+  echo "----------------------------------------"
+  tail -n 40 "$LOG" 2>/dev/null || true
+  echo "----------------------------------------"
+  echo "Full log: $LOG"
   read -r -p "Press Enter to close…"
   exit 1
 fi

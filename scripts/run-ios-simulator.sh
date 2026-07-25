@@ -27,6 +27,36 @@ if ! command -v xcodebuild >/dev/null 2>&1; then
   exit 1
 fi
 
+if [ ! -d "$PROJECT" ]; then
+  echo "ERROR: Xcode project missing at $PROJECT" >&2
+  exit 1
+fi
+
+# Fail fast when the project references Swift files that are not on disk
+# (a common cause of "Simulator launch failed" after a bad sync/merge).
+python3 - "$PROJECT" <<'PY'
+import os, re, sys
+proj = sys.argv[1]
+root = os.path.dirname(proj)  # ios/
+pbx = open(os.path.join(proj, "project.pbxproj"), encoding="utf-8").read()
+refs = sorted(set(re.findall(r"path = ([^;]+\.swift);", pbx)))
+missing = []
+for name in refs:
+    found = False
+    for dirpath, _, files in os.walk(root):
+        if name in files:
+            found = True
+            break
+    if not found:
+        missing.append(name)
+if missing:
+    print("ERROR: Xcode project references Swift files that are missing from disk:", file=sys.stderr)
+    for m in missing:
+        print(f"  - {m}", file=sys.stderr)
+    print("Restore the ios/ tree (see ios/SETUP.md) before launching Simulator.", file=sys.stderr)
+    sys.exit(1)
+PY
+
 # Resolve a usable simulator on ANY machine. Preference order:
 #   1. An already-booted iOS simulator (use what's open)
 #   2. The requested DEVICE_NAME (newest runtime it exists on)

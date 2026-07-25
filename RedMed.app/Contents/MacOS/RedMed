@@ -13,10 +13,29 @@ mkdir -p "$LOG_DIR"
   echo "REPO_ROOT=$REPO_ROOT"
 } >> "$LOG_FILE"
 
+# Escape for AppleScript string literals.
+as_escape() {
+  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
+}
+
 fail() {
   local msg="$1"
   echo "ERROR: $msg" >> "$LOG_FILE"
-  osascript -e "display alert \"RedMed\" message \"${msg}\n\nDetails: ${LOG_FILE}\" as critical"
+  # Surface the last build lines so Finder alerts aren't a dead end.
+  local tail_txt
+  tail_txt="$(tail -n 24 "$LOG_FILE" 2>/dev/null | sed 's/\r//g' | tr -d '\000')"
+  local alert_msg
+  alert_msg="${msg}
+
+—— last log lines ——
+${tail_txt}
+
+Full log: ${LOG_FILE}"
+  osascript -e "display alert \"RedMed\" message \"$(as_escape "$alert_msg")\" as critical" \
+    -e "try
+      do shell script \"open -R $(as_escape "$LOG_FILE")\"
+    end try" 2>/dev/null \
+    || osascript -e "display alert \"RedMed\" message \"$(as_escape "$msg")\n\nDetails: $(as_escape "$LOG_FILE")\" as critical"
   exit 1
 }
 
