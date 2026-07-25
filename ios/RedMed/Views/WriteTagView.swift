@@ -104,7 +104,7 @@ struct WriteTagView: View {
                     .font(layout.heroTitleFont())
                     .tracking(-0.4)
                     .foregroundStyle(AppTheme.ink)
-                Text("Hold your iPhone to the bracelet once to program the passive chip. The band stores your card (no battery) until a smartphone taps to read it in a browser.")
+                Text("Hold your iPhone to the bracelet once to program the passive chip. The band stores your card (no battery). Another iPhone with RedMed can scan it to open the emergency card in the app.")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)

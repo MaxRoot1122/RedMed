@@ -1,3 +1,5 @@
+> **Retired.** RedMed is iOS-only. See [`RETIRED.md`](RETIRED.md).
+
 # RedMed — Android app (Google Play)
 
 This wraps the same web app already hosted at
