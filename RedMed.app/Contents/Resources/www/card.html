@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RedMed — Emergency Card</title>
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#e11d48">
+<meta name="description" content="RedMed emergency medical card — read from an NFC bracelet. Works offline once loaded.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-uAhCZ3Y+ncZFAZMFUaliq519O32gMiVKP2kgV6K6qhU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<style>
+  :root {
+    --accent: #e11d48;
+    --accent-dark: #bf1237;
+    --accent-soft: rgba(225,29,72,0.10);
+    --ink: #1c1917;
+    --muted: #78716c;
+    --bg: #fff7f7;
+    --line: rgba(28,25,23,0.08);
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.45;
+  }
+  a { color: inherit; }
+  .header {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: #fff;
+    padding: 36px 20px 44px;
+  }
+  .header .eyebrow {
+    font-size: 12px; font-weight: 800; letter-spacing: 1.6px;
+    color: rgba(255,255,255,0.85); text-transform: uppercase; margin: 0 0 10px;
+  }
+  .header h1 {
+    margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;
+    word-break: break-word;
+  }
+  .header .meta { margin: 8px 0 0; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.92); }
+  .donor-badge {
+    display: inline-block; margin-top: 12px; padding: 5px 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 800;
+  }
+  .body { max-width: 480px; margin: 0 auto; padding: 18px 20px 40px; position: relative; top: -22px; }
+  .chip {
+    background: rgba(225,29,72,0.08); color: var(--accent);
+    border-radius: 14px; padding: 12px 14px; font-size: 13px; font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .btn {
+    display: block; width: 100%; text-align: center; text-decoration: none;
+    border: none; border-radius: 16px; padding: 16px 18px; font-size: 16px;
+    font-weight: 750; font-family: inherit; cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-call { background: var(--accent); color: #fff; }
+  .btn-copy { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .section { margin-top: 22px; }
+  .eyebrow-label {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 10px;
+  }
+  .eyebrow-label.critical { color: var(--accent); }
+  .block { border-radius: 14px; padding: 14px; }
+  .block.critical { background: var(--accent-soft); }
+  .item { display: flex; gap: 10px; align-items: flex-start; padding: 4px 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 8px; flex: none; background: var(--muted); }
+  .dot.critical { background: var(--accent); }
+  .item span { font-size: 15px; font-weight: 600; }
+  .contact-card {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px;
+  }
+  .contact-name { font-weight: 700; font-size: 15px; }
+  .contact-rel { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .contact-phone { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .call-pill {
+    background: #16a34a; color: #fff; text-decoration: none; font-weight: 700; font-size: 13px;
+    padding: 9px 16px; border-radius: 999px; flex: none;
+  }
+  .muted-note { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .footer { margin-top: 30px; text-align: center; font-size: 12px; color: var(--muted); }
+  .footer a { font-weight: 700; color: var(--accent); text-decoration: none; }
+  .empty-wrap { max-width: 420px; margin: 0 auto; padding: 60px 24px; text-align: center; }
+  .empty-wrap h1 { font-size: 22px; margin: 16px 0 8px; }
+  .empty-wrap p { font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  "use strict";
+
+  var LIMITS = {
+    name: 120, dob: 32, blood: 16, listItem: 80, listMax: 32,
+    contactName: 80, contactPhone: 32, contactRel: 160, contactsMax: 4,
+    dEncodedMax: 8192
+  };
+
+  function b64urlDecode(str) {
+    str = str.replace(/-/g, "+").replace(/_/g, "/");
+    while (str.length % 4) str += "=";
+    return decodeURIComponent(escape(atob(str)));
+  }
+
+  function clampStr(v, max) {
+    return String(v == null ? "" : v).trim().slice(0, max);
+  }
+
+  function clampList(v, maxItems, maxLen) {
+    if (!Array.isArray(v)) return [];
+    var out = [];
+    for (var i = 0; i < v.length && out.length < maxItems; i++) {
+      var s = clampStr(v[i], maxLen);
+      if (s) out.push(s);
+    }
+    return out;
+  }
+
+  function normalizeProfile(data) {
+    data = data && typeof data === "object" && !Array.isArray(data) ? data : {};
+    var contacts = (Array.isArray(data.contacts) ? data.contacts : [])
+      .slice(0, LIMITS.contactsMax)
+      .map(function (c) {
+        c = c && typeof c === "object" ? c : {};
+        return {
+          name: clampStr(c.name, LIMITS.contactName),
+          phone: clampStr(c.phone, LIMITS.contactPhone),
+          rel: clampStr(c.rel, LIMITS.contactRel)
+        };
+      })
+      .filter(function (c) { return c.name || c.phone; });
+    return {
+      name: clampStr(data.name, LIMITS.name),
+      dob: clampStr(data.dob, LIMITS.dob),
+      blood: clampStr(data.blood, LIMITS.blood),
+      donor: data.donor === true || data.donor === 1 || data.donor === "true" || data.donor === "1",
+      allergies: clampList(data.allergies, LIMITS.listMax, LIMITS.listItem),
+      meds: clampList(data.meds, LIMITS.listMax, LIMITS.listItem),
+      conditions: clampList(data.conditions, LIMITS.listMax, LIMITS.listItem),
+      contacts: contacts
+    };
+  }
+
+  function decodeFromHash(hash) {
+    var m = /d=([^&]+)/.exec(hash || "");
+    if (!m) return null;
+    var encoded = m[1];
+    if (!encoded || encoded.length > LIMITS.dEncodedMax) return null;
+    try {
+      return normalizeProfile(JSON.parse(b64urlDecode(encoded)));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function ageYears(dob) {
+    if (!dob) return null;
+    var d = new Date(dob + "T00:00:00");
+    if (isNaN(d.getTime())) return null;
+    var t = new Date();
+    var age = t.getFullYear() - d.getFullYear();
+    var m = t.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && t.getDate() < d.getDate())) age--;
+    return age;
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function telHref(phone) {
+    var digits = String(phone || "").replace(/[^0-9+]/g, "");
+    return digits ? "tel:" + digits : null;
+  }
+
+  function renderHeader(p) {
+    var header = el("div", "header");
+    header.appendChild(el("p", "eyebrow", "REDMED · EMERGENCY CARD"));
+    header.appendChild(el("h1", null, p.name || "Medical ID"));
+    var metaParts = [];
+    var age = ageYears(p.dob);
+    if (age != null) metaParts.push(age + " yrs");
+    if (p.dob) metaParts.push("DOB " + p.dob);
+    if (p.blood) metaParts.push("Blood " + p.blood);
+    if (metaParts.length) header.appendChild(el("p", "meta", metaParts.join(" · ")));
+    if (p.donor) header.appendChild(el("span", "donor-badge", "Organ donor"));
+    return header;
+  }
+
+  function renderList(title, items, critical) {
+    var section = el("div", "section");
+    section.appendChild(el("p", "eyebrow-label" + (critical ? " critical" : ""), title));
+    var block = el("div", "block" + (critical ? " critical" : ""));
+    items.forEach(function (text) {
+      var item = el("div", "item");
+      item.appendChild(el("span", "dot" + (critical ? " critical" : "")));
+      item.appendChild(el("span", null, text));
+      block.appendChild(item);
+    });
+    section.appendChild(block);
+    return section;
+  }
+
+  function renderContacts(contacts) {
+    var section = el("div", "section");
+    section.appendChild(el("p", "eyebrow-label", "Emergency contacts"));
+    contacts.forEach(function (c) {
+      var card = el("div", "contact-card");
+      var info = el("div");
+      info.appendChild(el("div", "contact-name", c.name || "Contact"));
+      if (c.rel) info.appendChild(el("div", "contact-rel", c.rel));
+      if (c.phone) info.appendChild(el("div", "contact-phone", c.phone));
+      card.appendChild(info);
+      var href = telHref(c.phone);
+      if (href) {
+        var call = el("a", "call-pill", "Call");
+        call.href = href;
+        card.appendChild(call);
+      }
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function summaryText(p) {
+    var lines = ["RedMed emergency summary"];
+    if (p.name) lines.push("Name: " + p.name);
+    if (p.blood) lines.push("Blood: " + p.blood);
+    if (p.allergies.length) lines.push("Allergies: " + p.allergies.join(", "));
+    if (p.conditions.length) lines.push("Conditions: " + p.conditions.join(", "));
+    if (p.meds.length) lines.push("Meds: " + p.meds.join(", "));
+    return lines.join("\n");
+  }
+
+  function renderCard(p) {
+    var root = document.getElementById("root");
+    root.textContent = "";
+    root.appendChild(renderHeader(p));
+
+    var body = el("div", "body");
+    body.appendChild(el("div", "chip", "First responder view — read from the bracelet chip. Nothing is saved to this phone."));
+
+    var call = el("a", "btn btn-call", "Call 911");
+    call.href = "tel:911";
+    body.appendChild(call);
+
+    var copy = el("button", "btn btn-copy", "Copy medical summary");
+    copy.type = "button";
+    copy.addEventListener("click", function () {
+      var text = summaryText(p);
+      var done = function () { copy.textContent = "Copied!"; setTimeout(function () { copy.textContent = "Copy medical summary"; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, done);
+      } else {
+        done();
+      }
+    });
+    body.appendChild(copy);
+
+    if (p.allergies.length) body.appendChild(renderList("Allergies", p.allergies, true));
+    if (p.meds.length) body.appendChild(renderList("Medications", p.meds, false));
+    if (p.conditions.length) body.appendChild(renderList("Medical conditions", p.conditions, false));
+    if (p.contacts.length) body.appendChild(renderContacts(p.contacts));
+
+    if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
+      body.appendChild(el("p", "muted-note", "No allergies, meds, conditions, or contacts were written to this band."));
+    }
+
+    var footer = el("p", "footer");
+    footer.appendChild(document.createTextNode("Own a RedMed bracelet? "));
+    var link = el("a", null, "Get the app");
+    link.href = "https://apps.apple.com/app/redmed/id0000000000";
+    footer.appendChild(link);
+    body.appendChild(footer);
+
+    root.appendChild(body);
+  }
+
+  function renderEmpty() {
+    var root = document.getElementById("root");
+    root.textContent = "";
+    var wrap = el("div", "empty-wrap");
+    wrap.appendChild(el("p", "eyebrow", "REDMED"));
+    wrap.appendChild(el("h1", null, "Emergency medical card"));
+    wrap.appendChild(el("p", null, "This page shows the medical ID stored on a tapped RedMed NFC bracelet. Tap a bracelet to view its card — nothing loads here on its own."));
+    root.appendChild(wrap);
+  }
+
+  var profile = decodeFromHash(location.hash);
+  if (profile) {
+    renderCard(profile);
+  } else {
+    renderEmpty();
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("card-sw.js").catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>

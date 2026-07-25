@@ -37,19 +37,31 @@ if r2.returncode:
     print("FAIL: get.html node --check"); print(r2.stderr); sys.exit(1)
 print("OK: get.html CSP hash + node --check")
 
+card_script, _ = script_hash("card.html")
+open("/tmp/redmed-card-script.js", "w").write(card_script)
+r3 = subprocess.run(["node", "--check", "/tmp/redmed-card-script.js"], capture_output=True, text=True)
+if r3.returncode:
+    print("FAIL: card.html node --check"); print(r3.stderr); sys.exit(1)
+print("OK: card.html CSP hash + node --check")
+
+r4 = subprocess.run(["node", "--check", "card-sw.js"], capture_output=True, text=True)
+if r4.returncode:
+    print("FAIL: card-sw.js node --check"); print(r4.stderr); sys.exit(1)
+print("OK: card-sw.js node --check")
+
 mirror = "RedMed.app/Contents/Resources/www/index.html"
 if not filecmp.cmp("index.html", mirror, shallow=False):
     print(f"FAIL: {mirror} out of sync with index.html"); sys.exit(1)
 print("OK: macOS www mirror matches index.html")
 
-for name in ("get.html", "privacy-policy.html", "terms-of-service.html"):
+for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card.html", "card-sw.js"):
     mpath = f"RedMed.app/Contents/Resources/www/{name}"
     try:
         if not filecmp.cmp(name, mpath, shallow=False):
             print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
     except FileNotFoundError:
         print(f"WARN: missing mirror {mpath}")
-print("OK: get.html + privacy-policy + terms-of-service mirrors match")
+print("OK: get.html + privacy-policy + terms-of-service + card.html + card-sw.js mirrors match")
 
 import os
 REQUIRED_ASSETS = (
@@ -75,9 +87,9 @@ print("OK: index.html CSS braces balanced")
 # Canonical URL — shipping surfaces must match config/canonical-url.
 # Product is iOS-only: the active write target is the `redmed://` scheme
 # (checked only against AppConfig.medicalCardBaseURL). The commented
-# `legacy:https://` line is the older hosted-Pages fallback that index.html,
-# get.html, and the retired Android TWA strings.xml still reference for
-# bracelets written before the iOS-only pivot.
+# `legacy:https://` line is the older hosted-Pages fallback — card.html,
+# get.html, and the retired Android TWA strings.xml still reference it for
+# bracelets written before the iOS-only pivot (or phones without the app).
 from urllib.parse import urlparse
 cfg_lines = [ln.strip() for ln in open("config/canonical-url", encoding="utf-8")]
 card_url = next((ln for ln in cfg_lines if ln and not ln.startswith("#") and not ln.startswith("legacy:")), "")
@@ -91,8 +103,8 @@ if not card_url:
 legacy_url = legacy_urls[0] if legacy_urls else ""
 if not legacy_url:
     print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
-get_url = legacy_url.replace("/index.html", "/get.html")
-privacy_url = legacy_url.replace("/index.html", "/privacy-policy.html")
+get_url = legacy_url.replace("/card.html", "/get.html")
+privacy_url = legacy_url.replace("/card.html", "/privacy-policy.html")
 origin = f"{urlparse(legacy_url).scheme}://{urlparse(legacy_url).netloc}"
 checks = [
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
@@ -133,7 +145,7 @@ except Exception as e:
     print(f"WARN: could not parse assetlinks.json ({e})")
 
 base = "http://127.0.0.1:8934"
-for path in ("index.html", "get.html", "privacy-policy.html"):
+for path in ("index.html", "get.html", "privacy-policy.html", "card.html", "card-sw.js"):
     try:
         with urllib.request.urlopen(f"{base}/{path}", timeout=3) as resp:
             if resp.status != 200:

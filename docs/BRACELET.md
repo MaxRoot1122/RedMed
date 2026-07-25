@@ -67,27 +67,46 @@ The owner can lock the bracelet with a 4-digit PIN via the app. When locked:
 
 ## What goes on the tag
 
-Single **NDEF Well-Known URI** record:
+Single **NDEF Well-Known URI** record. New bracelets are written with the
+active target — the `redmed://` scheme, opened natively by the iOS app
+(`ScannedCardView`), no network involved:
 
 ```
-https://<canonical-host>/index.html#d=<base64url JSON profile>
+redmed://card#d=<base64url JSON profile>
 ```
 
-Canonical host is defined in [`config/canonical-url`](../config/canonical-url). Run `scripts/sync-canonical-url.sh` after changing it.
+Older bracelets, or a tap from a phone without the app installed, fall back
+to the legacy HTTPS target — [`card.html`](../card.html), a minimal,
+self-contained, offline-cacheable page (see below), **not** `index.html`
+(the full owner web app):
 
-Profile JSON schema matches [`index.html`](../index.html) / [`ios/RedMed/Models/MedicalProfile.swift`](../ios/RedMed/Models/MedicalProfile.swift): `name`, `dob`, `blood`, `allergies`, `meds`, `conditions`, `contacts` (3 slots), `doc` (name/phone), `insurance` (provider/id), `notes`, `updated`.
+```
+https://<canonical-host>/card.html#d=<base64url JSON profile>
+```
+
+Canonical host and active/legacy targets are defined in [`config/canonical-url`](../config/canonical-url). Run `scripts/sync-canonical-url.sh` after changing it.
+
+Profile JSON schema matches [`ios/RedMed/Models/MedicalProfile.swift`](../ios/RedMed/Models/MedicalProfile.swift): `name`, `dob`, `blood`, `donor`, `allergies`, `meds`, `conditions`, `contacts` (up to 4 slots), `updated`.
 
 **Not encrypted** — intentional so any responder's phone can read the card without an app.
 
 ## Bracelet tap experience (responder priority)
 
-After tap, the hosted card opens with:
+With the app installed, tapping opens `ScannedCardView` natively. Without
+it, the legacy HTTPS target opens `card.html`, which shows:
 
 1. **Call 911**
-2. **Trauma hospitals** — state picker for verified trauma-center transport (when waiting may not be survivable)
-3. Patient allergies, meds, contacts, doctor/insurance, notes
+2. Patient allergies, medications, conditions, emergency contacts (tap-to-call)
+3. Copy medical summary (plain text, for handing off to dispatch)
 
-Trauma data is bundled offline in the page — no extra network call. See [`docs/TRAUMA_FINDER.md`](TRAUMA_FINDER.md).
+`card.html` registers [`card-sw.js`](../card-sw.js), a small service worker
+that caches the page shell after its first successful load — repeat taps on
+the same phone render fully offline after that, even with no signal. The
+profile itself is never fetched from a server either way: it's encoded
+entirely in the URL fragment (`#d=…`), which browsers never send over the
+network. `card.html` has no trauma-hospital finder or GPS — that's an
+in-app-only feature (owner or a phone with the app). See
+[`docs/TRAUMA_FINDER.md`](TRAUMA_FINDER.md).
 
 ## Encoding SOP
 
