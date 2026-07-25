@@ -15,31 +15,45 @@ root = Path(sys.argv[1])
 cfg_path = Path(sys.argv[2])
 lines = [ln.strip() for ln in cfg_path.read_text(encoding="utf-8").splitlines()]
 
-card_url = next((ln for ln in lines if ln.startswith("https://")), "")
+# Product is iOS-only: the active write target is the redmed:// scheme, not
+# an https:// URL — it's used only for AppConfig.medicalCardBaseURL and
+# never propagated to web/Android surfaces. The legacy:https:// line (may be
+# commented with a leading "#") is the older hosted-Pages fallback that
+# card.html, get.html, and the retired Android TWA strings.xml still need.
+card_url = next((ln for ln in lines if ln and not ln.startswith("#") and not ln.startswith("legacy:")), "")
 if not card_url:
-    sys.exit("No https:// URL found in config/canonical-url")
+    sys.exit("No active target found in config/canonical-url")
 
-legacy_urls = [ln.split(":", 1)[1] for ln in lines if ln.startswith("legacy:https://")]
-parsed = urlparse(card_url)
+legacy_urls = [
+    ln.lstrip("#").strip().split(":", 1)[1]
+    for ln in lines
+    if ln.lstrip("#").strip().startswith("legacy:https://")
+]
+if not legacy_urls:
+    sys.exit("No legacy:https:// line found in config/canonical-url")
+legacy_url = legacy_urls[0]
+
+parsed = urlparse(legacy_url)
 origin = f"{parsed.scheme}://{parsed.netloc}"
 host = parsed.hostname or ""
-path = parsed.path.removesuffix("/index.html") or ""
+path = parsed.path.rsplit("/", 1)[0] or ""
 path_prefix = path if path else "/"
-get_url = card_url.replace("/index.html", "/get.html")
-privacy_url = card_url.replace("/index.html", "/privacy-policy.html")
-legacy_js = json.dumps(legacy_urls, ensure_ascii=False)
+get_url = legacy_url.replace("/card.html", "/get.html")
+privacy_url = legacy_url.replace("/card.html", "/privacy-policy.html")
+legacy_js = json.dumps(legacy_urls[1:], ensure_ascii=False)
 
-print(f"Canonical card URL: {card_url}")
+print(f"Active card target: {card_url}")
+print(f"Legacy card URL:    {legacy_url}")
 print(f"Get started URL:    {get_url}")
 print(f"Privacy URL:        {privacy_url}")
 print(f"Origin:             {origin}")
-print(f"Legacy URLs:        {legacy_urls or '(none)'}")
+print(f"Older legacy URLs:  {legacy_urls[1:] or '(none)'}")
 
 # iOS
 app_config = root / "ios/RedMed/AppConfig.swift"
 text = app_config.read_text(encoding="utf-8")
-text = re.sub(r'static let getStartedURL = "https?://[^"]+"', f'static let getStartedURL = "{get_url}"', text)
-text = re.sub(r'static let medicalCardBaseURL = "https?://[^"]+"', f'static let medicalCardBaseURL = "{card_url}"', text)
+text = re.sub(r'static let medicalCardBaseURL = "[^"]+"', f'static let medicalCardBaseURL = "{card_url}"', text)
+text = re.sub(r'static let legacyHostedCardBaseURL = "https?://[^"]+"', f'static let legacyHostedCardBaseURL = "{legacy_url}"', text)
 text = re.sub(r'static let privacyPolicyURL = "https?://[^"]+"', f'static let privacyPolicyURL = "{privacy_url}"', text)
 app_config.write_text(text, encoding="utf-8")
 
