@@ -7,14 +7,14 @@ enum AppConfig {
     /// Update when the App Store listing is live (App Store Connect app ID).
     static let appStoreURL = "https://apps.apple.com/app/redmed/id0000000000"
 
-    /// Canonical URI written to NFC tags (`#d=…` profile on chip).
-    /// Opens in the RedMed iOS app via the registered `redmed` URL scheme.
-    /// Emergency card UI is native `ScannedCardView` — not a web page.
-    static let medicalCardBaseURL = "redmed://card"
+    /// HTTPS URI written to passive NFC bracelets by the RedMed iPhone app
+    /// (`#d=…` profile on chip). Any iPhone tap opens Safari with the hosted
+    /// emergency card — no App Store install for responders. In-app NFC scan
+    /// and `redmed://card` deep links still decode into native `ScannedCardView`.
+    static let medicalCardBaseURL = "https://maxroot1122.github.io/RedMed/card/"
 
-    /// Older bracelets may still carry an HTTPS Pages URL; the app still
-    /// decodes `#d=` from those when scanned in-app. Points at the minimal
-    /// offline-cacheable card/, not the full owner web app (index.html).
+    /// Older bracelets may carry `redmed://card`; in-app decode still accepts
+    /// `#d=` from those and from this HTTPS path.
     static let legacyHostedCardBaseURL = "https://maxroot1122.github.io/RedMed/card/"
 
     static let privacyPolicyURL = "https://maxroot1122.github.io/RedMed/privacy-policy.html"

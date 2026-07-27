@@ -5,9 +5,13 @@ struct EditProfileView: View {
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
 
     /// When true, shown as the My ID tab (Save stays; no Cancel).
     var embedded: Bool = false
+
+    @State private var editUnlocked = false
+    @State private var authInProgress = false
 
     @State private var draft: MedicalProfile = {
         var profile = MedicalProfile()
@@ -24,6 +28,7 @@ struct EditProfileView: View {
     @State private var showingBraceletSetup = false
     @State private var firstName = ""
     @State private var lastName = ""
+    @StateObject private var braceletWriter = NFCWriter()
 
     private let bloodTypes = ["", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
 
@@ -128,8 +133,16 @@ struct EditProfileView: View {
         "Mobility impairment"
     ]
 
+    /// Once this device has a saved profile name, edits require Face ID /
+    /// Touch ID (passcode fallback). First-time setup stays open so owners
+    /// can enter data without an extra gate.
+    private var requiresEditAuth: Bool {
+        !store.profile.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     var body: some View {
         NavigationStack {
+            ZStack {
             Form {
                 if embedded {
                     Section {
@@ -155,6 +168,18 @@ struct EditProfileView: View {
                             trailing: layout.spaceXS
                         ))
                     }
+                }
+
+                if link.isLinked {
+                    Section {
+                        BraceletSyncInstructions()
+                        if braceletWriter.isWriting || !braceletWriter.statusMessage.isEmpty {
+                            Text(braceletWriter.isWriting ? "Hold near bracelet…" : braceletWriter.statusMessage)
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(braceletWriter.verified ? AppTheme.ok : AppTheme.ink)
+                        }
+                    }
+                    .listRowBackground(Color.clear)
                 }
 
                 Section {
@@ -245,6 +270,35 @@ struct EditProfileView: View {
             }
             .scrollContentBackground(.hidden)
             .screenAtmosphere()
+            .disabled(!editUnlocked)
+            .blur(radius: editUnlocked ? 0 : 8)
+
+            if requiresEditAuth && !editUnlocked {
+                Color.black.opacity(0.15)
+                    .ignoresSafeArea()
+                if authInProgress {
+                    ProgressView("Unlocking…")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(layout.spaceLG)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
+                } else {
+                    VStack(spacing: layout.spaceMD) {
+                        Image(systemName: "faceid")
+                            .font(.system(size: layout.s(40)))
+                            .foregroundStyle(AppTheme.accent)
+                        Text("Face ID required to edit")
+                            .font(.subheadline.weight(.semibold))
+                        Button("Unlock") {
+                            Task { await unlockForEdit() }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(AppTheme.accent)
+                    }
+                    .padding(layout.spaceLG)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
+                }
+            }
+            }
             .navigationTitle(embedded ? "" : "Edit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -267,10 +321,29 @@ struct EditProfileView: View {
                     Button(savedFlash ? "Saved" : "Save") { save() }
                         .bold()
                         .foregroundStyle(AppTheme.accent)
+                        .disabled(!editUnlocked)
                 }
             }
             .tint(AppTheme.accent)
-            .onAppear { loadDraft() }
+            .onAppear {
+                loadDraft()
+                prepareEditAccess()
+            }
+            .onChange(of: scenePhase) { phase in
+                if phase == .background, requiresEditAuth {
+                    editUnlocked = false
+                }
+            }
+            .onChange(of: braceletWriter.verified) { verified in
+                guard verified,
+                      let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+                link.link(name: link.deviceName, url: url.absoluteString)
+            }
+            .onChange(of: braceletWriter.success) { success in
+                guard success, !braceletWriter.verified,
+                      let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+                link.link(name: link.deviceName, url: url.absoluteString)
+            }
             .sheet(isPresented: $showingBraceletSetup) {
                 BraceletSetupView()
             }
@@ -301,17 +374,44 @@ struct EditProfileView: View {
             }
             .confirmationDialog("Clear all data?", isPresented: $showingClearConfirm) {
                 Button("Clear", role: .destructive) {
-                    store.clearAllData()
-                    link.clear()
-                    draft = store.profile
-                    while draft.contacts.count < 3 { draft.contacts.append(EmergencyContact()) }
-                    medRows = []
+                    Task { await clearAfterAuth() }
                 }
             }
         }
     }
 
+    private func prepareEditAccess() {
+        guard requiresEditAuth else {
+            editUnlocked = true
+            return
+        }
+        guard !editUnlocked, !authInProgress else { return }
+        Task { await unlockForEdit() }
+    }
+
+    @MainActor
+    private func unlockForEdit() async {
+        guard requiresEditAuth, !editUnlocked else { return }
+        authInProgress = true
+        let ok = await BiometricGate.authenticate(reason: "Unlock to edit your medical ID")
+        authInProgress = false
+        if ok { editUnlocked = true }
+    }
+
+    @MainActor
+    private func clearAfterAuth() async {
+        let ok = await BiometricGate.authenticate(reason: "Confirm clearing your medical ID")
+        guard ok else { return }
+        store.clearAllData()
+        link.clear()
+        draft = store.profile
+        while draft.contacts.count < 3 { draft.contacts.append(EmergencyContact()) }
+        medRows = []
+        editUnlocked = true
+    }
+
     private func save() {
+        guard editUnlocked else { return }
         draft.name = Self.joinProfileName(first: firstName, last: lastName)
         draft.meds = medRows.compactMap(Self.formatMed)
         draft.allergies = draft.allergies.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
@@ -328,12 +428,20 @@ struct EditProfileView: View {
         draft.updated = ISO8601DateFormatter().string(from: Date())
         store.profile = draft
         loadDraft()
+        syncBraceletIfLinked()
         if embedded {
             savedFlash = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { savedFlash = false }
         } else {
             dismiss()
         }
+    }
+
+    /// Passersby read `#d=` off the chip, not a server — re-write the band after each save.
+    private func syncBraceletIfLinked() {
+        guard link.isLinked, !store.profile.name.isEmpty else { return }
+        guard let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+        braceletWriter.writeURL(url.absoluteString)
     }
 
     private func loadDraft() {

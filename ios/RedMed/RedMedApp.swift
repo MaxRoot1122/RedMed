@@ -28,7 +28,7 @@ struct RedMedApp: App {
         }
     }
 
-    /// `redmed://card#d=…` (new writes) and legacy HTTPS `#d=` deep links land here.
+    /// HTTPS `#d=` (new writes), `redmed://card#d=…`, and in-app NFC scans land here.
     private func handleIncomingURL(_ url: URL) {
         let urlString = url.absoluteString
 

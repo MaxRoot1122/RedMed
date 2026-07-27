@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>local.redmed.app</string>
+	<string>local.redmed.launcher</string>
 	<key>CFBundleName</key>
 	<string>RedMed</string>
 	<key>CFBundlePackageType</key>
@@ -20,7 +20,11 @@
 	<string>1.0</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.13</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Mac launcher — builds and runs the iOS app in Simulator. To drag onto Simulator, use build/RedMed-Simulator.app instead.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>RedMedRepoRoot</key>
+	<string>/Users/claude/RedMed</string>
 </dict>
 </plist>

@@ -21,6 +21,7 @@ buildServer.json
 
 # Xcode (created once the project is set up per ios/SETUP.md — sources
 # themselves live in ios/RedMed/ and stay tracked)
+ios/build/
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcworkspace/xcuserdata/

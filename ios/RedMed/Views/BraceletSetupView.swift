@@ -19,15 +19,15 @@ struct BraceletSetupView: View {
                         Text("Your bracelet")
                             .font(.title2.weight(.bold))
                             .foregroundStyle(AppTheme.ink)
-                        Text("The band holds your card on a passive chip (no battery, no broadcast). When a smartphone taps, it briefly powers the chip and reads your card — no app for them.")
+                        Text("The band holds your card on a passive chip (no battery, no broadcast). When any iPhone taps, Safari opens your emergency card — no RedMed install for them.")
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
 
                     setupStep(number: 1, title: "Fill My ID", detail: "Name, allergies, meds, and contacts on the previous screen. Tap Save.")
-                    setupStep(number: 2, title: "Program your band", detail: "Write once — your card is stored on the passive chip. A smartphone powers and reads the chip when it taps.")
-                    setupStep(number: 3, title: "Done", detail: "In an emergency, a stranger taps the band. Their phone powers the chip and reads your card — they see what you saved.")
+                    setupStep(number: 2, title: "Program your band", detail: "Write once — your card is stored on the passive chip. Any iPhone tap powers the chip and opens Safari.")
+                    setupStep(number: 3, title: "Done", detail: "In an emergency, a stranger taps the band with any iPhone. Safari opens your emergency card — they see what you saved.")
 
                     if link.isLinked {
                         SoftStatusChip(text: "Bracelet linked on this phone", warning: false)
@@ -48,7 +48,7 @@ struct BraceletSetupView: View {
                     }
 
                     if writer.verified {
-                        SoftStatusChip(text: "Chip verified — passive chip holds your card; tap with a smartphone to read", warning: false)
+                        SoftStatusChip(text: "Chip verified — any iPhone tap opens your card in Safari", warning: false)
                     }
 
                     Button {
@@ -79,6 +79,8 @@ struct BraceletSetupView: View {
 
                     let note = ProfileLinkBuilder.capacityNote(for: store.profile)
                     SoftStatusChip(text: note.text, warning: note.warn)
+
+                    BraceletSyncInstructions()
                 }
                 .padding(layout.screenPad)
                 .padding(.bottom, layout.screenBottom)

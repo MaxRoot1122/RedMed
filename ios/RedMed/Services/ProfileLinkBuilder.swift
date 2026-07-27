@@ -1,8 +1,9 @@
 import Foundation
 
 /// Builds the on-chip NDEF URI: profile JSON, base64url-encoded, after `#d=`.
-/// New writes use `AppConfig.medicalCardBaseURL` (`redmed://card`). Decode
-/// works for that scheme and for legacy HTTPS `#d=` tags scanned in-app.
+/// New writes use `AppConfig.medicalCardBaseURL` (HTTPS hosted card/) so any
+/// iPhone tap opens Safari. In-app decode also accepts `redmed://` and older
+/// HTTPS `#d=` tags.
 enum ProfileLinkBuilder {
 
     /// Match web `PROFILE_LIMITS.dEncodedMax` — reject hostile deep-link DoS before decode.

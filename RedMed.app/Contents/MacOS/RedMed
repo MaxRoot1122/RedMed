@@ -1,11 +1,30 @@
 #!/bin/bash
-# macOS double-click launcher — runs the native iOS app in Simulator (SwiftUI).
+# macOS launcher — opens the native RedMed iOS app in Simulator.
 CONTENTS="$(cd "$(dirname "$0")/.." && pwd)"
 APP_BUNDLE="$(cd "${CONTENTS}/.." && pwd -P)"
-REPO_ROOT="$(dirname "$APP_BUNDLE")"
-LAUNCH_IOS="$REPO_ROOT/scripts/run-ios-simulator.sh"
+PLIST="${CONTENTS}/Info.plist"
 LOG_DIR="${HOME}/Library/Logs/RedMed"
 LOG_FILE="${LOG_DIR}/launch.log"
+
+repo_from_plist() {
+  local raw
+  raw="$(/usr/libexec/PlistBuddy -c "Print :RedMedRepoRoot" "$PLIST" 2>/dev/null || true)"
+  if [ -n "$raw" ] && [ "$raw" != "__REDMED_REPO_ROOT__" ] && [ -d "$raw" ]; then
+    echo "$raw"
+    return 0
+  fi
+  return 1
+}
+
+if [ -n "${REDMED_REPO:-}" ] && [ -d "$REDMED_REPO" ]; then
+  REPO_ROOT="$REDMED_REPO"
+elif repo_from_plist; then
+  REPO_ROOT="$(repo_from_plist)"
+else
+  REPO_ROOT="$(dirname "$APP_BUNDLE")"
+fi
+
+LAUNCH_IOS="$REPO_ROOT/scripts/run-ios-simulator.sh"
 
 mkdir -p "$LOG_DIR"
 {
@@ -19,9 +38,6 @@ fail() {
   osascript -e "display alert \"RedMed\" message \"${msg}\n\nDetails: ${LOG_FILE}\" as critical"
   exit 1
 }
-
-# Do not open RedMed.app inside Cursor/VS Code — it is an app bundle (folder), not a text file.
-# Double-click this app in Finder, or use RedMed.command on the Desktop.
 
 if [ ! -f "$LAUNCH_IOS" ]; then
   fail "Launcher script missing at scripts/run-ios-simulator.sh"
