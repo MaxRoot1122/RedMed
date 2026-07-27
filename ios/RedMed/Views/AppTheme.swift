@@ -310,6 +310,50 @@ struct SoftStatusChip: View {
     }
 }
 
+/// Owner guidance — band must be re-written after profile edits; passersby read the chip.
+struct BraceletSyncInstructions: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            Text("Keep your band in sync")
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(AppTheme.ink)
+
+            instructionRow(
+                "Link your bracelet once (My ID → bracelet icon → write/read)."
+            )
+            instructionRow(
+                "Save after every edit and hold your phone to the band when prompted."
+            )
+            instructionRow(
+                "If you cancel the NFC prompt, this app has the new data but the band — and what passersby see in Safari — stays stale until you save again or use NFC tab → Write."
+            )
+        }
+        .padding(layout.s(14))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.7))
+        .clipShape(RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous)
+                .stroke(AppTheme.line, lineWidth: 1)
+        )
+    }
+
+    private func instructionRow(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: layout.s(8)) {
+            Text("•")
+                .font(.footnote.weight(.bold))
+                .foregroundStyle(AppTheme.accent)
+                .padding(.top, 1)
+            Text(text)
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.muted)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
 // MARK: - Buttons
 
 struct PrimaryButtonStyle: ButtonStyle {

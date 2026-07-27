@@ -43,6 +43,8 @@ struct WriteTagView: View {
                             .multilineTextAlignment(.center)
                     }
 
+                    BraceletSyncInstructions()
+
                     scanSection
                     importSection
                 }
@@ -66,7 +68,7 @@ struct WriteTagView: View {
                 titleVisibility: .visible
             ) {
                 Button("Replace", role: .destructive) {
-                    replaceFromTag()
+                    Task { await replaceFromTagAfterAuth() }
                 }
                 Button("Cancel", role: .cancel) { pendingRead = nil }
             } message: {
@@ -80,9 +82,12 @@ struct WriteTagView: View {
         writer.writeURL(url.absoluteString)
     }
 
-    private func replaceFromTag() {
-        if let pendingRead { store.profile = pendingRead }
-        pendingRead = nil
+    @MainActor
+    private func replaceFromTagAfterAuth() async {
+        let ok = await BiometricGate.authenticate(reason: "Confirm replacing your medical ID from the tag")
+        guard ok, let pendingRead else { return }
+        store.profile = pendingRead
+        self.pendingRead = nil
     }
 
     private var hero: some View {
@@ -106,7 +111,7 @@ struct WriteTagView: View {
                     .font(layout.heroTitleFont())
                     .tracking(-0.4)
                     .foregroundStyle(AppTheme.ink)
-                Text("Hold your iPhone to the bracelet once to program the passive chip. The band stores your card (no battery). Another iPhone with RedMed can scan it to open the emergency card in the app.")
+                Text("Hold your iPhone to the bracelet once to program the passive chip. Any iPhone can tap the band afterward — Safari opens your emergency card. No App Store install needed for them.")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
@@ -128,7 +133,7 @@ struct WriteTagView: View {
                 Rectangle().fill(AppTheme.line).frame(height: 1)
             }
 
-            Text("First responder: open the person's medical ID in RedMed without changing your own profile.")
+            Text("Have RedMed? Scan in-app for the native card view without changing your profile.")
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.muted)
                 .multilineTextAlignment(.center)

@@ -17,7 +17,7 @@ struct AppLockView: View {
 
     var body: some View {
         VStack(spacing: layout.spaceXL) {
-            Spacer()
+            Spacer(minLength: layout.space2XL)
 
             BrandMark(size: .hero)
 
@@ -48,8 +48,20 @@ struct AppLockView: View {
                     .accessibilityAddTraits(.updatesFrequently)
             }
 
-            Spacer()
+            Spacer(minLength: layout.space2XL)
+        }
+        .padding(.horizontal, layout.space2XL)
+        .padding(.top, layout.space2XL)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppTheme.pageBg)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            bottomBar
+        }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility3) // cap runaway scaling from breaking the button row
+    }
 
+    private var bottomBar: some View {
+        VStack(spacing: layout.spaceMD) {
             Button {
                 onUnlock()
             } label: {
@@ -64,7 +76,6 @@ struct AppLockView: View {
             }
             .buttonStyle(PrimaryButtonStyle(prominent: true))
             .disabled(isAuthenticating)
-            .padding(.horizontal, layout.spaceLG)
             .accessibilityLabel(isAuthenticating ? "Unlocking" : unlockLabel)
             .accessibilityHint("Double tap if RedMed didn't prompt automatically.")
 
@@ -73,13 +84,11 @@ struct AppLockView: View {
                 .foregroundStyle(AppTheme.muted)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, layout.spaceLG)
-                .padding(.bottom, layout.spaceSM)
         }
-        .padding(layout.space2XL)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.top, layout.spaceSM)
+        .padding(.bottom, layout.spaceMD)
         .background(AppTheme.pageBg)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility3) // cap runaway scaling from breaking the button row
     }
 
     private var iconName: String {

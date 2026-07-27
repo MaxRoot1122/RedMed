@@ -1,11 +1,12 @@
 # Canonical NFC card base URL (no #d= fragment).
-# Product is iOS-only: new bracelet writes use the redmed:// URL scheme.
+# iOS-only product: RedMed iPhone app programs the chip; any iPhone tap
+# opens the hosted emergency card in Safari — no App Store install needed.
 # Keep AppConfig.medicalCardBaseURL in sync with the active line below.
 #
 # Active write target (first uncommented non-comment line):
-redmed://card
+https://maxroot1122.github.io/RedMed/card/
 #
-# Legacy HTTPS host (older bracelets / in-app decode still accepted):
-# card/ is the minimal, self-contained, offline-cacheable scan page —
-# not index.html (the full owner web app).
-# legacy:https://maxroot1122.github.io/RedMed/card/
+# In-app decode still accepts redmed:// (old tags) and HTTPS #d= URLs.
+# card/ is the minimal, self-contained, offline-cacheable scan page.
+legacy:https://maxroot1122.github.io/RedMed/card/
+# legacy:redmed://card

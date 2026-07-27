@@ -24,7 +24,7 @@ struct ContentView: View {
 
     init() {
         let appearance = UITabBarAppearance()
-        appearance.configureWithDefaultBackground()
+        appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         appearance.shadowColor = UIColor(red: 0.91, green: 0.92, blue: 0.93, alpha: 1)
         appearance.shadowImage = nil
@@ -33,19 +33,24 @@ struct ContentView: View {
         item.normal.iconColor = muted
         item.normal.titleTextAttributes = [
             .foregroundColor: muted,
-            .font: UIFont.systemFont(ofSize: 11, weight: .medium)
+            .font: UIFont.systemFont(ofSize: 10, weight: .medium)
         ]
         item.selected.iconColor = UIColor(red: 0.882, green: 0.114, blue: 0.282, alpha: 1)
         item.selected.titleTextAttributes = [
             .foregroundColor: UIColor(red: 0.882, green: 0.114, blue: 0.282, alpha: 1),
-            .font: UIFont.systemFont(ofSize: 11, weight: .semibold)
+            .font: UIFont.systemFont(ofSize: 10, weight: .semibold)
         ]
+        item.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -1)
+        item.selected.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -1)
         appearance.stackedLayoutAppearance = item
         appearance.inlineLayoutAppearance = item
         appearance.compactInlineLayoutAppearance = item
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
         UITabBar.appearance().isTranslucent = false
+        if #available(iOS 26.0, *) {
+            UITabBar.appearance().isHidden = false
+        }
     }
 
     var body: some View {
@@ -92,6 +97,7 @@ struct ContentView: View {
                 .tabItem { Label("NFC", systemImage: "wave.3.right.circle.fill") }
                 .tag(AppTab.nfc)
         }
+        .modifier(TabBarBehaviorModifier())
         .environmentObject(store)
         .environmentObject(braceletLink)
         .tint(AppTheme.accent)
@@ -142,4 +148,17 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+}
+
+/// iOS 26+ floating/minimized tab bars change height while scrolling — keep a stable bar.
+private struct TabBarBehaviorModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .tabBarMinimizeBehavior(.never)
+                .toolbarBackground(.visible, for: .tabBar)
+        } else {
+            content
+        }
+    }
 }

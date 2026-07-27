@@ -9,6 +9,8 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd -P)"
 DESKTOP="${HOME}/Desktop"
 APP_SRC="${REPO_ROOT}/RedMed.app"
 APP_DST="${DESKTOP}/RedMed.app"
+SIM_SRC="${REPO_ROOT}/build/RedMed-Simulator.app"
+SIM_DST="${DESKTOP}/RedMed Simulator.app"
 CMD_SRC="${REPO_ROOT}/RedMed.command"
 CMD_DST="${DESKTOP}/RedMed.command"
 QUIET=0
@@ -34,7 +36,17 @@ if [ -e "$APP_DST" ] || [ -L "$APP_DST" ]; then
   rm -rf "$APP_DST"
 fi
 ln -sf "$APP_SRC" "$APP_DST"
-log "Desktop app: ${APP_DST} → ${APP_SRC}"
+log "Desktop app: ${APP_DST} → ${APP_SRC} (Mac launcher — double-click to build & run)"
+
+if [ -d "$SIM_SRC" ]; then
+  if [ -e "$SIM_DST" ] || [ -L "$SIM_DST" ]; then
+    rm -rf "$SIM_DST"
+  fi
+  ln -sf "$SIM_SRC" "$SIM_DST"
+  log "Simulator drag-drop: ${SIM_DST} → ${SIM_SRC}"
+else
+  log "Tip: run ./scripts/run-ios-simulator.sh once to create build/RedMed-Simulator.app for drag-drop."
+fi
 
 if [ -f "$CMD_SRC" ]; then
   cat > "$CMD_DST" <<EOF

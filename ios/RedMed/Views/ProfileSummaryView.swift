@@ -5,7 +5,7 @@ import SwiftUI
 /// This view never edits anything — it exists so the profile can be *viewed*
 /// without going through the Face ID gate. Editing only happens through
 /// MyIDView's "Edit" button, which presents `EditProfileView(embedded: false)`
-/// as a sheet after the biometric check (once armed).
+/// as a sheet; that view prompts Face ID once a profile exists on this device.
 struct ProfileSummaryView: View {
     @Environment(\.layoutMetrics) private var layout
 

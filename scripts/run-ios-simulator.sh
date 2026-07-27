@@ -3,10 +3,12 @@
 # RedMed.app on Mac calls this — not the web index.html launcher.
 #
 # IMPORTANT: DerivedData is built OUTSIDE iCloud Drive on purpose.
-# This repo lives in ~/Library/Mobile Documents/com~apple~CloudDocs (iCloud).
 # If the .app is built/installed from inside iCloud, iCloud evicts the files
 # to dataless placeholders and the Simulator fails with
 # "Failed to re-fetch bundle during preflight". Keep builds local.
+#
+# Drag-drop: after build, a signed copy lands at build/RedMed-Simulator.app
+# (repo root). Drag THAT onto the Simulator window — not RedMed.app (Mac launcher).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,6 +19,8 @@ CONFIG="${REDMED_IOS_CONFIG:-Debug}"
 # Local, NON-iCloud DerivedData location.
 DERIVED="${REDMED_DERIVED_DATA:-$HOME/Library/Developer/Xcode/DerivedData/RedMed-local}"
 APP="$DERIVED/Build/Products/${CONFIG}-iphonesimulator/RedMed.app"
+# Drag-drop / manual simctl install target — always off iCloud.
+SIM_STAGE="$ROOT/build/RedMed-Simulator.app"
 # Preferred device name; if it isn't installed, we fall back to any iPhone,
 # then any available iOS simulator. Override with REDMED_SIM_DEVICE.
 DEVICE_NAME="${REDMED_SIM_DEVICE:-iPhone 17}"
@@ -99,16 +103,30 @@ else
   echo "==> Using existing Simulator build ($APP)"
 fi
 
-# Ad-hoc sign the bundle so iOS 26 Simulators accept the install.
+# Materialize a signed Simulator .app for drag-drop and simctl install.
+# RedMed.app in the repo root is a macOS launcher — Simulator rejects it.
+stage_simulator_app() {
+  local src="$1"
+  local dst="$2"
+  mkdir -p "$(dirname "$dst")"
+  rm -rf "$dst"
+  /usr/bin/ditto "$src" "$dst"
+  /usr/bin/xattr -cr "$dst" 2>/dev/null || true
+  codesign --force --sign - --deep --timestamp=none "$dst"
+}
+
 if [ ! -d "$APP/_CodeSignature" ]; then
-  echo "==> Ad-hoc signing bundle"
-  codesign --force --sign - --timestamp=none "$APP" || true
+  echo "==> Ad-hoc signing DerivedData bundle"
+  codesign --force --sign - --deep --timestamp=none "$APP" || true
 fi
 
-# Install from a fully materialized copy in /tmp (guaranteed off iCloud).
-STAGE="$(mktemp -d /tmp/redmed-stage.XXXXXX)"
-cp -R "$APP" "$STAGE/RedMed.app"
-STAGED_APP="$STAGE/RedMed.app"
+stage_simulator_app "$APP" "$SIM_STAGE"
+echo "==> Simulator app ready for drag-drop: $SIM_STAGE"
+
+if [ "${REDMED_STAGE_ONLY:-0}" = "1" ]; then
+  echo "Staged only (REDMED_STAGE_ONLY=1). Drag $SIM_STAGE onto Simulator to install."
+  exit 0
+fi
 
 echo "==> Launching on $DEVICE_NAME (native iOS app)"
 xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
@@ -117,8 +135,7 @@ open -a Simulator
 # Clear the broken/evicted placeholder before reinstalling.
 xcrun simctl uninstall "$DEVICE_ID" "$BUNDLE_ID" 2>/dev/null || true
 
-xcrun simctl install "$DEVICE_ID" "$STAGED_APP"
+xcrun simctl install "$DEVICE_ID" "$SIM_STAGE"
 xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID"
 echo "RedMed native app is running on $DEVICE_NAME."
-
-rm -rf "$STAGE"
+echo "To reinstall later: drag $SIM_STAGE onto Simulator, or re-run this script."

@@ -24,7 +24,7 @@ final class ProfileStore: ObservableObject {
     }
 
     /// Wipes the saved profile from the Keychain. Does not affect an
-    /// already-written NFC tag or a link you've shared elsewhere.
+    /// already-written NFC tag until the next save with a linked bracelet.
     func clearAllData() {
         KeychainStore.delete(account: Self.account)
         profile = MedicalProfile()
