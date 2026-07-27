@@ -8,7 +8,7 @@ Local-first medical ID **iPhone app**: edit your profile, write it to an NFC tag
 |--------|--------|
 | Bundle ID | `local.redmed.app` |
 | URL scheme | `redmed://` — new NFC writes are `redmed://card#d=…`. Emergency card is native in-app. |
-| Deployment | iOS 16+ · iPhone only |
+| Deployment | iOS 27.0+ · iPhone only |
 | Layout | **393×852 pt** baseline via `LayoutMetrics` (`AppTheme.swift`); mockups also check **440×956**; safe areas ≈59 pt top / 34 pt bottom on Dynamic Island |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |
 
