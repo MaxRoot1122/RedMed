@@ -24,9 +24,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Build static site
         run: |
-          mkdir -p _site/.well-known _site/config
+          mkdir -p _site/.well-known _site/config _site/card
           cp index.html privacy-policy.html terms-of-service.html manifest.json get.html _site/
           cp -R assets _site/assets
+          cp card/index.html card/sw.js _site/card/
           cp .well-known/assetlinks.json _site/.well-known/assetlinks.json
           # Universal Links — must be at domain root with no file extension
           cp .well-known/apple-app-site-association _site/.well-known/apple-app-site-association
