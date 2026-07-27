@@ -13,6 +13,6 @@ Not a Mac product — these are dev shortcuts.
 | **`build/RedMed-Simulator.app`** | Signed iOS `.app` for drag-drop onto Simulator (created after first build) |
 | **`mac/refresh-icon.command`** | Bust Finder/Dock icon cache after regenerating `AppIcon.icns` |
 
-Run `./scripts/install-desktop-shortcut.sh` to stamp this clone, **build the iOS Simulator app**, and install shortcuts. Primary launcher: **`~/Desktop/RedMed.app`**. Extras in **`~/Desktop/RedMed/`**. Re-run after moving the repo.
+Run `./scripts/setup-dev.sh --skip-build` after cloning, or `./scripts/install-desktop-shortcut.sh` to refresh Desktop aliases. Hub: **`~/Desktop/RedMed/`** (`RedMed Project`, **Open in Cursor.command**, **RedMed.xcodeproj**). Simulator: **`~/Desktop/RedMed.app`**. Re-run after moving the repo.
 
 NFC does **not** work in Simulator — use a physical iPhone (see [`ios/SETUP.md`](SETUP.md)).

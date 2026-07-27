@@ -1,6 +1,9 @@
 #!/bin/bash
 # Install Mac launcher shortcuts on Desktop. iOS Simulator build is the priority.
 # Safe to re-run — refreshes shortcuts after moving the repo or updating the bundle.
+#
+# Also installs an edit hub (repo alias, Xcode, Cursor) — aliases track this git
+# clone; nothing is copied. See mac/desktop/README.txt.
 
 set -euo pipefail
 
@@ -12,7 +15,12 @@ DESKTOP="${HOME}/Desktop"
 DESKTOP_DIR="${DESKTOP}/RedMed"
 APP_SRC="${REPO_ROOT}/ios/RedMed.app"
 APP_REAL="${REPO_ROOT}/mac/RedMed.app"
+XCODE_PROJ="${REPO_ROOT}/ios/RedMed.xcodeproj"
+WORKSPACE="${REPO_ROOT}/RedMed.code-workspace"
 PRIMARY_DST="${DESKTOP}/RedMed.app"
+PROJECT_ALIAS="${DESKTOP_DIR}/RedMed Project"
+XCODE_ALIAS="${DESKTOP_DIR}/RedMed.xcodeproj"
+CURSOR_CMD="${DESKTOP_DIR}/Open in Cursor.command"
 APP_DST="${DESKTOP_DIR}/RedMed iPhone.app"
 SIM_SRC="${REPO_ROOT}/build/RedMed-Simulator.app"
 SIM_DST="${DESKTOP_DIR}/RedMed Simulator.app"
@@ -89,6 +97,22 @@ do
   log "Removed old Desktop shortcut: ${stale}"
 done
 
+# Edit hub — aliases to this git clone (changes stay live).
+alias_app "$REPO_ROOT" "$PROJECT_ALIAS"
+log "Edit folder: ${PROJECT_ALIAS} → ${REPO_ROOT}"
+
+if [ -d "$XCODE_PROJ" ]; then
+  alias_app "$XCODE_PROJ" "$XCODE_ALIAS"
+  log "Xcode: ${XCODE_ALIAS} → ${XCODE_PROJ}"
+fi
+
+cat > "$CURSOR_CMD" <<EOF
+#!/bin/bash
+exec open -a Cursor "${WORKSPACE}" 2>/dev/null || cursor "${WORKSPACE}" 2>/dev/null || open "${REPO_ROOT}"
+EOF
+chmod +x "$CURSOR_CMD"
+log "Cursor: ${CURSOR_CMD}"
+
 alias_app "$APP_SRC" "$PRIMARY_DST"
 log "Primary (Desktop): ${PRIMARY_DST} → ${APP_SRC}"
 
@@ -104,10 +128,14 @@ EOF
   log "Desktop command: ${CMD_DST}"
 fi
 
-if [ -f "$README_SRC" ]; then
-  cp "$README_SRC" "$README_DST"
-  log "Desktop readme: ${README_DST}"
-fi
+GIT_REMOTE="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || echo "https://github.com/MaxRoot1122/RedMed.git")"
+{
+  if [ -f "$README_SRC" ]; then cat "$README_SRC"; echo ""; fi
+  echo "This clone:"
+  echo "  ${REPO_ROOT}"
+  echo "  ${GIT_REMOTE}"
+} > "$README_DST"
+log "Desktop readme: ${README_DST}"
 
 if [ "$SKIP_BUILD" -eq 0 ] && command -v xcodebuild >/dev/null 2>&1; then
   log "Building iOS app for Simulator (priority)..."
@@ -129,5 +157,12 @@ fi
 
 refresh_app_icon "$APP_REAL"
 log "Refreshed launcher icon (AppIcon.icns)."
+
+# Cursor used to open ~/Desktop/Glint/RedMed — keep that path as a symlink to this clone.
+GLINT_LINK="${HOME}/Desktop/Glint/RedMed"
+mkdir -p "$(dirname "$GLINT_LINK")"
+remove_desktop_item "$GLINT_LINK"
+ln -sf "$REPO_ROOT" "$GLINT_LINK"
+log "Cursor path: ${GLINT_LINK} → ${REPO_ROOT}"
 
 log "Done. Double-click ~/Desktop/RedMed.app to build and run on iPhone Simulator."
