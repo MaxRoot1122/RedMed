@@ -49,18 +49,22 @@ if r4.returncode:
     print("FAIL: card-sw.js node --check"); print(r4.stderr); sys.exit(1)
 print("OK: card-sw.js node --check")
 
-mirror = "RedMed.app/Contents/Resources/www/index.html"
+mirror = "mac/RedMed.app/Contents/Resources/www/index.html"
+ios_mirror = "ios/RedMed.app/Contents/Resources/www/index.html"
 if not filecmp.cmp("index.html", mirror, shallow=False):
     print(f"FAIL: {mirror} out of sync with index.html"); sys.exit(1)
-print("OK: macOS www mirror matches index.html")
+if not filecmp.cmp("index.html", ios_mirror, shallow=False):
+    print(f"FAIL: {ios_mirror} out of sync with index.html"); sys.exit(1)
+print("OK: macOS + ios www mirrors match index.html")
 
 for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/index.html", "card/sw.js"):
-    mpath = f"RedMed.app/Contents/Resources/www/{name}"
-    try:
-        if not filecmp.cmp(name, mpath, shallow=False):
-            print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
-    except FileNotFoundError:
-        print(f"WARN: missing mirror {mpath}")
+    for prefix in ("mac/RedMed.app/Contents/Resources/www/", "ios/RedMed.app/Contents/Resources/www/"):
+        mpath = prefix + name
+        try:
+            if not filecmp.cmp(name, mpath, shallow=False):
+                print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
+        except FileNotFoundError:
+            print(f"WARN: missing mirror {mpath}")
 print("OK: get.html + privacy-policy + terms-of-service + card/ mirrors match")
 
 import os
@@ -134,7 +138,7 @@ if "card/index.html" not in pages_yml or "card/sw.js" not in pages_yml:
 print("OK: GitHub Pages workflow deploys card/")
 
 server_sh = "scripts/redmed-server.sh"
-app_server_sh = "RedMed.app/Contents/Resources/redmed-server.sh"
+app_server_sh = "mac/RedMed.app/Contents/Resources/redmed-server.sh"
 if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
     if not filecmp.cmp(server_sh, app_server_sh, shallow=False):
         print(f"FAIL: {app_server_sh} out of sync with {server_sh}")

@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 JSON="$ROOT/assets/trauma-hospitals.json"
 JS="$ROOT/assets/trauma-hospitals.js"
 IOS="$ROOT/ios/RedMed/trauma-hospitals.json"
-WWW_ASSETS="$ROOT/RedMed.app/Contents/Resources/www/assets"
+WWW_ASSETS="$ROOT/mac/RedMed.app/Contents/Resources/www/assets"
 if [ ! -f "$JSON" ]; then
   echo "missing $JSON" >&2
   exit 1

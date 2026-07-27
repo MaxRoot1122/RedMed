@@ -5,4 +5,4 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 "$ROOT/scripts/sync-www-mirror.sh"
 # shellcheck source=/dev/null
 source "$ROOT/scripts/redmed-server.sh"
-redmed_launch "$ROOT/RedMed.app/Contents/Resources/www"
+redmed_launch "$ROOT/mac/RedMed.app/Contents/Resources/www"

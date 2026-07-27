@@ -53,11 +53,31 @@ done
 # Optional: BrandWordmark rasters from the iOS wordmark source (tagline baked in).
 WORDMARK_IOS="$ROOT/assets/wordmark-ios.svg"
 BRAND_WM="$ROOT/ios/RedMed/Assets.xcassets/BrandWordmark.imageset"
-if [[ -f "$WORDMARK_IOS" ]] && command -v rsvg-convert >/dev/null 2>&1; then
-  rsvg-convert -w 360 -h 88 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark.png"
-  rsvg-convert -w 720 -h 176 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark@2x.png"
-  rsvg-convert -w 1080 -h 264 "$WORDMARK_IOS" -o "$BRAND_WM/BrandWordmark@3x.png"
-  echo "BrandWordmark PNGs from wordmark-ios.svg"
+render_wordmark_raster() {
+  local width="$1" height="$2" out="$3"
+  if command -v rsvg-convert >/dev/null 2>&1; then
+    rsvg-convert -w "$width" -h "$height" "$WORDMARK_IOS" -o "$out"
+    return 0
+  fi
+  if command -v qlmanage >/dev/null 2>&1 && command -v sips >/dev/null 2>&1; then
+    local tmp="$ROOT/build/wordmark-thumb.png"
+    mkdir -p "$ROOT/build"
+    rm -f "$tmp"
+    qlmanage -t -s "$width" -o "$ROOT/build" "$WORDMARK_IOS" >/dev/null 2>&1
+    mv "$ROOT/build/wordmark-ios.svg.png" "$tmp"
+    sips -z "$height" "$width" "$tmp" --out "$out" >/dev/null
+    return 0
+  fi
+  return 1
+}
+if [[ -f "$WORDMARK_IOS" ]]; then
+  if render_wordmark_raster 360 88 "$BRAND_WM/BrandWordmark.png" \
+    && render_wordmark_raster 720 176 "$BRAND_WM/BrandWordmark@2x.png" \
+    && render_wordmark_raster 1080 264 "$BRAND_WM/BrandWordmark@3x.png"; then
+    echo "BrandWordmark PNGs from wordmark-ios.svg"
+  else
+    echo "WARN: could not render BrandWordmark PNGs (install rsvg-convert or use macOS qlmanage+sips)." >&2
+  fi
 fi
 
 if [[ -f "$PNG" ]]; then
@@ -80,8 +100,8 @@ if command -v iconutil >/dev/null 2>&1 && [[ -f "$PNG" ]]; then
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_512x512.png" >/dev/null
   sips -z 1024 1024 "$SRC" --out "$ICONSET/icon_512x512@2x.png" >/dev/null
-  iconutil -c icns "$ICONSET" -o "$ROOT/RedMed.app/Contents/Resources/AppIcon.icns"
-  echo "RedMed.app/Contents/Resources/AppIcon.icns"
+  iconutil -c icns "$ICONSET" -o "$ROOT/mac/RedMed.app/Contents/Resources/AppIcon.icns"
+  echo "mac/RedMed.app/Contents/Resources/AppIcon.icns"
 fi
 
-echo "Done. Run ./scripts/sync-www-mirror.sh to refresh RedMed.app www/."
+echo "Done. Run ./scripts/sync-www-mirror.sh to refresh mac/RedMed.app www/."

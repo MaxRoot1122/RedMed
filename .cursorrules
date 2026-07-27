@@ -31,16 +31,16 @@ QR); that is not the product UI.
   in-app emergency cards lands here. Nothing here has ever been compiled in
   this Linux cloud environment; treat any Swift edit as unverified until
   built on a real Mac.
-- `AppConfig.medicalCardBaseURL` — `redmed://card`. New NFC writes are
-  `redmed://card#d=<base64url JSON>`. Emergency UI is native
-  `ScannedCardView`. Legacy HTTPS `#d=` tags still decode when scanned
-  in-app.
+- `AppConfig.medicalCardBaseURL` — HTTPS `card/` on Pages. New NFC writes are
+  `https://…/card/#d=<base64url JSON>`. Any iPhone tap opens Safari for
+  passersby — no RedMed install. Owners who scan in-app get native SwiftUI
+  `ScannedCardView`. Legacy `redmed://card#d=…` tags still decode in-app.
 - `get.html` — packaging QR → App Store (iPhone only).
 - `privacy-policy.html` / `terms-of-service.html` — App Store / legal host.
 - `android/` — **retired** (`android/RETIRED.md`). Do not publish.
+- `mac/RedMed.app/` — optional Mac helper to launch the iPhone app in Simulator (see `mac/SETUP.md`).
 - `index.html` — legacy HTTPS emergency card for older bracelets only;
   not the owner product. Prefer iOS edits over web owner-tab work.
-- `RedMed.app/` — optional Mac helper to launch iOS Simulator.
 - `assets/icon.svg` — app cover / home-screen icon source of truth.
 - `assets/trauma-hospitals.json` — bundled offline trauma directory for
   Find 911 (keep in sync with `ios/RedMed/trauma-hospitals.json`).
@@ -51,9 +51,10 @@ QR); that is not the product UI.
 - **Passive NFC only.** Bracelets are **passive NTAG** chips (ISO 14443 Type A,
   NDEF URI). No battery, no BLE, no continuous broadcast. App code: CoreNFC
   write/read only; do not add Bluetooth, UHF, or live-tracking radios.
-- **iOS-only NFC opens.** New tags store `redmed://card#d=…`. A phone without
-  RedMed installed cannot open the card. Do not reintroduce HTTPS card writes
-  or Android/web owner apps without an explicit ask.
+- **HTTPS on the chip, SwiftUI in-app.** New tags store hosted `card/#d=…`.
+  Passersby tap → Safari emergency card (no app). RedMed owners scan → native
+  `ScannedCardView`. Do not switch new writes back to `redmed://` without an
+  explicit ask.
 - **Never fake satellite-tracking/pointing UI.** No public API exposes real
   satellite position to third-party apps. Real device compass heading
   (`CLLocationManager`) is fine; simulated satellite direction is not.
@@ -61,7 +62,7 @@ QR); that is not the product UI.
   calls carrying profile data without explicit instruction. **Exception:**
   optional Google Maps on Find 911 only.
 - If you still edit `index.html` (legacy), recompute its CSP `sha256-` hash
-  and keep `RedMed.app/Contents/Resources/www/index.html` byte-identical.
+  and keep `mac/RedMed.app/Contents/Resources/www/index.html` byte-identical.
 
 ## Conventions
 

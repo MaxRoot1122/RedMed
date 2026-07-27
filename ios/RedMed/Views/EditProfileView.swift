@@ -133,11 +133,14 @@ struct EditProfileView: View {
         "Mobility impairment"
     ]
 
-    /// Once this device has a saved profile name, edits require Face ID /
-    /// Touch ID (passcode fallback). First-time setup stays open so owners
-    /// can enter data without an extra gate.
+    /// Edits require device auth once this device has saved profile data.
+    /// First-time setup stays open until the owner taps Save.
     private var requiresEditAuth: Bool {
-        !store.profile.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        store.profile.hasOwnerData
+    }
+
+    private var editAuthAvailability: BiometricGate.Availability {
+        BiometricGate.availability()
     }
 
     var body: some View {
@@ -283,12 +286,13 @@ struct EditProfileView: View {
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
                 } else {
                     VStack(spacing: layout.spaceMD) {
-                        Image(systemName: "faceid")
+                        Image(systemName: editAuthAvailability.iconSystemName)
                             .font(.system(size: layout.s(40)))
                             .foregroundStyle(AppTheme.accent)
-                        Text("Face ID required to edit")
+                        Text(editAuthAvailability.editGateTitle)
                             .font(.subheadline.weight(.semibold))
-                        Button("Unlock") {
+                            .multilineTextAlignment(.center)
+                        Button(editAuthAvailability.unlockButtonLabel) {
                             Task { await unlockForEdit() }
                         }
                         .buttonStyle(.borderedProminent)
@@ -382,6 +386,10 @@ struct EditProfileView: View {
 
     private func prepareEditAccess() {
         guard requiresEditAuth else {
+            editUnlocked = true
+            return
+        }
+        guard editAuthAvailability != .none else {
             editUnlocked = true
             return
         }

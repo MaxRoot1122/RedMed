@@ -19,6 +19,47 @@ enum BiometricGate {
         case opticID
         case passcodeOnly   // no biometrics enrolled, but a device passcode is set
         case none           // no biometrics and no passcode — nothing to enforce
+
+        var iconSystemName: String {
+            switch self {
+            case .faceID: return "faceid"
+            case .touchID: return "touchid"
+            case .opticID: return "opticid"
+            case .passcodeOnly, .none: return "lock.fill"
+            }
+        }
+
+        var editGateTitle: String {
+            switch self {
+            case .faceID: return "Face ID required to edit"
+            case .touchID: return "Touch ID required to edit"
+            case .opticID: return "Optic ID required to edit"
+            case .passcodeOnly: return "Passcode required to edit"
+            case .none: return "Unlock to edit"
+            }
+        }
+
+        var unlockButtonLabel: String {
+            switch self {
+            case .faceID: return "Unlock with Face ID"
+            case .touchID: return "Unlock with Touch ID"
+            case .opticID: return "Unlock with Optic ID"
+            case .passcodeOnly: return "Unlock with Passcode"
+            case .none: return "Continue"
+            }
+        }
+
+        var lockSubtitle: String {
+            switch self {
+            case .faceID: return "Use Face ID to open your medical profile."
+            case .touchID: return "Use Touch ID to open your medical profile."
+            case .opticID: return "Use Optic ID to open your medical profile."
+            case .passcodeOnly: return "Enter your device passcode to open your medical profile."
+            case .none: return "Tap to continue."
+            }
+        }
+
+        var lockUnlockLabel: String { unlockButtonLabel }
     }
 
     static func availability() -> Availability {

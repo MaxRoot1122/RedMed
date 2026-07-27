@@ -36,7 +36,7 @@ Threshold constant: **30** (`TRAUMA_COUNTY_THRESHOLD` web, `TraumaHospitalFinder
 | iOS UI | [`ios/RedMed/Views/TraumaHospitalsSection.swift`](../ios/RedMed/Views/TraumaHospitalsSection.swift) | Shared section — [`ScannedCardView`](../ios/RedMed/Views/ScannedCardView.swift) (bracelet) + [`LocationView`](../ios/RedMed/Views/LocationView.swift) |
 | iOS bundle data | [`ios/RedMed/trauma-hospitals.json`](../ios/RedMed/trauma-hospitals.json) | Must match web `.json` |
 | Xcode project | [`ios/RedMed.xcodeproj/project.pbxproj`](../ios/RedMed.xcodeproj/project.pbxproj) | `TraumaHospitalFinder.swift` + `trauma-hospitals.json` in target |
-| macOS mirror | [`RedMed.app/Contents/Resources/www/`](../RedMed.app/Contents/Resources/www/) | `index.html` byte-identical to root; copy `assets/trauma-hospitals.*` after data edits |
+| macOS mirror | [`mac/RedMed.app/Contents/Resources/www/`](../mac/RedMed.app/Contents/Resources/www/) | `index.html` byte-identical to root; copy `assets/trauma-hospitals.*` after data edits |
 | iOS setup blurb | [`ios/SETUP.md`](../ios/SETUP.md) | Feature summary for Mac/Xcode agents |
 
 ## JSON record schema
@@ -69,8 +69,8 @@ When adding rows: include **`co`** (county). One-time Census geocoder was used t
 ## Sync scripts
 
 ```bash
-./scripts/sync-trauma-data.sh    # assets/ → ios/ + RedMed.app mirror
-./scripts/sync-www-mirror.sh     # index.html, get.html, trauma assets → RedMed.app
+./scripts/sync-trauma-data.sh    # assets/ → ios/ + mac/RedMed.app mirror
+./scripts/sync-www-mirror.sh     # index.html, get.html, trauma assets → mac/RedMed.app
 ./scripts/sync-google-api-key.sh # config/ → ios bundle (local dev)
 ```
 
@@ -98,7 +98,7 @@ Manual: open Find 911 → pick a state → list appears without county (current 
 - Do **not** add `fetch`/XHR for hospital data — keep bundled offline list.
 - Do **not** move trauma UI below profile fields on the NFC card — responders see it first by design.
 - Do **not** move trauma UI to My ID only unless product explicitly asks.
-- Do **not** edit only one copy of `trauma-hospitals.json` — sync web `assets/`, `assets/trauma-hospitals.js`, `ios/RedMed/`, and `RedMed.app/.../assets/`.
+- Do **not** edit only one copy of `trauma-hospitals.json` — sync web `assets/`, `assets/trauma-hospitals.js`, `ios/RedMed/`, and `mac/RedMed.app/.../assets/`.
 
 ## Store / screenshot agents
 
