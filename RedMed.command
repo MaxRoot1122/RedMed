@@ -1,2 +1,3 @@
 #!/bin/bash
-exec "$(cd "$(dirname "$0")" && pwd)/ios/RedMed.command"
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd -P)"
+exec "${REPO_ROOT}/ios/RedMed.command"

@@ -1,5 +1,14 @@
 # macOS
 .DS_Store
+# Desktop hub aliases accidentally copied into repo root (real hub is ~/Desktop/RedMed/)
+/RedMed Project
+/RedMed Simulator.app
+/RedMed iPhone.app
+/RedMed.app
+/RedMed.xcodeproj
+/RedMedOs.app
+/Open in Cursor.command
+/README.txt
 build/icon.iconset/
 build/DerivedData/
 # Local Xcode DerivedData dumps (never commit — ~115MB landed here once by mistake)
