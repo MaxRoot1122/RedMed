@@ -75,7 +75,7 @@ Only if you hit a rare PDF rendering glitch on a specific device, or you need pi
 - **Linked bracelet** = header switches to **device name** + small **cover icon** (same as home screen) so the band reads as “this app on this device.”
 
 *Pros:* Clear separation; wordmark reads at header size; cover stays iconic.  
-*Cons:* Wordmark uses SVG text (fine on web/iOS 16+; falls back to system rounded sans).
+*Cons:* Wordmark uses SVG text (fine on web/iOS 27+; falls back to system rounded sans).
 
 ### B — Typographic wordmark only (no mini icon)
 “RedMed” gradient type only, no plate in the header.
