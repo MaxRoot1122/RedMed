@@ -14,8 +14,8 @@ enum AppConfig {
 
     /// Older bracelets may still carry an HTTPS Pages URL; the app still
     /// decodes `#d=` from those when scanned in-app. Points at the minimal
-    /// offline-cacheable card.html, not the full owner web app (index.html).
-    static let legacyHostedCardBaseURL = "https://maxroot1122.github.io/RedMed/card.html"
+    /// offline-cacheable card/, not the full owner web app (index.html).
+    static let legacyHostedCardBaseURL = "https://maxroot1122.github.io/RedMed/card/"
 
     static let privacyPolicyURL = "https://maxroot1122.github.io/RedMed/privacy-policy.html"
 }

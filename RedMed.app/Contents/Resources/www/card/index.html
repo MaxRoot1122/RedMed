@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RedMed — Emergency Card</title>
-<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <meta name="theme-color" content="#e11d48">
 <meta name="description" content="RedMed emergency medical card — read from an NFC bracelet. Works offline once loaded.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-uAhCZ3Y+ncZFAZMFUaliq519O32gMiVKP2kgV6K6qhU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-peG6Qk3atMZMA7YDrmhMXDZ5w4pS7jcC7zrxM3mVTI4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
   :root {
     --accent: #e11d48;
@@ -258,11 +258,32 @@
     copy.type = "button";
     copy.addEventListener("click", function () {
       var text = summaryText(p);
-      var done = function () { copy.textContent = "Copied!"; setTimeout(function () { copy.textContent = "Copy medical summary"; }, 1500); };
+      var reset = function (label, delay) {
+        copy.textContent = label;
+        setTimeout(function () { copy.textContent = "Copy medical summary"; }, delay);
+      };
+      var succeeded = function () { reset("Copied!", 1500); };
+      var failed = function () {
+        // Clipboard API missing/blocked (older WebView, denied permission) —
+        // fall back to a legacy execCommand copy before admitting defeat.
+        var ok = false;
+        try {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+        } catch (e) { ok = false; }
+        if (ok) { succeeded(); } else { reset("Couldn't copy — select text manually", 2500); }
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, done);
+        navigator.clipboard.writeText(text).then(succeeded, failed);
       } else {
-        done();
+        failed();
       }
     });
     body.appendChild(copy);
@@ -296,15 +317,47 @@
     root.appendChild(wrap);
   }
 
+  /* Bracelet emergency card: smartphones only — not card readers, tablets,
+     kiosks, or desktops. Mirrors index.html's isSmartphone(). */
+  function isSmartphone() {
+    var ua = navigator.userAgent || "";
+    if (!ua || ua.length < 12) return false;
+    if (/bot|crawler|spider|scanner|reader/i.test(ua)) return false;
+    if (/iPad/.test(ua)) return false;
+    if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return false;
+    if (/iPhone|iPod/.test(ua)) return true;
+    if (/Android/i.test(ua) && /Mobile/i.test(ua)) return true;
+    if (/Windows Phone/i.test(ua)) return true;
+    return false;
+  }
+
+  /* ?preview=1 escape hatch for QA on a non-phone device. */
+  function isOwnerPreview() {
+    try { return new URLSearchParams(location.search).get("preview") === "1"; } catch (e) { return false; }
+  }
+
+  function renderPhoneGate() {
+    var root = document.getElementById("root");
+    root.textContent = "";
+    var wrap = el("div", "empty-wrap");
+    wrap.appendChild(el("p", "eyebrow", "REDMED"));
+    wrap.appendChild(el("h1", null, "Smartphone required"));
+    wrap.appendChild(el("p", null, "This bracelet works with smartphones only — not card readers or other NFC devices."));
+    wrap.appendChild(el("p", null, "Use an iPhone or Android phone — not a card reader, payment terminal, tablet, computer, or other NFC device."));
+    root.appendChild(wrap);
+  }
+
   var profile = decodeFromHash(location.hash);
-  if (profile) {
+  if (profile && !isSmartphone() && !isOwnerPreview()) {
+    renderPhoneGate();
+  } else if (profile) {
     renderCard(profile);
   } else {
     renderEmpty();
   }
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("card-sw.js").catch(function () {});
+    navigator.serviceWorker.register("sw.js").catch(function () {});
   }
 })();
 </script>
