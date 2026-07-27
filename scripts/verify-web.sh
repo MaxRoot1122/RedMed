@@ -127,6 +127,12 @@ if "hostedCardOrigins" not in open("index.html", encoding="utf-8").read():
     print("FAIL: index.html missing hostedCardOrigins() allow-list helper"); sys.exit(1)
 print("OK: canonical URL synced across shipping surfaces")
 
+pages_yml = open(".github/workflows/pages.yml", encoding="utf-8").read()
+if "card/index.html" not in pages_yml or "card/sw.js" not in pages_yml:
+    print("FAIL: .github/workflows/pages.yml does not deploy card/ — bracelets' legacy URL would 404")
+    sys.exit(1)
+print("OK: GitHub Pages workflow deploys card/")
+
 server_sh = "scripts/redmed-server.sh"
 app_server_sh = "RedMed.app/Contents/Resources/redmed-server.sh"
 if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
