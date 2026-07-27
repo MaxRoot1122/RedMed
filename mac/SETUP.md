@@ -3,6 +3,19 @@
 Mac-only launchers for building and running the **iPhone app** in Simulator.
 Not a Mac product — these are dev shortcuts.
 
+## One clone on this Mac
+
+Keep a **single** git clone at `~/RedMed`. `~/Desktop/RedMed/` is only a hub of aliases (not a second copy).
+
+```bash
+# First time / cleanup duplicate Desktop clone + pull + Desktop shortcuts:
+curl -fsSL https://raw.githubusercontent.com/MaxRoot1122/RedMed/main/scripts/setup-local-mac.sh | bash
+
+# Or from inside the clone:
+cd ~/RedMed && ./scripts/setup-local-mac.sh
+```
+
+
 | File | What it does |
 |------|----------------|
 | **`ios/RedMed.app`** | Primary — double-click next to the Xcode project (symlink to `mac/RedMed.app`) |
