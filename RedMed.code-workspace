@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "RedMed"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "mac/RedMed.app/Contents/Resources/www": true
+    }
+  }
+}

@@ -29,10 +29,20 @@ Fill in allergies, meds, contacts, and notes once in the **RedMed iOS app**. Sav
 
 ## Quick start
 
-1. Open [`ios/RedMed.xcodeproj`](ios/SETUP.md) in Xcode → Run on your iPhone
+**Clone (one folder — all sources):**
+
+```bash
+git clone https://github.com/MaxRoot1122/RedMed.git
+cd RedMed
+./scripts/setup-dev.sh --skip-build   # Desktop aliases + stamp repo path
+```
+
+Open **`RedMed.code-workspace`** in Cursor, or **`ios/RedMed.xcodeproj`** in Xcode.
+
+1. Run on your iPhone from Xcode (⌘R)
 2. Fill in your info → save
 3. **NFC** tab → write a blank NTAG bracelet
-4. Scan with RedMed on an iPhone to open the native emergency card
+4. Anyone can tap the band — Safari opens the emergency card (no app required)
 
 NFC does not work in Simulator — use a physical iPhone.
 
