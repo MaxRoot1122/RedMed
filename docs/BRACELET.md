@@ -1,6 +1,6 @@
 # NFC bracelet — hardware & encoding
 
-> **Product:** RedMed is an **iPhone app**. New bracelet writes use `redmed://card#d=…` and open in RedMed. Legacy HTTPS tags remain readable when scanned in-app.
+> **Product:** RedMed is a native **SwiftUI iPhone app** (`ios/RedMed/`). Owners edit and write tags in-app. New bracelet writes use **HTTPS** `card/#d=…` so any passerby tap opens Safari — no RedMed install. In-app NFC scan still opens native `ScannedCardView`.
 
 Manufacturing spec for RedMed commercial bracelets. Software writes the same NDEF URI everywhere; this doc is the factory/QA source of truth.
 
@@ -67,24 +67,17 @@ The owner can lock the bracelet with a 4-digit PIN via the app. When locked:
 
 ## What goes on the tag
 
-Single **NDEF Well-Known URI** record. New bracelets are written with the
-active target — the `redmed://` scheme, opened natively by the iOS app
-(`ScannedCardView`), no network involved:
+Single **NDEF Well-Known URI** record. **New bracelets** use the hosted HTTPS
+target — any iPhone tap opens Safari (`card/index.html`), no app required:
 
 ```
-redmed://card#d=<base64url JSON profile>
+https://<canonical-host>/card/#d=<base64url JSON profile>
 ```
 
-Older bracelets, or a tap from a phone without the app installed, fall back
-to the legacy HTTPS target — [`card/`](../card/index.html), a minimal,
-self-contained, offline-cacheable page (see below), **not** `index.html`
-(the full owner web app):
+Canonical host is defined in [`config/canonical-url`](../config/canonical-url). Run `scripts/sync-canonical-url.sh` after changing it.
 
-```
-https://<canonical-host>/card/index.html#d=<base64url JSON profile>
-```
-
-Canonical host and active/legacy targets are defined in [`config/canonical-url`](../config/canonical-url). Run `scripts/sync-canonical-url.sh` after changing it.
+**Legacy** tags may carry `redmed://card#d=…` — RedMed installed opens native
+SwiftUI (`ScannedCardView`); without the app those tags do not open in Safari.
 
 Profile JSON schema matches [`ios/RedMed/Models/MedicalProfile.swift`](../ios/RedMed/Models/MedicalProfile.swift): `name`, `dob`, `blood`, `donor`, `allergies`, `meds`, `conditions`, `contacts` (up to 4 slots), `updated`.
 
@@ -92,12 +85,13 @@ Profile JSON schema matches [`ios/RedMed/Models/MedicalProfile.swift`](../ios/Re
 
 ## Bracelet tap experience (responder priority)
 
-With the app installed, tapping opens `ScannedCardView` natively. Without
-it, the legacy HTTPS target opens `card/index.html`, which shows:
+**Passerby (no RedMed):** tap → Safari opens [`card/index.html`](../card/index.html) with:
 
 1. **Call 911**
 2. Patient allergies, medications, conditions, emergency contacts (tap-to-call)
 3. Copy medical summary (plain text, for handing off to dispatch)
+
+**Owner (RedMed installed):** use **Scan emergency bracelet** or NFC tab scan → native SwiftUI `ScannedCardView` (Find 911 trauma picker, richer in-app UX).
 
 `card/index.html` registers [`card/sw.js`](../card/sw.js), a small service worker
 that caches the page shell after its first successful load — repeat taps on
@@ -115,7 +109,7 @@ in-app-only feature (owner or a phone with the app). See
 1. Ship **blank** NTAG216 bracelets.
 2. Owner fills profile in the **iOS app** → **Save**.
 3. Write tag via **iOS Write Tag** tab or third-party app (NFC Tools) using the HTTPS card link.
-4. Owner taps bracelet to verify the card opens in RedMed (native `ScannedCardView`).
+4. Owner taps bracelet to verify Safari opens the card (passerby path) and in-app scan shows `ScannedCardView`.
 
 ### Pre-encoded at fulfillment (optional)
 
@@ -132,8 +126,8 @@ The app shows byte count for the **full URI** (base URL + `#d=` + payload). NTAG
 
 | Scenario | Pass criteria |
 |----------|----------------|
-| iPhone, RedMed not installed | Safari opens emergency card with Call 911 + trauma hospitals at top |
-| iPhone, RedMed installed | Browser opens card (HTTPS tag) |
+| iPhone, RedMed not installed | Safari opens `card/` emergency card (Call 911 + profile) |
+| iPhone, RedMed installed | In-app scan → native SwiftUI; bare tap still opens Safari (HTTPS tag) |
 | Android, Chrome default | Card renders all fields |
 | Android, RedMed TWA installed | Card opens in app or browser |
 | Locked screen | NFC opens URL (OS-dependent; test both platforms) |

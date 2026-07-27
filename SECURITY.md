@@ -71,10 +71,10 @@ that. When you add a domain (see [`docs/DOMAIN.md`](docs/DOMAIN.md)):
 2. Installed iPhone users can get the native emergency card via Universal Links.
 3. In-app **Scan emergency bracelet** always shows native `ScannedCardView`.
 
-**Product decision (iOS-only):** new tag writes use `redmed://card` so the
-native app opens the emergency card. Phones without RedMed cannot open new
-tags. Do **not** use `redmed.app` (unrelated third-party). Do not revive
-Android/web owner apps without an explicit ask.
+**Product decision:** new tag writes use HTTPS `card/#d=…` so passersby open
+Safari without RedMed. Owners scan in native SwiftUI. Legacy `redmed://card`
+tags still decode in-app. Do **not** use `redmed.app` (unrelated third-party).
+Do not revive Android/web owner apps without an explicit ask.
 
 ## What we deliberately do not encrypt
 

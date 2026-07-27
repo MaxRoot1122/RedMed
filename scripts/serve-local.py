@@ -8,7 +8,7 @@ single-thread HTTP/1.0 `python -m http.server`.
 Usage:
   python3 scripts/serve-local.py
   python3 scripts/serve-local.py --open
-  python3 scripts/serve-local.py --root RedMed.app/Contents/Resources/www --port 8934
+  python3 scripts/serve-local.py --root mac/RedMed.app/Contents/Resources/www --port 8934
 """
 from __future__ import annotations
 
@@ -53,11 +53,11 @@ def main() -> int:
     here = os.path.dirname(os.path.abspath(__file__))
     repo = os.path.dirname(here)
     parser = argparse.ArgumentParser(description="Serve RedMed on localhost")
-    www = os.path.join(repo, "RedMed.app", "Contents", "Resources", "www")
+    www = os.path.join(repo, "mac", "RedMed.app", "Contents", "Resources", "www")
     parser.add_argument(
         "--root",
         default=www if os.path.isfile(os.path.join(www, "index.html")) else repo,
-        help="Directory to serve (default: RedMed.app www mirror, else repo root)",
+        help="Directory to serve (default: mac/RedMed.app www mirror, else repo root)",
     )
     parser.add_argument("--host", default=os.environ.get("REDMED_HOST", "127.0.0.1"))
     parser.add_argument(

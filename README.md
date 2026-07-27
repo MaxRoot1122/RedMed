@@ -21,11 +21,11 @@ Fill in allergies, meds, contacts, and notes once in the **RedMed iOS app**. Sav
 | Path | Role |
 |------|------|
 | [`ios/`](ios/) | **The RedMed app** (SwiftUI) — Keychain profile, NFC read/write, Aid, Find 911, Face ID lock |
+| [`mac/`](mac/) | Mac helpers — Simulator launcher (`RedMed.app`, `RedMed.command`) |
 | [`get.html`](get.html) | Packaging QR → App Store (iPhone only) |
 | [`privacy-policy.html`](privacy-policy.html) / [`terms-of-service.html`](terms-of-service.html) | App Store / legal host |
 | [`android/`](android/) | **Retired** — see [`android/RETIRED.md`](android/RETIRED.md) |
 | [`index.html`](index.html) | Legacy HTTPS emergency card for older tags only — not the product UI |
-| [`RedMed.app/`](RedMed.app/) | Optional Mac helper to launch iOS Simulator |
 
 ## Quick start
 
@@ -41,12 +41,13 @@ NFC does not work in Simulator — use a physical iPhone.
 | Doc | Purpose |
 |-----|---------|
 | [`ios/SETUP.md`](ios/SETUP.md) | Xcode / device install |
+| [`mac/SETUP.md`](mac/SETUP.md) | Mac Simulator launcher |
 | [`docs/BRACELET.md`](docs/BRACELET.md) | NTAG216 spec, encoding SOP, QA |
 | [`docs/IOS_APP_STORE.md`](docs/IOS_APP_STORE.md) | TestFlight / App Store checklist |
 | [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers |
 | [`SECURITY.md`](SECURITY.md) | Threat posture & reporting |
 
-New bracelet writes use `redmed://card#d=…` (see [`config/canonical-url`](config/canonical-url)).
+New bracelet writes use hosted `card/#d=…` — any iPhone tap opens Safari (no app for passersby). Owners scan in native SwiftUI (see [`config/canonical-url`](config/canonical-url)).
 
 ## Privacy
 

@@ -6,22 +6,11 @@ PLIST="${CONTENTS}/Info.plist"
 LOG_DIR="${HOME}/Library/Logs/RedMed"
 LOG_FILE="${LOG_DIR}/launch.log"
 
-repo_from_plist() {
-  local raw
-  raw="$(/usr/libexec/PlistBuddy -c "Print :RedMedRepoRoot" "$PLIST" 2>/dev/null || true)"
-  if [ -n "$raw" ] && [ "$raw" != "__REDMED_REPO_ROOT__" ] && [ -d "$raw" ]; then
-    echo "$raw"
-    return 0
-  fi
-  return 1
-}
-
 if [ -n "${REDMED_REPO:-}" ] && [ -d "$REDMED_REPO" ]; then
   REPO_ROOT="$REDMED_REPO"
-elif repo_from_plist; then
-  REPO_ROOT="$(repo_from_plist)"
 else
-  REPO_ROOT="$(dirname "$APP_BUNDLE")"
+  # Bundle lives at mac/RedMed.app or ios/RedMed.app — repo root is two levels up.
+  REPO_ROOT="$(cd "${APP_BUNDLE}/../.." && pwd -P)"
 fi
 
 LAUNCH_IOS="$REPO_ROOT/scripts/run-ios-simulator.sh"

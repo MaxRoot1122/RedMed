@@ -33,7 +33,7 @@ When you register a domain you control and want it for shorter NFC URLs, Univers
 
 ## Until then
 
-New tags use `https://maxroot1122.github.io/RedMed/index.html`. GitHub project Pages cannot host apex `/.well-known` for Universal Links / Asset Links — that needs a custom domain.
+New tags use `https://maxroot1122.github.io/RedMed/card/` (passerby emergency card). GitHub project Pages cannot host apex `/.well-known` for Universal Links / Asset Links — that needs a custom domain.
 
 ## Single repo rule
 

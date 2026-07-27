@@ -2,11 +2,12 @@
 // After one successful load, repeat taps render with zero network,
 // including in dead zones (Cache Storage ignores the #d= fragment, so
 // every profile still renders correctly from the one cached shell).
-var CACHE_NAME = "redmed-card-v2";
+var CACHE_NAME = "redmed-card-v3";
 var ASSETS = [
   "./",
   "index.html",
   "../assets/icon.svg",
+  "../assets/wordmark.svg",
   "../assets/favicon-32.png",
   "../assets/apple-touch-icon.png"
 ];

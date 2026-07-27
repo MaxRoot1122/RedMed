@@ -26,4 +26,18 @@ struct MedicalProfile: Codable, Equatable, Hashable {
     var conditions: [String] = []
     var contacts: [EmergencyContact] = []
     var updated: String = ""
+
+    /// True once the owner has saved any medical ID on this device. Drives
+    /// edit auth — first-time setup stays open until Save.
+    var hasOwnerData: Bool {
+        if !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return true }
+        if !dob.isEmpty || !blood.isEmpty { return true }
+        if !allergies.isEmpty || !meds.isEmpty || !conditions.isEmpty { return true }
+        if contacts.contains(where: {
+            !$0.name.trimmingCharacters(in: .whitespaces).isEmpty
+                || !$0.phone.trimmingCharacters(in: .whitespaces).isEmpty
+                || !$0.rel.trimmingCharacters(in: .whitespaces).isEmpty
+        }) { return true }
+        return false
+    }
 }

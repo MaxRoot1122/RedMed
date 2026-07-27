@@ -1,12 +1,7 @@
 import SwiftUI
 
-/// Lock screen shown while the owner's app content is gated behind Face ID
-/// (or Touch ID / Optic ID / passcode, whatever the device has). This is the
-/// screen the owner sees before RedMed's TabView appears.
-///
-/// Deliberately does NOT gate the emergency card a responder opens via
-/// NFC/URL — see `BiometricGate` and `RedMedApp`'s `fullScreenCover`, which
-/// is applied outside this view and is unaffected by it.
+/// Lock screen kept for previews — Face ID gates **edits only** in
+/// `EditProfileView`, not app launch.
 struct AppLockView: View {
     @Environment(\.layoutMetrics) private var layout
 
@@ -91,34 +86,9 @@ struct AppLockView: View {
         .background(AppTheme.pageBg)
     }
 
-    private var iconName: String {
-        switch availability {
-        case .faceID: return "faceid"
-        case .touchID: return "touchid"
-        case .opticID: return "opticid"
-        case .passcodeOnly, .none: return "lock.fill"
-        }
-    }
-
-    private var subtitle: String {
-        switch availability {
-        case .faceID: return "Use Face ID to open your medical profile."
-        case .touchID: return "Use Touch ID to open your medical profile."
-        case .opticID: return "Use Optic ID to open your medical profile."
-        case .passcodeOnly: return "Enter your device passcode to open your medical profile."
-        case .none: return "Tap to continue."
-        }
-    }
-
-    private var unlockLabel: String {
-        switch availability {
-        case .faceID: return "Unlock with Face ID"
-        case .touchID: return "Unlock with Touch ID"
-        case .opticID: return "Unlock with Optic ID"
-        case .passcodeOnly: return "Unlock with Passcode"
-        case .none: return "Continue"
-        }
-    }
+    private var iconName: String { availability.iconSystemName }
+    private var subtitle: String { availability.lockSubtitle }
+    private var unlockLabel: String { availability.lockUnlockLabel }
 }
 
 #Preview {

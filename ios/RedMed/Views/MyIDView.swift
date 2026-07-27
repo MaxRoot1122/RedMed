@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Owner My ID tab — read-only summary; Edit opens the form behind Face ID
-/// once this device has a saved profile (`EditProfileView` handles the gate).
-///
-/// Emergency card / NFC scan paths are never gated.
+/// Owner My ID tab — read-only summary; Edit sheet prompts Face ID only when
+/// changing saved profile data (`EditProfileView`).
 struct MyIDView: View {
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore

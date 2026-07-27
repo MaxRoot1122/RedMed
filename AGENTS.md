@@ -25,12 +25,13 @@ no-op (`true`). Do not add `npm install`, package managers, or service startup.
 
 ### Run the native iOS app (Cursor on Mac)
 1. **Cmd+Shift+P** → **Tasks: Run Task** → **RedMed: Launch iOS Simulator**
-2. Terminal: `./scripts/run-ios-simulator.sh`
+2. Terminal: `./scripts/run-ios-simulator.sh` or double-click `mac/RedMed.app`
 3. Physical iPhone + NFC: open `ios/RedMed.xcodeproj`, pick your device, **⌘R**
 
 **Product UI** lives in `ios/RedMed/` (SwiftUI) — Face ID app lock, Keychain,
 CoreNFC, native emergency card (`ScannedCardView`). New bracelet writes use
-`redmed://card#d=…` (`AppConfig.medicalCardBaseURL`).
+HTTPS `card/#d=…` (`AppConfig.medicalCardBaseURL`) so passersby open Safari;
+in-app scans still land in SwiftUI.
 
 ### NFC / passive chip only
 RedMed programs a **passive** bracelet chip (NDEF URI + `#d=` payload) — no

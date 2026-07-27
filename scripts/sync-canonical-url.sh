@@ -64,7 +64,7 @@ app_config.write_text(text, encoding="utf-8")
 # Web
 legacy_pattern = re.compile(r"var LEGACY_HOSTED_URLS = \[[^\]]*\];")
 legacy_repl = f"var LEGACY_HOSTED_URLS = {legacy_js};"
-for rel in ("index.html", "RedMed.app/Contents/Resources/www/index.html"):
+for rel in ("index.html", "mac/RedMed.app/Contents/Resources/www/index.html"):
     html = root / rel
     text = html.read_text(encoding="utf-8")
     text = re.sub(r'var GET_URL = "https?://[^"]+";', f'var GET_URL = "{get_url}";', text)
