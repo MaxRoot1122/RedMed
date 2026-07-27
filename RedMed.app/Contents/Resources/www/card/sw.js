@@ -1,13 +1,14 @@
-// Offline cache for card.html — the NFC-tap emergency card fallback.
+// Offline cache for card/index.html — the NFC-tap emergency card fallback.
 // After one successful load, repeat taps render with zero network,
 // including in dead zones (Cache Storage ignores the #d= fragment, so
 // every profile still renders correctly from the one cached shell).
-var CACHE_NAME = "redmed-card-v1";
+var CACHE_NAME = "redmed-card-v2";
 var ASSETS = [
-  "card.html",
-  "assets/icon.svg",
-  "assets/favicon-32.png",
-  "assets/apple-touch-icon.png"
+  "./",
+  "index.html",
+  "../assets/icon.svg",
+  "../assets/favicon-32.png",
+  "../assets/apple-touch-icon.png"
 ];
 
 self.addEventListener("install", function (event) {

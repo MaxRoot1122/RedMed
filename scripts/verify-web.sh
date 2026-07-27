@@ -37,14 +37,14 @@ if r2.returncode:
     print("FAIL: get.html node --check"); print(r2.stderr); sys.exit(1)
 print("OK: get.html CSP hash + node --check")
 
-card_script, _ = script_hash("card.html")
+card_script, _ = script_hash("card/index.html")
 open("/tmp/redmed-card-script.js", "w").write(card_script)
 r3 = subprocess.run(["node", "--check", "/tmp/redmed-card-script.js"], capture_output=True, text=True)
 if r3.returncode:
     print("FAIL: card.html node --check"); print(r3.stderr); sys.exit(1)
 print("OK: card.html CSP hash + node --check")
 
-r4 = subprocess.run(["node", "--check", "card-sw.js"], capture_output=True, text=True)
+r4 = subprocess.run(["node", "--check", "card/sw.js"], capture_output=True, text=True)
 if r4.returncode:
     print("FAIL: card-sw.js node --check"); print(r4.stderr); sys.exit(1)
 print("OK: card-sw.js node --check")
@@ -54,14 +54,14 @@ if not filecmp.cmp("index.html", mirror, shallow=False):
     print(f"FAIL: {mirror} out of sync with index.html"); sys.exit(1)
 print("OK: macOS www mirror matches index.html")
 
-for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card.html", "card-sw.js"):
+for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/index.html", "card/sw.js"):
     mpath = f"RedMed.app/Contents/Resources/www/{name}"
     try:
         if not filecmp.cmp(name, mpath, shallow=False):
             print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
     except FileNotFoundError:
         print(f"WARN: missing mirror {mpath}")
-print("OK: get.html + privacy-policy + terms-of-service + card.html + card-sw.js mirrors match")
+print("OK: get.html + privacy-policy + terms-of-service + card/ mirrors match")
 
 import os
 REQUIRED_ASSETS = (
@@ -103,8 +103,9 @@ if not card_url:
 legacy_url = legacy_urls[0] if legacy_urls else ""
 if not legacy_url:
     print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
-get_url = legacy_url.replace("/card.html", "/get.html")
-privacy_url = legacy_url.replace("/card.html", "/privacy-policy.html")
+base_dir = legacy_url.rstrip("/").rsplit("/", 1)[0]
+get_url = base_dir + "/get.html"
+privacy_url = base_dir + "/privacy-policy.html"
 origin = f"{urlparse(legacy_url).scheme}://{urlparse(legacy_url).netloc}"
 checks = [
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
@@ -145,7 +146,7 @@ except Exception as e:
     print(f"WARN: could not parse assetlinks.json ({e})")
 
 base = "http://127.0.0.1:8934"
-for path in ("index.html", "get.html", "privacy-policy.html", "card.html", "card-sw.js"):
+for path in ("index.html", "get.html", "privacy-policy.html", "card/index.html", "card/sw.js"):
     try:
         with urllib.request.urlopen(f"{base}/{path}", timeout=3) as resp:
             if resp.status != 200:

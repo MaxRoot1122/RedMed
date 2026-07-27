@@ -6,6 +6,6 @@
 redmed://card
 #
 # Legacy HTTPS host (older bracelets / in-app decode still accepted):
-# card.html is the minimal, self-contained, offline-cacheable scan page —
+# card/ is the minimal, self-contained, offline-cacheable scan page —
 # not index.html (the full owner web app).
-# legacy:https://maxroot1122.github.io/RedMed/card.html
+# legacy:https://maxroot1122.github.io/RedMed/card/

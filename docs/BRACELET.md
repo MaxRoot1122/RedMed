@@ -76,12 +76,12 @@ redmed://card#d=<base64url JSON profile>
 ```
 
 Older bracelets, or a tap from a phone without the app installed, fall back
-to the legacy HTTPS target — [`card.html`](../card.html), a minimal,
+to the legacy HTTPS target — [`card/`](../card/index.html), a minimal,
 self-contained, offline-cacheable page (see below), **not** `index.html`
 (the full owner web app):
 
 ```
-https://<canonical-host>/card.html#d=<base64url JSON profile>
+https://<canonical-host>/card/index.html#d=<base64url JSON profile>
 ```
 
 Canonical host and active/legacy targets are defined in [`config/canonical-url`](../config/canonical-url). Run `scripts/sync-canonical-url.sh` after changing it.
@@ -93,18 +93,18 @@ Profile JSON schema matches [`ios/RedMed/Models/MedicalProfile.swift`](../ios/Re
 ## Bracelet tap experience (responder priority)
 
 With the app installed, tapping opens `ScannedCardView` natively. Without
-it, the legacy HTTPS target opens `card.html`, which shows:
+it, the legacy HTTPS target opens `card/index.html`, which shows:
 
 1. **Call 911**
 2. Patient allergies, medications, conditions, emergency contacts (tap-to-call)
 3. Copy medical summary (plain text, for handing off to dispatch)
 
-`card.html` registers [`card-sw.js`](../card-sw.js), a small service worker
+`card/index.html` registers [`card/sw.js`](../card/sw.js), a small service worker
 that caches the page shell after its first successful load — repeat taps on
 the same phone render fully offline after that, even with no signal. The
 profile itself is never fetched from a server either way: it's encoded
 entirely in the URL fragment (`#d=…`), which browsers never send over the
-network. `card.html` has no trauma-hospital finder or GPS — that's an
+network. `card/index.html` has no trauma-hospital finder or GPS — that's an
 in-app-only feature (owner or a phone with the app). See
 [`docs/TRAUMA_FINDER.md`](TRAUMA_FINDER.md).
 

@@ -36,10 +36,14 @@ legacy_url = legacy_urls[0]
 parsed = urlparse(legacy_url)
 origin = f"{parsed.scheme}://{parsed.netloc}"
 host = parsed.hostname or ""
-path = parsed.path.rsplit("/", 1)[0] or ""
+# legacy_url points at the card/ subdirectory (e.g. /RedMed/card/) — the App
+# Links path prefix and get/privacy URLs live one level up, at the RedMed
+# site root, so strip the trailing "card" segment rather than the filename.
+path = parsed.path.rstrip("/").rsplit("/", 1)[0] or ""
 path_prefix = path if path else "/"
-get_url = legacy_url.replace("/card.html", "/get.html")
-privacy_url = legacy_url.replace("/card.html", "/privacy-policy.html")
+base_dir = legacy_url.rstrip("/").rsplit("/", 1)[0]
+get_url = base_dir + "/get.html"
+privacy_url = base_dir + "/privacy-policy.html"
 legacy_js = json.dumps(legacy_urls[1:], ensure_ascii=False)
 
 print(f"Active card target: {card_url}")
