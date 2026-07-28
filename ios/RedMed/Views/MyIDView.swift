@@ -9,6 +9,8 @@ struct MyIDView: View {
 
     @State private var showingEditSheet = false
     @State private var showingBraceletSetup = false
+    @AppStorage("redMedUseConsent") private var useConsentAccepted = false
+    @State private var showingConsent = false
 
     var body: some View {
         NavigationStack {
@@ -26,7 +28,11 @@ struct MyIDView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
-                            showingEditSheet = true
+                            if useConsentAccepted {
+                                showingEditSheet = true
+                            } else {
+                                showingConsent = true
+                            }
                         } label: {
                             Text("Edit").bold()
                         }
@@ -44,6 +50,14 @@ struct MyIDView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             EditProfileView(embedded: false)
+        }
+        .fullScreenCover(isPresented: $showingConsent) {
+            UseConsentView {
+                useConsentAccepted = true
+                showingConsent = false
+                showingEditSheet = true
+            }
+            .withLayoutMetrics()
         }
     }
 }

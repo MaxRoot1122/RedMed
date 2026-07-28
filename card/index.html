@@ -8,8 +8,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <meta name="theme-color" content="#e11d48">
-<meta name="description" content="RedMed emergency medical card — read from an NFC bracelet. Works offline once loaded.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-JOgox0G+/01xvcJkMi/v2wE3hKT8313scbtzM8lziiY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta name="description" content="RedMed emergency card — tap the band, phone opens instantly. Allergies, meds, Call 911. No app needed.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7tLFbfDLb1R7w6I/miHmJs9dCzFIjDhvG2vhwhrJ0yI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
   :root {
     --accent: #e11d48;
@@ -202,13 +202,7 @@
 
   function renderHeader(p) {
     var header = el("div", "header");
-    var brand = document.createElement("img");
-    brand.className = "header-brand";
-    brand.src = "../assets/wordmark.svg";
-    brand.alt = "RedMed";
-    brand.width = 220;
-    brand.height = 60;
-    header.appendChild(brand);
+    header.appendChild(el("p", "eyebrow", "REDMED"));
     header.appendChild(el("p", "eyebrow", "EMERGENCY CARD"));
     header.appendChild(el("h1", null, p.name || "Medical ID"));
     var metaParts = [];
@@ -272,11 +266,15 @@
     root.appendChild(renderHeader(p));
 
     var body = el("div", "body");
-    body.appendChild(el("div", "chip", "First responder view — read from the bracelet chip. Nothing is saved to this phone."));
 
     var call = el("a", "btn btn-call", "Call 911");
     call.href = "tel:911";
     body.appendChild(call);
+
+    if (p.allergies.length) body.appendChild(renderList("Allergies", p.allergies, true));
+    if (p.meds.length) body.appendChild(renderList("Medications", p.meds, false));
+    if (p.conditions.length) body.appendChild(renderList("Medical conditions", p.conditions, false));
+    if (p.contacts.length) body.appendChild(renderContacts(p.contacts));
 
     var copy = el("button", "btn btn-copy", "Copy medical summary");
     copy.type = "button";
@@ -312,19 +310,16 @@
     });
     body.appendChild(copy);
 
-    if (p.allergies.length) body.appendChild(renderList("Allergies", p.allergies, true));
-    if (p.meds.length) body.appendChild(renderList("Medications", p.meds, false));
-    if (p.conditions.length) body.appendChild(renderList("Medical conditions", p.conditions, false));
-    if (p.contacts.length) body.appendChild(renderContacts(p.contacts));
+    body.appendChild(el("div", "chip", "Tap the band → this card. No app installed. Call 911 if this is an emergency."));
 
     if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
       body.appendChild(el("p", "muted-note", "No allergies, meds, conditions, or contacts were written to this band."));
     }
 
     var footer = el("p", "footer");
-    footer.appendChild(document.createTextNode("Own a RedMed bracelet? "));
-    var link = el("a", null, "Get the app");
-    link.href = "https://apps.apple.com/app/redmed/id0000000000";
+    footer.appendChild(document.createTextNode("Own this band? "));
+    var link = el("a", null, "Program it on iPhone");
+    link.href = "../get.html";
     footer.appendChild(link);
     body.appendChild(footer);
 
@@ -336,13 +331,12 @@
     root.textContent = "";
     var wrap = el("div", "empty-wrap");
     wrap.appendChild(el("p", "eyebrow", "REDMED"));
-    wrap.appendChild(el("h1", null, "Emergency medical card"));
-    wrap.appendChild(el("p", null, "This page shows the medical ID stored on a tapped RedMed NFC bracelet. Tap a bracelet to view its card — nothing loads here on its own."));
+    wrap.appendChild(el("h1", null, "Tap the band"));
+    wrap.appendChild(el("p", null, "Hold any smartphone to a RedMed band — the browser opens the wearer's emergency card. No app needed. This page loads only after a tap."));
     root.appendChild(wrap);
   }
 
-  /* Bracelet emergency card: smartphones only — not card readers, tablets,
-     kiosks, or desktops. Mirrors index.html's isSmartphone(). */
+  /* Emergency card: smartphones only — not card readers, tablets, or desktops. */
   function isSmartphone() {
     var ua = navigator.userAgent || "";
     if (!ua || ua.length < 12) return false;
@@ -381,7 +375,14 @@
   }
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
+    var registerSW = function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    };
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(registerSW);
+    } else {
+      setTimeout(registerSW, 1);
+    }
   }
 })();
 </script>

@@ -111,7 +111,7 @@ struct WriteTagView: View {
                     .font(layout.heroTitleFont())
                     .tracking(-0.4)
                     .foregroundStyle(AppTheme.ink)
-                Text("Hold your iPhone to the bracelet once to program the passive chip. Any iPhone can tap the band afterward — Safari opens your emergency card. No App Store install needed for them.")
+                Text("Program your band once. Tap the band afterward — any phone opens your emergency card. No app for readers.")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
@@ -133,7 +133,7 @@ struct WriteTagView: View {
                 Rectangle().fill(AppTheme.line).frame(height: 1)
             }
 
-            Text("Have RedMed? Scan in-app for the native card view without changing your profile.")
+            Text("Optional: scan in RedMed for the native card view. Passersby only need to tap the band — no app.")
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.muted)
                 .multilineTextAlignment(.center)

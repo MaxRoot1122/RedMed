@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 python3 << 'PY'
-import re, hashlib, base64, subprocess, sys, filecmp, urllib.request, json
+import re, hashlib, base64, subprocess, sys, filecmp, urllib.request, os
 
 def script_hash(path):
     html = open(path, encoding="utf-8").read()
@@ -21,41 +21,19 @@ def script_hash(path):
         sys.exit(1)
     return script, h
 
-script, h = script_hash("index.html")
-open("/tmp/redmed-script.js", "w").write(script)
-print("OK: index.html CSP hash matches inline script")
-
-r = subprocess.run(["node", "--check", "/tmp/redmed-script.js"], capture_output=True, text=True)
-if r.returncode:
-    print("FAIL: node --check"); print(r.stderr); sys.exit(1)
-print("OK: node --check passed")
-
-get_script, _ = script_hash("get.html")
-open("/tmp/redmed-get-script.js", "w").write(get_script)
-r2 = subprocess.run(["node", "--check", "/tmp/redmed-get-script.js"], capture_output=True, text=True)
-if r2.returncode:
-    print("FAIL: get.html node --check"); print(r2.stderr); sys.exit(1)
-print("OK: get.html CSP hash + node --check")
-
-card_script, _ = script_hash("card/index.html")
-open("/tmp/redmed-card-script.js", "w").write(card_script)
-r3 = subprocess.run(["node", "--check", "/tmp/redmed-card-script.js"], capture_output=True, text=True)
-if r3.returncode:
-    print("FAIL: card.html node --check"); print(r3.stderr); sys.exit(1)
-print("OK: card.html CSP hash + node --check")
+for path, label in (("get.html", "get.html"), ("card/index.html", "card.html")):
+    script, _ = script_hash(path)
+    tmp = f"/tmp/redmed-{label.replace('/', '-')}.js"
+    open(tmp, "w").write(script)
+    r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
+    if r.returncode:
+        print(f"FAIL: {path} node --check"); print(r.stderr); sys.exit(1)
+    print(f"OK: {path} CSP hash + node --check")
 
 r4 = subprocess.run(["node", "--check", "card/sw.js"], capture_output=True, text=True)
 if r4.returncode:
     print("FAIL: card-sw.js node --check"); print(r4.stderr); sys.exit(1)
 print("OK: card-sw.js node --check")
-
-mirror = "mac/RedMed.app/Contents/Resources/www/index.html"
-ios_mirror = "ios/RedMed.app/Contents/Resources/www/index.html"
-if not filecmp.cmp("index.html", mirror, shallow=False):
-    print(f"FAIL: {mirror} out of sync with index.html"); sys.exit(1)
-if not filecmp.cmp("index.html", ios_mirror, shallow=False):
-    print(f"FAIL: {ios_mirror} out of sync with index.html"); sys.exit(1)
-print("OK: macOS + ios www mirrors match index.html")
 
 for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/index.html", "card/sw.js"):
     for prefix in ("mac/RedMed.app/Contents/Resources/www/", "ios/RedMed.app/Contents/Resources/www/"):
@@ -65,13 +43,12 @@ for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/i
                 print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
         except FileNotFoundError:
             print(f"WARN: missing mirror {mpath}")
-print("OK: get.html + privacy-policy + terms-of-service + card/ mirrors match")
+print("OK: get.html + legal + card/ mirrors match")
 
-import os
 REQUIRED_ASSETS = (
     "assets/icon.svg", "assets/icon-512.png", "assets/cpr-trainer-icon.png",
     "assets/favicon-32.png", "assets/apple-touch-icon.png",
-    "assets/icon-512.png", "assets/wordmark.svg", "assets/fonts/dm-sans-latin.woff2",
+    "assets/wordmark.svg", "assets/fonts/dm-sans-latin.woff2",
 )
 missing_assets = [p for p in REQUIRED_ASSETS if not os.path.isfile(p)]
 if missing_assets:
@@ -81,20 +58,13 @@ if missing_assets:
     sys.exit(1)
 print("OK: required assets present in assets/")
 
-index_html = open("index.html", encoding="utf-8").read()
-css = index_html.split("<style>", 1)[1].split("</style>", 1)[0]
-if css.count("{") != css.count("}"):
-    print("FAIL: index.html CSS brace imbalance")
-    sys.exit(1)
-print("OK: index.html CSS braces balanced")
+if os.path.isfile("index.html"):
+    print("FAIL: index.html still present — owner web app removed"); sys.exit(1)
+if os.path.isdir("android"):
+    print("FAIL: android/ still present"); sys.exit(1)
+print("OK: no index.html or android/")
 
-# Canonical URL — shipping surfaces must match config/canonical-url.
-# Product is iOS-only: the active write target is the `redmed://` scheme
-# (checked only against AppConfig.medicalCardBaseURL). The commented
-# `legacy:https://` line is the older hosted-Pages fallback — card.html,
-# get.html, and the retired Android TWA strings.xml still reference it for
-# bracelets written before the iOS-only pivot (or phones without the app).
-from urllib.parse import urlparse
+# Canonical URL — iOS writes card/#d=; any phone tap opens hosted emergency card.
 cfg_lines = [ln.strip() for ln in open("config/canonical-url", encoding="utf-8")]
 card_url = next((ln for ln in cfg_lines if ln and not ln.startswith("#") and not ln.startswith("legacy:")), "")
 legacy_urls = [
@@ -108,34 +78,24 @@ legacy_url = legacy_urls[0] if legacy_urls else ""
 if not legacy_url:
     print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
 base_dir = legacy_url.rstrip("/").rsplit("/", 1)[0]
-get_url = base_dir + "/get.html"
 privacy_url = base_dir + "/privacy-policy.html"
-origin = f"{urlparse(legacy_url).scheme}://{urlparse(legacy_url).netloc}"
 checks = [
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
     ("ios/RedMed/AppConfig.swift", legacy_url, "legacyHostedCardBaseURL"),
     ("ios/RedMed/AppConfig.swift", privacy_url, "privacyPolicyURL"),
-    ("index.html", legacy_url, "HOSTED_URL"),
-    ("index.html", get_url, "GET_URL"),
-    ("android/app/src/main/res/values/strings.xml", legacy_url, "launch_url"),
-    ("android/app/src/main/res/values/strings.xml", origin, "asset_statements site"),
 ]
 for path, needle, label in checks:
     body = open(path, encoding="utf-8").read()
     if needle not in body:
         print(f"FAIL: {label} mismatch in {path} (expected {needle})"); sys.exit(1)
-legacy_js = json.dumps(legacy_urls[1:], ensure_ascii=False)
-if legacy_js not in open("index.html", encoding="utf-8").read():
-    print("FAIL: LEGACY_HOSTED_URLS out of sync in index.html"); sys.exit(1)
-if "hostedCardOrigins" not in open("index.html", encoding="utf-8").read():
-    print("FAIL: index.html missing hostedCardOrigins() allow-list helper"); sys.exit(1)
-print("OK: canonical URL synced across shipping surfaces")
+print("OK: canonical URL synced to AppConfig.swift")
 
 pages_yml = open(".github/workflows/pages.yml", encoding="utf-8").read()
 if "card/index.html" not in pages_yml or "card/sw.js" not in pages_yml:
-    print("FAIL: .github/workflows/pages.yml does not deploy card/ — bracelets' legacy URL would 404")
-    sys.exit(1)
-print("OK: GitHub Pages workflow deploys card/")
+    print("FAIL: pages.yml does not deploy card/"); sys.exit(1)
+if "index.html" in pages_yml and "_site/index.html" in pages_yml.replace("card/index.html", ""):
+    print("FAIL: pages.yml still deploys owner index.html"); sys.exit(1)
+print("OK: GitHub Pages workflow deploys card/ (not owner web)")
 
 server_sh = "scripts/redmed-server.sh"
 app_server_sh = "mac/RedMed.app/Contents/Resources/redmed-server.sh"
@@ -145,18 +105,8 @@ if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
         sys.exit(1)
     print("OK: redmed-server.sh mirror matches")
 
-try:
-    links = json.load(open(".well-known/assetlinks.json", encoding="utf-8"))
-    fps = links[0]["target"]["sha256_cert_fingerprints"]
-    if any("REPLACE_WITH" in f for f in fps):
-        print("WARN: assetlinks.json still has REPLACE_WITH_* placeholders — paste Play App Signing + upload key SHA-256 before relying on TWA verification (see docs/ANDROID_PLAY.md)")
-    else:
-        print("OK: assetlinks.json fingerprints look populated")
-except Exception as e:
-    print(f"WARN: could not parse assetlinks.json ({e})")
-
 base = "http://127.0.0.1:8934"
-for path in ("index.html", "get.html", "privacy-policy.html", "card/index.html", "card/sw.js"):
+for path in ("get.html", "privacy-policy.html", "card/index.html", "card/sw.js"):
     try:
         with urllib.request.urlopen(f"{base}/{path}", timeout=3) as resp:
             if resp.status != 200:

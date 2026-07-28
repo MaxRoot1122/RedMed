@@ -1,6 +1,10 @@
 # RedMed
 
-Local-first emergency medical ID for **iPhone**. No accounts. No backend. Profile data stays on your device and on the passive NFC tag you write.
+**Tap the band. Phone opens your emergency card.**
+
+RedMed is a **passive NFC medical bracelet**. Your allergies, meds, contacts, and blood type live on the chip. If you're found incapacitated — roadside, crash, collapse — a stranger taps the band with **any smartphone**. Their browser opens your emergency card instantly. **No app for readers.**
+
+The **iPhone app** programs the band once (CoreNFC). No accounts. No backend. Data stays on the chip and on your phone.
 
 <p align="center">
   <a href="ios/SETUP.md">iOS setup</a>
@@ -10,60 +14,56 @@ Local-first emergency medical ID for **iPhone**. No accounts. No backend. Profil
   <a href="terms-of-service.html">Terms</a>
 </p>
 
-## What it is
+## What you get
 
-Fill in allergies, meds, contacts, and notes once in the **RedMed iOS app**. Save. Write the link to a **passive NTAG215/216** bracelet (no battery — your phone powers the chip on tap). Another **iPhone with RedMed** can scan the band to open the emergency card in-app.
-
-**Product surface:** iOS only (`ios/`). Not a web app, not Android, not a desktop product.
-
-## Surfaces
-
-| Path | Role |
+| What | Role |
 |------|------|
-| [`ios/`](ios/) | **The RedMed app** (SwiftUI) — Keychain profile, NFC read/write, Aid, Find 911, Face ID lock |
-| [`mac/`](mac/) | Mac helpers — Simulator launcher (`RedMed.app`, `RedMed.command`) |
-| [`get.html`](get.html) | Packaging QR → App Store (iPhone only) |
-| [`privacy-policy.html`](privacy-policy.html) / [`terms-of-service.html`](terms-of-service.html) | App Store / legal host |
-| [`android/`](android/) | **Retired** — see [`android/RETIRED.md`](android/RETIRED.md) |
-| [`index.html`](index.html) | Legacy HTTPS emergency card for older tags only — not the product UI |
+| **The band** | Passive NTAG chip — tap opens emergency card in any phone's browser |
+| [`card/`](card/) | Hosted emergency card (`#d=`) — Call 911, allergies, meds, contacts |
+| [`ios/`](ios/) | **Setup app only** — fill profile, write chip once, optional in-app scan |
+| [`get.html`](get.html) | Box QR → App Store (program your band on iPhone) |
+| [`mac/`](mac/) | Dev only — Simulator launcher, not a product surface |
 
-## Quick start
-
-**Clone (one folder — all sources):**
+## Owner setup (once)
 
 ```bash
 git clone https://github.com/MaxRoot1122/RedMed.git
 cd RedMed
-./scripts/setup-dev.sh --skip-build   # Desktop aliases + stamp repo path
+./scripts/setup.sh --skip-build
 ```
 
-Open **`RedMed.code-workspace`** in Cursor, or **`ios/RedMed.xcodeproj`** in Xcode.
+1. Install RedMed on **iPhone** (open `ios/RedMed.xcodeproj` in Xcode, or App Store when live)
+2. Fill **My ID** → Save
+3. **NFC** tab → hold band to phone once
+4. Done — anyone who taps the band sees your card. No RedMed install needed.
 
-1. Run on your iPhone from Xcode (⌘R)
-2. Fill in your info → save
-3. **NFC** tab → write a blank NTAG bracelet
-4. Anyone can tap the band — Safari opens the emergency card (no app required)
+NFC requires a physical iPhone (not Simulator).
 
-NFC does not work in Simulator — use a physical iPhone.
+## Docs & scripts
 
-## Docs
-
-| Doc | Purpose |
-|-----|---------|
-| [`ios/SETUP.md`](ios/SETUP.md) | Xcode / device install |
-| [`mac/SETUP.md`](mac/SETUP.md) | Mac Simulator launcher |
-| [`docs/BRACELET.md`](docs/BRACELET.md) | NTAG216 spec, encoding SOP, QA |
-| [`docs/IOS_APP_STORE.md`](docs/IOS_APP_STORE.md) | TestFlight / App Store checklist |
-| [`docs/TRAUMA_FINDER.md`](docs/TRAUMA_FINDER.md) | Find 911 trauma centers |
+| Path | Purpose |
+|------|---------|
+| [`ios/SETUP.md`](ios/SETUP.md) | Xcode, device install, Simulator launcher |
+| [`docs/GUIDE.md`](docs/GUIDE.md) | Band spec, App Store checklist, trauma finder |
 | [`SECURITY.md`](SECURITY.md) | Threat posture & reporting |
+| [`scripts/sync.sh`](scripts/sync.sh) | URLs, trauma data, www mirror |
+| [`scripts/dev.sh`](scripts/dev.sh) | `clean`, `build`, `verify`, `icons` |
 
-New bracelet writes use hosted `card/#d=…` — any iPhone tap opens Safari (no app for passersby). Owners scan in native SwiftUI (see [`config/canonical-url`](config/canonical-url)).
+New writes use hosted `card/#d=…` (see [`config/canonical-url`](config/canonical-url)).
 
 ## Privacy
 
-- Tag data is **not encrypted** — intentional for emergency responders with RedMed.
+- Chip data is **not encrypted** — intentional so any phone can read it in an emergency.
 - No cloud sync of profile data.
-- Keep entries short; the app warns when the full URI exceeds tag capacity.
+- Keep entries short; the app warns when the URI exceeds tag capacity.
+
+## AI agents (Cursor Cloud)
+
+**One repo, one trunk:** `main` in `MaxRoot1122/RedMed`.
+
+The iOS app needs Xcode on a Mac. Static hosting: `python3 -m http.server 8934 --bind 127.0.0.1`.
+
+After `get.html` / `card/` edits: `./scripts/dev.sh verify`. Trauma data: `./scripts/sync.sh trauma`.
 
 ## License
 

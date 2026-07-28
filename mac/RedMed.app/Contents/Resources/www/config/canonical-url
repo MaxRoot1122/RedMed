@@ -1,6 +1,5 @@
 # Canonical NFC card base URL (no #d= fragment).
-# iOS-only product: RedMed iPhone app programs the chip; any iPhone tap
-# opens the hosted emergency card in Safari — no App Store install needed.
+# iOS CoreNFC writes this to the band; tap → any smartphone opens card/ in browser.
 # Keep AppConfig.medicalCardBaseURL in sync with the active line below.
 #
 # Active write target (first uncommented non-comment line):

@@ -189,7 +189,7 @@ struct BrandMark: View {
             }
 
             if showTagline {
-                Text("On your phone · on your bracelet · opens anywhere")
+                Text("Tap the band · phone opens your card · no app for readers")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
             }

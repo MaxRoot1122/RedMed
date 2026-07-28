@@ -3,14 +3,14 @@
 # Safe to re-run — refreshes shortcuts after moving the repo or updating the bundle.
 #
 # Also installs an edit hub (repo alias, Xcode, Cursor) — aliases track this git
-# clone; nothing is copied. See mac/desktop/README.txt.
+# clone; nothing is copied.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd -P)"
 
-"${SCRIPT_DIR}/stamp-repo-root.sh" >/dev/null
+"${SCRIPT_DIR}/sync.sh" stamp >/dev/null
 DESKTOP="${HOME}/Desktop"
 DESKTOP_DIR="${DESKTOP}/RedMed"
 APP_SRC="${REPO_ROOT}/ios/RedMed.app"
@@ -26,7 +26,6 @@ SIM_SRC="${REPO_ROOT}/build/RedMed-Simulator.app"
 SIM_DST="${DESKTOP_DIR}/RedMed Simulator.app"
 CMD_SRC="${REPO_ROOT}/ios/RedMed.command"
 CMD_DST="${DESKTOP_DIR}/RedMed.command"
-README_SRC="${REPO_ROOT}/mac/desktop/README.txt"
 README_DST="${DESKTOP_DIR}/README.txt"
 QUIET=0
 SKIP_BUILD=0
@@ -130,7 +129,29 @@ fi
 
 GIT_REMOTE="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || echo "https://github.com/MaxRoot1122/RedMed.git")"
 {
-  if [ -f "$README_SRC" ]; then cat "$README_SRC"; echo ""; fi
+  cat <<'DESKTOP_README'
+RedMed — iOS build is the priority
+
+GitHub: https://github.com/MaxRoot1122/RedMed
+Clone:  git clone https://github.com/MaxRoot1122/RedMed.git
+Setup:  ./scripts/setup.sh --skip-build
+
+Primary shortcut (Desktop):
+  ~/Desktop/RedMed.app   → builds and runs the native iPhone app in Simulator
+
+Also in ~/Desktop/RedMed/ (Finder aliases — point at your clone, not copies):
+  RedMed Project         → whole repo (edit here)
+  RedMed.xcodeproj       → open in Xcode
+  Open in Cursor.command → open RedMed.code-workspace in Cursor
+  RedMed iPhone.app      → same Simulator launcher
+  RedMed Simulator.app   → signed iOS .app for drag-drop onto Simulator
+  RedMed.command         → launcher with Terminal output
+
+Install or refresh from repo root:
+  ./scripts/install-desktop-shortcut.sh
+
+DESKTOP_README
+  echo ""
   echo "This clone:"
   echo "  ${REPO_ROOT}"
   echo "  ${GIT_REMOTE}"
