@@ -4,107 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RedMed — Emergency Card</title>
-<link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
-<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <meta name="theme-color" content="#e11d48">
 <meta name="description" content="RedMed emergency card — tap the band, phone opens instantly. Allergies, meds, Call 911. No app needed.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7tLFbfDLb1R7w6I/miHmJs9dCzFIjDhvG2vhwhrJ0yI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-0Zq47TDdtewzsmi6WU7A5CVTjpwpw0GLWHdKmeqdC0Y='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
   :root {
     --accent: #e11d48;
     --accent-dark: #bf1237;
-    --accent-soft: rgba(225,29,72,0.10);
+    --accent-soft: rgba(225,29,72,.1);
     --ink: #1c1917;
     --muted: #78716c;
     --bg: #fff7f7;
-    --line: rgba(28,25,23,0.08);
-    --radius: 20px;
+    --line: rgba(28,25,23,.08);
+    --pad: 20px;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html, body { margin: 0; }
   body {
     min-height: 100dvh;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--ink); line-height: 1.45;
+    font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
   }
   a { color: inherit; }
   .header {
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     color: #fff;
-    padding: 36px 20px 44px;
+    padding: calc(28px + env(safe-area-inset-top, 0px)) var(--pad) 36px;
   }
-  .header-brand {
-    display: block;
-    width: auto;
-    height: 36px;
-    margin: 0 0 14px;
-    object-fit: contain;
-  }
-  .header .eyebrow {
-    font-size: 12px; font-weight: 800; letter-spacing: 1.6px;
-    color: rgba(255,255,255,0.85); text-transform: uppercase; margin: 0 0 10px;
+  .eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.85);
   }
   .header h1 {
-    margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.5px;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -.5px;
     word-break: break-word;
   }
-  .header .meta { margin: 8px 0 0; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.92); }
-  .donor-badge {
-    display: inline-block; margin-top: 12px; padding: 5px 10px; border-radius: 999px;
-    background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 800;
+  .meta { margin: 8px 0 0; font-size: 15px; font-weight: 600; color: rgba(255,255,255,.9); }
+  .donor {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    font-size: 12px;
+    font-weight: 800;
   }
-  .body { max-width: 480px; margin: 0 auto; padding: 18px 20px 40px; position: relative; top: -22px; }
-  .chip {
-    background: rgba(225,29,72,0.08); color: var(--accent);
-    border-radius: 14px; padding: 12px 14px; font-size: 13px; font-weight: 600;
-    margin-bottom: 16px;
+  .body {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 18px var(--pad) calc(36px + env(safe-area-inset-bottom, 0px));
   }
   .btn {
-    display: block; width: 100%; text-align: center; text-decoration: none;
-    border: none; border-radius: 16px; padding: 16px 18px; font-size: 16px;
-    font-weight: 750; font-family: inherit; cursor: pointer; margin-bottom: 10px;
+    display: block;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 18px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 750;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
   }
-  .btn-call { background: var(--accent); color: #fff; }
-  .btn-copy { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .btn-call {
+    padding: 20px;
+    font-size: 19px;
+    color: #fff;
+    background: linear-gradient(180deg, #fb7185, var(--accent));
+  }
+  .btn-copy { color: #fff; background: var(--ink); }
   .section { margin-top: 22px; }
-  .eyebrow-label {
-    font-size: 12px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
-    color: var(--muted); margin: 0 0 10px;
+  .label {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--muted);
   }
-  .eyebrow-label.critical { color: var(--accent); }
+  .label.crit { color: var(--accent); }
   .block { border-radius: 14px; padding: 14px; }
-  .block.critical { background: var(--accent-soft); }
+  .block.crit { background: var(--accent-soft); }
   .item { display: flex; gap: 10px; align-items: flex-start; padding: 4px 0; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 8px; flex: none; background: var(--muted); }
-  .dot.critical { background: var(--accent); }
-  .item span { font-size: 15px; font-weight: 600; }
-  .contact-card {
+  .dot {
+    width: 7px; height: 7px; margin-top: 8px; flex: none;
+    border-radius: 50%; background: var(--accent);
+  }
+  .item span { font-size: 16px; font-weight: 600; }
+  .contact {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px;
+    margin-bottom: 10px; padding: 14px;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
   }
-  .contact-name { font-weight: 700; font-size: 15px; }
-  .contact-rel { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .contact-phone { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .call-pill {
-    background: #16a34a; color: #fff; text-decoration: none; font-weight: 700; font-size: 13px;
-    padding: 9px 16px; border-radius: 999px; flex: none;
+  .cname { font-weight: 700; font-size: 16px; }
+  .crel, .cphone { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .call {
+    flex: none;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
   }
-  .muted-note { font-size: 14px; color: var(--muted); font-weight: 500; }
-  .footer { margin-top: 30px; text-align: center; font-size: 12px; color: var(--muted); }
+  .note { margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .footer { margin-top: 28px; text-align: center; font-size: 12px; color: var(--muted); }
   .footer a { font-weight: 700; color: var(--accent); text-decoration: none; }
-  .empty-wrap { max-width: 420px; margin: 0 auto; padding: 60px 24px; text-align: center; }
-  .empty-wrap h1 { font-size: 22px; margin: 16px 0 8px; }
-  .empty-wrap p { font-size: 14px; color: var(--muted); }
+  .empty { max-width: 420px; margin: 0 auto; padding: 60px var(--pad); text-align: center; }
+  .empty h1 { margin: 12px 0 8px; font-size: 24px; font-weight: 800; }
+  .empty p { margin: 0; font-size: 15px; color: var(--muted); font-weight: 550; }
+  .empty p + p { margin-top: 10px; }
   @media (max-width: 360px) {
-    .header { padding: 28px 16px 36px; }
+    :root { --pad: 16px; }
     .header h1 { font-size: 28px; }
-    .header-brand { height: 30px; }
-    .body { padding: 16px 16px 32px; }
-  }
-  @media (max-width: 320px) {
-    .header h1 { font-size: 24px; }
-    .btn { font-size: 15px; padding: 14px 16px; }
   }
 </style>
 </head>
@@ -211,17 +235,17 @@
     if (p.dob) metaParts.push("DOB " + p.dob);
     if (p.blood) metaParts.push("Blood " + p.blood);
     if (metaParts.length) header.appendChild(el("p", "meta", metaParts.join(" · ")));
-    if (p.donor) header.appendChild(el("span", "donor-badge", "Organ donor"));
+    if (p.donor) header.appendChild(el("span", "donor", "Organ donor"));
     return header;
   }
 
   function renderList(title, items, critical) {
     var section = el("div", "section");
-    section.appendChild(el("p", "eyebrow-label" + (critical ? " critical" : ""), title));
-    var block = el("div", "block" + (critical ? " critical" : ""));
+    section.appendChild(el("p", "label" + (critical ? " crit" : ""), title));
+    var block = el("div", "block" + (critical ? " crit" : ""));
     items.forEach(function (text) {
       var item = el("div", "item");
-      item.appendChild(el("span", "dot" + (critical ? " critical" : "")));
+      item.appendChild(el("span", "dot"));
       item.appendChild(el("span", null, text));
       block.appendChild(item);
     });
@@ -231,17 +255,17 @@
 
   function renderContacts(contacts) {
     var section = el("div", "section");
-    section.appendChild(el("p", "eyebrow-label", "Emergency contacts"));
+    section.appendChild(el("p", "label", "Emergency contacts"));
     contacts.forEach(function (c) {
-      var card = el("div", "contact-card");
+      var card = el("div", "contact");
       var info = el("div");
-      info.appendChild(el("div", "contact-name", c.name || "Contact"));
-      if (c.rel) info.appendChild(el("div", "contact-rel", c.rel));
-      if (c.phone) info.appendChild(el("div", "contact-phone", c.phone));
+      info.appendChild(el("div", "cname", c.name || "Contact"));
+      if (c.rel) info.appendChild(el("div", "crel", c.rel));
+      if (c.phone) info.appendChild(el("div", "cphone", c.phone));
       card.appendChild(info);
       var href = telHref(c.phone);
       if (href) {
-        var call = el("a", "call-pill", "Call");
+        var call = el("a", "call", "Call");
         call.href = href;
         card.appendChild(call);
       }
@@ -266,7 +290,6 @@
     root.appendChild(renderHeader(p));
 
     var body = el("div", "body");
-
     var call = el("a", "btn btn-call", "Call 911");
     call.href = "tel:911";
     body.appendChild(call);
@@ -286,21 +309,19 @@
       };
       var succeeded = function () { reset("Copied!", 1500); };
       var failed = function () {
-        // Clipboard API missing/blocked (older WebView, denied permission) —
-        // fall back to a legacy execCommand copy before admitting defeat.
         var ok = false;
         try {
           var ta = document.createElement("textarea");
           ta.value = text;
-          ta.style.position = "fixed";
-          ta.style.opacity = "0";
+          ta.style.cssText = "position:fixed;opacity:0";
           document.body.appendChild(ta);
           ta.focus();
           ta.select();
           ok = document.execCommand("copy");
           document.body.removeChild(ta);
         } catch (e) { ok = false; }
-        if (ok) { succeeded(); } else { reset("Couldn't copy — select text manually", 2500); }
+        if (ok) succeeded();
+        else reset("Couldn't copy — select text manually", 2500);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(succeeded, failed);
@@ -310,10 +331,10 @@
     });
     body.appendChild(copy);
 
-    body.appendChild(el("div", "chip", "Tap the band → this card. No app installed. Call 911 if this is an emergency."));
+    body.appendChild(el("p", "note", "Tap the band → this card. Nothing saved to this phone."));
 
     if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
-      body.appendChild(el("p", "muted-note", "No allergies, meds, conditions, or contacts were written to this band."));
+      body.appendChild(el("p", "note", "No allergies, meds, conditions, or contacts were written to this band."));
     }
 
     var footer = el("p", "footer");
@@ -329,14 +350,13 @@
   function renderEmpty() {
     var root = document.getElementById("root");
     root.textContent = "";
-    var wrap = el("div", "empty-wrap");
+    var wrap = el("div", "empty");
     wrap.appendChild(el("p", "eyebrow", "REDMED"));
     wrap.appendChild(el("h1", null, "Tap the band"));
-    wrap.appendChild(el("p", null, "Hold any smartphone to a RedMed band — the browser opens the wearer's emergency card. No app needed. This page loads only after a tap."));
+    wrap.appendChild(el("p", null, "Hold any smartphone to a RedMed band — the browser opens the wearer's emergency card. No app needed."));
     root.appendChild(wrap);
   }
 
-  /* Emergency card: smartphones only — not card readers, tablets, or desktops. */
   function isSmartphone() {
     var ua = navigator.userAgent || "";
     if (!ua || ua.length < 12) return false;
@@ -349,7 +369,6 @@
     return false;
   }
 
-  /* ?preview=1 escape hatch for QA on a non-phone device. */
   function isOwnerPreview() {
     try { return new URLSearchParams(location.search).get("preview") === "1"; } catch (e) { return false; }
   }
@@ -357,11 +376,10 @@
   function renderPhoneGate() {
     var root = document.getElementById("root");
     root.textContent = "";
-    var wrap = el("div", "empty-wrap");
+    var wrap = el("div", "empty");
     wrap.appendChild(el("p", "eyebrow", "REDMED"));
     wrap.appendChild(el("h1", null, "Smartphone required"));
     wrap.appendChild(el("p", null, "This bracelet works with smartphones only — not card readers or other NFC devices."));
-    wrap.appendChild(el("p", null, "Use an iPhone or Android phone — not a card reader, payment terminal, tablet, computer, or other NFC device."));
     root.appendChild(wrap);
   }
 
@@ -378,11 +396,8 @@
     var registerSW = function () {
       navigator.serviceWorker.register("sw.js").catch(function () {});
     };
-    if ("requestIdleCallback" in window) {
-      requestIdleCallback(registerSW);
-    } else {
-      setTimeout(registerSW, 1);
-    }
+    if ("requestIdleCallback" in window) requestIdleCallback(registerSW);
+    else setTimeout(registerSW, 1);
   }
 })();
 </script>
