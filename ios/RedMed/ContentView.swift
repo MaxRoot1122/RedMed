@@ -4,8 +4,7 @@ import UIKit
 struct ContentView: View {
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
-    @AppStorage("redMedUseConsent") private var useConsentAccepted = false
-    @State private var selectedTab: AppTab = .myID
+    @State private var selectedTab: AppTab = .find911
 
     private enum AppTab: Hashable {
         case myID, find911, aid, nfc
@@ -72,14 +71,6 @@ struct ContentView: View {
             case "aid": selectedTab = .aid
             case "nfc": selectedTab = .nfc
             default: selectedTab = .myID
-            }
-        }
-        .fullScreenCover(isPresented: Binding(
-            get: { !useConsentAccepted },
-            set: { _ in }
-        )) {
-            UseConsentView {
-                useConsentAccepted = true
             }
         }
         .withLayoutMetrics()

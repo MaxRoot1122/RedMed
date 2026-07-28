@@ -45,11 +45,10 @@ final class NFCReader: NSObject, ObservableObject {
         }
 
         didDeliver = true
-        session.alertMessage = "Tag read successfully."
         session.invalidate()
         DispatchQueue.main.async { [weak self] in
             self?.isReading = false
-            self?.statusMessage = "Tag read successfully."
+            self?.statusMessage = ""
             self?.onProfile?(profile, urlString)
         }
     }

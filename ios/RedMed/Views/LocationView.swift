@@ -34,7 +34,7 @@ struct LocationView: View {
                         prominent: false
                     )
 
-                    Text("Anyone can tap the band — Safari opens their card. With RedMed installed, scan here for the native view.")
+                    Text("Tap the band — their browser opens the emergency card. RedMed owners can scan here for the native view.")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)

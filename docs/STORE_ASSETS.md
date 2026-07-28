@@ -1,15 +1,5 @@
 # Store listing assets
 
-## Play (Android)
-
-| Asset | Spec | Path / note |
-|-------|------|-------------|
-| App icon | 512×512 PNG | `play/listing/play-store-icon-512.png` |
-| Feature graphic | 1024×500 | `play/listing/feature-graphic.svg` (export PNG for Console) |
-| Phone screenshots | Min 2, 16:9 or 9:16 | Capture from device — My ID, emergency card (`#d=`), Find 911, Aid |
-| Short description | ≤80 chars | See `play/listing/short-description.txt` |
-| Full description | ≤4000 chars | See `play/listing/full-description.txt` |
-
 ## App Store (iOS)
 
 | Asset | Spec |
@@ -19,6 +9,8 @@
 | iPhone 6.1" screenshots | Required |
 | iPad | Optional (iPhone-only app) |
 
+Lead messaging: **Tap the band. Phone opens your emergency card.** App is for programming the band once.
+
 ## Keywords (iOS)
 
 medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
@@ -27,10 +19,10 @@ medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
 
 **Email only:** `help.RedMed@gmail.com`
 
-Privacy / support URL for store forms: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
+Privacy / support URL: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
 
 ## Review messaging
 
-- Not a medical device; not medical advice
+- Not a medical device; not medical advice — call 911 in emergencies
 - Tag data unencrypted by design for responder access
-- No backend; no account required for bracelet taps
+- No backend; no account required for bracelet taps (readers need no app)

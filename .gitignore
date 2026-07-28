@@ -40,13 +40,3 @@ DerivedData/
 *.ipa
 *.dSYM.zip
 *.dSYM
-
-# Android / Gradle (created once opened in Android Studio per android/SETUP.md)
-android/local.properties
-android/.gradle/
-android/build/
-android/app/build/
-android/.idea/
-android/*.iml
-android/captures/
-android/.cxx/

@@ -1,9 +1,7 @@
 import Foundation
 
-/// Field names intentionally mirror the JSON schema used by the web app's
-/// index.html (name, dob, blood, donor, allergies, meds, conditions,
-/// contacts, updated) so a tag written by this app
-/// decodes correctly if ever opened by the web version, and vice versa.
+/// Medical profile fields written to the band chip (`#d=` JSON): name, dob,
+/// blood, donor, allergies, meds, conditions, contacts, updated.
 
 struct EmergencyContact: Codable, Identifiable, Equatable, Hashable {
     var id = UUID()

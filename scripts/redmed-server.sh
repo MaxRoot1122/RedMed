@@ -7,7 +7,7 @@ REDMED_HOST="${REDMED_HOST:-127.0.0.1}"
 REDMED_LOG_DIR="${HOME}/Library/Logs/RedMed"
 REDMED_LOG_FILE="${REDMED_LOG_DIR}/server.log"
 REDMED_PID_FILE="${REDMED_LOG_DIR}/server.pid"
-REDMED_URL="http://${REDMED_HOST}:${REDMED_PORT}/index.html"
+REDMED_URL="http://${REDMED_HOST}:${REDMED_PORT}/get.html"
 
 _redmed_init_log() {
   if mkdir -p "$REDMED_LOG_DIR" 2>/dev/null; then
@@ -53,7 +53,7 @@ _redmed_port_blocked() {
   lsof -nP -iTCP:"${REDMED_PORT}" -sTCP:LISTEN >/dev/null 2>&1
 }
 
-# Start (or confirm) python http.server serving WWW; exit 0 only when index.html responds.
+# Start (or confirm) python http.server serving WWW; exit 0 only when get.html responds.
 redmed_ensure_server() {
   local www="$1"
 
@@ -61,8 +61,8 @@ redmed_ensure_server() {
     _redmed_alert "Web folder not found: ${www}"
     return 1
   fi
-  if [ ! -f "${www}/index.html" ]; then
-    _redmed_alert "index.html missing in ${www}"
+  if [ ! -f "${www}/get.html" ]; then
+    _redmed_alert "get.html missing in ${www}"
     return 1
   fi
 

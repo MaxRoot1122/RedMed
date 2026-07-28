@@ -525,7 +525,7 @@ struct EditProfileView: View {
         )
     }
 
-    /// Matches web `joinProfileName` / `splitProfileName` in index.html for NFC `#d=` parity.
+    /// Matches `joinProfileName` / `splitProfileName` encoding for NFC `#d=` parity.
     private static func joinProfileName(first: String, last: String) -> String {
         [first, last]
             .map { $0.trimmingCharacters(in: .whitespaces) }

@@ -19,15 +19,15 @@ struct BraceletSetupView: View {
                         Text("Your bracelet")
                             .font(.title2.weight(.bold))
                             .foregroundStyle(AppTheme.ink)
-                        Text("The band holds your card on a passive chip (no battery, no broadcast). When any iPhone taps, Safari opens your emergency card — no RedMed install for them.")
+                        Text("Tap the band — any phone opens your emergency card. You program the chip once here; strangers never need RedMed.")
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
 
                     setupStep(number: 1, title: "Fill My ID", detail: "Name, allergies, meds, and contacts on the previous screen. Tap Save.")
-                    setupStep(number: 2, title: "Program your band", detail: "Write once — your card is stored on the passive chip. Any iPhone tap powers the chip and opens Safari.")
-                    setupStep(number: 3, title: "Done", detail: "In an emergency, a stranger taps the band with any iPhone. Safari opens your emergency card — they see what you saved.")
+                    setupStep(number: 2, title: "Program your band", detail: "Hold the band to your iPhone once. The chip stores your card — tap opens it in any phone's browser.")
+                    setupStep(number: 3, title: "Done", detail: "Side of the road, a stranger taps the band. Their phone opens Call 911 and your critical info. No app for them.")
 
                     if link.isLinked {
                         SoftStatusChip(text: "Bracelet linked on this phone", warning: false)
@@ -48,7 +48,7 @@ struct BraceletSetupView: View {
                     }
 
                     if writer.verified {
-                        SoftStatusChip(text: "Chip verified — any iPhone tap opens your card in Safari", warning: false)
+                        SoftStatusChip(text: "Chip verified — any smartphone tap opens your card in the browser", warning: false)
                     }
 
                     Button {

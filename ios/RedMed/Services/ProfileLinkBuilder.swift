@@ -2,7 +2,7 @@ import Foundation
 
 /// Builds the on-chip NDEF URI: profile JSON, base64url-encoded, after `#d=`.
 /// New writes use `AppConfig.medicalCardBaseURL` (HTTPS hosted card/) so any
-/// iPhone tap opens Safari. In-app decode also accepts `redmed://` and older
+/// smartphone tap opens the emergency card in a browser. In-app decode also accepts `redmed://` and older
 /// HTTPS `#d=` tags.
 enum ProfileLinkBuilder {
 
@@ -26,7 +26,7 @@ enum ProfileLinkBuilder {
         return URL(string: baseURL + "#d=" + encoded)
     }
 
-    /// Mirrors index.html's on-screen guidance about which NFC tag size is needed.
+    /// On-screen guidance about which passive NFC tag size is needed.
     /// Counts the full NDEF URI (base URL + `#d=` + payload) — tag capacity is
     /// consumed by the whole string written to the chip, not just the profile.
     static func capacityNote(

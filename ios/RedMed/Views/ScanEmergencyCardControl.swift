@@ -9,8 +9,6 @@ struct ScanEmergencyCardControl: View {
     var prominent: Bool = false
 
     @StateObject private var reader = NFCReader()
-    @State private var scannedProfile: MedicalProfile?
-    @State private var showingCard = false
 
     var body: some View {
         VStack(spacing: 10) {
@@ -29,16 +27,12 @@ struct ScanEmergencyCardControl: View {
             }
             .disabled(reader.isReading)
 
-            if !reader.statusMessage.isEmpty && !showingCard {
+            if !reader.statusMessage.isEmpty {
                 Text(reader.statusMessage)
                     .font(.footnote.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
             }
-        }
-        .fullScreenCover(isPresented: $showingCard) {
-            ScannedCardView(profile: scannedProfile ?? MedicalProfile())
-                .withLayoutMetrics()
         }
     }
 
@@ -53,8 +47,7 @@ struct ScanEmergencyCardControl: View {
         reader.readTag(
             alertMessage: "Hold your iPhone near the person's RedMed bracelet to open their emergency card."
         ) { profile, _ in
-            scannedProfile = profile
-            showingCard = true
+            NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
         }
     }
 }

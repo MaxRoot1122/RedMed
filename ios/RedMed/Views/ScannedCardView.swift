@@ -11,6 +11,7 @@ struct ScannedCardView: View {
     let profile: MedicalProfile
     @Environment(\.dismiss) private var dismiss
     @State private var copiedSummary = false
+    @State private var traumaExpanded = false
 
     private var ageLine: String {
         var parts: [String] = []
@@ -33,28 +34,10 @@ struct ScannedCardView: View {
                     header
 
                     VStack(alignment: .leading, spacing: layout.s(18)) {
-                        SoftStatusChip(
-                            text: "First responder view — from the bracelet chip. Not saved to this phone.",
-                            warning: false
-                        )
-
                         Link(destination: URL(string: "tel:911")!) {
                             Text("Call 911")
                         }
                         .buttonStyle(PrimaryButtonStyle(prominent: true))
-
-                        Button {
-                            UIPasteboard.general.string = EmergencySummaryBuilder.build(profile: profile)
-                            copiedSummary = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                copiedSummary = false
-                            }
-                        } label: {
-                            Text(copiedSummary ? "Copied!" : "Copy medical summary")
-                        }
-                        .buttonStyle(InkButtonStyle())
-
-                        TraumaHospitalsSection()
 
                         if !profile.allergies.isEmpty {
                             criticalBlock(title: "Allergies", items: profile.allergies)
@@ -70,6 +53,30 @@ struct ScannedCardView: View {
                         if !contacts.isEmpty {
                             contactsBlock(contacts)
                         }
+
+                        Button {
+                            UIPasteboard.general.string = EmergencySummaryBuilder.build(profile: profile)
+                            copiedSummary = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                copiedSummary = false
+                            }
+                        } label: {
+                            Text(copiedSummary ? "Copied!" : "Copy medical summary")
+                        }
+                        .buttonStyle(InkButtonStyle())
+
+                        DisclosureGroup(isExpanded: $traumaExpanded) {
+                            TraumaHospitalsSection()
+                        } label: {
+                            Text("Trauma center transport")
+                                .font(.subheadline.weight(.bold))
+                                .foregroundStyle(AppTheme.ink)
+                        }
+
+                        Text("Tap the band → this card. Nothing saved to this phone.")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(AppTheme.muted)
+                            .fixedSize(horizontal: false, vertical: true)
 
                         if profile.allergies.isEmpty,
                            profile.meds.isEmpty,

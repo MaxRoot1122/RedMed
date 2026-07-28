@@ -31,10 +31,6 @@ echo "assets/apple-touch-icon.png"
 render 512 "$ROOT/assets/icon-512.png"
 echo "assets/icon-512.png"
 
-mkdir -p "$ROOT/play/listing"
-cp "$ROOT/assets/icon-512.png" "$ROOT/play/listing/play-store-icon-512.png"
-echo "play/listing/play-store-icon-512.png"
-
 APPICON="$ROOT/ios/RedMed/Assets.xcassets/AppIcon.appiconset"
 render 1024 "$APPICON/AppIcon.png"
 echo "$APPICON/AppIcon.png"
@@ -104,4 +100,4 @@ if command -v iconutil >/dev/null 2>&1 && [[ -f "$PNG" ]]; then
   echo "mac/RedMed.app/Contents/Resources/AppIcon.icns"
 fi
 
-echo "Done. Run ./scripts/sync-www-mirror.sh to refresh mac/RedMed.app www/."
+echo "Done. Run ./scripts/sync.sh www to refresh mac/RedMed.app www/."
