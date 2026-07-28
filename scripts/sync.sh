@@ -44,14 +44,16 @@ if not legacy_urls:
     sys.exit("No legacy:https:// line found in config/canonical-url")
 legacy_url = legacy_urls[0]
 
-base_dir = legacy_url.rstrip("/").rsplit("/", 1)[0]
-privacy_url = base_dir + "/privacy-policy.html"
+site_base = card_url.rstrip("/").rsplit("/", 1)[0]
+privacy_url = site_base + "/privacy-policy.html"
+get_started_url = site_base + "/get.html"
 
 print(f"Active card target: {card_url}")
 print(f"Legacy card URL:    {legacy_url}")
 
 app_config = root / "ios/RedMed/AppConfig.swift"
 text = app_config.read_text(encoding="utf-8")
+text = re.sub(r'static let getStartedURL = "https?://[^"]+"', f'static let getStartedURL = "{get_started_url}"', text)
 text = re.sub(r'static let medicalCardBaseURL = "[^"]+"', f'static let medicalCardBaseURL = "{card_url}"', text)
 text = re.sub(r'static let legacyHostedCardBaseURL = "https?://[^"]+"', f'static let legacyHostedCardBaseURL = "{legacy_url}"', text)
 text = re.sub(r'static let privacyPolicyURL = "https?://[^"]+"', f'static let privacyPolicyURL = "{privacy_url}"', text)
