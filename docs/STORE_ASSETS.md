@@ -19,7 +19,7 @@ medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
 
 **Email only:** `help.RedMed@gmail.com`
 
-Privacy / support URL: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
+Privacy / support URL: `https://redmed.pages.dev/privacy-policy.html`
 
 ## Review messaging
 

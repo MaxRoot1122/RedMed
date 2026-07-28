@@ -127,13 +127,13 @@ EOF
   log "Desktop command: ${CMD_DST}"
 fi
 
-GIT_REMOTE="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || echo "https://github.com/MaxRoot1122/RedMed.git")"
+GIT_REMOTE="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || echo "https://github.com/Roooted1776/RedMed.git")"
 {
   cat <<'DESKTOP_README'
 RedMed — iOS build is the priority
 
-GitHub: https://github.com/MaxRoot1122/RedMed
-Clone:  git clone https://github.com/MaxRoot1122/RedMed.git
+GitHub: https://github.com/Roooted1776/RedMed
+Clone:  git clone https://github.com/Roooted1776/RedMed.git
 Setup:  ./scripts/setup.sh --skip-build
 
 Primary shortcut (Desktop):

@@ -77,9 +77,11 @@ if not card_url:
 legacy_url = legacy_urls[0] if legacy_urls else ""
 if not legacy_url:
     print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
-base_dir = legacy_url.rstrip("/").rsplit("/", 1)[0]
-privacy_url = base_dir + "/privacy-policy.html"
+site_base = card_url.rstrip("/").rsplit("/", 1)[0]
+privacy_url = site_base + "/privacy-policy.html"
+get_started_url = site_base + "/get.html"
 checks = [
+    ("ios/RedMed/AppConfig.swift", get_started_url, "getStartedURL"),
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
     ("ios/RedMed/AppConfig.swift", legacy_url, "legacyHostedCardBaseURL"),
     ("ios/RedMed/AppConfig.swift", privacy_url, "privacyPolicyURL"),
@@ -95,7 +97,7 @@ if "card/index.html" not in pages_yml or "card/sw.js" not in pages_yml:
     print("FAIL: pages.yml does not deploy card/"); sys.exit(1)
 if "index.html" in pages_yml and "_site/index.html" in pages_yml.replace("card/index.html", ""):
     print("FAIL: pages.yml still deploys owner index.html"); sys.exit(1)
-print("OK: GitHub Pages workflow deploys card/ (not owner web)")
+print("OK: deploy workflow ships card/ (not owner web)")
 
 server_sh = "scripts/redmed-server.sh"
 app_server_sh = "mac/RedMed.app/Contents/Resources/redmed-server.sh"

@@ -24,7 +24,7 @@ is_git_repo() {
 }
 
 run_local_mac_setup() {
-  local repo_url="${REDMED_GIT_URL:-https://github.com/MaxRoot1122/RedMed.git}"
+  local repo_url="${REDMED_GIT_URL:-https://github.com/Roooted1776/RedMed.git}"
   local home_repo="${REDMED_HOME:-$HOME/RedMed}"
   local desk_path="${HOME}/Desktop/RedMed"
 
@@ -94,7 +94,7 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "Not a git repo at: $ROOT" >&2
   echo "" >&2
   echo "Clone GitHub, then run setup from inside the clone:" >&2
-  echo "  git clone https://github.com/MaxRoot1122/RedMed.git ~/RedMed" >&2
+  echo "  git clone https://github.com/Roooted1776/RedMed.git ~/RedMed" >&2
   echo "  cd ~/RedMed && ./scripts/setup.sh --skip-build" >&2
   echo "" >&2
   echo "Open: ~/RedMed  or  ~/Desktop/RedMed/RedMed Project" >&2
@@ -103,8 +103,8 @@ fi
 
 ORIGIN="$(git remote get-url origin 2>/dev/null || true)"
 if [ -z "$ORIGIN" ]; then
-  git remote add origin https://github.com/MaxRoot1122/RedMed.git 2>/dev/null || true
-  ORIGIN="$(git remote get-url origin 2>/dev/null || echo https://github.com/MaxRoot1122/RedMed.git)"
+  git remote add origin https://github.com/Roooted1776/RedMed.git 2>/dev/null || true
+  ORIGIN="$(git remote get-url origin 2>/dev/null || echo https://github.com/Roooted1776/RedMed.git)"
 fi
 
 echo "Repo:   $ROOT"
