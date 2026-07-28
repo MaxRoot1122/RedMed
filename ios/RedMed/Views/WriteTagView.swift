@@ -91,7 +91,7 @@ struct WriteTagView: View {
     }
 
     private var hero: some View {
-        VStack(spacing: layout.s(18)) {
+        VStack(spacing: layout.spaceLG) {
             ZStack {
                 Circle()
                     .fill(AppTheme.medicalSoft)

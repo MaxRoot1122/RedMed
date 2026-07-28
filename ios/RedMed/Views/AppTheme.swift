@@ -1,18 +1,18 @@
 import SwiftUI
+import UIKit
 
 // MARK: - Layout (393×852 baseline — iPhone 15/16 class)
 
 /// Scales spacing and control sizes from a 393×852 pt design baseline.
 /// Read via `@Environment(\.layoutMetrics)` — never hardcode point values in views.
 ///
-/// **Safe areas beat resolution.** Layout is constrained by system insets, not @2x/@3x
-/// asset density. On Dynamic Island phones the usable top inset is ~**59 pt** (status bar +
-/// island); the home indicator adds ~**34 pt** at the bottom. Let SwiftUI apply those via
-/// default safe-area layout — do not bake 59/34 into view padding. Constants below are for
-/// design review and Figma comps only.
+/// **Viewport, not pixel density.** `@2x`/`@3x` only affects asset sharpness.
+/// Layout keys off the **scrollable area** each tab gets: screen bounds minus
+/// safe-area insets and tab bar. That keeps SE, standard, and Pro Max proportional
+/// without per-device branches in views.
 ///
-/// **Mockups (not code):** two frames cover the iPhone range — **393×852** (standard) and
-/// **440×956** (Pro Max). Code scales from the 393×852 baseline via `LayoutMetrics.scale`.
+/// **Safe areas beat resolution.** Let SwiftUI apply status bar / home-indicator
+/// insets — constants below are design-review references only.
 struct LayoutMetrics: Equatable {
     static let baselineWidth: CGFloat = 393
     static let baselineHeight: CGFloat = 852
@@ -26,60 +26,137 @@ struct LayoutMetrics: Equatable {
     static let referenceDynamicIslandTopInset: CGFloat = 59
     /// Figma / design-review only — tab bar adds its own height on top of this.
     static let referenceHomeIndicatorInset: CGFloat = 34
+    /// Standard tab bar chrome (stacked items).
+    static let tabBarHeight: CGFloat = 49
+
+    /// Baseline scroll viewport on the 393×852 design frame.
+    static var baselineViewportHeight: CGFloat {
+        baselineHeight - referenceDynamicIslandTopInset - referenceHomeIndicatorInset - tabBarHeight
+    }
+
+    /// Scale floor — keeps SE-class hero titles readable (~20 pt bold).
+    static let scaleMin: CGFloat = 0.78
+    /// Scale ceiling — Pro Max doesn't balloon past the design baseline.
+    static let scaleMax: CGFloat = 1.04
 
     let size: CGSize
+    let safeAreaInsets: EdgeInsets
 
-    init(size: CGSize) {
+    init(size: CGSize, safeAreaInsets: EdgeInsets = EdgeInsets()) {
         self.size = size
+        self.safeAreaInsets = safeAreaInsets
     }
 
     static let baseline = LayoutMetrics(
         size: CGSize(width: baselineWidth, height: baselineHeight)
     )
 
-    /// Uniform scale — preserves proportions from SE through Pro Max.
-    var scale: CGFloat {
-        min(size.width / Self.baselineWidth, size.height / Self.baselineHeight)
+    /// Width available to tab content (full bounds — horizontal pad is `screenPad`).
+    var viewportWidth: CGFloat { size.width }
+
+    /// Height available below status bar / above tab bar — what scroll views actually get.
+    var viewportHeight: CGFloat {
+        max(
+            480,
+            size.height - safeAreaInsets.top - safeAreaInsets.bottom - Self.tabBarHeight
+        )
     }
 
+    private var widthRatio: CGFloat {
+        viewportWidth / Self.baselineWidth
+    }
+
+    private var heightRatio: CGFloat {
+        viewportHeight / Self.baselineViewportHeight
+    }
+
+    /// Primary scale for fonts, icons, and horizontal rhythm.
+    /// Height-weighted — scroll content is vertically constrained more often.
+    var scale: CGFloat {
+        let blended = widthRatio * 0.38 + heightRatio * 0.62
+        return min(max(blended, Self.scaleMin), Self.scaleMax)
+    }
+
+    /// Extra vertical compression on shorter viewports (SE, mini).
+    private var verticalFactor: CGFloat {
+        switch viewportHeight {
+        case ..<620: return 0.82
+        case ..<680: return 0.88
+        case ..<740: return 0.93
+        default: return 1.0
+        }
+    }
+
+    /// General scaled points (fonts, widths, radii).
     func s(_ points: CGFloat) -> CGFloat { points * scale }
 
-    var screenPad: CGFloat { s(20) }
+    /// Vertical spacing — height-tier tightening on top of scale.
+    func sv(_ points: CGFloat) -> CGFloat { points * scale * verticalFactor }
+
+    /// Scaled semantic fonts — use instead of raw `.subheadline` / `.caption` in tab screens.
+    func bodyFont(weight: Font.Weight = .regular) -> Font {
+        .system(size: s(15), weight: weight)
+    }
+
+    func subheadlineFont(weight: Font.Weight = .regular) -> Font {
+        .system(size: s(14), weight: weight)
+    }
+
+    func footnoteFont(weight: Font.Weight = .regular) -> Font {
+        .system(size: s(13), weight: weight)
+    }
+
+    func captionFont(weight: Font.Weight = .regular) -> Font {
+        .system(size: s(12), weight: weight)
+    }
+
+    func caption2Font(weight: Font.Weight = .regular) -> Font {
+        .system(size: s(11), weight: weight)
+    }
+
+    func title3Font(weight: Font.Weight = .bold) -> Font {
+        .system(size: s(20), weight: weight)
+    }
+
+    var screenPad: CGFloat { s(16) }
     /// Top inset for each tab's page header — pulls content up slightly under the nav bar.
-    var pageTopInset: CGFloat { s(2) }
-    var spaceXS: CGFloat { s(4) }
-    var spaceSM: CGFloat { s(8) }
-    var spaceMD: CGFloat { s(12) }
-    var spaceLG: CGFloat { s(16) }
-    var spaceXL: CGFloat { s(20) }
-    var space2XL: CGFloat { s(24) }
+    var pageTopInset: CGFloat { sv(2) }
+    var spaceXS: CGFloat { sv(4) }
+    var spaceSM: CGFloat { sv(7) }
+    var spaceMD: CGFloat { sv(10) }
+    var spaceLG: CGFloat { sv(14) }
+    var spaceXL: CGFloat { sv(18) }
+    var space2XL: CGFloat { sv(20) }
     /// Extra scroll breathing room *below* content — not a substitute for the 34 pt home indicator.
-    var screenBottom: CGFloat { s(24) }
-    var screenBottomLarge: CGFloat { s(32) }
+    var screenBottom: CGFloat { sv(16) }
+    var screenBottomLarge: CGFloat { sv(22) }
+    /// Vertical padding inside elevated cards (GPS, status chips).
+    var cardPadV: CGFloat { sv(18) }
 
-    var cardRadius: CGFloat { s(24) }
-    var chipRadius: CGFloat { s(16) }
-    var innerRadius: CGFloat { s(14) }
-    var iconWellRadius: CGFloat { s(14) }
+    var cardRadius: CGFloat { s(22) }
+    var chipRadius: CGFloat { s(14) }
+    var innerRadius: CGFloat { s(12) }
+    var iconWellRadius: CGFloat { s(12) }
 
-    var iconWell: CGFloat { s(44) }
-    var iconWellLarge: CGFloat { s(52) }
-    var aidPaneMinHeight: CGFloat { s(132) }
-    var cprPulse: CGFloat { s(56) }
-    var nfcHeroInner: CGFloat { s(120) }
-    var nfcHeroOuter: CGFloat { s(148) }
-    var stepBadge: CGFloat { s(26) }
-    var bulletDot: CGFloat { s(6) }
-    var statusDot: CGFloat { s(7) }
-    var topicIcon: CGFloat { s(22) }
-    var cprResetMaxWidth: CGFloat { s(80) }
+    var iconWell: CGFloat { s(40) }
+    var iconWellLarge: CGFloat { s(48) }
+    var aidPaneMinHeight: CGFloat { sv(100) }
+    var cprPulse: CGFloat { s(52) }
+    private var compactHeight: Bool { viewportHeight < 680 }
+    var nfcHeroInner: CGFloat { s(compactHeight ? 92 : 104) }
+    var nfcHeroOuter: CGFloat { s(compactHeight ? 112 : 128) }
+    var stepBadge: CGFloat { s(24) }
+    var bulletDot: CGFloat { s(5) }
+    var statusDot: CGFloat { s(6) }
+    var topicIcon: CGFloat { s(20) }
+    var cprResetMaxWidth: CGFloat { s(76) }
 
     func heroTitleFont() -> Font {
-        .system(size: s(28), weight: .bold, design: .rounded)
+        .system(size: s(25), weight: .bold, design: .rounded)
     }
 
     func emergencyNameFont() -> Font {
-        .system(size: s(32), weight: .bold, design: .rounded)
+        .system(size: s(30), weight: .bold, design: .rounded)
     }
 
     func navTitleFont() -> Font {
@@ -87,22 +164,22 @@ struct LayoutMetrics: Equatable {
     }
 
     func nfcGlyphFont() -> Font {
-        .system(size: s(56), weight: .medium)
+        .system(size: s(50), weight: .medium)
     }
 
     func brandWordmarkHeight(_ size: BrandMark.Size) -> CGFloat {
         switch size {
-        case .hero: return s(46)
-        case .nav: return s(38)
-        case .compact: return s(32)
+        case .hero: return s(42)
+        case .nav: return s(34)
+        case .compact: return s(28)
         }
     }
 
     func brandCoverFrame(_ size: BrandMark.Size) -> CGFloat {
         switch size {
-        case .hero: return s(52)
-        case .nav: return s(44)
-        case .compact: return s(36)
+        case .hero: return s(48)
+        case .nav: return s(40)
+        case .compact: return s(32)
         }
     }
 }
@@ -123,7 +200,10 @@ private struct LayoutMetricsScope: ViewModifier {
         GeometryReader { geo in
             content
                 .frame(width: geo.size.width, height: geo.size.height)
-                .environment(\.layoutMetrics, LayoutMetrics(size: geo.size))
+                .environment(
+                    \.layoutMetrics,
+                    LayoutMetrics(size: geo.size, safeAreaInsets: geo.safeAreaInsets)
+                )
         }
     }
 }
@@ -366,9 +446,9 @@ struct PrimaryButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(prominent ? .title3.weight(.bold) : .headline.weight(.bold))
+            .font(prominent ? layout.title3Font() : .headline.weight(.bold))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, prominent ? layout.s(20) : layout.spaceLG)
+            .padding(.vertical, prominent ? layout.sv(17) : layout.spaceLG)
             .background(
                 LinearGradient(
                     colors: enabled
@@ -380,7 +460,26 @@ struct PrimaryButtonStyle: ButtonStyle {
             )
             .foregroundStyle(.white)
             .clipShape(Capsule())
-            .shadow(color: enabled ? AppTheme.accent.opacity(0.18) : .clear, radius: layout.s(10), y: layout.s(4))
+            .overlay {
+                if prominent, enabled {
+                    Capsule()
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.34), AppTheme.teal.opacity(0.18)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 0.5
+                        )
+                }
+            }
+            .shadow(
+                color: enabled
+                    ? AppTheme.accent.opacity(prominent ? 0.08 : 0.18)
+                    : .clear,
+                radius: prominent ? layout.s(4) : layout.s(10),
+                y: prominent ? layout.s(2) : layout.s(4)
+            )
             .opacity(configuration.isPressed ? 0.92 : 1)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.28, dampingFraction: 0.78), value: configuration.isPressed)
@@ -394,7 +493,7 @@ struct SecondaryButtonStyle: ButtonStyle {
         configuration.label
             .font(.subheadline.weight(.semibold))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, layout.s(15))
+            .padding(.vertical, layout.sv(14))
             .background(Color.white.opacity(0.82))
             .foregroundStyle(AppTheme.ink)
             .clipShape(Capsule())
@@ -417,13 +516,42 @@ struct InkButtonStyle: ButtonStyle {
         configuration.label
             .font(.headline.weight(.bold))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, layout.s(18))
+            .padding(.vertical, layout.sv(16))
             .padding(.horizontal, layout.spaceLG)
             .background(AppTheme.ink.opacity(configuration.isPressed ? 0.88 : 1))
             .foregroundStyle(.white)
             .clipShape(Capsule())
             .shadow(color: Color.black.opacity(0.12), radius: layout.s(10), y: layout.s(4))
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
+    }
+}
+
+/// In-app 911 dial — `Button` + `telprompt:` (Link + ButtonStyle does not reliably open Phone).
+struct Call911Button: View {
+    var title: String = "Call 911"
+    var prominent: Bool = true
+    var secondary: Bool = false
+
+    var body: some View {
+        Group {
+            if secondary {
+                Button(action: dial) {
+                    Text(title)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            } else {
+                Button(action: dial) {
+                    Text(title)
+                }
+                .buttonStyle(PrimaryButtonStyle(prominent: prominent))
+            }
+        }
+    }
+
+    private func dial() {
+        guard let url = EmergencySummaryBuilder.call911URL else { return }
+        UIApplication.shared.open(url)
     }
 }
 

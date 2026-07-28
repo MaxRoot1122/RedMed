@@ -34,10 +34,7 @@ struct ScannedCardView: View {
                     header
 
                     VStack(alignment: .leading, spacing: layout.s(18)) {
-                        Link(destination: URL(string: "tel:911")!) {
-                            Text("Call 911")
-                        }
-                        .buttonStyle(PrimaryButtonStyle(prominent: true))
+                        Call911Button()
 
                         if !profile.allergies.isEmpty {
                             criticalBlock(title: "Allergies", items: profile.allergies)

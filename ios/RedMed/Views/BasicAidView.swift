@@ -28,14 +28,11 @@ struct BasicAidView: View {
                                 )
                             )
                         Text("Call 911 first. Tap a pane — expand only what you need.")
-                            .font(.subheadline.weight(.medium))
+                            .font(layout.subheadlineFont(weight: .medium))
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
 
-                        Link(destination: URL(string: "tel:911")!) {
-                            Text("Call 911")
-                        }
-                        .buttonStyle(PrimaryButtonStyle(prominent: true))
+                        Call911Button()
 
                         HStack(spacing: layout.spaceSM) {
                             Text("tap to expand")
@@ -74,7 +71,7 @@ struct BasicAidView: View {
                     }
 
                     Text("God of mercy, hold the injured in your care.\nGive strength to those who help, and wisdom to every choice made here.\nBring healing, comfort, and safe passage until help arrives.\nAmen.")
-                        .font(.footnote)
+                        .font(layout.footnoteFont())
                         .foregroundStyle(AppTheme.muted)
                         .italic()
                         .multilineTextAlignment(.center)
@@ -120,12 +117,12 @@ private struct AidPaneCard: View {
                     )
                     VStack(alignment: .leading, spacing: layout.spaceXS) {
                         Text(pane.title)
-                            .font(.subheadline.weight(.bold))
+                            .font(layout.subheadlineFont(weight: .bold))
                             .foregroundStyle(AppTheme.ink)
                             .multilineTextAlignment(.leading)
                         if !isOpen {
                             Text(pane.blurb)
-                                .font(.caption.weight(.semibold))
+                                .font(layout.captionFont(weight: .semibold))
                                 .foregroundStyle(AppTheme.muted)
                                 .multilineTextAlignment(.leading)
                         }
@@ -147,7 +144,7 @@ private struct AidPaneCard: View {
                         NavigationLink(value: topic) {
                             HStack {
                                 Text(topic.title)
-                                    .font(.subheadline.weight(.semibold))
+                                    .font(layout.subheadlineFont(weight: .semibold))
                                     .foregroundStyle(AppTheme.ink)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Image(systemName: "chevron.right")

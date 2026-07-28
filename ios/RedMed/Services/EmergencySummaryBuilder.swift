@@ -94,11 +94,13 @@ enum EmergencySummaryBuilder {
         phone.filter { $0.isNumber || $0 == "+" }
     }
 
-    /// `telprompt:` asks iPhone to confirm before placing the call — required for in-app contact dialing.
+    /// `telprompt:` asks iPhone to confirm before placing the call — required for in-app dialing.
     static func telURL(phone: String, prompt: Bool = true) -> URL? {
         let digits = normalizedPhone(phone)
         guard !digits.isEmpty else { return nil }
         let scheme = prompt ? "telprompt" : "tel"
         return URL(string: "\(scheme):\(digits)")
     }
+
+    static var call911URL: URL? { telURL(phone: "911") }
 }
