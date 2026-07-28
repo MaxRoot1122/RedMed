@@ -8,7 +8,7 @@ operator backend, no accounts, and no cloud sync. Security work focuses on
 ## Reporting
 
 Open a private GitHub security advisory on
-[`Roooted1776/RedMed`](https://github.com/Roooted1776/RedMed) for vulnerabilities
+[`RedmMed/RedMed`](https://github.com/RedmMed/RedMed) for vulnerabilities
 in the hosted card page or XSS in `#d=` rendering. Do not file public issues
 with live API keys or real medical payloads.
 

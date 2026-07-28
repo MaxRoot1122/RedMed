@@ -27,7 +27,7 @@ The **iPhone app** programs the band once (CoreNFC). No accounts. No backend. Da
 ## Owner setup (once)
 
 ```bash
-git clone https://github.com/Roooted1776/RedMed.git
+git clone https://github.com/RedmMed/RedMed.git
 cd RedMed
 ./scripts/setup.sh --skip-build
 ```
@@ -59,7 +59,7 @@ New writes use hosted `card/#d=…` (see [`config/canonical-url`](config/canonic
 
 ## AI agents (Cursor Cloud)
 
-**One repo, one trunk:** `main` in `Roooted1776/RedMed`.
+**One repo, one trunk:** `main` in `RedmMed/RedMed`.
 
 The iOS app needs Xcode on a Mac. Static hosting: `python3 -m http.server 8934 --bind 127.0.0.1`.
 
