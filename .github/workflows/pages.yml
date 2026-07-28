@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Pin to commit SHAs (not mutable tags) — bracelet cards load this deploy.
-            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Build static site
         run: |
           mkdir -p _site/.well-known _site/config _site/card
@@ -38,7 +38,7 @@ jobs:
             : > _site/config/google-api-key
           fi
       - name: Deploy to Cloudflare Pages
-                      uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca # v1.5.0
+        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca # v1.5.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
