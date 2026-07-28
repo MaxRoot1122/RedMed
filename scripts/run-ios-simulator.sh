@@ -24,7 +24,7 @@ SIM_STAGE="$ROOT/build/RedMed-Simulator.app"
 # Preferred device name; if it isn't installed, we fall back to any iPhone,
 # then any available iOS simulator. Override with REDMED_SIM_DEVICE.
 DEVICE_NAME="${REDMED_SIM_DEVICE:-iPhone 17}"
-BUNDLE_ID="local.redmed.app"
+BUNDLE_ID="com.redmed.app"
 
 if ! command -v xcodebuild >/dev/null 2>&1; then
   echo "ERROR: xcodebuild not found. Install Xcode from the Mac App Store." >&2

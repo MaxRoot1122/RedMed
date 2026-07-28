@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "33F9FQ4VBU.local.redmed.app",
+        "appID": "33F9FQ4VBU.com.redmed.app",
         "paths": [
           "/",
           "/index.html",
@@ -11,7 +11,7 @@
         ]
       },
       {
-        "appIDs": ["33F9FQ4VBU.local.redmed.app"],
+        "appIDs": ["33F9FQ4VBU.com.redmed.app"],
         "components": [
           {
             "/": "/index.html",

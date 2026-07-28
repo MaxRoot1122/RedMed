@@ -159,7 +159,7 @@ Operational steps — requires your Apple Developer account and a Mac with Xcode
 - [ ] [Apple Developer Program](https://developer.apple.com/programs) enrolled ($99/yr)
 - [ ] Physical iPhone (NFC does not work in Simulator)
 - [ ] NTAG215/216 test tags
-- [ ] Privacy policy live: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
+- [ ] Privacy policy live: `https://redmed.pages.dev/privacy-policy.html`
 
 ### Build on device
 
@@ -188,7 +188,7 @@ Operational steps — requires your Apple Developer account and a Mac with Xcode
 
 | Field | Guidance |
 |-------|----------|
-| Bundle ID | `local.redmed.app` |
+| Bundle ID | `com.redmed.app` |
 | Category | Medical (expect scrutiny) |
 | Privacy Policy URL | Hosted `privacy-policy.html` |
 | Screenshots | 6.7" and 6.1" iPhone minimum — see [`docs/GUIDE.md#store-listing-assets`](STORE_ASSETS.md) |
@@ -233,7 +233,7 @@ medical ID, emergency, NFC, bracelet, allergies, first aid, 911, ICE, wristband
 
 **Email only:** `help.RedMed@gmail.com`
 
-Privacy / support URL for store forms: `https://maxroot1122.github.io/RedMed/privacy-policy.html`
+Privacy / support URL for store forms: `https://redmed.pages.dev/privacy-policy.html`
 
 ### Review messaging
 

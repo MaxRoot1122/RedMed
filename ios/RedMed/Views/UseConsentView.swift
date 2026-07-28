@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// First-launch consent — mirrors the web app's one-time banner so App Review
-/// sees the same privacy posture as GitHub Pages.
+/// sees the same privacy posture as the hosted card page.
 struct UseConsentView: View {
     @Environment(\.layoutMetrics) private var layout
 

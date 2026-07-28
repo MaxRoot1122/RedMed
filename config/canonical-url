@@ -3,7 +3,7 @@
 # Keep AppConfig.medicalCardBaseURL in sync with the active line below.
 #
 # Active write target (first uncommented non-comment line):
-https://maxroot1122.github.io/RedMed/card/
+https://redmed.pages.dev/card/
 #
 # In-app decode still accepts redmed:// (old tags) and HTTPS #d= URLs.
 # card/ is the minimal, self-contained, offline-cacheable scan page.

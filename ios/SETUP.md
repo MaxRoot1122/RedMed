@@ -14,9 +14,9 @@
 
 | Setting | Value |
 |--------|--------|
-| Bundle ID | `local.redmed.app` |
+| Bundle ID | `com.redmed.app` |
 | URL scheme | `redmed://` — in-app deep links only; **new NFC writes** use HTTPS `card/#d=…` on the chip |
-| Deployment | iOS 27.0+ · iPhone only |
+| Deployment | iOS 16.0+ · iPhone only |
 | NFC | Read + write NDEF tags (NTAG213+) — profile rides in the URL `#d=` on the chip |
 
 ---

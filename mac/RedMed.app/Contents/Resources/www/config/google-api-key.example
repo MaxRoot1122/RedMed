@@ -3,8 +3,8 @@
 #
 # Before enabling GOOGLE_MAPS_API_KEY / pasting a real key here:
 #   1. Google Cloud → restrict key to Geocoding + Places only
-#   2. HTTP referrer: https://maxroot1122.github.io/RedMed/*
-#   3. Prefer a separate iOS key locked to bundle ID local.redmed.app
+#   2. HTTP referrer: https://redmed.pages.dev/*
+#   3. Prefer a separate iOS key locked to bundle ID com.redmed.app
 #   4. Set daily quotas + billing alerts
 # See SECURITY.md.
 # YOUR_GOOGLE_MAPS_API_KEY

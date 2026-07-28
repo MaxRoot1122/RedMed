@@ -8,18 +8,20 @@ operator backend, no accounts, and no cloud sync. Security work focuses on
 ## Reporting
 
 Open a private GitHub security advisory on
-[`MaxRoot1122/RedMed`](https://github.com/MaxRoot1122/RedMed) for vulnerabilities
+[`Roooted1776/RedMed`](https://github.com/Roooted1776/RedMed) for vulnerabilities
 in the hosted card page or XSS in `#d=` rendering. Do not file public issues
 with live API keys or real medical payloads.
 
-## Trust root (GitHub Pages)
+## Trust root (Cloudflare Pages)
 
-Every band tap opens the Pages deploy of `card/`. Treat `main` as production:
+Every band tap opens the Cloudflare Pages deploy of `card/`, pushed by GitHub
+Actions on every merge to `main`. Treat `main` as production:
 
 1. Enable **branch protection** on `main` (required PR reviews, no force-push).
 2. Restrict who can edit [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
-   and repository secrets.
-3. Actions are pinned to **commit SHAs** (not mutable tags) in the Pages workflow.
+   and repository secrets — `CLOUDFLARE_API_TOKEN` in particular grants Pages deploy
+   access.
+3. Actions are pinned to **commit SHAs** (not mutable tags) in the deploy workflow.
 
 ## Google Maps API key (optional, Find 911 only — iOS in-app)
 
@@ -29,15 +31,15 @@ When `GOOGLE_MAPS_API_KEY` is set, the Pages workflow writes it to a
 | Restriction | Value |
 |-------------|--------|
 | APIs | Geocoding + Places only |
-| Web referrer (live Pages host) | `https://maxroot1122.github.io/RedMed/*` |
-| iOS | Bundle ID `local.redmed.app` (**separate key** preferred) |
+| Web referrer (live Pages host) | `https://redmed.pages.dev/*` |
+| iOS | Bundle ID `com.redmed.app` (**separate key** preferred) |
 | Quotas | Hard daily caps + billing alerts |
 
 Never commit a real key. The bracelet card (`card/`) stays offline-only — no Google calls.
 
 ## Active NFC card host
 
-`https://maxroot1122.github.io/RedMed/card/` (see [`config/canonical-url`](config/canonical-url)).
+`https://redmed.pages.dev/card/` (see [`config/canonical-url`](config/canonical-url)).
 New writes use HTTPS `card/#d=…` so passersby open Safari/Chrome without RedMed.
 
 ## What we deliberately do not encrypt
