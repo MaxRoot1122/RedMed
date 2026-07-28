@@ -35,7 +35,6 @@ struct ContentView: View {
         appearance.compactInlineLayoutAppearance = item
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
-        UITabBar.appearance().isTranslucent = false
         if #available(iOS 26.0, *) {
             UITabBar.appearance().isHidden = false
         }

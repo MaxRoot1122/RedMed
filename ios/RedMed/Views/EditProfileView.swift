@@ -165,7 +165,7 @@ struct EditProfileView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(
-                            top: layout.spaceXS,
+                            top: layout.pageTopInset,
                             leading: layout.spaceXS,
                             bottom: layout.spaceSM,
                             trailing: layout.spaceXS

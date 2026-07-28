@@ -133,7 +133,7 @@ struct LocationView: View {
                 .foregroundStyle(AppTheme.muted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, layout.spaceXS)
+        .padding(.top, layout.pageTopInset)
     }
 
     private var coordinateCard: some View {

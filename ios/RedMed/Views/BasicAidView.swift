@@ -56,7 +56,7 @@ struct BasicAidView: View {
                                 .clipShape(Capsule())
                         }
                     }
-                    .padding(.top, layout.spaceXS)
+                    .padding(.top, layout.pageTopInset)
 
                     LazyVGrid(columns: columns, spacing: layout.spaceMD) {
                         ForEach(AidPaneLibrary.panes) { pane in

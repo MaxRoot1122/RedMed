@@ -45,6 +45,8 @@ struct LayoutMetrics: Equatable {
     func s(_ points: CGFloat) -> CGFloat { points * scale }
 
     var screenPad: CGFloat { s(20) }
+    /// Top inset for each tab's page header — pulls content up slightly under the nav bar.
+    var pageTopInset: CGFloat { s(2) }
     var spaceXS: CGFloat { s(4) }
     var spaceSM: CGFloat { s(8) }
     var spaceMD: CGFloat { s(12) }
