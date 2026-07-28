@@ -24,10 +24,7 @@ struct LocationView: View {
                         )
                     }
 
-                    Link(destination: URL(string: "tel:911")!) {
-                        Text("Call 911")
-                    }
-                    .buttonStyle(PrimaryButtonStyle(prominent: true))
+                    Call911Button()
 
                     ScanEmergencyCardControl(
                         title: "Scan emergency bracelet",
@@ -35,7 +32,7 @@ struct LocationView: View {
                     )
 
                     Text("Tap the band — their browser opens the emergency card. RedMed owners can scan here for the native view.")
-                        .font(.caption.weight(.medium))
+                        .font(layout.captionFont(weight: .medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
 
@@ -48,12 +45,12 @@ struct LocationView: View {
                     .disabled(callableContacts.isEmpty)
 
                     Text("Pick a saved contact to call — iPhone asks before placing the call.")
-                        .font(.caption.weight(.medium))
+                        .font(layout.captionFont(weight: .medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
 
                     Text("Tap when you have cell service. Satellite SOS is built into iOS — RedMed cannot start it.")
-                        .font(.caption.weight(.medium))
+                        .font(layout.captionFont(weight: .medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
 
@@ -61,7 +58,7 @@ struct LocationView: View {
 
                     if let error = locationManager.errorMessage {
                         Text(error)
-                            .font(.footnote.weight(.semibold))
+                            .font(layout.footnoteFont(weight: .semibold))
                             .foregroundStyle(AppTheme.accent)
                             .multilineTextAlignment(.center)
                     }
@@ -81,7 +78,7 @@ struct LocationView: View {
                         .buttonStyle(InkButtonStyle())
 
                         Text("Read decimal coordinates to the dispatcher first, then accuracy.")
-                            .font(.caption)
+                            .font(layout.captionFont())
                             .foregroundStyle(AppTheme.muted)
                             .multilineTextAlignment(.center)
                     }
@@ -91,11 +88,11 @@ struct LocationView: View {
                     satelliteDisclosure
 
                     Text("Coordinates show on this screen only. RedMed has no servers.")
-                        .font(.caption2.weight(.medium))
+                        .font(layout.caption2Font(weight: .medium))
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
                         .padding(.top, layout.spaceXS)
-                        .padding(.bottom, layout.s(28))
+                        .padding(.bottom, layout.screenBottomLarge)
                 }
                 .padding(.horizontal, layout.screenPad)
                 .reactiveScrollTrack()
@@ -111,7 +108,6 @@ struct LocationView: View {
             }
             .onAppear {
                 locationManager.requestLocation()
-                promptCall911()
             }
             .onDisappear { locationManager.stopUpdating() }
             .sheet(isPresented: $showCallContactPicker) {
@@ -129,7 +125,7 @@ struct LocationView: View {
                 .tracking(-0.4)
                 .foregroundStyle(AppTheme.ink)
             Text("Call first. Share GPS second.")
-                .font(.subheadline.weight(.medium))
+                .font(layout.subheadlineFont(weight: .medium))
                 .foregroundStyle(AppTheme.muted)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -142,20 +138,20 @@ struct LocationView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             if let c = locationManager.coordinate {
                 Text(String(format: "%.6f, %.6f", c.latitude, c.longitude))
-                    .font(.system(.title2, design: .monospaced).weight(.bold))
+                    .font(.system(size: layout.s(22), design: .monospaced).weight(.bold))
                     .foregroundStyle(AppTheme.ink)
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)
                 Text(LocationFormatting.dms(latitude: c.latitude, longitude: c.longitude))
-                    .font(.system(.subheadline, design: .monospaced).weight(.semibold))
+                    .font(.system(size: layout.s(14), design: .monospaced).weight(.semibold))
                     .foregroundStyle(AppTheme.ink.opacity(0.85))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)
                 if let acc = locationManager.accuracy, acc > 0 {
                     Text(accuracyLabel(for: acc))
-                        .font(.caption.weight(.semibold))
+                        .font(layout.captionFont(weight: .semibold))
                         .foregroundStyle(acc > 100 ? AppTheme.accent : AppTheme.muted)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -171,14 +167,14 @@ struct LocationView: View {
                         Label(String(format: "%.0f m", altitude), systemImage: "mountain.2.fill")
                     }
                 }
-                .font(.caption.weight(.semibold))
+                .font(layout.captionFont(weight: .semibold))
                 .foregroundStyle(AppTheme.muted)
                 .padding(.top, layout.s(2))
                 .frame(maxWidth: .infinity, alignment: .center)
 
                 if let timestamp = locationManager.locationTimestamp {
                     Text("As of \(timestamp.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.caption2)
+                        .font(layout.caption2Font())
                         .foregroundStyle(AppTheme.muted)
                         .padding(.top, layout.s(2))
                         .multilineTextAlignment(.center)
@@ -192,14 +188,14 @@ struct LocationView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {
                 Text("GPS unavailable")
-                    .font(.subheadline.weight(.semibold))
+                    .font(layout.subheadlineFont(weight: .semibold))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
-        .padding(.vertical, layout.s(22))
+        .padding(.vertical, layout.cardPadV)
         .padding(.horizontal, layout.spaceLG)
         .appCard()
     }
@@ -215,11 +211,11 @@ struct LocationView: View {
                     Image(systemName: "antenna.radiowaves.left.and.right")
                         .foregroundStyle(AppTheme.accent)
                     Text("No cell signal?")
-                        .font(.headline)
+                        .font(.system(size: layout.s(17), weight: .semibold))
                         .foregroundStyle(AppTheme.ink)
                     Spacer()
                     Image(systemName: showSatelliteHelp ? "chevron.up" : "chevron.down")
-                        .font(.caption.weight(.bold))
+                        .font(layout.captionFont(weight: .bold))
                         .foregroundStyle(AppTheme.muted)
                 }
             }
@@ -228,22 +224,18 @@ struct LocationView: View {
             if showSatelliteHelp {
                 VStack(alignment: .leading, spacing: layout.s(10)) {
                     Text("RedMed shows GPS only. Satellite emergency calling is built into your phone — RedMed cannot open or control it.")
-                        .font(.caption)
+                        .font(layout.captionFont())
                         .foregroundStyle(AppTheme.muted)
 
                     Text("iPhone 14+ (iOS 16.1+): hold Side + Volume until Emergency SOS appears, or Settings → Emergency SOS. Guide: https://support.apple.com/en-us/102669")
-                        .font(.caption)
+                        .font(layout.captionFont())
                         .foregroundStyle(AppTheme.muted)
 
                     Text("Tell the dispatcher street names or landmarks if you can, even with GPS.")
-                        .font(.caption.weight(.medium))
+                        .font(layout.captionFont(weight: .medium))
                         .foregroundStyle(AppTheme.ink.opacity(0.75))
 
-                    Link(destination: URL(string: "tel:911")!) {
-                        Text("Open Phone · dial 911")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
+                    Call911Button(title: "Open Phone · dial 911", secondary: true)
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
@@ -262,16 +254,6 @@ struct LocationView: View {
         store.profile.contacts.filter {
             !EmergencySummaryBuilder.normalizedPhone($0.phone).isEmpty
         }
-    }
-
-    /// Opening a tel: URL for 911 makes iOS itself show its native
-    /// "Call 911? / Cancel / Call" confirmation before dialing — that's the
-    /// automatic popup. We just need to trigger the open; no custom alert
-    /// needed (a second, app-level alert would just be a redundant step
-    /// between the user and the real call).
-    private func promptCall911() {
-        guard let url = URL(string: "tel:911") else { return }
-        UIApplication.shared.open(url)
     }
 
     private func accuracyLabel(for meters: CLLocationAccuracy) -> String {
@@ -297,11 +279,11 @@ private struct EmergencyContactCallSheet: View {
                         HStack(spacing: layout.spaceMD) {
                             VStack(alignment: .leading, spacing: layout.spaceXS) {
                                 Text(contact.name.isEmpty ? "Contact" : contact.name)
-                                    .font(.headline)
+                                    .font(.system(size: layout.s(17), weight: .semibold))
                                     .foregroundStyle(AppTheme.ink)
                                 if !contact.rel.isEmpty {
                                     Text(contact.rel)
-                                        .font(.subheadline)
+                                        .font(layout.subheadlineFont())
                                         .foregroundStyle(AppTheme.muted)
                                 }
                             }
