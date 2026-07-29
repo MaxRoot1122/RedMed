@@ -38,10 +38,8 @@ jobs:
             : > _site/config/google-api-key
           fi
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca # v1.5.0
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ vars.CF_PAGES_PROJECT || 'redmed' }}
-          directory: _site
-          branch: main
+          command: pages deploy _site --project-name=${{ vars.CF_PAGES_PROJECT || 'redmed' }} --branch=main
