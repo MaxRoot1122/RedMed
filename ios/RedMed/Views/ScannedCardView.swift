@@ -91,6 +91,7 @@ struct ScannedCardView: View {
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
+            .scrollIndicators(.visible, axes: .vertical)
             .background(AppTheme.pageBg)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

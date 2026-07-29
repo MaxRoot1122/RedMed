@@ -32,6 +32,7 @@ struct UseConsentView: View {
             .padding(layout.space2XL)
             .frame(maxWidth: .infinity)
         }
+        .scrollIndicators(.visible, axes: .vertical)
         .background(AppTheme.pageBg)
     }
 }

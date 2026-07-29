@@ -35,9 +35,9 @@ struct LayoutMetrics: Equatable {
     }
 
     /// Scale floor — keeps SE-class hero titles readable (~20 pt bold).
-    static let scaleMin: CGFloat = 0.78
+    static let scaleMin: CGFloat = 0.62
     /// Scale ceiling — Pro Max doesn't balloon past the design baseline.
-    static let scaleMax: CGFloat = 1.04
+    static let scaleMax: CGFloat = 0.83
 
     let size: CGSize
     let safeAreaInsets: EdgeInsets
@@ -115,7 +115,7 @@ struct LayoutMetrics: Equatable {
     }
 
     func title3Font(weight: Font.Weight = .bold) -> Font {
-        .system(size: s(20), weight: weight)
+        .system(size: s(19), weight: weight)
     }
 
     var screenPad: CGFloat { s(16) }

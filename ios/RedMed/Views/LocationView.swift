@@ -98,11 +98,12 @@ struct LocationView: View {
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
+            .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
-            .navigationTitle("911")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Find 911")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .principal) {
+                ToolbarItem(placement: .topBarLeading) {
                     BrandMark(size: .nav)
                 }
             }
@@ -119,17 +120,11 @@ struct LocationView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: layout.spaceSM) {
-            Text("Find 911")
-                .font(layout.heroTitleFont())
-                .tracking(-0.4)
-                .foregroundStyle(AppTheme.ink)
-            Text("Call first. Share GPS second.")
-                .font(layout.subheadlineFont(weight: .medium))
-                .foregroundStyle(AppTheme.muted)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, layout.pageTopInset)
+        Text("Call first. Share GPS second.")
+            .font(layout.subheadlineFont(weight: .medium))
+            .foregroundStyle(AppTheme.muted)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, layout.pageTopInset)
     }
 
     private var coordinateCard: some View {

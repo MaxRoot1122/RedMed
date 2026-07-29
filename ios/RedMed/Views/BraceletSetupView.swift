@@ -87,6 +87,7 @@ struct BraceletSetupView: View {
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
+            .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
             .navigationTitle("Bracelet")
             .navigationBarTitleDisplayMode(.inline)

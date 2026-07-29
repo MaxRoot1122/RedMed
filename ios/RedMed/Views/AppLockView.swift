@@ -50,6 +50,7 @@ struct AppLockView: View {
             .padding(.top, layout.space2XL)
             .frame(maxWidth: .infinity)
         }
+        .scrollIndicators(.visible, axes: .vertical)
         .background(AppTheme.pageBg)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             bottomBar

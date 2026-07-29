@@ -32,6 +32,7 @@ struct FirstAidDetailView: View {
             .reactiveScrollTrack()
         }
         .reactiveScrollChrome()
+        .scrollIndicators(.visible, axes: .vertical)
         .screenAtmosphere()
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
