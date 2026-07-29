@@ -1,4 +1,4 @@
-# Deploy to Cloudflare Pages — card/ (bracelet taps), legal, get.html (band setup QR).
+# Deploy to Cloudflare Pages — card/ (bracelet taps), legal, /get (band setup QR).
 # Moved off GitHub Pages intentionally: the old github.io URL tied the public
 # bracelet URL to the owner's personal GitHub username. Served from
 # https://redmed.pages.dev/ instead (or whatever CF_PAGES_PROJECT is set to —
@@ -23,8 +23,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Build static site
         run: |
-          mkdir -p _site/.well-known _site/config _site/card
+          mkdir -p _site/.well-known _site/config _site/card _site/get
           cp privacy-policy.html terms-of-service.html get.html _site/
+          cp get.html _site/get/index.html
+          printf '%s\n' '/get.html /get 301' > _site/_redirects
           cp -R assets _site/assets
           cp card/index.html card/sw.js _site/card/
           # Universal Links — must be at domain root with no file extension

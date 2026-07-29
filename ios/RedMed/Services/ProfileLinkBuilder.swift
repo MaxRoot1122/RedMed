@@ -26,6 +26,17 @@ enum ProfileLinkBuilder {
         return URL(string: baseURL + "#d=" + encoded)
     }
 
+    /// Owner QA — opens hosted card on any device (`?preview=1` bypasses phone gate).
+    static func previewURL(
+        profile: MedicalProfile,
+        baseURL: String = AppConfig.medicalCardBaseURL
+    ) -> URL? {
+        guard let url = buildURL(profile: profile, baseURL: baseURL),
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
+        components.queryItems = [URLQueryItem(name: "preview", value: "1")]
+        return components.url
+    }
+
     /// On-screen guidance about which passive NFC tag size is needed.
     /// Counts the full NDEF URI (base URL + `#d=` + payload) — tag capacity is
     /// consumed by the whole string written to the chip, not just the profile.

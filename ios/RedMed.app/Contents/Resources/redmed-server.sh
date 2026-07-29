@@ -4,10 +4,12 @@
 
 REDMED_PORT="${REDMED_PORT:-8934}"
 REDMED_HOST="${REDMED_HOST:-127.0.0.1}"
+# Local static site mirror — band setup at /get, card/, legal. Override with REDMED_WWW.
+REDMED_WWW="${REDMED_WWW:-$HOME}"
 REDMED_LOG_DIR="${HOME}/Library/Logs/RedMed"
 REDMED_LOG_FILE="${REDMED_LOG_DIR}/server.log"
 REDMED_PID_FILE="${REDMED_LOG_DIR}/server.pid"
-REDMED_URL="http://${REDMED_HOST}:${REDMED_PORT}/get.html"
+REDMED_URL="http://${REDMED_HOST}:${REDMED_PORT}/get/"
 
 _redmed_init_log() {
   if mkdir -p "$REDMED_LOG_DIR" 2>/dev/null; then
@@ -53,7 +55,7 @@ _redmed_port_blocked() {
   lsof -nP -iTCP:"${REDMED_PORT}" -sTCP:LISTEN >/dev/null 2>&1
 }
 
-# Start (or confirm) python http.server serving WWW; exit 0 only when get.html responds.
+# Start (or confirm) python http.server serving WWW; exit 0 only when /get responds.
 redmed_ensure_server() {
   local www="$1"
 
@@ -61,8 +63,8 @@ redmed_ensure_server() {
     _redmed_alert "Web folder not found: ${www}"
     return 1
   fi
-  if [ ! -f "${www}/get.html" ]; then
-    _redmed_alert "get.html missing in ${www}"
+  if [ ! -f "${www}/get/index.html" ] && [ ! -f "${www}/get.html" ]; then
+    _redmed_alert "get/index.html missing in ${www}"
     return 1
   fi
 
@@ -72,8 +74,26 @@ redmed_ensure_server() {
   fi
 
   if _redmed_port_blocked; then
-    _redmed_alert "Port ${REDMED_PORT} is in use by another app. Quit it or change REDMED_PORT."
-    return 1
+    if [ -f "$REDMED_PID_FILE" ]; then
+      old_pid="$(cat "$REDMED_PID_FILE" 2>/dev/null)"
+      if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+        _redmed_log "Stopping stale RedMed server pid ${old_pid}"
+        kill "$old_pid" 2>/dev/null || true
+        sleep 0.3
+      fi
+    fi
+    if _redmed_port_blocked; then
+      listener_pid="$(lsof -nP -iTCP:"${REDMED_PORT}" -sTCP:LISTEN -t 2>/dev/null | head -1)"
+      if [ -n "$listener_pid" ] && ps -p "$listener_pid" -o comm= 2>/dev/null | grep -qi python; then
+        _redmed_log "Reclaiming port ${REDMED_PORT} from python pid ${listener_pid}"
+        kill "$listener_pid" 2>/dev/null || true
+        sleep 0.3
+      fi
+    fi
+    if _redmed_port_blocked; then
+      _redmed_alert "Port ${REDMED_PORT} is in use by another app. Quit it or change REDMED_PORT."
+      return 1
+    fi
   fi
 
   local py
@@ -155,3 +175,35 @@ redmed_launch() {
   redmed_ensure_server "$www" || return 1
   redmed_open_browser "$REDMED_URL"
 }
+
+# Prefer REDMED_WWW, then ~/ mirror, then synced iOS app bundle.
+redmed_resolve_www() {
+  if [ -n "${REDMED_WWW:-}" ] && [ -d "$REDMED_WWW" ]; then
+    echo "$REDMED_WWW"
+    return 0
+  fi
+  if [ -f "${HOME}/get/index.html" ] || [ -f "${HOME}/get.html" ]; then
+    echo "$HOME"
+    return 0
+  fi
+  local bundle
+  bundle="$(cd "$(dirname "${BASH_SOURCE[0]}")/../ios/RedMed.app/Contents/Resources" 2>/dev/null && pwd -P)" || true
+  if [ -n "$bundle" ] && { [ -f "${bundle}/get/index.html" ] || [ -f "${bundle}/get.html" ]; }; then
+    echo "$bundle"
+    return 0
+  fi
+  echo "$HOME"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  www="$(redmed_resolve_www)"
+  case "${1:-launch}" in
+    launch) redmed_launch "$www" ;;
+    serve) redmed_ensure_server "$www" ;;
+    *)
+      echo "Usage: $0 [launch|serve]" >&2
+      echo "  WWW: ${www} (override: REDMED_WWW=…)" >&2
+      exit 1
+      ;;
+  esac
+fi

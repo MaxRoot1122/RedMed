@@ -14,74 +14,10 @@ struct LocationView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: layout.spaceLG) {
-                    header
+                VStack(spacing: layout.spaceMD) {
+                    emergencyBlock
 
-                    if networkMonitor.isOffline {
-                        SoftStatusChip(
-                            text: "You're offline. GPS below still works. For satellite emergency, use iPhone Emergency SOS via satellite.",
-                            warning: true
-                        )
-                    }
-
-                    Call911Button()
-
-                    ScanEmergencyCardControl(
-                        title: "Scan emergency bracelet",
-                        prominent: false
-                    )
-
-                    Text("Tap the band — their browser opens the emergency card. RedMed owners can scan here for the native view.")
-                        .font(layout.captionFont(weight: .medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .multilineTextAlignment(.center)
-
-                    Button {
-                        showCallContactPicker = true
-                    } label: {
-                        Text("Call emergency contacts")
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .disabled(callableContacts.isEmpty)
-
-                    Text("Pick a saved contact to call — iPhone asks before placing the call.")
-                        .font(layout.captionFont(weight: .medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .multilineTextAlignment(.center)
-
-                    Text("Tap when you have cell service. Satellite SOS is built into iOS — RedMed cannot start it.")
-                        .font(layout.captionFont(weight: .medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .multilineTextAlignment(.center)
-
-                    coordinateCard
-
-                    if let error = locationManager.errorMessage {
-                        Text(error)
-                            .font(layout.footnoteFont(weight: .semibold))
-                            .foregroundStyle(AppTheme.accent)
-                            .multilineTextAlignment(.center)
-                    }
-
-                    if locationManager.coordinate != nil {
-                        Button {
-                            guard let c = locationManager.coordinate else { return }
-                            UIPasteboard.general.string = LocationFormatting.coordsCopyText(
-                                latitude: c.latitude,
-                                longitude: c.longitude
-                            )
-                            copiedCoords = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copiedCoords = false }
-                        } label: {
-                            Text(copiedCoords ? "Copied!" : "Copy coordinates")
-                        }
-                        .buttonStyle(InkButtonStyle())
-
-                        Text("Read decimal coordinates to the dispatcher first, then accuracy.")
-                            .font(layout.captionFont())
-                            .foregroundStyle(AppTheme.muted)
-                            .multilineTextAlignment(.center)
-                    }
+                    locationBlock
 
                     TraumaHospitalsSection(gpsCoordinate: locationManager.coordinate)
 
@@ -92,16 +28,17 @@ struct LocationView: View {
                         .foregroundStyle(AppTheme.muted)
                         .multilineTextAlignment(.center)
                         .padding(.top, layout.spaceXS)
-                        .padding(.bottom, layout.screenBottomLarge)
+                        .padding(.bottom, layout.screenBottom)
                 }
                 .padding(.horizontal, layout.screenPad)
+                .padding(.top, layout.spaceXS)
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
             .navigationTitle("Find 911")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     BrandMark(size: .nav)
@@ -119,12 +56,74 @@ struct LocationView: View {
         }
     }
 
-    private var header: some View {
-        Text("Call first. Share GPS second.")
-            .font(layout.subheadlineFont(weight: .medium))
-            .foregroundStyle(AppTheme.muted)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, layout.pageTopInset)
+    private var emergencyBlock: some View {
+        VStack(spacing: layout.spaceSM) {
+            HStack {
+                SectionEyebrow(text: "Emergency", tint: AppTheme.accent)
+                Spacer(minLength: 0)
+            }
+
+            Text("Call first. Share GPS second.")
+                .font(layout.footnoteFont(weight: .medium))
+                .foregroundStyle(AppTheme.muted)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Emergency911ScanPair()
+
+            if networkMonitor.isOffline {
+                SoftStatusChip(
+                    text: "You're offline. GPS below still works. For satellite emergency, use iPhone Emergency SOS via satellite.",
+                    warning: true
+                )
+            }
+
+            Text("Tap the band — their browser opens the emergency card. RedMed owners can scan here for the native view.")
+                .font(layout.caption2Font(weight: .medium))
+                .foregroundStyle(AppTheme.muted)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    private var locationBlock: some View {
+        VStack(spacing: layout.spaceSM) {
+            Button {
+                showCallContactPicker = true
+            } label: {
+                Text("Call emergency contacts")
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .disabled(callableContacts.isEmpty)
+
+            coordinateCard
+
+            if let error = locationManager.errorMessage {
+                Text(error)
+                    .font(layout.footnoteFont(weight: .semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .multilineTextAlignment(.center)
+            }
+
+            if locationManager.coordinate != nil {
+                Button {
+                    guard let c = locationManager.coordinate else { return }
+                    UIPasteboard.general.string = LocationFormatting.coordsCopyText(
+                        latitude: c.latitude,
+                        longitude: c.longitude
+                    )
+                    copiedCoords = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copiedCoords = false }
+                } label: {
+                    Text(copiedCoords ? "Copied!" : "Copy coordinates")
+                }
+                .buttonStyle(InkButtonStyle())
+
+                Text("Read decimal coordinates to the dispatcher first, then accuracy.")
+                    .font(layout.caption2Font())
+                    .foregroundStyle(AppTheme.muted)
+                    .multilineTextAlignment(.center)
+            }
+        }
     }
 
     private var coordinateCard: some View {
@@ -190,8 +189,8 @@ struct LocationView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
-        .padding(.vertical, layout.cardPadV)
-        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.spaceLG)
+        .padding(.horizontal, layout.spaceMD)
         .appCard()
     }
 
@@ -206,7 +205,7 @@ struct LocationView: View {
                     Image(systemName: "antenna.radiowaves.left.and.right")
                         .foregroundStyle(AppTheme.accent)
                     Text("No cell signal?")
-                        .font(.system(size: layout.s(17), weight: .semibold))
+                        .font(layout.bodyFont(weight: .semibold))
                         .foregroundStyle(AppTheme.ink)
                     Spacer()
                     Image(systemName: showSatelliteHelp ? "chevron.up" : "chevron.down")
@@ -217,12 +216,12 @@ struct LocationView: View {
             .buttonStyle(.plain)
 
             if showSatelliteHelp {
-                VStack(alignment: .leading, spacing: layout.s(10)) {
+                VStack(alignment: .leading, spacing: layout.spaceSM) {
                     Text("RedMed shows GPS only. Satellite emergency calling is built into your phone — RedMed cannot open or control it.")
                         .font(layout.captionFont())
                         .foregroundStyle(AppTheme.muted)
 
-                    Text("iPhone 14+ (iOS 16.1+): hold Side + Volume until Emergency SOS appears, or Settings → Emergency SOS. Guide: https://support.apple.com/en-us/102669")
+                    Text("iPhone 14+ (iOS 16.1+): hold Side + Volume until Emergency SOS appears, or Settings → Emergency SOS.")
                         .font(layout.captionFont())
                         .foregroundStyle(AppTheme.muted)
 
@@ -232,10 +231,11 @@ struct LocationView: View {
 
                     Call911Button(title: "Open Phone · dial 911", secondary: true)
                 }
+                .padding(.top, layout.spaceXS)
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding(layout.spaceLG)
+        .padding(layout.spaceMD)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(networkMonitor.isOffline ? AppTheme.accentSoft : AppTheme.cardBg)
         .clipShape(RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous))

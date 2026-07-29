@@ -85,6 +85,12 @@ echo "==> Using simulator: $DEVICE_NAME ($DEVICE_ID)"
 need_build=1
 if [ -d "$APP" ] && [ "${REDMED_IOS_FORCE_BUILD:-0}" != "1" ]; then
   need_build=0
+  # Rebuild when Swift sources or project files are newer than the staged app.
+  if find "$ROOT/ios/RedMed" -name '*.swift' -newer "$APP" -print -quit | grep -q .; then
+    need_build=1
+  elif [ "$PROJECT/project.pbxproj" -newer "$APP" ]; then
+    need_build=1
+  fi
 fi
 
 if [ "$need_build" -eq 1 ]; then
@@ -126,6 +132,17 @@ echo "==> Simulator app ready for drag-drop: $SIM_STAGE"
 if [ "${REDMED_STAGE_ONLY:-0}" = "1" ]; then
   echo "Staged only (REDMED_STAGE_ONLY=1). Drag $SIM_STAGE onto Simulator to install."
   exit 0
+fi
+
+# Local web preview — ~/get/, ~/card/, legal (GPS needs http:// not file://).
+REDMED_WWW="${REDMED_WWW:-$HOME}"
+# shellcheck source=scripts/redmed-server.sh
+source "$ROOT/scripts/redmed-server.sh"
+www="$(redmed_resolve_www)"
+if redmed_ensure_server "$www"; then
+  echo "==> Web preview: http://${REDMED_HOST}:${REDMED_PORT}/get/ (${www})"
+else
+  echo "==> Web preview server skipped (see ~/Library/Logs/RedMed/server.log)" >&2
 fi
 
 echo "==> Launching on $DEVICE_NAME (native iOS app)"

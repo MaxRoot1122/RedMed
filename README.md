@@ -19,9 +19,13 @@ The **iPhone app** programs the band once (CoreNFC). No accounts. No backend. Da
 | What | Role |
 |------|------|
 | **The band** | Passive NTAG chip — tap opens emergency card in any phone's browser |
-| [`card/`](card/) | Hosted emergency card (`#d=`) — Call 911, allergies, meds, contacts |
 | [`ios/`](ios/) | **Setup app** — fill profile, write chip once, optional in-app scan |
-| [`get.html`](get.html) | Box QR → App Store (program your band on iPhone) |
+| [`get.html`](get.html) | Band setup (legacy) — 301s to `/get` |
+| [`get/index.html`](get/index.html) | Band setup at `/get` |
+| [`card/`](card/) | Emergency card |
+| [`assets/`](assets/) | Theme, wordmark, icons |
+| [`privacy-policy.html`](privacy-policy.html) | Privacy |
+| [`terms-of-service.html`](terms-of-service.html) | Terms |
 | [`ios/RedMed.app`](ios/RedMed.app) | Dev only — Simulator launcher |
 
 ## Owner setup (once)

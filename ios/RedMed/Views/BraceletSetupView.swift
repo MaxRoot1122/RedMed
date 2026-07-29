@@ -4,6 +4,7 @@ import SwiftUI
 struct BraceletSetupView: View {
     @Environment(\.layoutMetrics) private var layout
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @StateObject private var writer = NFCWriter()
@@ -11,19 +12,23 @@ struct BraceletSetupView: View {
 
     @State private var deviceName = ""
 
+    private var profileReady: Bool {
+        !store.profile.name.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: layout.spaceXL) {
-                    VStack(alignment: .leading, spacing: layout.spaceSM) {
-                        Text("Your bracelet")
-                            .font(.title2.weight(.bold))
-                            .foregroundStyle(AppTheme.ink)
-                        Text("Tap the band — any phone opens your emergency card. You program the chip once here; strangers never need RedMed.")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(AppTheme.muted)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                    NFCHeroHeader(
+                        title: "Program your band",
+                        subtitle: "Tap the band — any phone opens your emergency card. You program the chip once here; strangers never need RedMed."
+                    )
+
+                    SoftStatusChip(
+                        text: "Tap the band · phone opens your card · no app for readers",
+                        warning: false
+                    )
 
                     setupStep(number: 1, title: "Fill My ID", detail: "Name, allergies, meds, and contacts on the previous screen. Tap Save.")
                     setupStep(number: 2, title: "Program your band", detail: "Hold the band to your iPhone once. The chip stores your card — tap opens it in any phone's browser.")
@@ -33,11 +38,16 @@ struct BraceletSetupView: View {
                         SoftStatusChip(text: "Bracelet linked on this phone", warning: false)
                     }
 
-                    TextField("Device name", text: $deviceName)
-                        .textFieldStyle(.roundedBorder)
-                        .onChange(of: deviceName) { newValue in
-                            if link.isLinked { link.updateName(newValue) }
-                        }
+                    VStack(alignment: .leading, spacing: layout.spaceSM) {
+                        Text("Device name")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(AppTheme.muted)
+                        TextField("My bracelet", text: $deviceName)
+                            .textFieldStyle(.roundedBorder)
+                            .onChange(of: deviceName) { newValue in
+                                if link.isLinked { link.updateName(newValue) }
+                            }
+                    }
 
                     if !writer.statusMessage.isEmpty {
                         Text(writer.statusMessage)
@@ -52,6 +62,33 @@ struct BraceletSetupView: View {
                     }
 
                     Button {
+                        guard let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+                        writer.writeURL(url.absoluteString)
+                    } label: {
+                        Label(writer.isWriting ? "Hold iPhone near band…" : "Write profile to bracelet", systemImage: "wave.3.right")
+                    }
+                    .buttonStyle(PrimaryButtonStyle(enabled: profileReady && !writer.isWriting))
+                    .disabled(!profileReady || writer.isWriting)
+
+                    if !profileReady {
+                        Text("Add your name on My ID and Save first.")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(AppTheme.accent)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+
+                    if profileReady {
+                        Button {
+                            openHostedPreview()
+                        } label: {
+                            Label("Preview hosted card in Safari", systemImage: "safari")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    }
+
+                    verifySection
+
+                    Button {
                         reader.readTag { _, urlString in
                             link.link(name: deviceName, url: urlString)
                         }
@@ -60,22 +97,6 @@ struct BraceletSetupView: View {
                     }
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(reader.isReading)
-
-                    Button {
-                        guard let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
-                        writer.writeURL(url.absoluteString)
-                    } label: {
-                        Label(writer.isWriting ? "Hold iPhone near band…" : "Write profile to bracelet", systemImage: "wave.3.right")
-                    }
-                    .buttonStyle(PrimaryButtonStyle(enabled: !store.profile.name.isEmpty && !writer.isWriting))
-                    .disabled(store.profile.name.isEmpty || writer.isWriting)
-
-                    if store.profile.name.isEmpty {
-                        Text("Add your name on My ID and Save first.")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(AppTheme.accent)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
 
                     let note = ProfileLinkBuilder.capacityNote(for: store.profile)
                     SoftStatusChip(text: note.text, warning: note.warn)
@@ -92,6 +113,9 @@ struct BraceletSetupView: View {
             .navigationTitle("Bracelet")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    BrandMark(size: .nav)
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                         .bold()
@@ -116,6 +140,15 @@ struct BraceletSetupView: View {
                 link.link(name: deviceName, url: url.absoluteString)
             }
         }
+    }
+
+    private var verifySection: some View {
+        BraceletVerifySection()
+    }
+
+    private func openHostedPreview() {
+        guard let url = ProfileLinkBuilder.previewURL(profile: store.profile) else { return }
+        openURL(url)
     }
 
     private func setupStep(number: Int, title: String, detail: String) -> some View {

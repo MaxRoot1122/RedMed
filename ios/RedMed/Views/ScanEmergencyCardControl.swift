@@ -52,8 +52,48 @@ struct ScanEmergencyCardControl: View {
     }
 }
 
+/// Find 911 tab — Call 911 (red) and Scan bracelet (black), same top edge and height.
+struct Emergency911ScanPair: View {
+    @Environment(\.layoutMetrics) private var layout
+    @StateObject private var reader = NFCReader()
+
+    var body: some View {
+        VStack(spacing: layout.spaceSM) {
+            HStack(alignment: .center, spacing: layout.spaceSM) {
+                Call911Button(pairLayout: true)
+                Button(action: startScan) {
+                    Text(reader.isReading ? "Hold near…" : "Scan bracelet")
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .buttonStyle(InkButtonStyle(fixedHeight: layout.emergencyPairButtonHeight))
+                .disabled(reader.isReading)
+            }
+            .frame(height: layout.emergencyPairButtonHeight)
+
+            if !reader.statusMessage.isEmpty {
+                Text(reader.statusMessage)
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(AppTheme.muted)
+                    .multilineTextAlignment(.center)
+            }
+        }
+    }
+
+    private func startScan() {
+        reader.readTag(
+            alertMessage: "Hold your iPhone near the person's RedMed bracelet to open their emergency card."
+        ) { profile, _ in
+            NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+        }
+    }
+}
+
 #Preview {
     VStack(spacing: 16) {
+        Emergency911ScanPair()
         ScanEmergencyCardControl(prominent: true)
         ScanEmergencyCardControl()
     }
