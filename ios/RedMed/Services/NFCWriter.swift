@@ -67,7 +67,7 @@ extension NFCWriter: NFCNDEFReaderSessionDelegate {
                         return
                     }
                     let message = NFCNDEFMessage(records: [payload])
-                    tag.writeNDEF(message) { [weak self] error in
+                    tag.writeNDEF(message) { [weak self = self] error in
                         if let error {
                             let capHint = capacity > 0 ? " Tag capacity: \(capacity) bytes." : ""
                             session.invalidate(errorMessage: "Write failed: \(error.localizedDescription). Your info may be too large — try an NTAG216.\(capHint)")

@@ -280,7 +280,7 @@ Threshold constant: **30** (`TRAUMA_COUNTY_THRESHOLD` web, `TraumaHospitalFinder
 | iOS UI (card + 911) | [`ios/RedMed/Views/TraumaHospitalsSection.swift`](../ios/RedMed/Views/TraumaHospitalsSection.swift) | [`ScannedCardView`](../ios/RedMed/Views/ScannedCardView.swift) + [`LocationView`](../ios/RedMed/Views/LocationView.swift) |
 | iOS bundle data | [`ios/RedMed/trauma-hospitals.json`](../ios/RedMed/trauma-hospitals.json) | Must match `assets/trauma-hospitals.json` |
 | Xcode project | [`ios/RedMed.xcodeproj/project.pbxproj`](../ios/RedMed.xcodeproj/project.pbxproj) | Target membership |
-| macOS mirror | [`mac/RedMed.app/Contents/Resources/www/assets/`](../mac/RedMed.app/Contents/Resources/www/) | Copy trauma JSON after data edits |
+| iOS mirror | [`ios/RedMed.app/Contents/Resources/assets/`](../ios/RedMed.app/Contents/Resources/) | Copy trauma JSON after data edits |
 | iOS setup blurb | [`ios/SETUP.md`](../ios/SETUP.md) | Feature summary for Mac/Xcode agents |
 
 ### JSON record schema
@@ -309,7 +309,7 @@ When adding rows: include **`co`** (county). One-time Census geocoder was used t
 
 ```bash
 ./scripts/sync.sh trauma    # assets/ → ios/ + mac mirror
-./scripts/sync.sh www       # get.html, card/, legal → mac/RedMed.app
+./scripts/sync.sh www       # get.html, card/, legal → ios/RedMed.app
 ./scripts/dev.sh verify     # CSP + mirrors after get.html / card/ edits
 ```
 

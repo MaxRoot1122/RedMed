@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build (if needed) and run the native RedMed iOS app in Simulator.
-# mac/RedMed.app calls this — builds the native iPhone app for Simulator.
+# ios/RedMed.app calls this — builds the native iPhone app for Simulator.
 #
 # IMPORTANT: DerivedData is built OUTSIDE iCloud Drive on purpose.
 # If the .app is built/installed from inside iCloud, iCloud evicts the files
@@ -8,7 +8,7 @@
 # "Failed to re-fetch bundle during preflight". Keep builds local.
 #
 # Drag-drop: after build, a signed copy lands at build/RedMed-Simulator.app
-# (repo root). Drag THAT onto the Simulator window — not mac/RedMed.app (Mac launcher).
+# (repo root). Drag THAT onto the Simulator window — not ios/RedMed.app (launcher shell).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -104,7 +104,7 @@ else
 fi
 
 # Materialize a signed Simulator .app for drag-drop and simctl install.
-# mac/RedMed.app is the macOS launcher — Simulator rejects it.
+# ios/RedMed.app is a launcher shell — Simulator rejects it; use build/RedMed-Simulator.app.
 stage_simulator_app() {
   local src="$1"
   local dst="$2"

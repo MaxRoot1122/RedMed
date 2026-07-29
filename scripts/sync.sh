@@ -7,17 +7,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd -P)"
 CMD="${1:-all}"
 
 stamp_repo_root() {
-  for PLIST in \
-    "${ROOT}/mac/RedMed.app/Contents/Info.plist" \
-    "${ROOT}/ios/RedMed.app/Contents/Info.plist"
-  do
-    if [ ! -f "$PLIST" ]; then
-      echo "Info.plist not found: ${PLIST}" >&2
-      exit 1
-    fi
-    /usr/libexec/PlistBuddy -c "Set :RedMedRepoRoot ${ROOT}" "$PLIST"
-    echo "RedMedRepoRoot → ${ROOT} (${PLIST#"$ROOT/"})"
-  done
+  local PLIST="${ROOT}/ios/RedMed.app/Contents/Info.plist"
+  if [ ! -f "$PLIST" ]; then
+    echo "Info.plist not found: ${PLIST}" >&2
+    exit 1
+  fi
+  /usr/libexec/PlistBuddy -c "Set :RedMedRepoRoot ${ROOT}" "$PLIST"
+  echo "RedMedRepoRoot → ${ROOT} (${PLIST#"$ROOT/"})"
 }
 
 sync_canonical() {
@@ -67,7 +63,7 @@ sync_trauma() {
   local json="$ROOT/assets/trauma-hospitals.json"
   local js="$ROOT/assets/trauma-hospitals.js"
   local ios="$ROOT/ios/RedMed/trauma-hospitals.json"
-  local www="$ROOT/mac/RedMed.app/Contents/Resources/www/assets"
+  local www="$ROOT/ios/RedMed.app/Contents/Resources/assets"
   if [ ! -f "$json" ]; then
     echo "missing $json" >&2
     exit 1
@@ -107,28 +103,16 @@ case "$CMD" in
   all)
     sync_canonical
     sync_trauma
-    for www in \
-      "$ROOT/mac/RedMed.app/Contents/Resources/www" \
-      "$ROOT/ios/RedMed.app/Contents/Resources/www"
-    do
-      sync_www "$www"
-      echo "www mirror synced: ${www#"$ROOT/"}"
-    done
-    cp "$ROOT/scripts/redmed-server.sh" "$ROOT/mac/RedMed.app/Contents/Resources/redmed-server.sh"
+    sync_www "$ROOT/ios/RedMed.app/Contents/Resources"
+    echo "www mirror synced: ios/RedMed.app/Contents/Resources"
     cp "$ROOT/scripts/redmed-server.sh" "$ROOT/ios/RedMed.app/Contents/Resources/redmed-server.sh"
     stamp_repo_root
     ;;
   canonical) sync_canonical ;;
   trauma) sync_trauma ;;
   www)
-    for www in \
-      "$ROOT/mac/RedMed.app/Contents/Resources/www" \
-      "$ROOT/ios/RedMed.app/Contents/Resources/www"
-    do
-      sync_www "$www"
-      echo "www mirror synced: ${www#"$ROOT/"}"
-    done
-    cp "$ROOT/scripts/redmed-server.sh" "$ROOT/mac/RedMed.app/Contents/Resources/redmed-server.sh"
+    sync_www "$ROOT/ios/RedMed.app/Contents/Resources"
+    echo "www mirror synced: ios/RedMed.app/Contents/Resources"
     cp "$ROOT/scripts/redmed-server.sh" "$ROOT/ios/RedMed.app/Contents/Resources/redmed-server.sh"
     ;;
   stamp) stamp_repo_root ;;

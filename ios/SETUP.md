@@ -2,7 +2,7 @@
 
 **The product is the band.** RedMed on iPhone programs your passive NFC bracelet once. After that: **tap the band → any phone opens your emergency card.** No app for readers.
 
-`mac/RedMed.app` is **dev-only** Simulator launcher — not a product surface.
+`ios/RedMed.app` is the **dev-only** Simulator launcher — not a product surface.
 
 **Double-click to open:** `ios/RedMed.xcodeproj` · **Simulator:** `ios/RedMed.app` or `ios/RedMed.command`
 

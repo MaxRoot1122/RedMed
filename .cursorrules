@@ -8,8 +8,9 @@ one-time setup tool (CoreNFC write) — band-first, app-second in all copy.
 Local-first. No backend, no accounts, nothing sent to a server by design —
 keep it that way unless explicitly told to change it.
 
-**Product surface:** native **iOS** (`ios/RedMed/` SwiftUI) only. No Android,
-no owner web UI, no desktop owner path. `mac/` is dev Simulator helper only.
+**Product surface:** native **iOS** (`ios/RedMed/` SwiftUI) only. No Android owner
+app, no owner web UI. Android **readers** use the hosted `card/` in Chrome like
+any other phone. `ios/RedMed.app` is the Simulator launcher only.
 
 **Passive NFC only:** NTAG-style ISO 14443 tags — no BLE, no active RFID, no
 battery-powered bands. Do not add radio features beyond phone-tap NDEF URI records.
@@ -26,9 +27,9 @@ and `get.html` (owner band setup QR).
 ## Where things live
 
 - `ios/RedMed/` — **setup app** (SwiftUI). CoreNFC write/read, native scanned card.
+- `ios/RedMed.app` — **dev only** — double-click Simulator launcher.
 - `card/` — **the band's output** — hosted emergency card (`#d=`) on smartphone tap.
 - `get.html` — packaging QR → App Store (program band once on iPhone).
-- `mac/RedMed.app/` — **dev only** — Simulator launcher, not a product surface.
 
 ## Things that will silently break if you miss them
 

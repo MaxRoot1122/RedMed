@@ -8,7 +8,12 @@
   "settings": {
     "files.exclude": {
       "**/.git": true,
-      "mac/RedMed.app/Contents/Resources/www": true
+      "ios/RedMed.app/Contents/Resources/card": true,
+      "ios/RedMed.app/Contents/Resources/assets": true,
+      "ios/RedMed.app/Contents/Resources/config": true,
+      "ios/RedMed.app/Contents/Resources/get.html": true,
+      "ios/RedMed.app/Contents/Resources/privacy-policy.html": true,
+      "ios/RedMed.app/Contents/Resources/terms-of-service.html": true
     }
   }
 }
