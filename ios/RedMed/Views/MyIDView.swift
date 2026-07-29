@@ -10,6 +10,7 @@ struct MyIDView: View {
 
     @State private var showingEditSheet = false
     @State private var showingBraceletSetup = false
+    @State private var showingHowItWorks = false
     @AppStorage("redMedUseConsent") private var useConsentAccepted = false
     @State private var showingConsent = false
 
@@ -31,6 +32,15 @@ struct MyIDView: View {
                             BraceletToolbarButton(link: link)
                         }
                         .accessibilityLabel("Bracelet setup")
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            showingHowItWorks = true
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                        }
+                        .foregroundStyle(AppTheme.muted)
+                        .accessibilityLabel("How it works")
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -56,6 +66,10 @@ struct MyIDView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             EditProfileView(embedded: false)
+        }
+        .sheet(isPresented: $showingHowItWorks) {
+            HowItWorksView()
+                .withLayoutMetrics()
         }
         .fullScreenCover(isPresented: $showingConsent) {
             UseConsentView {

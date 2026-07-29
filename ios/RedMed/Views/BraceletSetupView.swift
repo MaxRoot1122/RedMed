@@ -21,8 +21,8 @@ struct BraceletSetupView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: layout.spaceXL) {
                     NFCHeroHeader(
-                        title: "Program your band",
-                        subtitle: "Tap the band — any phone opens your emergency card. You program the chip once here; strangers never need RedMed."
+                        title: DesignPagePlacement.braceletHeroTitle,
+                        subtitle: DesignPagePlacement.braceletHeroSubtitle
                     )
 
                     SoftStatusChip(
@@ -157,7 +157,7 @@ struct BraceletSetupView: View {
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.white)
                 .frame(width: layout.stepBadge, height: layout.stepBadge)
-                .background(LinearGradient(colors: [Color(red: 1, green: 0.45, blue: 0.55), AppTheme.accent], startPoint: .top, endPoint: .bottom))
+                .background(LinearGradient(colors: [AppTheme.accentLight, AppTheme.accent], startPoint: .top, endPoint: .bottom))
                 .clipShape(Circle())
             VStack(alignment: .leading, spacing: layout.spaceXS) {
                 Text(title)

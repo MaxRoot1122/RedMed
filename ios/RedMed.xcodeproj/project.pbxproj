@@ -22,6 +22,9 @@
 		8AD0B357C3104768976AC5A0 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5BD85593584556B6843D30 /* AppLockView.swift */; };
 		8EB0A1C9A2BD4108958B0A42 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E87395BBDB14918B5FE6F64 /* ProfileStore.swift */; };
 		98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1381A61F1B3645C98CB67182 /* MyIDView.swift */; };
+		4B1D2E3F4A5B6C7D8E9F0A11 /* HowItWorksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D2E3F4A5B6C7D8E9F0A10 /* HowItWorksView.swift */; };
+		C1AUDE000014A1D00000002 /* DesignPageCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AUDE000014A1D00000001 /* DesignPageCopy.swift */; };
+		C1AUDE000014A1D00000004 /* DesignPagePlacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AUDE000014A1D00000003 /* DesignPagePlacement.swift */; };
 		9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F510000014A1D00000001 /* ProfileSummaryView.swift */; };
 		A0961581702543AF8E58C4B2 /* RedMedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B9562BA924200A2DDB3EB /* RedMedApp.swift */; };
 		A1DFA1D300014A1D00000002 /* AidPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1DFA1D300014A1D00000001 /* AidPane.swift */; };
@@ -50,6 +53,9 @@
 /* Begin PBXFileReference section */
 		02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		1381A61F1B3645C98CB67182 /* MyIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyIDView.swift; sourceTree = "<group>"; };
+		4B1D2E3F4A5B6C7D8E9F0A10 /* HowItWorksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowItWorksView.swift; sourceTree = "<group>"; };
+		C1AUDE000014A1D00000001 /* DesignPageCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignPageCopy.swift; sourceTree = "<group>"; };
+		C1AUDE000014A1D00000003 /* DesignPagePlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignPagePlacement.swift; sourceTree = "<group>"; };
 		349B554805D54C418E202B76 /* RedMed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedMed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F919F5A31247B2B0CB18DB /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstAidTopic.swift; sourceTree = "<group>"; };
@@ -118,10 +124,20 @@
 		17A1312EB7FB4F2C936CCDAD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				C1AUDE000014A1D00000005 /* claude */,
 				7C36E4567833401AB16628A3 /* RedMed */,
 				8516640B1B3C46CB93DCC727 /* Products */,
 			);
 			name = Main;
+			sourceTree = "<group>";
+		};
+		C1AUDE000014A1D00000005 /* claude */ = {
+			isa = PBXGroup;
+			children = (
+				C1AUDE000014A1D00000001 /* DesignPageCopy.swift */,
+				C1AUDE000014A1D00000003 /* DesignPagePlacement.swift */,
+			);
+			path = claude;
 			sourceTree = "<group>";
 		};
 		2833C727D3F24F4AB759151E /* Views */ = {
@@ -137,6 +153,7 @@
 				A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */,
 				572AFAA69FD048659B137D3A /* LocationView.swift */,
 				1381A61F1B3645C98CB67182 /* MyIDView.swift */,
+				4B1D2E3F4A5B6C7D8E9F0A10 /* HowItWorksView.swift */,
 				84F177F3DB4549588AF855B5 /* ScannedCardView.swift */,
 				S1CAN000014A1D00000001 /* ScanEmergencyCardControl.swift */,
 				E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */,
@@ -289,6 +306,9 @@
 				40D6732FB9CA48FC974C170F /* LocationView.swift in Sources */,
 				F2A3B4C5D6E7489012ABCDEF /* TraumaHospitalsSection.swift in Sources */,
 				98784AB8A94144B4A6455E62 /* MyIDView.swift in Sources */,
+				4B1D2E3F4A5B6C7D8E9F0A11 /* HowItWorksView.swift in Sources */,
+				C1AUDE000014A1D00000002 /* DesignPageCopy.swift in Sources */,
+				C1AUDE000014A1D00000004 /* DesignPagePlacement.swift in Sources */,
 				9F510000014A1D00000002 /* ProfileSummaryView.swift in Sources */,
 				25152E6ECBD04591ADEE433F /* ScannedCardView.swift in Sources */,
 				S1CAN000014A1D00000002 /* ScanEmergencyCardControl.swift in Sources */,
