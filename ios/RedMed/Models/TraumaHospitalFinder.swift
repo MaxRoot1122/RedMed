@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 
 /// Verified Level I/II trauma hospital from the bundled offline directory (ACS / state designations).
@@ -32,10 +33,17 @@ struct TraumaHospital: Identifiable, Codable, Equatable {
     }
 }
 
-/// Offline trauma lookup by state, with county only when the state list is long.
-/// JSON + index load on first use (911 / scanned card), not at app launch.
+/// Offline trauma lookup: state → city → hospital. JSON loads on first use.
 enum TraumaHospitalFinder {
-    static let countyThreshold = 30
+    /// All U.S. states and D.C. — picker lists every jurisdiction; hospital lookup
+    /// still comes from the bundled catalog (empty list when none verified).
+    static let allStates: [String] = [
+        "AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
+        "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA",
+        "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE",
+        "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI",
+        "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY",
+    ]
 
     private static var cachedIndex: [String: [String: [TraumaHospital]]]?
 
@@ -54,60 +62,74 @@ enum TraumaHospitalFinder {
         }
         var index: [String: [String: [TraumaHospital]]] = [:]
         for hospital in catalog {
-            index[hospital.state, default: [:]][hospital.county, default: []].append(hospital)
+            index[hospital.state, default: [:]][hospital.city, default: []].append(hospital)
         }
         for state in index.keys {
-            for county in index[state]!.keys {
-                index[state]![county]!.sort { $0.name < $1.name }
+            for city in index[state]!.keys {
+                index[state]![city]!.sort { $0.name < $1.name }
             }
         }
         return index
     }
 
     static var states: [String] {
-        regionIndex.keys.sorted()
+        allStates
     }
 
-    static func counties(in state: String) -> [String] {
-        guard let counties = regionIndex[state] else { return [] }
-        return counties.keys.sorted()
-    }
-
-    static func hospitals(in state: String) -> [TraumaHospital] {
-        guard let counties = regionIndex[state] else { return [] }
-        return counties.values.flatMap { $0 }.sorted { $0.name < $1.name }
-    }
-
-    static func needsCountyPicker(for state: String) -> Bool {
-        hospitals(in: state).count >= countyThreshold
-    }
-
-    static func hospitals(state: String, county: String) -> [TraumaHospital] {
-        regionIndex[state]?[county] ?? []
-    }
-
-    static func resolvedHospitals(state: String, county: String) -> [TraumaHospital] {
-        guard !state.isEmpty else { return [] }
-        if needsCountyPicker(for: state) {
-            guard !county.isEmpty else { return [] }
-            return hospitals(state: state, county: county)
+    static func cities(in state: String, from coordinate: CLLocationCoordinate2D? = nil) -> [String] {
+        guard let cities = regionIndex[state] else { return [] }
+        var names = Array(cities.keys)
+        if let coordinate {
+            names.sort {
+                nearestDistance(from: coordinate, hospitals: cities[$0] ?? [])
+                    < nearestDistance(from: coordinate, hospitals: cities[$1] ?? [])
+            }
+        } else {
+            names.sort()
         }
-        return hospitals(in: state)
+        return names
     }
 
-    static func matchCounty(state: String, name: String) -> String? {
-        let target = name.lowercased()
-            .replacingOccurrences(of: " county", with: "")
-            .replacingOccurrences(of: " city", with: "")
-            .trimmingCharacters(in: .whitespaces)
+    static func hospitals(
+        state: String,
+        city: String,
+        from coordinate: CLLocationCoordinate2D? = nil
+    ) -> [TraumaHospital] {
+        guard !state.isEmpty, !city.isEmpty else { return [] }
+        var list = regionIndex[state]?[city] ?? []
+        if let coordinate {
+            list.sort {
+                distanceMiles(from: coordinate, to: $0) < distanceMiles(from: coordinate, to: $1)
+            }
+        }
+        return list
+    }
+
+    static func distanceMiles(from coordinate: CLLocationCoordinate2D, to hospital: TraumaHospital) -> Double {
+        let here = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let there = CLLocation(latitude: hospital.latitude, longitude: hospital.longitude)
+        return here.distance(from: there) / 1609.344
+    }
+
+    static func distanceLabel(from coordinate: CLLocationCoordinate2D, to hospital: TraumaHospital) -> String {
+        let miles = distanceMiles(from: coordinate, to: hospital)
+        if miles < 0.2 { return "Nearby" }
+        if miles < 10 { return String(format: "%.1f mi", miles) }
+        return String(format: "%.0f mi", miles)
+    }
+
+    static func matchCity(state: String, name: String) -> String? {
+        let target = name.lowercased().trimmingCharacters(in: .whitespaces)
         guard !target.isEmpty else { return nil }
-        let counties = counties(in: state)
-        if let exact = counties.first(where: {
-            $0.lowercased().replacingOccurrences(of: " county", with: "") == target
-        }) { return exact }
-        return counties.first(where: {
-            let n = $0.lowercased()
-            return n.contains(target) || target.contains(n.replacingOccurrences(of: " county", with: ""))
+        let options = cities(in: state)
+        if let exact = options.first(where: { $0.lowercased() == target }) { return exact }
+        return options.first(where: {
+            let city = $0.lowercased()
+            return city.contains(target) || target.contains(city)
         })
+    }
+
+    private static func nearestDistance(from coordinate: CLLocationCoordinate2D, hospitals: [TraumaHospital]) -> Double {
+        hospitals.map { distanceMiles(from: coordinate, to: $0) }.min() ?? .infinity
     }
 }

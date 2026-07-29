@@ -2,17 +2,30 @@ import SwiftUI
 
 struct WriteTagView: View {
     @Environment(\.layoutMetrics) private var layout
+    @Environment(\.openURL) private var openURL
     @EnvironmentObject var store: ProfileStore
     @StateObject private var writer = NFCWriter()
     @StateObject private var importReader = NFCReader()
     @State private var pendingRead: MedicalProfile?
     @State private var showingReadConfirm = false
 
+    private var profileReady: Bool {
+        !store.profile.name.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: layout.space2XL) {
-                    hero
+                    NFCHeroHeader(
+                        title: "Write Tag",
+                        subtitle: "Program your band once. Tap the band afterward — any phone opens your emergency card. No app for readers."
+                    )
+
+                    SoftStatusChip(
+                        text: "Tap the band · phone opens your card · no app for readers",
+                        warning: false
+                    )
 
                     let note = ProfileLinkBuilder.capacityNote(for: store.profile)
                     SoftStatusChip(text: note.text, warning: note.warn)
@@ -33,14 +46,28 @@ struct WriteTagView: View {
                             systemImage: "wave.3.right"
                         )
                     }
-                    .buttonStyle(PrimaryButtonStyle(enabled: !store.profile.name.isEmpty && !writer.isWriting))
-                    .disabled(store.profile.name.isEmpty || writer.isWriting)
+                    .buttonStyle(PrimaryButtonStyle(enabled: profileReady && !writer.isWriting))
+                    .disabled(!profileReady || writer.isWriting)
 
-                    if store.profile.name.isEmpty {
+                    if !profileReady {
                         Text("Add your name on My ID before writing a tag.")
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(AppTheme.accent)
                             .multilineTextAlignment(.center)
+                    }
+
+                    if profileReady {
+                        Button {
+                            guard let url = ProfileLinkBuilder.previewURL(profile: store.profile) else { return }
+                            openURL(url)
+                        } label: {
+                            Label("Preview hosted card in Safari", systemImage: "safari")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                    }
+
+                    if profileReady {
+                        BraceletVerifySection()
                     }
 
                     BraceletSyncInstructions()
@@ -89,37 +116,6 @@ struct WriteTagView: View {
         guard ok, let pendingRead else { return }
         store.profile = pendingRead
         self.pendingRead = nil
-    }
-
-    private var hero: some View {
-        VStack(spacing: layout.spaceLG) {
-            ZStack {
-                Circle()
-                    .fill(AppTheme.medicalSoft)
-                    .frame(width: layout.nfcHeroInner, height: layout.nfcHeroInner)
-                Circle()
-                    .stroke(AppTheme.medical.opacity(0.2), lineWidth: 1.5)
-                    .frame(width: layout.nfcHeroOuter, height: layout.nfcHeroOuter)
-                Image(systemName: "wave.3.right.circle.fill")
-                    .font(layout.nfcGlyphFont())
-                    .foregroundStyle(AppTheme.medical)
-                    .symbolRenderingMode(.hierarchical)
-            }
-            .padding(.top, layout.spaceMD)
-
-            VStack(spacing: layout.spaceSM) {
-                Text("Write Tag")
-                    .font(layout.heroTitleFont())
-                    .tracking(-0.4)
-                    .foregroundStyle(AppTheme.ink)
-                Text("Program your band once. Tap the band afterward — any phone opens your emergency card. No app for readers.")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(AppTheme.muted)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity)
     }
 
     /// First-responder path — opens native emergency card, does not touch My ID.

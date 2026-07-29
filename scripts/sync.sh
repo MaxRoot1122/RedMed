@@ -42,7 +42,7 @@ legacy_url = legacy_urls[0]
 
 site_base = card_url.rstrip("/").rsplit("/", 1)[0]
 privacy_url = site_base + "/privacy-policy.html"
-get_started_url = site_base + "/get.html"
+get_started_url = site_base + "/get"
 
 print(f"Active card target: {card_url}")
 print(f"Legacy card URL:    {legacy_url}")
@@ -81,6 +81,8 @@ sync_www() {
   local www="$1"
   mkdir -p "$www/assets" "$www/config" "$www/card"
   cp "$ROOT/get.html" "$www/get.html"
+  mkdir -p "$www/get"
+  cp "$ROOT/get.html" "$www/get/index.html"
   cp "$ROOT/privacy-policy.html" "$www/privacy-policy.html"
   cp "$ROOT/terms-of-service.html" "$www/terms-of-service.html"
   cp "$ROOT/card/index.html" "$www/card/index.html"
@@ -105,6 +107,8 @@ case "$CMD" in
     sync_trauma
     sync_www "$ROOT/ios/RedMed.app/Contents/Resources"
     echo "www mirror synced: ios/RedMed.app/Contents/Resources"
+    sync_www "$HOME"
+    echo "www mirror synced: ${HOME} (local preview)"
     cp "$ROOT/scripts/redmed-server.sh" "$ROOT/ios/RedMed.app/Contents/Resources/redmed-server.sh"
     stamp_repo_root
     ;;
@@ -113,6 +117,8 @@ case "$CMD" in
   www)
     sync_www "$ROOT/ios/RedMed.app/Contents/Resources"
     echo "www mirror synced: ios/RedMed.app/Contents/Resources"
+    sync_www "$HOME"
+    echo "www mirror synced: ${HOME} (local preview)"
     cp "$ROOT/scripts/redmed-server.sh" "$ROOT/ios/RedMed.app/Contents/Resources/redmed-server.sh"
     ;;
   stamp) stamp_repo_root ;;

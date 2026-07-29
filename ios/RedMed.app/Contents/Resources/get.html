@@ -7,120 +7,118 @@
 <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<meta name="theme-color" content="#fff1f2">
+<meta name="theme-color" content="#fff7f7">
 <meta name="description" content="Program your RedMed NFC band once on iPhone. After that, anyone can tap the band — their phone opens your emergency card. No app for readers.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-afT+p+IB+qg16LPEPJTvojgn6er3LD1KZ8KLQBX5VrY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';">
+<link rel="stylesheet" href="assets/redmed-theme.css">
 <style>
-  :root {
-    --accent: #e11d48;
-    --accent-soft: rgba(225, 29, 72, 0.10);
-    --ink: #1c1917;
-    --muted: #78716c;
-    --bg: #fff7f7;
-    --line: rgba(28, 25, 23, 0.08);
-    --card-radius: 24px;
-    --chip-radius: 16px;
+  .setup-page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100dvh;
-    font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--ink); line-height: 1.5;
-    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  .setup-header {
+    padding: 8px 0 4px;
   }
-  body::before, body::after {
-    content: ""; position: fixed; z-index: 0; border-radius: 50%; filter: blur(40px); pointer-events: none;
-  }
-  body::before { width: 280px; height: 280px; top: -60px; left: -60px; background: rgba(225,29,72,0.05); }
-  body::after { width: 320px; height: 320px; bottom: -80px; right: -80px; background: rgba(255,115,140,0.04); }
-  .card {
-    position: relative; z-index: 1; width: 100%; max-width: 400px;
-    background: rgba(255,255,255,0.92); border: 1px solid var(--line);
-    border-radius: var(--card-radius); padding: 32px 24px 26px;
-    box-shadow: 0 3px 8px rgba(225, 29, 72, 0.04);
-    text-align: center;
-  }
-  .app-logo {
+  .setup-wordmark {
     display: block;
     width: auto;
-    height: 68px;
-    max-width: min(320px, 88vw);
-    margin: 0 auto;
+    height: 42px;
+    max-width: min(280px, 80vw);
     object-fit: contain;
   }
-  h1 { display: none; }
-
-  .hero-well {
-    width: 96px; height: 96px; margin: 22px auto 0;
-    display: grid; place-items: center; position: relative;
+  .setup-title {
+    margin: 18px 0 0;
+    font-size: calc(25px + var(--type-bump));
+    font-weight: 800;
+    letter-spacing: -0.4px;
   }
-  .hero-well .ring {
-    position: absolute; inset: 0; border-radius: 50%;
-    border: 1.5px solid rgba(225,29,72,0.2);
+  .setup-lead {
+    margin: 10px 0 0;
+    font-size: calc(15px + var(--type-bump));
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.45;
   }
-  .hero-well .fill {
-    position: absolute; inset: 12px; border-radius: 50%;
+  .nfc-hero {
+    width: 128px;
+    height: 128px;
+    margin: 22px auto 0;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  .nfc-hero .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid rgba(225, 29, 72, 0.2);
+  }
+  .nfc-hero .fill {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
     background: var(--accent-soft);
   }
-  .hero-well svg { position: relative; width: 40px; height: 40px; }
-
-  .lead { margin: 16px 0 0; font-size: 15px; color: var(--muted); font-weight: 550; }
-  .tagline {
-    margin: 14px 0 0; padding: 12px 14px; border-radius: var(--chip-radius);
-    background: rgba(255,255,255,0.7); border: 1px solid var(--line);
-    font-size: 14px; font-weight: 650; color: var(--ink); line-height: 1.45;
+  .nfc-hero svg {
+    position: relative;
+    width: 50px;
+    height: 50px;
   }
-  .detect {
-    margin: 18px 0 14px; padding: 5px 10px; border-radius: 999px; display: inline-block;
-    background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 800;
-    letter-spacing: 0.6px; text-transform: uppercase;
+  .setup-chip {
+    display: inline-block;
+    margin: 18px 0 0;
+    padding: var(--bubble-pad-y) var(--bubble-pad-x);
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: calc(10px + var(--type-bump));
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
   }
-  .btn {
-    display: block; width: 100%; margin-top: 10px; padding: 18px 18px; border-radius: 999px;
-    font-size: 16px; font-weight: 750; text-decoration: none; border: none; cursor: pointer;
-    font-family: inherit;
+  .setup-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
   }
-  .btn-primary {
-    background: linear-gradient(180deg, #fb7185, var(--accent)); color: #fff;
-    box-shadow: 0 4px 10px rgba(225,29,72,0.18);
+  .setup-steps li {
+    margin: 0;
   }
-  .btn:active { transform: scale(0.97); }
-  .note { margin: 16px 0 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
-  .steps {
-    text-align: left; margin: 18px 0 0; padding: 14px; list-style: none;
-    background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: var(--chip-radius);
+  .setup-tagline {
+    margin: 18px 0 0;
   }
-  .steps li {
-    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;
-    font-size: 14px; color: var(--ink); font-weight: 550;
+  .setup-actions {
+    margin-top: 18px;
   }
-  .steps li:last-child { margin-bottom: 0; }
-  .steps .n {
-    flex: 0 0 26px; width: 26px; height: 26px; border-radius: 999px;
-    background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 800;
-    display: grid; place-items: center;
-  }
-  .hidden { display: none !important; }
-  .support-email {
+  .setup-support {
     margin: 14px 0 0;
-    font-size: 13px;
+    font-size: calc(13px + var(--type-bump));
     font-weight: 500;
+    text-align: center;
   }
-  .support-email a {
+  .setup-support a {
     color: var(--muted);
     text-decoration: none;
   }
-  .support-email a:hover,
-  .support-email a:focus-visible {
+  .setup-support a:hover,
+  .setup-support a:focus-visible {
     color: var(--accent);
     text-decoration: underline;
   }
+  .hidden { display: none !important; }
 </style>
 </head>
-<body>
-<main class="card">
-  <img class="app-logo" src="assets/wordmark.svg" width="300" height="78" alt="RedMed">
-  <div class="hero-well" aria-hidden="true">
+<body class="rm-app rm-atmosphere">
+<main class="setup-page">
+  <header class="setup-header">
+    <img class="setup-wordmark" src="assets/wordmark.svg" width="300" height="78" alt="RedMed">
+  </header>
+
+  <div class="nfc-hero" aria-hidden="true">
     <div class="fill"></div>
     <div class="ring"></div>
     <svg viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -130,20 +128,45 @@
       <circle cx="12" cy="20" r="1.4" fill="#e11d48" stroke="none"></circle>
     </svg>
   </div>
-  <p class="lead" id="leadText">Your <strong>RedMed band</strong> holds your emergency ID on a passive NFC chip. Program it once on iPhone — then anyone can tap the band and their phone opens your card.</p>
-  <p class="tagline">Tap the band. Phone opens your emergency card. No app for readers.</p>
-  <p class="support-email"><a href="mailto:help.RedMed@gmail.com">help.RedMed@gmail.com</a></p>
-  <p class="detect" id="detectLabel">Checking your phone…</p>
 
-  <a class="btn btn-primary hidden" id="btnStore" href="#">Set up your band</a>
+  <h1 class="setup-title">Program your band</h1>
+  <p class="setup-lead" id="leadText">Your <strong>RedMed band</strong> holds emergency ID on a passive NFC chip. Program it once on iPhone — then anyone can tap the band and their phone opens your card.</p>
 
-  <ol class="steps">
-    <li><span class="n">1</span><span id="step1">On iPhone, open RedMed and fill in allergies, meds, and contacts.</span></li>
-    <li><span class="n">2</span><span id="step2">Hold your band to the phone once — the chip stores your emergency card.</span></li>
-    <li><span class="n">3</span><span id="step3">Done. A stranger at the roadside taps the band — their phone opens Call 911 and your critical info. No RedMed install needed.</span></li>
+  <p class="setup-chip" id="detectLabel">Checking your phone…</p>
+
+  <div class="setup-actions">
+    <a class="rm-btn rm-btn-primary hidden" id="btnStore" href="#">Set up your band</a>
+  </div>
+
+  <ol class="setup-steps">
+    <li class="rm-app-card rm-step">
+      <span class="rm-step-num">1</span>
+      <div>
+        <p class="rm-step-title">Fill My ID</p>
+        <p class="rm-step-detail" id="step1">On iPhone, open RedMed and add allergies, meds, and contacts. Tap Save.</p>
+      </div>
+    </li>
+    <li class="rm-app-card rm-step">
+      <span class="rm-step-num">2</span>
+      <div>
+        <p class="rm-step-title">Program your band</p>
+        <p class="rm-step-detail" id="step2">Hold the band to your iPhone once — the chip stores your emergency card.</p>
+      </div>
+    </li>
+    <li class="rm-app-card rm-step">
+      <span class="rm-step-num">3</span>
+      <div>
+        <p class="rm-step-title">Done</p>
+        <p class="rm-step-detail" id="step3">A stranger taps the band — their phone opens Call 911 and your critical info. No RedMed install needed.</p>
+      </div>
+    </li>
   </ol>
-  <p class="note" id="autoNote"></p>
-  <p class="note" id="nfcNote">Passive NFC only — no battery, no broadcast. RedMed is not a medical device. In an emergency, call 911.</p>
+
+  <p class="rm-soft-chip setup-tagline">Tap the band · phone opens your card · no app for readers</p>
+
+  <p class="setup-support"><a href="mailto:help.RedMed@gmail.com">help.RedMed@gmail.com</a></p>
+  <p class="rm-note" id="autoNote" style="margin-top:14px;text-align:center;"></p>
+  <p class="rm-note" id="nfcNote" style="margin-top:10px;text-align:center;">Passive NFC only — no battery, no broadcast. RedMed is not a medical device. In an emergency, call 911.</p>
 </main>
 <script>
 (function () {

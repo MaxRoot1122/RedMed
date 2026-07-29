@@ -201,6 +201,8 @@ struct EditProfileView: View {
                             Text(bt.isEmpty ? "Unknown" : bt).tag(bt)
                         }
                     }
+                    Toggle("Organ donor", isOn: $draft.donor)
+                        .tint(AppTheme.accent)
                 } header: {
                     Text("You")
                 }
@@ -272,6 +274,7 @@ struct EditProfileView: View {
                 }
             }
             .scrollContentBackground(.hidden)
+            .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
             .disabled(!editUnlocked)
             .blur(radius: editUnlocked ? 0 : 8)

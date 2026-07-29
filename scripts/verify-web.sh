@@ -35,15 +35,23 @@ if r4.returncode:
     print("FAIL: card-sw.js node --check"); print(r4.stderr); sys.exit(1)
 print("OK: card-sw.js node --check")
 
-for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/index.html", "card/sw.js"):
-    for prefix in ("ios/RedMed.app/Contents/Resources/",):
-        mpath = prefix + name
+mirror_pairs = (
+    ("get.html", "get.html"),
+    ("get.html", "get/index.html"),
+    ("privacy-policy.html", "privacy-policy.html"),
+    ("terms-of-service.html", "terms-of-service.html"),
+    ("card/index.html", "card/index.html"),
+    ("card/sw.js", "card/sw.js"),
+)
+for prefix in ("ios/RedMed.app/Contents/Resources/",):
+    for src, dest in mirror_pairs:
+        mpath = prefix + dest
         try:
-            if not filecmp.cmp(name, mpath, shallow=False):
-                print(f"FAIL: {mpath} out of sync with {name}"); sys.exit(1)
+            if not filecmp.cmp(src, mpath, shallow=False):
+                print(f"FAIL: {mpath} out of sync with {src}"); sys.exit(1)
         except FileNotFoundError:
             print(f"WARN: missing mirror {mpath}")
-print("OK: get.html + legal + card/ mirrors match")
+print("OK: get + legal + card/ mirrors match")
 
 REQUIRED_ASSETS = (
     "assets/icon.svg", "assets/icon-512.png", "assets/cpr-trainer-icon.png",
@@ -79,7 +87,7 @@ if not legacy_url:
     print("FAIL: no legacy:https:// line in config/canonical-url"); sys.exit(1)
 site_base = card_url.rstrip("/").rsplit("/", 1)[0]
 privacy_url = site_base + "/privacy-policy.html"
-get_started_url = site_base + "/get.html"
+get_started_url = site_base + "/get"
 checks = [
     ("ios/RedMed/AppConfig.swift", get_started_url, "getStartedURL"),
     ("ios/RedMed/AppConfig.swift", card_url, "medicalCardBaseURL"),
@@ -95,6 +103,8 @@ print("OK: canonical URL synced to AppConfig.swift")
 pages_yml = open(".github/workflows/pages.yml", encoding="utf-8").read()
 if "card/index.html" not in pages_yml or "card/sw.js" not in pages_yml:
     print("FAIL: pages.yml does not deploy card/"); sys.exit(1)
+if "get/index.html" not in pages_yml:
+    print("FAIL: pages.yml does not deploy /get"); sys.exit(1)
 if "index.html" in pages_yml and "_site/index.html" in pages_yml.replace("card/index.html", ""):
     print("FAIL: pages.yml still deploys owner index.html"); sys.exit(1)
 print("OK: deploy workflow ships card/ (not owner web)")
@@ -108,7 +118,7 @@ if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
     print("OK: redmed-server.sh mirror matches")
 
 base = "http://127.0.0.1:8934"
-for path in ("get.html", "privacy-policy.html", "card/index.html", "card/sw.js"):
+for path in ("get/", "get.html", "privacy-policy.html", "card/index.html", "card/sw.js"):
     try:
         with urllib.request.urlopen(f"{base}/{path}", timeout=3) as resp:
             if resp.status != 200:
