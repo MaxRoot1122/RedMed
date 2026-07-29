@@ -9,7 +9,7 @@ LOG_FILE="${LOG_DIR}/launch.log"
 if [ -n "${REDMED_REPO:-}" ] && [ -d "$REDMED_REPO" ]; then
   REPO_ROOT="$REDMED_REPO"
 else
-  # Bundle lives at mac/RedMed.app or ios/RedMed.app — repo root is two levels up.
+  # Bundle lives at ios/RedMed.app — repo root is two levels up.
   REPO_ROOT="$(cd "${APP_BUNDLE}/../.." && pwd -P)"
 fi
 

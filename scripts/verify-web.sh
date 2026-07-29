@@ -36,7 +36,7 @@ if r4.returncode:
 print("OK: card-sw.js node --check")
 
 for name in ("get.html", "privacy-policy.html", "terms-of-service.html", "card/index.html", "card/sw.js"):
-    for prefix in ("mac/RedMed.app/Contents/Resources/www/", "ios/RedMed.app/Contents/Resources/www/"):
+    for prefix in ("ios/RedMed.app/Contents/Resources/",):
         mpath = prefix + name
         try:
             if not filecmp.cmp(name, mpath, shallow=False):
@@ -100,7 +100,7 @@ if "index.html" in pages_yml and "_site/index.html" in pages_yml.replace("card/i
 print("OK: deploy workflow ships card/ (not owner web)")
 
 server_sh = "scripts/redmed-server.sh"
-app_server_sh = "mac/RedMed.app/Contents/Resources/redmed-server.sh"
+app_server_sh = "ios/RedMed.app/Contents/Resources/redmed-server.sh"
 if os.path.isfile(server_sh) and os.path.isfile(app_server_sh):
     if not filecmp.cmp(server_sh, app_server_sh, shallow=False):
         print(f"FAIL: {app_server_sh} out of sync with {server_sh}")

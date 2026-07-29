@@ -96,8 +96,8 @@ if command -v iconutil >/dev/null 2>&1 && [[ -f "$PNG" ]]; then
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
   sips -z 512 512 "$SRC" --out "$ICONSET/icon_512x512.png" >/dev/null
   sips -z 1024 1024 "$SRC" --out "$ICONSET/icon_512x512@2x.png" >/dev/null
-  iconutil -c icns "$ICONSET" -o "$ROOT/mac/RedMed.app/Contents/Resources/AppIcon.icns"
-  echo "mac/RedMed.app/Contents/Resources/AppIcon.icns"
+  iconutil -c icns "$ICONSET" -o "$ROOT/ios/RedMed.app/Contents/Resources/AppIcon.icns"
+  echo "ios/RedMed.app/Contents/Resources/AppIcon.icns"
 fi
 
-echo "Done. Run ./scripts/sync.sh www to refresh mac/RedMed.app www/."
+echo "Done. Run ./scripts/sync.sh www to refresh ios/RedMed.app Resources/."
