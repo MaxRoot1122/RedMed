@@ -299,9 +299,8 @@
         panel.appendChild(top);
 
         const img = document.createElement("img");
-        img.src = `photo-${page.id}-edit.png?v=${Date.now()}`;
+        img.src = `photo-${page.id}.png?v=${Date.now()}`;
         img.alt = `Design photo ${page.id}`;
-        img.onerror = () => { img.src = `photo-${page.id}.png?v=${Date.now()}`; };
         panel.appendChild(img);
 
         const eyebrow = document.createElement("div");
