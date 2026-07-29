@@ -54,6 +54,7 @@ struct WriteTagView: View {
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
+            .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
             .navigationTitle("NFC")
             .navigationBarTitleDisplayMode(.inline)

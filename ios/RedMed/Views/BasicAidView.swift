@@ -84,6 +84,7 @@ struct BasicAidView: View {
                 .reactiveScrollTrack()
             }
             .reactiveScrollChrome()
+            .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
             .navigationTitle("Aid")
             .navigationBarTitleDisplayMode(.inline)
