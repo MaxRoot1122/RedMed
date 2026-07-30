@@ -3,7 +3,6 @@ import SwiftUI
 /// Owner My ID tab — read-only summary; Edit sheet prompts Face ID only when
 /// changing saved profile data (`EditProfileView`).
 struct MyIDView: View {
-    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @Environment(\.scenePhase) private var scenePhase
@@ -18,11 +17,6 @@ struct MyIDView: View {
             ProfileSummaryView(profile: store.profile, link: link)
                 .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    if needsBandSetup {
-                        setupBanner
-                    }
-                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
@@ -65,25 +59,6 @@ struct MyIDView: View {
             }
             .withLayoutMetrics()
         }
-    }
-
-    private var needsBandSetup: Bool {
-        !link.isLinked
-            && !store.profile.name.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    private var setupBanner: some View {
-        Button {
-            showingBraceletSetup = true
-        } label: {
-            SoftStatusChip(
-                text: "Program your band — tap the bracelet icon or here",
-                warning: true
-            )
-        }
-        .buttonStyle(.plain)
-        .padding(.horizontal, layout.screenPad)
-        .padding(.bottom, layout.spaceSM)
     }
 }
 

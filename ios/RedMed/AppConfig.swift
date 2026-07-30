@@ -1,10 +1,10 @@
 import Foundation
 
 enum AppConfig {
-    /// Packaging QR / band-setup landing (iPhone → App Store). Canonical path: `/get`.
+    /// Packaging QR / band-setup landing (iPhone → App Store). Keep in sync with `get.html`.
     /// Hosted on Cloudflare Pages, not GitHub Pages — don't put a personal
     /// GitHub username back in this URL.
-    static let getStartedURL = "https://redmed.pages.dev/get"
+    static let getStartedURL = "https://redmed.pages.dev/get.html"
 
     /// Update when the App Store listing is live (App Store Connect app ID).
     static let appStoreURL = "https://apps.apple.com/app/redmed/id0000000000"

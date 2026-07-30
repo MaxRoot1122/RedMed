@@ -130,8 +130,6 @@ struct LayoutMetrics: Equatable {
     /// Extra scroll breathing room *below* content — not a substitute for the 34 pt home indicator.
     var screenBottom: CGFloat { sv(16) }
     var screenBottomLarge: CGFloat { sv(22) }
-    /// Matched height for side-by-side Call 911 + Scan on Find 911.
-    var emergencyPairButtonHeight: CGFloat { sv(54) }
     /// Vertical padding inside elevated cards (GPS, status chips).
     var cardPadV: CGFloat { sv(18) }
 
@@ -395,66 +393,6 @@ struct SoftStatusChip: View {
 }
 
 /// Owner guidance — band must be re-written after profile edits; passersby read the chip.
-/// Shared NFC programming hero — Write Tag tab and bracelet setup sheet.
-struct NFCHeroHeader: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    var title: String
-    var subtitle: String
-
-    var body: some View {
-        VStack(spacing: layout.spaceLG) {
-            ZStack {
-                Circle()
-                    .fill(AppTheme.medicalSoft)
-                    .frame(width: layout.nfcHeroInner, height: layout.nfcHeroInner)
-                Circle()
-                    .stroke(AppTheme.medical.opacity(0.2), lineWidth: 1.5)
-                    .frame(width: layout.nfcHeroOuter, height: layout.nfcHeroOuter)
-                Image(systemName: "wave.3.right.circle.fill")
-                    .font(layout.nfcGlyphFont())
-                    .foregroundStyle(AppTheme.medical)
-                    .symbolRenderingMode(.hierarchical)
-            }
-            .padding(.top, layout.spaceMD)
-
-            VStack(spacing: layout.spaceSM) {
-                Text(title)
-                    .font(layout.heroTitleFont())
-                    .tracking(-0.4)
-                    .foregroundStyle(AppTheme.ink)
-                Text(subtitle)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(AppTheme.muted)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-/// Post-write check — native emergency card matches what passersby see in Safari.
-struct BraceletVerifySection: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    var scanTitle: String = "Scan your bracelet"
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: layout.spaceMD) {
-            SectionEyebrow(text: "Verify", tint: AppTheme.muted)
-            Text("After writing, scan your band here to see the same emergency card a stranger gets.")
-                .font(.footnote.weight(.medium))
-                .foregroundStyle(AppTheme.muted)
-                .fixedSize(horizontal: false, vertical: true)
-            ScanEmergencyCardControl(title: scanTitle)
-        }
-        .padding(layout.spaceLG)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard(elevated: false)
-    }
-}
-
 struct BraceletSyncInstructions: View {
     @Environment(\.layoutMetrics) private var layout
 
@@ -505,16 +443,12 @@ struct PrimaryButtonStyle: ButtonStyle {
 
     var enabled: Bool = true
     var prominent: Bool = false
-    var fixedHeight: CGFloat? = nil
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(prominent ? layout.title3Font() : .headline.weight(.bold))
-            .lineLimit(fixedHeight == nil ? nil : 1)
-            .minimumScaleFactor(fixedHeight == nil ? 1 : 0.85)
             .frame(maxWidth: .infinity)
-            .frame(height: fixedHeight)
-            .padding(.vertical, fixedHeight == nil ? (prominent ? layout.sv(17) : layout.spaceLG) : 0)
+            .padding(.vertical, prominent ? layout.sv(17) : layout.spaceLG)
             .background(
                 LinearGradient(
                     colors: enabled
@@ -555,17 +489,11 @@ struct PrimaryButtonStyle: ButtonStyle {
 struct SecondaryButtonStyle: ButtonStyle {
     @Environment(\.layoutMetrics) private var layout
 
-    var fixedHeight: CGFloat? = nil
-
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.subheadline.weight(.semibold))
-            .lineLimit(fixedHeight == nil ? nil : 2)
-            .minimumScaleFactor(fixedHeight == nil ? 1 : 0.85)
-            .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
-            .frame(height: fixedHeight)
-            .padding(.vertical, fixedHeight == nil ? layout.sv(14) : 0)
+            .padding(.vertical, layout.sv(14))
             .background(Color.white.opacity(0.82))
             .foregroundStyle(AppTheme.ink)
             .clipShape(Capsule())
@@ -584,18 +512,12 @@ struct SecondaryButtonStyle: ButtonStyle {
 struct InkButtonStyle: ButtonStyle {
     @Environment(\.layoutMetrics) private var layout
 
-    var fixedHeight: CGFloat? = nil
-
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline.weight(.bold))
-            .lineLimit(fixedHeight == nil ? nil : 2)
-            .minimumScaleFactor(fixedHeight == nil ? 1 : 0.85)
-            .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
-            .frame(height: fixedHeight)
-            .padding(.vertical, fixedHeight == nil ? layout.sv(16) : 0)
-            .padding(.horizontal, fixedHeight == nil ? layout.spaceLG : layout.spaceSM)
+            .padding(.vertical, layout.sv(16))
+            .padding(.horizontal, layout.spaceLG)
             .background(AppTheme.ink.opacity(configuration.isPressed ? 0.88 : 1))
             .foregroundStyle(.white)
             .clipShape(Capsule())
@@ -606,13 +528,9 @@ struct InkButtonStyle: ButtonStyle {
 
 /// In-app 911 dial — `Button` + `telprompt:` (Link + ButtonStyle does not reliably open Phone).
 struct Call911Button: View {
-    @Environment(\.layoutMetrics) private var layout
-
     var title: String = "Call 911"
     var prominent: Bool = true
     var secondary: Bool = false
-    /// Side-by-side with Scan — matched capsule height, top-aligned pair.
-    var pairLayout: Bool = false
 
     var body: some View {
         Group {
@@ -621,18 +539,12 @@ struct Call911Button: View {
                     Text(title)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(SecondaryButtonStyle(
-                    fixedHeight: pairLayout ? layout.emergencyPairButtonHeight : nil
-                ))
+                .buttonStyle(SecondaryButtonStyle())
             } else {
                 Button(action: dial) {
                     Text(title)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .buttonStyle(PrimaryButtonStyle(
-                    prominent: pairLayout ? false : prominent,
-                    fixedHeight: pairLayout ? layout.emergencyPairButtonHeight : nil
-                ))
+                .buttonStyle(PrimaryButtonStyle(prominent: prominent))
             }
         }
     }

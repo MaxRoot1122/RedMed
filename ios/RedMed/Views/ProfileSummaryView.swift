@@ -5,9 +5,9 @@ import SwiftUI
 /// Viewing never requires Face ID. Editing opens `EditProfileView`, which
 /// prompts biometrics once saved profile data exists on this device.
 ///
-/// Uses `ScrollView` (not `Form`) so long profiles scroll on every iPhone/iPad
-/// size. Progress-rail tracking is omitted — its GeometryReader probe fought
-/// the scroll gesture on small phones.
+/// Uses `Form` (not a custom ScrollView) so scrolling stays reliable under the
+/// tab + nav chrome. Progress-rail tracking is intentionally omitted here —
+/// its GeometryReader probe was fighting the scroll gesture.
 struct ProfileSummaryView: View {
     @Environment(\.layoutMetrics) private var layout
 
@@ -42,144 +42,100 @@ struct ProfileSummaryView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: layout.spaceLG) {
-                header
-
-                summarySection(title: "You") {
-                    VStack(spacing: 0) {
-                        summaryRow("Name", profile.name)
-                        rowDivider
-                        summaryRow("Birth date", dobDisplay)
-                        rowDivider
-                        summaryRow("Blood type", profile.blood.isEmpty ? "Unknown" : profile.blood)
-                        rowDivider
-                        summaryRow("Organ donor", profile.donor ? "Yes" : "No")
+        Form {
+            Section {
+                VStack(alignment: .leading, spacing: layout.s(10)) {
+                    if link.isLinked {
+                        BrandMark(size: .hero, titleOverride: link.deviceName)
+                    } else {
+                        BrandMark(size: .hero, showTagline: true)
+                        if profile.name.trimmingCharacters(in: .whitespaces).isEmpty {
+                            Text("Tap Edit to add your name and set up your bracelet.")
+                                .font(layout.subheadlineFont(weight: .medium))
+                                .foregroundStyle(AppTheme.muted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                 }
+                .padding(.vertical, layout.spaceSM)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(
+                    top: layout.pageTopInset,
+                    leading: layout.spaceXS,
+                    bottom: layout.spaceSM,
+                    trailing: layout.spaceXS
+                ))
+            }
 
-                summarySection(title: "Allergies") {
-                    itemList(profile.allergies)
+            Section("You") {
+                summaryRow("Name", profile.name)
+                summaryRow("Birth date", dobDisplay)
+                summaryRow("Blood type", profile.blood.isEmpty ? "Unknown" : profile.blood)
+            }
+
+            Section("Allergies") {
+                if profile.allergies.isEmpty {
+                    Text("None").foregroundStyle(.secondary)
+                } else {
+                    ForEach(profile.allergies, id: \.self) { Text($0) }
                 }
+            }
 
-                summarySection(title: "Medications") {
-                    itemList(profile.meds)
+            Section("Medications") {
+                if profile.meds.isEmpty {
+                    Text("None").foregroundStyle(.secondary)
+                } else {
+                    ForEach(profile.meds, id: \.self) { Text($0) }
                 }
+            }
 
-                summarySection(title: "Conditions") {
-                    itemList(profile.conditions)
+            Section("Conditions") {
+                if profile.conditions.isEmpty {
+                    Text("None").foregroundStyle(.secondary)
+                } else {
+                    ForEach(profile.conditions, id: \.self) { Text($0) }
                 }
+            }
 
-                summarySection(title: "Contacts") {
-                    if filledContacts.isEmpty {
-                        Text("None")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(AppTheme.muted)
-                    } else {
-                        VStack(alignment: .leading, spacing: layout.spaceMD) {
-                            ForEach(filledContacts) { contact in
-                                VStack(alignment: .leading, spacing: layout.s(2)) {
-                                    Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
-                                        .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(AppTheme.ink)
-                                    let detail = [contact.rel, contact.phone]
-                                        .map { $0.trimmingCharacters(in: .whitespaces) }
-                                        .filter { !$0.isEmpty }
-                                        .joined(separator: " · ")
-                                    if !detail.isEmpty {
-                                        Text(detail)
-                                            .font(.caption.weight(.medium))
-                                            .foregroundStyle(AppTheme.muted)
-                                    }
-                                }
+            Section("Contacts") {
+                if filledContacts.isEmpty {
+                    Text("None").foregroundStyle(.secondary)
+                } else {
+                    ForEach(filledContacts) { contact in
+                        VStack(alignment: .leading, spacing: layout.s(2)) {
+                            Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
+                                .font(layout.subheadlineFont(weight: .semibold))
+                            let detail = [contact.rel, contact.phone]
+                                .map { $0.trimmingCharacters(in: .whitespaces) }
+                                .filter { !$0.isEmpty }
+                                .joined(separator: " · ")
+                            if !detail.isEmpty {
+                                Text(detail)
+                                    .font(layout.captionFont(weight: .medium))
+                                    .foregroundStyle(AppTheme.muted)
                             }
                         }
                     }
                 }
             }
-            .padding(.horizontal, layout.screenPad)
-            .padding(.top, layout.pageTopInset)
-            .padding(.bottom, layout.screenBottom)
         }
+        .scrollContentBackground(.hidden)
         .scrollIndicators(.visible, axes: .vertical)
         .screenAtmosphere()
-    }
-
-    private var header: some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            if link.isLinked {
-                BrandMark(size: .hero, titleOverride: link.deviceName)
-            } else {
-                BrandMark(size: .hero, showTagline: true)
-                if profile.name.trimmingCharacters(in: .whitespaces).isEmpty {
-                    Text("Tap Edit to add your name and set up your bracelet.")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, layout.spaceSM)
-    }
-
-    @ViewBuilder
-    private func summarySection<Content: View>(
-        title: String,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: layout.spaceSM) {
-            Text(title)
-                .font(.caption.weight(.bold))
-                .tracking(0.8)
-                .textCase(.uppercase)
-                .foregroundStyle(AppTheme.muted)
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                content()
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(layout.spaceLG)
-            .appCard(elevated: false)
-        }
-    }
-
-    private var rowDivider: some View {
-        Rectangle()
-            .fill(AppTheme.line)
-            .frame(height: 1)
-            .padding(.vertical, layout.spaceSM)
-    }
-
-    @ViewBuilder
-    private func itemList(_ items: [String]) -> some View {
-        if items.isEmpty {
-            Text("None")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(AppTheme.muted)
-        } else {
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                ForEach(items, id: \.self) { item in
-                    Text(item)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(AppTheme.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-        }
     }
 
     private func summaryRow(_ label: String, _ value: String) -> some View {
         HStack(alignment: .firstTextBaseline) {
             Text(label)
-                .font(.subheadline.weight(.medium))
+                .font(layout.subheadlineFont(weight: .medium))
                 .foregroundStyle(AppTheme.muted)
             Spacer(minLength: layout.spaceMD)
             Text(value.isEmpty ? "Not set" : value)
-                .font(.subheadline.weight(.semibold))
+                .font(layout.subheadlineFont(weight: .semibold))
                 .foregroundStyle(AppTheme.ink)
                 .multilineTextAlignment(.trailing)
         }
-        .padding(.vertical, layout.s(2))
     }
 }
 

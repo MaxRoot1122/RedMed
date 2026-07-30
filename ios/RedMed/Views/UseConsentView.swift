@@ -10,33 +10,30 @@ struct UseConsentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: layout.spaceXL) {
-                BrandMark(size: .hero, showTagline: true)
+                BrandMark(size: .hero)
                     .padding(.top, layout.spaceSM)
 
-                VStack(alignment: .leading, spacing: layout.spaceLG) {
-                    SectionEyebrow(text: "Before you continue")
+                Text("Before you continue")
+                    .font(.title2.bold())
+                    .foregroundStyle(AppTheme.ink)
 
-                    Text("RedMed stores your medical profile on this device only. Find 911 uses location while that screen is open. Nothing is sent to our servers.")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .fixedSize(horizontal: false, vertical: true)
+                Text("RedMed stores your medical profile on this device only. Find 911 uses location while that screen is open. Nothing is sent to our servers.")
+                    .font(.subheadline)
+                    .foregroundStyle(AppTheme.muted)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                    Link("Privacy Policy", destination: URL(string: AppConfig.privacyPolicyURL)!)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(AppTheme.accent)
+                Link("Privacy Policy", destination: URL(string: AppConfig.privacyPolicyURL)!)
+                    .font(.subheadline.weight(.semibold))
 
-                    Button("Accept", action: onAccept)
-                        .buttonStyle(PrimaryButtonStyle())
-                }
-                .padding(layout.spaceLG)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .appCard(elevated: false)
+                Button("Accept", action: onAccept)
+                    .buttonStyle(PrimaryButtonStyle())
             }
-            .padding(.horizontal, layout.screenPad)
-            .padding(.vertical, layout.space2XL)
+            .padding(layout.space2XL)
+            .frame(maxWidth: .infinity)
         }
         .scrollIndicators(.visible, axes: .vertical)
-        .screenAtmosphere()
+        .background(AppTheme.pageBg)
     }
 }
 

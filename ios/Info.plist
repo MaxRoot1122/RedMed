@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>RedMed uses Bluetooth to communicate with your emergency bracelet.</string>
+    <key>NSNFCReaderUsageDescription</key>
+    <string>RedMed reads NFC tags on your emergency bracelet to access your medical profile.</string>
+    <key>NFCReaderUsageDescription</key>
+    <string>RedMed reads NFC tags on your emergency bracelet for emergency access to your medical information.</string>
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <true/>
+    </dict>
+</dict>
+</plist>

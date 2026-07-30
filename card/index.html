@@ -6,28 +6,59 @@
 <title>RedMed — Emergency Card</title>
 <meta name="theme-color" content="#e11d48">
 <meta name="description" content="RedMed emergency card — tap the band, phone opens instantly. Allergies, meds, Call 911. No app needed.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C1hvPyoaWZeOutigq3KMCfreTNjPLTOt12bwoCQOmrA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
-<link rel="stylesheet" href="../assets/redmed-theme.css">
+<<<<<<< Updated upstream
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-lN5DpQQVLBAHWfnPHOmxeoYkZzX8TzAwpebWFhpKxys='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
   :root {
+    --accent: #e11d48;
+    --accent-dark: #bf1239;
+    --accent-soft: rgba(225,29,72,.1);
+    --ink: #1c1917;
+    --muted: #78716c;
+    --bg: #fff7f7;
+    --card: rgba(255,255,255,.92);
+    --line: rgba(28,25,23,.08);
     --scale: 1;
     --v-scale: 1;
     --pad: calc(16px * var(--scale));
     --radius: calc(22px * var(--scale));
     --inner: calc(12px * var(--scale));
-    --btn-pair-h: calc(54px * var(--v-scale));
+=======
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-N1dGWz4OPABgupekOf7oaNyIILbBa8jn5Qp0U5gmls8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<style>
+  :root {
+    --accent: #e11d48;
+    --accent-light: #fb7185;
+    --accent-dark: #bf123c;
+    --accent-soft: rgba(225,29,72,0.10);
+    --ink: #1c1917;
+    --muted: #78716c;
+    --bg: #fff7f7;
+    --card-bg: rgba(255,255,255,0.92);
+    --line: rgba(28,25,23,0.08);
+    --card-radius: 24px;
+    --inner-radius: 14px;
+    --chip-radius: 16px;
+    --dot: 6px;
+>>>>>>> Stashed changes
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; overflow: hidden; }
+  html, body { margin: 0; height: 100%; }
   body {
-    font-family: var(--font);
-    background: var(--page-bg);
+<<<<<<< Updated upstream
+    font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
     color: var(--ink);
     line-height: 1.45;
   }
   a { color: inherit; text-decoration: none; }
-  .shell { height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; }
-  .atmosphere { min-height: 100dvh; }
+  .shell { min-height: 100dvh; display: flex; flex-direction: column; }
+  .atmosphere {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse 280px 280px at 0% 0%, rgba(225,29,72,.05), transparent 70%),
+      radial-gradient(ellipse 320px 320px at 100% 100%, rgba(255,115,140,.04), transparent 70%);
+  }
   .topbar {
     position: sticky; top: 0; z-index: 20;
     padding: calc(10px * var(--v-scale) + env(safe-area-inset-top, 0px)) var(--pad) calc(10px * var(--v-scale));
@@ -38,7 +69,7 @@
     border-bottom: 1px solid var(--line);
   }
   .topbar span {
-    font-size: calc(11px * var(--scale) + var(--type-bump));
+    font-size: calc(11px * var(--scale));
     font-weight: 800;
     letter-spacing: 1.2px;
     color: var(--muted);
@@ -54,36 +85,36 @@
   }
   .hero {
     color: #fff;
-    padding: calc(28px * var(--v-scale)) var(--pad) calc(22px * var(--v-scale));
-    background: linear-gradient(135deg, var(--accent) 0%, rgb(191, 18, 61) 100%);
+    padding: calc(22px * var(--v-scale)) var(--pad) calc(22px * var(--v-scale));
+    background: linear-gradient(135deg, var(--accent) 0%, rgb(191,18,55) 100%);
   }
   .hero-kicker {
     margin: 0 0 calc(8px * var(--v-scale));
-    font-size: calc(11px * var(--scale) + var(--type-bump));
+    font-size: calc(11px * var(--scale));
     font-weight: 800;
     letter-spacing: 1.6px;
     color: rgba(255,255,255,.85);
   }
   .hero h1 {
     margin: 0;
-    font-size: calc(30px * var(--scale) + var(--type-bump));
+    font-size: calc(30px * var(--scale));
     font-weight: 800;
     letter-spacing: -.5px;
     word-break: break-word;
   }
   .hero-meta {
     margin: calc(8px * var(--v-scale)) 0 0;
-    font-size: calc(14px * var(--scale) + var(--type-bump));
+    font-size: calc(14px * var(--scale));
     font-weight: 600;
     color: rgba(255,255,255,.9);
   }
   .donor {
     display: inline-block;
     margin-top: calc(10px * var(--v-scale));
-    padding: calc(4px * var(--scale)) calc(8px * var(--scale));
+    padding: calc(5px * var(--scale)) calc(10px * var(--scale));
     border-radius: 999px;
     background: rgba(255,255,255,.18);
-    font-size: calc(10px * var(--scale) + var(--type-bump));
+    font-size: calc(11px * var(--scale));
     font-weight: 800;
     color: #fff;
   }
@@ -95,34 +126,36 @@
     gap: calc(18px * var(--v-scale));
   }
   .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: var(--btn-pair-h);
+    display: block; width: 100%;
     border: 0; border-radius: 999px;
     font: inherit; text-align: center; cursor: pointer;
     text-decoration: none;
-    box-sizing: border-box;
-    padding: 0 calc(18px * var(--scale));
   }
   .btn-call {
-    font-size: calc(16px * var(--scale) + var(--type-bump));
+    padding: calc(17px * var(--v-scale));
+    font-size: calc(20px * var(--scale));
     font-weight: 800;
+    color: #fff;
+    background: linear-gradient(180deg, #fb7185, var(--accent));
+    border: 0.5px solid rgba(255,255,255,.34);
+    box-shadow: 0 calc(2px * var(--scale)) calc(6px * var(--scale)) rgba(225,29,72,.08);
   }
   .btn-ink {
-    font-size: calc(16px * var(--scale) + var(--type-bump));
+    padding: calc(16px * var(--v-scale));
+    font-size: calc(16px * var(--scale));
     font-weight: 800;
+    color: #fff;
+    background: var(--ink);
+    box-shadow: 0 calc(4px * var(--scale)) calc(10px * var(--scale)) rgba(0,0,0,.12);
   }
   .section { display: flex; flex-direction: column; gap: calc(10px * var(--v-scale)); }
   .pill {
-    display: inline-block;
-    align-self: flex-start;
-    font-size: calc(10px * var(--scale) + var(--type-bump));
+    display: inline-block; align-self: flex-start;
+    font-size: calc(10px * var(--scale));
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 1.1px;
     text-transform: uppercase;
-    padding: calc(4px * var(--scale)) calc(8px * var(--scale));
+    padding: calc(5px * var(--scale)) calc(10px * var(--scale));
     border-radius: 999px;
   }
   .pill-accent { color: var(--accent); background: var(--accent-soft); }
@@ -141,30 +174,29 @@
     margin-top: calc(7px * var(--scale)); flex: none;
     border-radius: 50%; background: var(--accent);
   }
-  .row span { font-size: calc(15px * var(--scale) + var(--type-bump)); font-weight: 600; }
+  .row span { font-size: calc(15px * var(--scale)); font-weight: 600; }
   .list-plain .row span { font-weight: 500; }
   .contact-card {
     display: flex; align-items: center; justify-content: space-between;
     gap: calc(10px * var(--scale));
     padding: calc(14px * var(--scale));
-    background: var(--card-bg);
+    background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: 0 calc(3px * var(--scale)) calc(8px * var(--scale)) rgba(225,29,72,.04);
   }
-  .cname { font-weight: 700; font-size: calc(15px * var(--scale) + var(--type-bump)); }
-  .crel, .cphone { font-size: calc(12px * var(--scale) + var(--type-bump)); color: var(--muted); margin-top: 2px; }
+  .cname { font-weight: 700; font-size: calc(15px * var(--scale)); }
+  .crel, .cphone { font-size: calc(12px * var(--scale)); color: var(--muted); margin-top: 2px; }
   .btn-pill {
     flex: none;
     padding: calc(10px * var(--scale)) calc(14px * var(--scale));
     border-radius: 999px;
     background: var(--accent);
     color: #fff;
-    font-size: calc(13px * var(--scale) + var(--type-bump));
+    font-size: calc(13px * var(--scale));
     font-weight: 800;
   }
   .note {
-    font-size: calc(12px * var(--scale) + var(--type-bump));
+    font-size: calc(12px * var(--scale));
     font-weight: 600;
     color: var(--muted);
     margin: 0;
@@ -173,9 +205,273 @@
     width: 100%; border: 0; background: none; padding: 0;
     display: flex; align-items: center; justify-content: space-between;
     font: inherit; cursor: pointer; color: var(--ink);
+=======
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  a { color: inherit; text-decoration: none; }
+  button, select { font-family: inherit; }
+  .page {
+    min-height: 100dvh;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(225,29,72,0.05), transparent 280px),
+      radial-gradient(circle at 100% 100%, rgba(255,115,140,0.04), transparent 320px),
+      var(--bg);
+  }
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: max(env(safe-area-inset-top), 8px) 20px 8px;
+    background: rgba(255,247,247,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .header {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #fff;
+    padding: 28px 20px 32px;
+  }
+  .header .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    word-break: break-word;
+  }
+  .header .meta {
+    margin: 8px 0 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+  }
+  .donor-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 18px 20px max(28px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    border: none;
+    border-radius: 999px;
+    padding: 18px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-call {
+    padding: 20px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(180deg, var(--accent-light), var(--accent));
+    box-shadow: 0 4px 10px rgba(225,29,72,0.18);
+  }
+  .btn-copy {
+    color: #fff;
+    background: var(--ink);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+  .section { display: flex; flex-direction: column; gap: 10px; }
+  .eyebrow {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  .eyebrow.accent { color: var(--accent); background: var(--accent-soft); }
+  .eyebrow.muted { color: var(--muted); background: rgba(120,113,108,0.10); }
+  .block.critical {
+    background: var(--accent-soft);
+    border-radius: var(--inner-radius);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .dot {
+    width: var(--dot);
+    height: var(--dot);
+    border-radius: 50%;
+    margin-top: 7px;
+    flex: none;
+    background: var(--accent);
+  }
+  .item span { font-size: 17px; font-weight: 600; }
+  .info-list { display: flex; flex-direction: column; gap: 8px; }
+  .info-list .item span { font-weight: 500; }
+  .contact-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--card-radius);
+    padding: 14px;
+  }
+  .contact-name { font-weight: 700; font-size: 17px; }
+  .contact-rel { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .contact-phone { font-size: 15px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+  .call-pill {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    flex: none;
+  }
+  .muted-note {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 0;
+  }
+  .trauma-wrap { margin: 0; }
+  .trauma-wrap summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 2px 0;
+  }
+  .trauma-wrap summary::-webkit-details-marker { display: none; }
+  .trauma-wrap summary::after {
+    content: "›";
+    float: right;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--muted);
+    transform: rotate(90deg);
+    transition: transform 0.2s;
+  }
+  .trauma-wrap[open] summary::after { transform: rotate(-90deg); }
+  .trauma-panel {
+    margin-top: 12px;
+    padding: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--card-radius);
+    box-shadow: 0 3px 8px rgba(225,29,72,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .trauma-panel p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .trauma-panel p.lead { font-weight: 600; color: rgba(28,25,23,0.85); }
+  .trauma-panel p.hint { color: var(--muted); }
+  .trauma-panel label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .trauma-panel select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .hospital-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--card-radius);
+  }
+  .hospital-name { font-size: 15px; font-weight: 700; margin: 0 0 2px; }
+  .hospital-meta { font-size: 12px; font-weight: 600; color: var(--muted); margin: 0; }
+  .hospital-phone { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+  .maps-pill {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    flex: none;
+    white-space: nowrap;
+  }
+  .empty-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 60px 24px max(40px, env(safe-area-inset-bottom));
+    text-align: center;
+  }
+  .empty-wrap .eyebrow { margin-bottom: 16px; }
+  .empty-wrap h1 { font-size: 22px; margin: 0 0 8px; font-weight: 700; }
+  .empty-wrap p { font-size: 14px; color: var(--muted); margin: 0 0 8px; }
+  @media (max-width: 360px) {
+    .header { padding: 24px 16px 28px; }
+    .header h1 { font-size: 28px; }
+    .content { padding: 16px 16px max(24px, env(safe-area-inset-bottom)); }
+>>>>>>> Stashed changes
   }
   .trauma-toggle span {
-    font-size: calc(14px * var(--scale) + var(--type-bump));
+    font-size: calc(14px * var(--scale));
     font-weight: 800;
   }
   .trauma-toggle svg { width: calc(12px * var(--scale)); fill: var(--muted); transition: transform .2s; }
@@ -184,23 +480,22 @@
     display: none;
     margin-top: calc(12px * var(--v-scale));
     padding: calc(14px * var(--v-scale));
-    background: var(--card-bg);
+    background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     box-shadow: 0 calc(3px * var(--scale)) calc(8px * var(--scale)) rgba(225,29,72,.04);
   }
   .trauma-panel.open { display: block; }
-  .trauma-panel .trauma-eyebrow { margin-bottom: calc(10px * var(--v-scale)); }
-  .trauma-panel p { margin: 0 0 calc(8px * var(--v-scale)); font-size: calc(12px * var(--scale) + var(--type-bump)); color: var(--muted); }
+  .trauma-panel p { margin: 0 0 calc(8px * var(--v-scale)); font-size: calc(12px * var(--scale)); color: var(--muted); }
   .trauma-panel p.lead { font-weight: 700; color: rgba(28,25,23,.85); }
   .field { margin-bottom: calc(10px * var(--v-scale)); }
   .field label {
     display: block; margin-bottom: calc(4px * var(--v-scale));
-    font-size: calc(11px * var(--scale) + var(--type-bump)); font-weight: 700; color: var(--muted);
+    font-size: calc(11px * var(--scale)); font-weight: 700; color: var(--muted);
   }
   .field select {
     width: 100%; padding: calc(10px * var(--scale));
-    font: inherit; font-size: calc(14px * var(--scale) + var(--type-bump));
+    font: inherit; font-size: calc(14px * var(--scale));
     border: 1px solid var(--line); border-radius: calc(10px * var(--scale));
     background: #fff; color: var(--ink);
   }
@@ -212,15 +507,14 @@
     border-radius: var(--inner);
   }
   .hospital-card h3 {
-    margin: 0; font-size: calc(14px * var(--scale) + var(--type-bump)); font-weight: 800;
+    margin: 0; font-size: calc(14px * var(--scale)); font-weight: 800;
   }
-  .hospital-card p { margin: calc(2px * var(--v-scale)) 0 0; font-size: calc(11px * var(--scale) + var(--type-bump)); color: var(--muted); font-weight: 600; }
-  .hospital-card p.trauma-dist { color: var(--medical); font-weight: 800; }
+  .hospital-card p { margin: calc(2px * var(--v-scale)) 0 0; font-size: calc(11px * var(--scale)); color: var(--muted); font-weight: 600; }
   .btn-maps {
     flex: none; align-self: center;
     padding: calc(7px * var(--scale)) calc(10px * var(--scale));
     border-radius: 999px; background: var(--accent); color: #fff;
-    font-size: calc(11px * var(--scale) + var(--type-bump)); font-weight: 800;
+    font-size: calc(11px * var(--scale)); font-weight: 800;
   }
   .empty {
     max-width: min(420px, 100%); margin: 0 auto;
@@ -228,13 +522,20 @@
     padding-top: calc(48px * var(--v-scale) + env(safe-area-inset-top, 0px));
     text-align: center;
   }
-  .empty h1 { margin: calc(10px * var(--v-scale)) 0 calc(6px * var(--v-scale)); font-size: calc(25px * var(--scale) + var(--type-bump)); font-weight: 800; }
-  .empty p { margin: 0; font-size: calc(14px * var(--scale) + var(--type-bump)); color: var(--muted); font-weight: 550; }
+  .empty h1 { margin: calc(10px * var(--v-scale)) 0 calc(6px * var(--v-scale)); font-size: calc(22px * var(--scale)); font-weight: 800; }
+  .empty p { margin: 0; font-size: calc(14px * var(--scale)); color: var(--muted); font-weight: 550; }
 </style>
 </head>
 <body>
+<<<<<<< Updated upstream
 <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 <div id="root"></div>
+=======
+<div class="page">
+  <div id="nav" hidden><nav class="nav-bar"><p class="nav-title">Emergency Card</p></nav></div>
+  <div id="root"></div>
+</div>
+>>>>>>> Stashed changes
 <script src="../assets/trauma-hospitals.js"></script>
 <script>
 (function () {
@@ -245,17 +546,19 @@
     contactName: 80, contactPhone: 32, contactRel: 160, contactsMax: 4,
     dEncodedMax: 8192
   };
+<<<<<<< Updated upstream
   var BASELINE_W = 393;
   var BASELINE_VIEWPORT_H = 710;
+  var COUNTY_THRESHOLD = 30;
   var TRAUMA_STATE_KEY = "redMedTraumaState";
-  var TRAUMA_CITY_KEY = "redMedTraumaCity";
+  var TRAUMA_COUNTY_KEY = "redMedTraumaCounty";
 
   function applyLayoutScale() {
     var w = window.innerWidth;
     var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
     h = Math.max(480, h);
     var blended = (w / BASELINE_W) * 0.38 + (h / BASELINE_VIEWPORT_H) * 0.62;
-    var scale = Math.min(0.83, Math.max(0.62, blended));
+    var scale = Math.min(1.04, Math.max(0.78, blended));
     var vf = h < 620 ? 0.82 : h < 680 ? 0.88 : h < 740 ? 0.93 : 1;
     document.documentElement.style.setProperty("--scale", scale.toFixed(4));
     document.documentElement.style.setProperty("--v-scale", (scale * vf).toFixed(4));
@@ -264,6 +567,10 @@
   applyLayoutScale();
   window.addEventListener("resize", applyLayoutScale);
   if (window.visualViewport) window.visualViewport.addEventListener("resize", applyLayoutScale);
+=======
+  var COUNTY_THRESHOLD = 30;
+  var traumaIndex = null;
+>>>>>>> Stashed changes
 
   function b64urlDecode(str) {
     str = str.replace(/-/g, "+").replace(/_/g, "/");
@@ -345,83 +652,51 @@
     return digits ? "tel:" + digits : null;
   }
 
+<<<<<<< Updated upstream
   function buildTraumaIndex(raw) {
     var index = {};
     (raw || []).forEach(function (h) {
-      if (!h || !h.s || !h.c) return;
+      if (!h || !h.s) return;
       if (!index[h.s]) index[h.s] = {};
-      if (!index[h.s][h.c]) index[h.s][h.c] = [];
-      index[h.s][h.c].push(h);
+      var co = h.co || "";
+      if (!index[h.s][co]) index[h.s][co] = [];
+      index[h.s][co].push(h);
     });
     Object.keys(index).forEach(function (st) {
-      Object.keys(index[st]).forEach(function (city) {
-        index[st][city].sort(function (a, b) { return (a.n || "").localeCompare(b.n || ""); });
+      Object.keys(index[st]).forEach(function (co) {
+        index[st][co].sort(function (a, b) { return (a.n || "").localeCompare(b.n || ""); });
       });
     });
     return index;
   }
 
-  var ALL_US_STATES = [
-    "AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
-    "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA",
-    "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE",
-    "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI",
-    "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"
-  ];
-
-  function traumaStates() {
-    return ALL_US_STATES.slice();
+  function traumaStates(index) {
+    return Object.keys(index).sort();
   }
 
-  function traumaCities(index, state, from) {
+  function traumaCounties(index, state) {
     if (!index[state]) return [];
-    var names = Object.keys(index[state]);
-    if (from) {
-      names.sort(function (a, b) {
-        return nearestCityDistance(from, index[state][a]) - nearestCityDistance(from, index[state][b]);
-      });
-    } else {
-      names.sort();
+    return Object.keys(index[state]).sort();
+  }
+
+  function traumaHospitalsInState(index, state) {
+    if (!index[state]) return [];
+    return traumaCounties(index, state).reduce(function (acc, co) {
+      return acc.concat(index[state][co]);
+    }, []).sort(function (a, b) { return (a.n || "").localeCompare(b.n || ""); });
+  }
+
+  function needsCounty(index, state) {
+    return traumaHospitalsInState(index, state).length >= COUNTY_THRESHOLD;
+  }
+
+  function resolvedTrauma(index, state, county) {
+    if (!state) return [];
+    if (needsCounty(index, state)) {
+      if (!county || !index[state] || !index[state][county]) return [];
+      return index[state][county];
     }
-    return names;
-  }
-
-  function nearestCityDistance(from, hospitals) {
-    if (!hospitals || !hospitals.length) return Infinity;
-    return hospitals.reduce(function (best, h) {
-      var d = traumaDistanceMiles(from, h);
-      return d < best ? d : best;
-    }, Infinity);
-  }
-
-  function traumaDistanceMiles(from, h) {
-    if (!from || h.lat == null || h.lng == null) return Infinity;
-    var R = 3958.8;
-    var dLat = (h.lat - from.lat) * Math.PI / 180;
-    var dLng = (h.lng - from.lng) * Math.PI / 180;
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-      + Math.cos(from.lat * Math.PI / 180) * Math.cos(h.lat * Math.PI / 180)
-      * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  function traumaDistanceLabel(from, h) {
-    var miles = traumaDistanceMiles(from, h);
-    if (!isFinite(miles)) return "";
-    if (miles < 0.2) return "Nearby";
-    if (miles < 10) return miles.toFixed(1) + " mi";
-    return Math.round(miles) + " mi";
-  }
-
-  function resolvedTrauma(index, state, city, from) {
-    if (!state || !city || !index[state] || !index[state][city]) return [];
-    var list = index[state][city].slice();
-    if (from) {
-      list.sort(function (a, b) {
-        return traumaDistanceMiles(from, a) - traumaDistanceMiles(from, b);
-      });
-    }
-    return list;
+    return traumaHospitalsInState(index, state);
   }
 
   function mapsHref(h) {
@@ -438,6 +713,79 @@
     var hero = el("div", "hero");
     hero.appendChild(el("p", "hero-kicker", "REDMED"));
     hero.appendChild(el("h1", null, p.name || "Medical ID"));
+=======
+  function buildTraumaIndex() {
+    if (traumaIndex) return traumaIndex;
+    var list = window.REDMED_TRAUMA_HOSPITALS || [];
+    var index = {};
+    list.forEach(function (h) {
+      if (!index[h.s]) index[h.s] = {};
+      if (!index[h.s][h.co]) index[h.s][h.co] = [];
+      index[h.s][h.co].push(h);
+    });
+    Object.keys(index).forEach(function (state) {
+      Object.keys(index[state]).forEach(function (county) {
+        index[state][county].sort(function (a, b) { return a.n < b.n ? -1 : a.n > b.n ? 1 : 0; });
+      });
+    });
+    traumaIndex = index;
+    return index;
+  }
+
+  function traumaStates() {
+    return Object.keys(buildTraumaIndex()).sort();
+  }
+
+  function traumaCounties(state) {
+    var idx = buildTraumaIndex();
+    return idx[state] ? Object.keys(idx[state]).sort() : [];
+  }
+
+  function traumaHospitalsInState(state) {
+    var idx = buildTraumaIndex();
+    if (!idx[state]) return [];
+    return Object.keys(idx[state]).reduce(function (acc, county) {
+      return acc.concat(idx[state][county]);
+    }, []).sort(function (a, b) { return a.n < b.n ? -1 : a.n > b.n ? 1 : 0; });
+  }
+
+  function needsCountyPicker(state) {
+    return traumaHospitalsInState(state).length >= COUNTY_THRESHOLD;
+  }
+
+  function resolvedTraumaHospitals(state, county) {
+    if (!state) return [];
+    if (needsCountyPicker(state)) {
+      if (!county) return [];
+      var idx = buildTraumaIndex();
+      return idx[state] && idx[state][county] ? idx[state][county] : [];
+    }
+    return traumaHospitalsInState(state);
+  }
+
+  function summaryText(p) {
+    var lines = ["EMERGENCY LOCATION — RedMed"];
+    lines.push("Location: Tell dispatcher your location");
+    lines.push("Location as of: " + new Date().toLocaleString());
+    var medLines = [];
+    if (p.name) medLines.push("Name: " + p.name);
+    if (p.blood) medLines.push("Blood: " + p.blood);
+    if (p.allergies.length) medLines.push("Allergies: " + p.allergies.join(", "));
+    if (p.conditions.length) medLines.push("Conditions: " + p.conditions.join(", "));
+    if (p.meds.length) medLines.push("Meds: " + p.meds.join(", "));
+    if (medLines.length) {
+      lines.push("");
+      lines.push("Medical:");
+      lines.push.apply(lines, medLines);
+    }
+    return lines.join("\n");
+  }
+
+  function renderHeader(p) {
+    var header = el("div", "header");
+    header.appendChild(el("p", "eyebrow", "REDMED"));
+    header.appendChild(el("h1", null, p.name || "Medical ID"));
+>>>>>>> Stashed changes
     var metaParts = [];
     var age = ageYears(p.dob);
     if (age != null) metaParts.push(age + " yrs");
@@ -450,6 +798,7 @@
 
   function renderList(title, items, critical) {
     var section = el("div", "section");
+<<<<<<< Updated upstream
     section.appendChild(el("span", "pill " + (critical ? "pill-accent" : "pill-muted"), title));
     var list = el("div", "list" + (critical ? " list-crit" : " list-plain"));
     items.forEach(function (text) {
@@ -459,12 +808,38 @@
       list.appendChild(row);
     });
     section.appendChild(list);
+=======
+    section.appendChild(el("span", "eyebrow" + (critical ? " accent" : " muted"), title));
+    if (critical) {
+      var block = el("div", "block critical");
+      items.forEach(function (text) {
+        var item = el("div", "item");
+        item.appendChild(el("span", "dot"));
+        item.appendChild(el("span", null, text));
+        block.appendChild(item);
+      });
+      section.appendChild(block);
+    } else {
+      var list = el("div", "info-list");
+      items.forEach(function (text) {
+        var item = el("div", "item");
+        item.appendChild(el("span", "dot"));
+        item.appendChild(el("span", null, text));
+        list.appendChild(item);
+      });
+      section.appendChild(list);
+    }
+>>>>>>> Stashed changes
     return section;
   }
 
   function renderContacts(contacts) {
     var section = el("div", "section");
+<<<<<<< Updated upstream
     section.appendChild(el("span", "pill pill-muted", "Emergency contacts"));
+=======
+    section.appendChild(el("span", "eyebrow muted", "Emergency contacts"));
+>>>>>>> Stashed changes
     contacts.forEach(function (c) {
       var card = el("div", "contact-card");
       var info = el("div");
@@ -483,6 +858,7 @@
     return section;
   }
 
+<<<<<<< Updated upstream
   function renderTrauma(index) {
     var wrap = el("div", "section");
     var toggle = el("button", "trauma-toggle");
@@ -497,27 +873,14 @@
     chev.appendChild(path);
     toggle.appendChild(chev);
     var panel = el("div", "trauma-panel");
-    panel.appendChild(el("span", "pill pill-accent trauma-eyebrow", "Trauma hospitals"));
     panel.appendChild(el("p", "lead", "For transport when they may not survive if you wait for a closer hospital."));
-    var traumaHint = el("p", null, "Pick your state and city — verified trauma centers only.");
-    panel.appendChild(traumaHint);
-
-    var userPos = null;
-    function requestTraumaGPS() {
-      if (!navigator.geolocation || userPos) return;
-      navigator.geolocation.getCurrentPosition(function (pos) {
-        userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        traumaHint.textContent = "Pick your state and city — sorted closest to your GPS.";
-        onStateChange();
-        refreshList();
-      }, function () {}, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
-    }
+    panel.appendChild(el("p", null, "Verified trauma centers only — pick your state. County appears only when the list is long (30+)."));
 
     var stateField = el("div", "field");
     stateField.appendChild(el("label", null, "State"));
     var stateSel = el("select");
     stateSel.appendChild(el("option", null, "Select state"));
-    traumaStates().forEach(function (st) {
+    traumaStates(index).forEach(function (st) {
       var opt = el("option", null, st);
       opt.value = st;
       stateSel.appendChild(opt);
@@ -525,13 +888,13 @@
     stateField.appendChild(stateSel);
     panel.appendChild(stateField);
 
-    var cityField = el("div", "field");
-    cityField.style.display = "none";
-    cityField.appendChild(el("label", null, "City"));
-    var citySel = el("select");
-    citySel.appendChild(el("option", null, "Select city"));
-    cityField.appendChild(citySel);
-    panel.appendChild(cityField);
+    var countyField = el("div", "field");
+    countyField.style.display = "none";
+    countyField.appendChild(el("label", null, "County"));
+    var countySel = el("select");
+    countySel.appendChild(el("option", null, "Select county"));
+    countyField.appendChild(countySel);
+    panel.appendChild(countyField);
 
     var listHost = el("div");
     panel.appendChild(listHost);
@@ -542,14 +905,14 @@
     function loadPersisted() {
       try {
         stateSel.value = localStorage.getItem(TRAUMA_STATE_KEY) || "";
-        citySel.value = localStorage.getItem(TRAUMA_CITY_KEY) || "";
+        countySel.value = localStorage.getItem(TRAUMA_COUNTY_KEY) || "";
       } catch (e) {}
     }
 
     function persist() {
       try {
         localStorage.setItem(TRAUMA_STATE_KEY, stateSel.value || "");
-        localStorage.setItem(TRAUMA_CITY_KEY, citySel.value || "");
+        localStorage.setItem(TRAUMA_COUNTY_KEY, countySel.value || "");
       } catch (e) {}
     }
 
@@ -557,21 +920,83 @@
       listHost.textContent = "";
       dispatchNote.style.display = "none";
       var st = stateSel.value;
-      var city = citySel.value;
-      if (!st || !city) return;
-      var hospitals = resolvedTrauma(index, st, city, userPos);
+      var co = countySel.value;
+      if (!st) return;
+      var showCounty = needsCounty(index, st);
+      countyField.style.display = showCounty ? "block" : "none";
+      if (showCounty && !co) return;
+      var hospitals = resolvedTrauma(index, st, co);
       if (!hospitals.length) {
         listHost.appendChild(el("p", null, "None in this area"));
+=======
+  function renderTraumaSection() {
+    var details = el("details", "trauma-wrap");
+    details.appendChild(el("summary", null, "Trauma center transport"));
+    var panel = el("div", "trauma-panel");
+    panel.appendChild(el("span", "eyebrow accent", "Trauma hospitals"));
+    panel.appendChild(el("p", "lead", "For transport when they may not survive if you wait for a closer hospital."));
+    panel.appendChild(el("p", "hint", "Verified trauma centers only — pick your state. County appears only when the list is long (30+)."));
+
+    var stateKey = "redMedTraumaState";
+    var countyKey = "redMedTraumaCounty";
+    var state = "";
+    var county = "";
+    try {
+      state = localStorage.getItem(stateKey) || "";
+      county = localStorage.getItem(countyKey) || "";
+    } catch (e) { /* private mode */ }
+
+    var stateField = el("div");
+    stateField.appendChild(el("label", null, "State"));
+    var stateSelect = el("select");
+    stateSelect.appendChild(el("option", null, "Select state"));
+    traumaStates().forEach(function (s) {
+      var opt = el("option", null, s);
+      opt.value = s;
+      if (s === state) opt.selected = true;
+      stateSelect.appendChild(opt);
+    });
+    stateField.appendChild(stateSelect);
+    panel.appendChild(stateField);
+
+    var countyField = el("div");
+    countyField.hidden = !needsCountyPicker(state);
+    countyField.appendChild(el("label", null, "County"));
+    var countySelect = el("select");
+    countySelect.appendChild(el("option", null, "Select county"));
+    countyField.appendChild(countySelect);
+    panel.appendChild(countyField);
+
+    var listWrap = el("div");
+    panel.appendChild(listWrap);
+
+    function fillCountyOptions() {
+      countySelect.textContent = "";
+      countySelect.appendChild(el("option", null, "Select county"));
+      traumaCounties(state).forEach(function (c) {
+        var opt = el("option", null, c);
+        opt.value = c;
+        if (c === county) opt.selected = true;
+        countySelect.appendChild(opt);
+      });
+    }
+
+    function renderHospitals() {
+      listWrap.textContent = "";
+      if (!state || (needsCountyPicker(state) && !county)) return;
+      var hospitals = resolvedTraumaHospitals(state, county);
+      if (!hospitals.length) {
+        listWrap.appendChild(el("p", "hint", "None in this area"));
+>>>>>>> Stashed changes
         return;
       }
       hospitals.forEach(function (h) {
         var card = el("div", "hospital-card");
+<<<<<<< Updated upstream
         var body = el("div");
         body.style.flex = "1";
         body.appendChild(el("h3", null, h.n || "Hospital"));
         body.appendChild(el("p", null, "Level " + h.l + " trauma · " + (h.c || "") + ", " + (h.s || "")));
-        var dist = traumaDistanceLabel(userPos, h);
-        if (dist) body.appendChild(el("p", "trauma-dist", dist));
         if (h.p) body.appendChild(el("p", null, formatPhone(h.p)));
         card.appendChild(body);
         if (h.lat != null && h.lng != null) {
@@ -587,39 +1012,30 @@
     }
 
     function onStateChange() {
-      citySel.textContent = "";
-      citySel.appendChild(el("option", null, "Select city"));
-      var st = stateSel.value;
-      cityField.style.display = st ? "block" : "none";
-      if (!st) {
-        citySel.value = "";
-        persist();
-        refreshList();
-        return;
-      }
-      traumaCities(index, st, userPos).forEach(function (city) {
-        var opt = el("option", null, city);
-        opt.value = city;
-        citySel.appendChild(opt);
+      countySel.textContent = "";
+      countySel.appendChild(el("option", null, "Select county"));
+      traumaCounties(index, stateSel.value).forEach(function (co) {
+        var opt = el("option", null, co);
+        opt.value = co;
+        countySel.appendChild(opt);
       });
-      citySel.value = "";
+      countySel.value = "";
       persist();
       refreshList();
     }
 
     stateSel.addEventListener("change", onStateChange);
-    citySel.addEventListener("change", function () { persist(); refreshList(); });
+    countySel.addEventListener("change", function () { persist(); refreshList(); });
 
     toggle.addEventListener("click", function () {
       var open = panel.classList.toggle("open");
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      if (open) requestTraumaGPS();
     });
 
     loadPersisted();
     if (stateSel.value) {
       onStateChange();
-      citySel.value = localStorage.getItem(TRAUMA_CITY_KEY) || "";
+      countySel.value = localStorage.getItem(TRAUMA_COUNTY_KEY) || "";
       refreshList();
     }
 
@@ -636,6 +1052,48 @@
     if (p.conditions.length) lines.push("Conditions: " + p.conditions.join(", "));
     if (p.meds.length) lines.push("Meds: " + p.meds.join(", "));
     return lines.join("\n");
+=======
+        var info = el("div");
+        info.appendChild(el("p", "hospital-name", h.n));
+        info.appendChild(el("p", "hospital-meta", "Level " + h.l + " trauma · " + h.c + ", " + h.s));
+        if (h.p) info.appendChild(el("p", "hospital-phone", h.p));
+        card.appendChild(info);
+        var maps = el("a", "maps-pill", "Maps");
+        maps.href = "https://maps.apple.com/?daddr=" + h.lat + "," + h.lng;
+        maps.rel = "noopener";
+        card.appendChild(maps);
+        listWrap.appendChild(card);
+      });
+      listWrap.appendChild(el("p", "hint", "Call 911 first. Tell the dispatcher you need trauma-center transport and your location."));
+    }
+
+    function persist() {
+      try {
+        localStorage.setItem(stateKey, state);
+        localStorage.setItem(countyKey, county);
+      } catch (e) { /* private mode */ }
+    }
+
+    stateSelect.addEventListener("change", function () {
+      state = stateSelect.value;
+      county = "";
+      countyField.hidden = !needsCountyPicker(state);
+      fillCountyOptions();
+      persist();
+      renderHospitals();
+    });
+
+    countySelect.addEventListener("change", function () {
+      county = countySelect.value;
+      persist();
+      renderHospitals();
+    });
+
+    fillCountyOptions();
+    renderHospitals();
+    details.appendChild(panel);
+    return details;
+>>>>>>> Stashed changes
   }
 
   function attachScrollProgress(scroller) {
@@ -649,22 +1107,27 @@
   }
 
   function renderCard(p) {
+    document.getElementById("nav").hidden = false;
     var root = document.getElementById("root");
     root.textContent = "";
-    var shell = el("div", "shell atmosphere rm-atmosphere");
+    var shell = el("div", "shell atmosphere");
     var topbar = el("div", "topbar");
     topbar.appendChild(el("span", null, "EMERGENCY CARD"));
     shell.appendChild(topbar);
 
+<<<<<<< Updated upstream
     var scroll = el("div");
     scroll.style.flex = "1";
     scroll.style.overflowY = "auto";
     scroll.style.webkitOverflowScrolling = "touch";
+=======
+    var body = el("div", "content");
+>>>>>>> Stashed changes
 
     scroll.appendChild(renderHero(p));
 
     var content = el("div", "content");
-    var call = el("a", "btn btn-call rm-btn rm-btn-primary", "Call 911");
+    var call = el("a", "btn btn-call", "Call 911");
     call.href = "tel:911";
     content.appendChild(call);
 
@@ -673,7 +1136,7 @@
     if (p.conditions.length) content.appendChild(renderList("Medical conditions", p.conditions, false));
     if (p.contacts.length) content.appendChild(renderContacts(p.contacts));
 
-    var copy = el("button", "btn btn-ink rm-btn rm-btn-ink", "Copy medical summary");
+    var copy = el("button", "btn btn-ink", "Copy medical summary");
     copy.type = "button";
     copy.addEventListener("click", function () {
       var text = summaryText(p);
@@ -705,15 +1168,22 @@
     });
     content.appendChild(copy);
 
+<<<<<<< Updated upstream
     var traumaRaw = window.REDMED_TRAUMA_HOSPITALS || [];
     if (traumaRaw.length) content.appendChild(renderTrauma(buildTraumaIndex(traumaRaw)));
 
     content.appendChild(el("p", "note", "Tap the band → this card. Nothing saved to this phone."));
+=======
+    body.appendChild(renderTraumaSection());
+
+    body.appendChild(el("p", "muted-note", "Tap the band → this card. Nothing saved to this phone."));
+>>>>>>> Stashed changes
 
     if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
       content.appendChild(el("p", "note", "No allergies, meds, conditions, or contacts were written to this band."));
     }
 
+<<<<<<< Updated upstream
     scroll.appendChild(content);
     shell.appendChild(scroll);
     root.appendChild(shell);
@@ -723,23 +1193,37 @@
   function renderEmpty(title, body) {
     var root = document.getElementById("root");
     root.textContent = "";
-    var shell = el("div", "shell atmosphere rm-atmosphere");
+    var shell = el("div", "shell atmosphere");
     var wrap = el("div", "empty");
     wrap.appendChild(el("p", "hero-kicker", "REDMED"));
     wrap.appendChild(el("h1", null, title));
     wrap.appendChild(el("p", null, body));
     shell.appendChild(wrap);
     root.appendChild(shell);
+=======
+    root.appendChild(body);
   }
 
-  function isMobileHandheld() {
+  function renderEmpty() {
+    document.getElementById("nav").hidden = true;
+    var root = document.getElementById("root");
+    root.textContent = "";
+    var wrap = el("div", "empty-wrap");
+    wrap.appendChild(el("span", "eyebrow accent", "REDMED"));
+    wrap.appendChild(el("h1", null, "Tap the band"));
+    wrap.appendChild(el("p", null, "Hold any smartphone to a RedMed band — the browser opens the wearer's emergency card. No app needed. This page loads only after a tap."));
+    root.appendChild(wrap);
+>>>>>>> Stashed changes
+  }
+
+  function isSmartphone() {
     var ua = navigator.userAgent || "";
     if (!ua || ua.length < 12) return false;
     if (/bot|crawler|spider|scanner|reader/i.test(ua)) return false;
-    if (/iPhone|iPod/i.test(ua)) return true;
-    if (/iPad/i.test(ua)) return true;
-    if (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1) return true;
-    if (/Android/i.test(ua)) return true;
+    if (/iPad/.test(ua)) return false;
+    if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return false;
+    if (/iPhone|iPod/.test(ua)) return true;
+    if (/Android/i.test(ua) && /Mobile/i.test(ua)) return true;
     if (/Windows Phone/i.test(ua)) return true;
     return false;
   }
@@ -748,9 +1232,24 @@
     try { return new URLSearchParams(location.search).get("preview") === "1"; } catch (e) { return false; }
   }
 
+<<<<<<< Updated upstream
+=======
+  function renderPhoneGate() {
+    document.getElementById("nav").hidden = true;
+    var root = document.getElementById("root");
+    root.textContent = "";
+    var wrap = el("div", "empty-wrap");
+    wrap.appendChild(el("span", "eyebrow accent", "REDMED"));
+    wrap.appendChild(el("h1", null, "Smartphone required"));
+    wrap.appendChild(el("p", null, "This bracelet works with smartphones only — not card readers or other NFC devices."));
+    wrap.appendChild(el("p", null, "Use an iPhone or Android phone — not a card reader, payment terminal, tablet, computer, or other NFC device."));
+    root.appendChild(wrap);
+  }
+
+>>>>>>> Stashed changes
   var profile = decodeFromHash(location.hash);
-  if (profile && !isMobileHandheld() && !isOwnerPreview()) {
-    renderEmpty("Phone or tablet required", "This bracelet works with smartphones and tablets — not desktop browsers or card readers.");
+  if (profile && !isSmartphone() && !isOwnerPreview()) {
+    renderEmpty("Smartphone required", "This bracelet works with smartphones only — not card readers or other NFC devices.");
   } else if (profile) {
     renderCard(profile);
   } else {

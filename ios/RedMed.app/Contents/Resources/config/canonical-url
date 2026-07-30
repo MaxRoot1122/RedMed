@@ -5,8 +5,6 @@
 # Active write target (first uncommented non-comment line):
 https://redmed.pages.dev/card/
 #
-# Owner band-setup QR (AppConfig.getStartedURL): https://redmed.pages.dev/get
-#
 # In-app decode still accepts redmed:// (old tags) and HTTPS #d= URLs.
 # card/ is the minimal, self-contained, offline-cacheable scan page.
 legacy:https://maxroot1122.github.io/RedMed/card/
