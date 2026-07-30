@@ -27,5 +27,10 @@ Gotcha: the repo root is **not** the full deployed site root. The deployable sit
 ```
 This checks inline-script CSP `sha256` hashes, runs `node --check` on inline scripts + `card/sw.js`, verifies required assets, checks `config/canonical-url` is synced into `ios/RedMed/AppConfig.swift`, and does an HTTP smoke test against `:8934`. It only `WARN`s (does not fail) on the missing `ios/RedMed.app/...` mirror because that dev-only launcher bundle was removed from the repo. After editing any inline `<script>` in `get.html` or `card/index.html` you must recompute the CSP hash or `verify` fails with a "CSP hash mismatch"; if it fails on `card/index.html`, first check for unresolved git merge-conflict markers inside `card/`.
 
-### iOS
-`./scripts/dev.sh build` runs `xcodebuild` (macOS only). On this VM it will error with "xcodebuild not found" — expected, not an environment fault.
+### iOS (local / non-cloud only)
+The iOS app cannot run on this Linux cloud VM — the Simulator, `xcodebuild`, and `xcrun simctl` only exist inside Xcode on macOS. `./scripts/dev.sh build` errors here with "xcodebuild not found", which is expected, not an environment fault. Run it on a local Mac:
+
+- Canonical project: `ios/RedMed.xcodeproj` (open it, pick an iPhone simulator, ⌘R). The shared `RedMed` scheme is checked in. The root `RedMed.xcodeproj` is a stray — `./scripts/dev.sh clean` deletes it; don't open it.
+- One-shot Simulator run from a terminal: `./scripts/run-ios-simulator.sh` (builds Debug for an available iPhone simulator, boots it, installs, launches `com.redmed.app`). Auto-rebuild on source edits: `./scripts/watch-ios-simulator.sh`.
+- Double-click launch: `ios/RedMed.command` (the root `RedMed.command` just forwards to it). Both are macOS-only.
+- Sources live in `ios/RedMed/` plus `ios/claude/` (`DesignPageCopy.swift`, `DesignPagePlacement.swift` — the `claude` group in the project points there). NFC writes need a physical iPhone; the Simulator can run the UI but not CoreNFC.
