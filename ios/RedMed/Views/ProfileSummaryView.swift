@@ -68,18 +68,28 @@ struct ProfileSummaryView: View {
                 ))
             }
 
+            if !profile.name.trimmingCharacters(in: .whitespaces).isEmpty {
+                Section {
+                    criticalInfoCard
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: layout.spaceXS, leading: layout.spaceXS, bottom: layout.spaceSM, trailing: layout.spaceXS))
+            }
+
             Section("You") {
                 summaryRow("Name", profile.name)
                 summaryRow("Birth date", dobDisplay)
                 summaryRow("Blood type", profile.blood.isEmpty ? "Unknown" : profile.blood)
             }
 
-            Section("Allergies") {
+            Section {
                 if profile.allergies.isEmpty {
                     Text("None").foregroundStyle(.secondary)
                 } else {
-                    ForEach(profile.allergies, id: \.self) { Text($0) }
+                    AllergyChipsRow(allergies: profile.allergies)
                 }
+            } header: {
+                SectionHeaderCount(title: "Allergies", count: profile.allergies.count)
             }
 
             Section("Medications") {
@@ -125,6 +135,77 @@ struct ProfileSummaryView: View {
         .screenAtmosphere()
     }
 
+    private var criticalInfoCard: some View {
+        VStack(alignment: .leading, spacing: layout.spaceSM) {
+            Label("Critical Info", systemImage: "staroflife.fill")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(AppTheme.accent)
+                .textCase(.uppercase)
+                .tracking(0.5)
+
+            HStack(alignment: .top, spacing: layout.spaceSM) {
+                VStack(spacing: 2) {
+                    Text(profile.blood.isEmpty ? "—" : profile.blood)
+                        .font(.system(size: layout.s(26), weight: .bold, design: .rounded))
+                        .foregroundStyle(AppTheme.accent)
+                    Text("Blood Type")
+                        .font(.system(size: layout.s(10), weight: .semibold))
+                        .foregroundStyle(AppTheme.muted)
+                        .textCase(.uppercase)
+                        .tracking(0.4)
+                }
+                .frame(width: layout.s(80))
+                .padding(.vertical, layout.spaceSM)
+                .background(AppTheme.cardBg)
+                .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+
+                VStack(alignment: .leading, spacing: layout.s(4)) {
+                    Text("Allergies")
+                        .font(.system(size: layout.s(10), weight: .semibold))
+                        .foregroundStyle(AppTheme.muted)
+                        .textCase(.uppercase)
+                        .tracking(0.4)
+                    if profile.allergies.isEmpty {
+                        Text("None recorded")
+                            .font(layout.captionFont())
+                            .foregroundStyle(AppTheme.muted)
+                    } else {
+                        ForEach(profile.allergies.prefix(3), id: \.self) { allergy in
+                            HStack(spacing: 5) {
+                                Circle().fill(AppTheme.accent).frame(width: 5, height: 5)
+                                Text(allergy)
+                                    .font(.system(size: layout.s(13), weight: .medium))
+                                    .foregroundStyle(AppTheme.ink)
+                            }
+                        }
+                        if profile.allergies.count > 3 {
+                            Text("+\(profile.allergies.count - 3) more")
+                                .font(layout.caption2Font())
+                                .foregroundStyle(AppTheme.muted)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(layout.spaceSM)
+                .background(AppTheme.cardBg)
+                .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+            }
+        }
+        .padding(layout.spaceMD)
+        .background(
+            LinearGradient(
+                colors: [AppTheme.accentSoft, AppTheme.accentSoft.opacity(0.3)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous)
+                .strokeBorder(AppTheme.accent.opacity(0.18), lineWidth: 1)
+        )
+    }
+
     private func summaryRow(_ label: String, _ value: String) -> some View {
         HStack(alignment: .firstTextBaseline) {
             Text(label)
@@ -135,6 +216,70 @@ struct ProfileSummaryView: View {
                 .font(layout.subheadlineFont(weight: .semibold))
                 .foregroundStyle(AppTheme.ink)
                 .multilineTextAlignment(.trailing)
+        }
+    }
+}
+
+/// Wrapping row of allergy capsules — plain HStack/VStack, no GeometryReader,
+/// so it can't reintroduce the scroll-fighting bug noted above.
+private struct AllergyChipsRow: View {
+    @Environment(\.layoutMetrics) private var layout
+    let allergies: [String]
+
+    private var rows: [[String]] {
+        var result: [[String]] = []
+        var current: [String] = []
+        var currentWidth: CGFloat = 0
+        let maxWidth: CGFloat = 280
+        for allergy in allergies {
+            let estimatedWidth = CGFloat(allergy.count) * 8 + 40
+            if currentWidth + estimatedWidth > maxWidth, !current.isEmpty {
+                result.append(current)
+                current = []
+                currentWidth = 0
+            }
+            current.append(allergy)
+            currentWidth += estimatedWidth
+        }
+        if !current.isEmpty { result.append(current) }
+        return result
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.spaceXS) {
+            ForEach(rows, id: \.self) { row in
+                HStack(spacing: layout.spaceXS) {
+                    ForEach(row, id: \.self) { allergy in
+                        Label(allergy, systemImage: "exclamationmark.triangle.fill")
+                            .font(.system(size: layout.s(13), weight: .semibold))
+                            .foregroundStyle(AppTheme.accent)
+                            .padding(.horizontal, layout.s(10))
+                            .padding(.vertical, layout.s(6))
+                            .background(AppTheme.accentSoft)
+                            .clipShape(Capsule())
+                            .overlay(Capsule().strokeBorder(AppTheme.accent.opacity(0.2), lineWidth: 1))
+                    }
+                }
+            }
+        }
+        .padding(.vertical, layout.spaceXS)
+    }
+}
+
+private struct SectionHeaderCount: View {
+    let title: String
+    let count: Int
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(title)
+            Spacer()
+            Text("\(count)")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(AppTheme.accent)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 2)
+                .background(AppTheme.accentSoft)
+                .clipShape(Capsule())
         }
     }
 }
