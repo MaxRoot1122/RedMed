@@ -3,13 +3,13 @@ import SwiftUI
 /// Owner My ID tab — read-only summary; Edit sheet prompts Face ID only when
 /// changing saved profile data (`EditProfileView`).
 struct MyIDView: View {
-    @Environment(\.layoutMetrics) private var layout
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var showingEditSheet = false
     @State private var showingBraceletSetup = false
+    @State private var showingHowItWorks = false
     @AppStorage("redMedUseConsent") private var useConsentAccepted = false
     @State private var showingConsent = false
 
@@ -18,11 +18,6 @@ struct MyIDView: View {
             ProfileSummaryView(profile: store.profile, link: link)
                 .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    if needsBandSetup {
-                        setupBanner
-                    }
-                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
@@ -31,6 +26,15 @@ struct MyIDView: View {
                             BraceletToolbarButton(link: link)
                         }
                         .accessibilityLabel("Bracelet setup")
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            showingHowItWorks = true
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                        }
+                        .foregroundStyle(AppTheme.muted)
+                        .accessibilityLabel("How it works")
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -57,6 +61,10 @@ struct MyIDView: View {
         .sheet(isPresented: $showingEditSheet) {
             EditProfileView(embedded: false)
         }
+        .sheet(isPresented: $showingHowItWorks) {
+            HowItWorksView()
+                .withLayoutMetrics()
+        }
         .fullScreenCover(isPresented: $showingConsent) {
             UseConsentView {
                 useConsentAccepted = true
@@ -65,25 +73,6 @@ struct MyIDView: View {
             }
             .withLayoutMetrics()
         }
-    }
-
-    private var needsBandSetup: Bool {
-        !link.isLinked
-            && !store.profile.name.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    private var setupBanner: some View {
-        Button {
-            showingBraceletSetup = true
-        } label: {
-            SoftStatusChip(
-                text: "Program your band — tap the bracelet icon or here",
-                warning: true
-            )
-        }
-        .buttonStyle(.plain)
-        .padding(.horizontal, layout.screenPad)
-        .padding(.bottom, layout.spaceSM)
     }
 }
 

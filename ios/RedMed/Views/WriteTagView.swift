@@ -18,8 +18,8 @@ struct WriteTagView: View {
             ScrollView {
                 VStack(spacing: layout.space2XL) {
                     NFCHeroHeader(
-                        title: "Write Tag",
-                        subtitle: "Program your band once. Tap the band afterward — any phone opens your emergency card. No app for readers."
+                        title: DesignPagePlacement.nfcHeroTitle,
+                        subtitle: DesignPagePlacement.nfcHeroSubtitle
                     )
 
                     SoftStatusChip(

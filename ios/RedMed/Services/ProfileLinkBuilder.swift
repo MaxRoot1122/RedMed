@@ -26,15 +26,10 @@ enum ProfileLinkBuilder {
         return URL(string: baseURL + "#d=" + encoded)
     }
 
-    /// Owner QA — opens hosted card on any device (`?preview=1` bypasses phone gate).
-    static func previewURL(
-        profile: MedicalProfile,
-        baseURL: String = AppConfig.medicalCardBaseURL
-    ) -> URL? {
-        guard let url = buildURL(profile: profile, baseURL: baseURL),
-              var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
-        components.queryItems = [URLQueryItem(name: "preview", value: "1")]
-        return components.url
+    /// Hosted card URL for the "preview in Safari" buttons — same encoding as `buildURL`,
+    /// fixed to `AppConfig.medicalCardBaseURL` since previews always target the live host.
+    static func previewURL(profile: MedicalProfile) -> URL? {
+        buildURL(profile: profile, baseURL: AppConfig.medicalCardBaseURL)
     }
 
     /// On-screen guidance about which passive NFC tag size is needed.

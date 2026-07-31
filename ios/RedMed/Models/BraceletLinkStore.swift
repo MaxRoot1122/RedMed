@@ -16,21 +16,11 @@ final class BraceletLinkStore: ObservableObject {
         didSet { Self.persistURL(deviceURL) }
     }
 
-    /// One-time pass on the edit-auth gate for the foreground session right
-    /// after pairing. Set when `link()` runs; consumed (cleared) the next
-    /// time the app leaves the foreground, so a fresh launch never inherits
-    /// it. Persisted so an in-session backgrounding (e.g. switching apps
-    /// briefly) doesn't survive process death and reopen the window.
-    @Published var pendingPostPairingGrace: Bool {
-        didSet { UserDefaults.standard.set(pendingPostPairingGrace, forKey: Keys.pendingGrace) }
-    }
-
     enum Keys {
         static let name = "redMedBraceletDeviceName"
         static let url = "redMedBraceletDeviceURL"
         static let legacyPaired = "redMedBraceletPaired"
         static let urlAccount = "braceletDeviceURL"
-        static let pendingGrace = "redMedPostPairingEditGrace"
     }
 
     private var nearbyTimer: Timer?
@@ -38,7 +28,6 @@ final class BraceletLinkStore: ObservableObject {
     init() {
         deviceName = UserDefaults.standard.string(forKey: Keys.name) ?? ""
         deviceURL = Self.loadURL()
-        pendingPostPairingGrace = UserDefaults.standard.bool(forKey: Keys.pendingGrace)
         if deviceURL.isEmpty, UserDefaults.standard.bool(forKey: Keys.legacyPaired) {
             deviceName = deviceName.isEmpty ? "My bracelet" : deviceName
         }
@@ -79,14 +68,7 @@ final class BraceletLinkStore: ObservableObject {
         deviceName = trimmed.isEmpty ? "My bracelet" : trimmed
         deviceURL = url
         UserDefaults.standard.set(true, forKey: Keys.legacyPaired)
-        pendingPostPairingGrace = true
         markNearby()
-    }
-
-    /// Consumes the post-pairing grace window. Call when the app leaves the
-    /// foreground so the free edit can't outlive the session it was granted in.
-    func consumePostPairingGrace() {
-        pendingPostPairingGrace = false
     }
 
     func updateName(_ name: String) {
@@ -101,7 +83,6 @@ final class BraceletLinkStore: ObservableObject {
         isNearby = false
         nearbyTimer?.invalidate()
         nearbyTimer = nil
-        pendingPostPairingGrace = false
         UserDefaults.standard.removeObject(forKey: Keys.legacyPaired)
     }
 

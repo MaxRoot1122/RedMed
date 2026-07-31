@@ -216,6 +216,8 @@ private struct LayoutMetricsScope: ViewModifier {
 enum AppTheme {
     static let accent = Color(red: 0.882, green: 0.114, blue: 0.282) // #e11d48
     static let accentSoft = Color(red: 0.882, green: 0.114, blue: 0.282).opacity(0.10)
+    /// Gradient highlight paired above `accent` (top stop of primary-button / hero gradients).
+    static let accentLight = Color(red: 1, green: 0.45, blue: 0.55)
     static let medical = accent
     static let medicalSoft = accentSoft
     static let teal = Color(red: 0.624, green: 0.071, blue: 0.224) // #9f1239 deep rose
@@ -273,9 +275,15 @@ struct BrandMark: View {
             }
 
             if showTagline {
-                Text("Tap the band · phone opens your card · no app for readers")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(AppTheme.muted)
+                VStack(alignment: .leading, spacing: layout.s(4)) {
+                    Text(DesignPagePlacement.brandTagline)
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(AppTheme.accent)
+                    Text(DesignPagePlacement.brandLead)
+                        .font(.footnote.weight(.medium))
+                        .foregroundStyle(AppTheme.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }

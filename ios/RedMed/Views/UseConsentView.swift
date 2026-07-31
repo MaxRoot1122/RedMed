@@ -21,6 +21,11 @@ struct UseConsentView: View {
                         .foregroundStyle(AppTheme.muted)
                         .fixedSize(horizontal: false, vertical: true)
 
+                    Text(DesignPagePlacement.consentRegulatory)
+                        .font(.footnote.weight(.medium))
+                        .foregroundStyle(AppTheme.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+
                     Link("Privacy Policy", destination: URL(string: AppConfig.privacyPolicyURL)!)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppTheme.accent)
