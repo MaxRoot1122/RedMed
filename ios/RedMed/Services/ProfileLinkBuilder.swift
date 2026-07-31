@@ -26,6 +26,12 @@ enum ProfileLinkBuilder {
         return URL(string: baseURL + "#d=" + encoded)
     }
 
+    /// Hosted card URL for the "preview in Safari" buttons — same encoding as `buildURL`,
+    /// fixed to `AppConfig.medicalCardBaseURL` since previews always target the live host.
+    static func previewURL(profile: MedicalProfile) -> URL? {
+        buildURL(profile: profile, baseURL: AppConfig.medicalCardBaseURL)
+    }
+
     /// On-screen guidance about which passive NFC tag size is needed.
     /// Counts the full NDEF URI (base URL + `#d=` + payload) — tag capacity is
     /// consumed by the whole string written to the chip, not just the profile.
