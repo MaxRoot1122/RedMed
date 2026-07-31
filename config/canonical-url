@@ -1,0 +1,11 @@
+# Canonical NFC card base URL (no #d= fragment).
+# iOS CoreNFC writes this to the band; tap → any smartphone opens card/ in browser.
+# Keep AppConfig.medicalCardBaseURL in sync with the active line below.
+#
+# Active write target (first uncommented non-comment line):
+https://redmed.pages.dev/card/
+#
+# In-app decode still accepts redmed:// (old tags) and HTTPS #d= URLs.
+# card/ is the minimal, self-contained, offline-cacheable scan page.
+legacy:https://maxroot1122.github.io/RedMed/card/
+# legacy:redmed://card
