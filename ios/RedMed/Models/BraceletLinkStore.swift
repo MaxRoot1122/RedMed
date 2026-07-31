@@ -16,11 +16,35 @@ final class BraceletLinkStore: ObservableObject {
         didSet { Self.persistURL(deviceURL) }
     }
 
+    /// One-time pass on the edit-auth gate, active for exactly the first
+    /// foreground session that follows pairing — never the pairing session
+    /// itself. Consulted directly by `EditProfileView.requiresEditAuth`.
+    @Published var pendingPostPairingGrace: Bool {
+        didSet { UserDefaults.standard.set(pendingPostPairingGrace, forKey: Keys.pendingGrace) }
+    }
+
+    /// Pairing just happened; waiting for the app to background at least once
+    /// and come back before the grace above goes live. Persisted so the
+    /// pairing session itself never sees the grace, even if it backgrounds
+    /// and returns before we've observed a *later* independent foreground.
+    @Published private var postPairingGraceArmed: Bool {
+        didSet { UserDefaults.standard.set(postPairingGraceArmed, forKey: Keys.graceArmed) }
+    }
+
+    /// True once the app has backgrounded at least once since arming —
+    /// the signal that the *next* activation is a genuinely new session.
+    @Published private var postPairingGraceBackgrounded: Bool {
+        didSet { UserDefaults.standard.set(postPairingGraceBackgrounded, forKey: Keys.graceBackgrounded) }
+    }
+
     enum Keys {
         static let name = "redMedBraceletDeviceName"
         static let url = "redMedBraceletDeviceURL"
         static let legacyPaired = "redMedBraceletPaired"
         static let urlAccount = "braceletDeviceURL"
+        static let pendingGrace = "redMedPostPairingEditGrace"
+        static let graceArmed = "redMedPostPairingEditGraceArmed"
+        static let graceBackgrounded = "redMedPostPairingEditGraceBackgrounded"
     }
 
     private var nearbyTimer: Timer?
@@ -28,6 +52,9 @@ final class BraceletLinkStore: ObservableObject {
     init() {
         deviceName = UserDefaults.standard.string(forKey: Keys.name) ?? ""
         deviceURL = Self.loadURL()
+        pendingPostPairingGrace = UserDefaults.standard.bool(forKey: Keys.pendingGrace)
+        postPairingGraceArmed = UserDefaults.standard.bool(forKey: Keys.graceArmed)
+        postPairingGraceBackgrounded = UserDefaults.standard.bool(forKey: Keys.graceBackgrounded)
         if deviceURL.isEmpty, UserDefaults.standard.bool(forKey: Keys.legacyPaired) {
             deviceName = deviceName.isEmpty ? "My bracelet" : deviceName
         }
@@ -68,7 +95,38 @@ final class BraceletLinkStore: ObservableObject {
         deviceName = trimmed.isEmpty ? "My bracelet" : trimmed
         deviceURL = url
         UserDefaults.standard.set(true, forKey: Keys.legacyPaired)
+        pendingPostPairingGrace = false
+        postPairingGraceArmed = true
+        postPairingGraceBackgrounded = false
         markNearby()
+    }
+
+    /// Call on every app-wide transition to `.background`. Only marks that a
+    /// session boundary has passed since arming — does NOT touch an active
+    /// grace. Consumption of an active grace is `EditProfileView`'s job (see
+    /// `consumePostPairingGrace()`), kept local to the view that owns the
+    /// lock state so it isn't racing another view's scenePhase observer for
+    /// the same transition.
+    func noteAppDidBackground() {
+        if postPairingGraceArmed { postPairingGraceBackgrounded = true }
+    }
+
+    /// Consumes an active grace. Call from the edit screen's own
+    /// backgrounding handler so lock re-engagement isn't dependent on
+    /// cross-view `onChange` ordering for the same scenePhase transition.
+    func consumePostPairingGrace() {
+        pendingPostPairingGrace = false
+    }
+
+    /// Call on every app-wide transition to `.active` (including cold
+    /// launch). Promotes an armed grace to active only if we've seen at
+    /// least one backgrounding since it was armed — i.e. this activation is
+    /// not the same session pairing happened in.
+    func promotePostPairingGraceIfEligible() {
+        guard postPairingGraceArmed, postPairingGraceBackgrounded else { return }
+        pendingPostPairingGrace = true
+        postPairingGraceArmed = false
+        postPairingGraceBackgrounded = false
     }
 
     func updateName(_ name: String) {
@@ -83,6 +141,9 @@ final class BraceletLinkStore: ObservableObject {
         isNearby = false
         nearbyTimer?.invalidate()
         nearbyTimer = nil
+        pendingPostPairingGrace = false
+        postPairingGraceArmed = false
+        postPairingGraceBackgrounded = false
         UserDefaults.standard.removeObject(forKey: Keys.legacyPaired)
     }
 

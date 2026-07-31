@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
     @State private var selectedTab: AppTab = .find911
+    @Environment(\.scenePhase) private var scenePhase
 
     private enum AppTab: Hashable {
         case myID, find911, aid, nfc
@@ -73,6 +74,19 @@ struct ContentView: View {
             }
         }
         .withLayoutMetrics()
+        .onAppear {
+            // Cold launch after pairing+backgrounding (e.g. kill & relaunch):
+            // there's no scenePhase *change* to observe for the app's own
+            // first activation, so check once on appear too.
+            braceletLink.promotePostPairingGraceIfEligible()
+        }
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .active: braceletLink.promotePostPairingGraceIfEligible()
+            case .background: braceletLink.noteAppDidBackground()
+            default: break
+            }
+        }
     }
 }
 

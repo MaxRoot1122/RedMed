@@ -134,9 +134,13 @@ struct EditProfileView: View {
     ]
 
     /// Edits require device auth once this device has saved profile data.
-    /// First-time setup stays open until the owner taps Save.
+    /// First-time setup stays open until the owner taps Save. Also stays
+    /// open for the single foreground session that follows pairing a
+    /// bracelet — never the pairing session itself — via
+    /// `link.pendingPostPairingGrace` (armed/promoted/consumed in
+    /// `ContentView` off app-wide scenePhase transitions).
     private var requiresEditAuth: Bool {
-        store.profile.hasOwnerData
+        store.profile.hasOwnerData && !link.pendingPostPairingGrace
     }
 
     private var editAuthAvailability: BiometricGate.Availability {
@@ -334,8 +338,9 @@ struct EditProfileView: View {
                 prepareEditAccess()
             }
             .onChange(of: scenePhase) { phase in
-                if phase == .background, requiresEditAuth {
-                    editUnlocked = false
+                if phase == .background {
+                    if link.pendingPostPairingGrace { link.consumePostPairingGrace() }
+                    if requiresEditAuth { editUnlocked = false }
                 }
             }
             .onChange(of: braceletWriter.verified) { verified in
