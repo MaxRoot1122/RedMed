@@ -10,7 +10,7 @@ struct BraceletToolbarButton: View {
             Circle()
                 .fill(dotColor)
                 .frame(width: layout.statusDot, height: layout.statusDot)
-                .shadow(color: link.isNearby ? Color.green.opacity(0.35) : .clear, radius: layout.s(3))
+                .shadow(color: link.isNearby ? AppTheme.nearby.opacity(0.35) : .clear, radius: layout.s(3))
             Image(systemName: "wave.3.right")
         }
         .font(.body.weight(.semibold))
@@ -19,7 +19,7 @@ struct BraceletToolbarButton: View {
     }
 
     private var dotColor: Color {
-        if link.isNearby { return Color(red: 0.09, green: 0.64, blue: 0.29) }
+        if link.isNearby { return AppTheme.nearby }
         if link.isLinked { return AppTheme.accent.opacity(0.75) }
         return AppTheme.muted.opacity(0.35)
     }

@@ -31,19 +31,23 @@ struct ScannedCardView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    header
+                    EmergencyHeroHeader(
+                        name: profile.name,
+                        metaLine: ageLine,
+                        donor: profile.donor
+                    )
 
                     VStack(alignment: .leading, spacing: layout.s(18)) {
                         Call911Button()
 
                         if !profile.allergies.isEmpty {
-                            criticalBlock(title: "Allergies", items: profile.allergies)
+                            BulletListBlock(title: "Allergies", items: profile.allergies, critical: true)
                         }
                         if !profile.meds.isEmpty {
-                            infoBlock(title: "Medications", items: profile.meds)
+                            BulletListBlock(title: "Medications", items: profile.meds)
                         }
                         if !profile.conditions.isEmpty {
-                            infoBlock(title: "Medical conditions", items: profile.conditions)
+                            BulletListBlock(title: "Medical conditions", items: profile.conditions)
                         }
 
                         let contacts = profile.contacts.filter { !$0.name.isEmpty || !$0.phone.isEmpty }
@@ -66,23 +70,17 @@ struct ScannedCardView: View {
                             TraumaHospitalsSection()
                         } label: {
                             Text("Trauma center transport")
-                                .font(.subheadline.weight(.bold))
+                                .font(layout.subheadlineFont(weight: .bold))
                                 .foregroundStyle(AppTheme.ink)
                         }
 
-                        Text("Tap the band → this card. Nothing saved to this phone.")
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(AppTheme.muted)
-                            .fixedSize(horizontal: false, vertical: true)
+                        ThemeNoteText(text: "Tap the band → this card. Nothing saved to this phone.")
 
                         if profile.allergies.isEmpty,
                            profile.meds.isEmpty,
                            profile.conditions.isEmpty,
                            contacts.isEmpty {
-                            Text("No allergies, meds, conditions, or contacts were written to this band.")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(AppTheme.muted)
-                                .fixedSize(horizontal: false, vertical: true)
+                            ThemeNoteText(text: "No allergies, meds, conditions, or contacts were written to this band.")
                         }
                     }
                     .padding(layout.screenPad)
@@ -92,12 +90,12 @@ struct ScannedCardView: View {
             }
             .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
-            .background(AppTheme.pageBg)
+            .screenAtmosphere()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("EMERGENCY CARD")
-                        .font(.caption.weight(.bold))
+                        .font(layout.captionFont(weight: .heavy))
                         .tracking(1.2)
                         .foregroundStyle(AppTheme.muted)
                 }
@@ -109,130 +107,16 @@ struct ScannedCardView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            Text("REDMED")
-                .font(.caption.weight(.bold))
-                .tracking(1.6)
-                .foregroundStyle(.white.opacity(0.85))
-
-            Text(profile.name.isEmpty ? "Medical ID" : profile.name)
-                .font(layout.emergencyNameFont())
-                .tracking(-0.5)
-                .foregroundStyle(.white)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if !ageLine.isEmpty {
-                Text(ageLine)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.9))
-            }
-
-            if profile.donor {
-                Text("Organ donor")
-                    .font(.caption.weight(.bold))
-                    .padding(.horizontal, layout.s(10))
-                    .padding(.vertical, layout.s(5))
-                    .background(Color.white.opacity(0.18))
-                    .clipShape(Capsule())
-                    .foregroundStyle(.white)
-                    .padding(.top, layout.spaceXS)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, layout.screenPad)
-        .padding(.top, layout.s(28))
-        .padding(.bottom, layout.screenBottomLarge)
-        .background(
-            LinearGradient(
-                colors: [AppTheme.accent, Color(red: 0.75, green: 0.07, blue: 0.24)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-    }
-
-    private func criticalBlock(title: String, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            SectionEyebrow(text: title, tint: AppTheme.accent)
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                ForEach(items, id: \.self) { item in
-                    HStack(alignment: .top, spacing: layout.s(10)) {
-                        Circle()
-                            .fill(AppTheme.accent)
-                            .frame(width: layout.bulletDot, height: layout.bulletDot)
-                            .padding(.top, layout.s(7))
-                        Text(item)
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(AppTheme.ink)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-            .padding(layout.s(14))
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppTheme.accentSoft)
-            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
-        }
-    }
-
-    private func infoBlock(title: String, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            SectionEyebrow(text: title, tint: AppTheme.muted)
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                ForEach(items, id: \.self) { item in
-                    HStack(alignment: .top, spacing: layout.s(10)) {
-                        Circle()
-                            .fill(AppTheme.medical)
-                            .frame(width: layout.bulletDot, height: layout.bulletDot)
-                            .padding(.top, layout.s(7))
-                        Text(item)
-                            .font(.body.weight(.medium))
-                            .foregroundStyle(AppTheme.ink)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-        }
-    }
-
     private func contactsBlock(_ contacts: [EmergencyContact]) -> some View {
         VStack(alignment: .leading, spacing: layout.s(10)) {
             SectionEyebrow(text: "Emergency contacts", tint: AppTheme.muted)
             VStack(spacing: layout.s(10)) {
                 ForEach(contacts) { contact in
-                    HStack(spacing: layout.spaceMD) {
-                        VStack(alignment: .leading, spacing: layout.s(2)) {
-                            Text(contact.name.isEmpty ? "Contact" : contact.name)
-                                .font(.body.weight(.bold))
-                                .foregroundStyle(AppTheme.ink)
-                            if !contact.rel.isEmpty {
-                                Text(contact.rel)
-                                    .font(.caption)
-                                    .foregroundStyle(AppTheme.muted)
-                            }
-                            if !contact.phone.isEmpty {
-                                Text(contact.phone)
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(AppTheme.muted)
-                            }
-                        }
-                        Spacer(minLength: layout.spaceSM)
-                        if !contact.phone.isEmpty,
-                           let url = URL(string: "tel:\(contact.phone.filter { $0.isNumber || $0 == "+" })") {
-                            Link(destination: url) {
-                                Text("Call")
-                                    .font(.subheadline.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, layout.spaceLG)
-                                    .padding(.vertical, layout.s(10))
-                                    .background(AppTheme.medical)
-                                    .clipShape(Capsule())
-                            }
-                        }
-                    }
-                    .padding(layout.s(14))
-                    .appCard(elevated: false)
+                    ContactCardRow(
+                        name: contact.name,
+                        relation: contact.rel,
+                        phone: contact.phone
+                    )
                 }
             }
         }

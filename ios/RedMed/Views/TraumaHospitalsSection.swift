@@ -59,34 +59,28 @@ struct TraumaHospitalsSection: View {
                         .foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(hospitals) { hospital in
-                        HStack(alignment: .top, spacing: layout.spaceMD) {
+                        HStack(alignment: .top, spacing: layout.s(10)) {
                             VStack(alignment: .leading, spacing: layout.spaceXS) {
                                 Text(hospital.name)
-                                    .font(.subheadline.weight(.bold))
+                                    .font(layout.subheadlineFont(weight: .heavy))
                                     .foregroundStyle(AppTheme.ink)
                                     .fixedSize(horizontal: false, vertical: true)
                                 Text("\(hospital.levelLabel) · \(hospital.city), \(hospital.state)")
-                                    .font(.caption.weight(.semibold))
+                                    .font(layout.captionFont(weight: .semibold))
                                     .foregroundStyle(AppTheme.muted)
                                 if !hospital.phone.isEmpty {
                                     Text(hospital.phone)
-                                        .font(.caption)
+                                        .font(layout.captionFont())
                                         .foregroundStyle(AppTheme.muted)
                                 }
                             }
                             Spacer(minLength: layout.spaceSM)
                             if let url = hospital.mapsURL {
-                                Link("Maps", destination: url)
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, layout.spaceMD)
-                                    .padding(.vertical, layout.spaceSM)
-                                    .background(AppTheme.medical)
-                                    .clipShape(Capsule())
+                                CallPillButton(title: "Maps", url: url)
                             }
                         }
-                        .padding(layout.spaceMD)
-                        .appCard(elevated: false)
+                        .padding(layout.s(10))
+                        .innerSurface()
                     }
                     Text("Call 911 first. Tell the dispatcher you need trauma-center transport and your location.")
                         .font(.caption2)

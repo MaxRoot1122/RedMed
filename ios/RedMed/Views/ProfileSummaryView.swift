@@ -76,7 +76,7 @@ struct ProfileSummaryView: View {
 
             Section("Allergies") {
                 if profile.allergies.isEmpty {
-                    Text("None").foregroundStyle(.secondary)
+                    Text("None").foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(profile.allergies, id: \.self) { Text($0) }
                 }
@@ -84,7 +84,7 @@ struct ProfileSummaryView: View {
 
             Section("Medications") {
                 if profile.meds.isEmpty {
-                    Text("None").foregroundStyle(.secondary)
+                    Text("None").foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(profile.meds, id: \.self) { Text($0) }
                 }
@@ -92,7 +92,7 @@ struct ProfileSummaryView: View {
 
             Section("Conditions") {
                 if profile.conditions.isEmpty {
-                    Text("None").foregroundStyle(.secondary)
+                    Text("None").foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(profile.conditions, id: \.self) { Text($0) }
                 }
@@ -100,7 +100,7 @@ struct ProfileSummaryView: View {
 
             Section("Contacts") {
                 if filledContacts.isEmpty {
-                    Text("None").foregroundStyle(.secondary)
+                    Text("None").foregroundStyle(AppTheme.muted)
                 } else {
                     ForEach(filledContacts) { contact in
                         VStack(alignment: .leading, spacing: layout.s(2)) {

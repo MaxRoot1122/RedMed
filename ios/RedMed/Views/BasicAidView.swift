@@ -20,13 +20,7 @@ struct BasicAidView: View {
                         Text("Roadside Aid")
                             .font(layout.heroTitleFont())
                             .tracking(-0.4)
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [Color(red: 1, green: 0.45, blue: 0.55), AppTheme.accent, AppTheme.teal],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
+                            .foregroundStyle(AppTheme.titleGradient)
                         Text("Call 911 first. Tap a pane — expand only what you need.")
                             .font(layout.subheadlineFont(weight: .medium))
                             .foregroundStyle(AppTheme.muted)
@@ -49,7 +43,7 @@ struct BasicAidView: View {
                                 .foregroundStyle(AppTheme.muted)
                                 .padding(.horizontal, layout.s(10))
                                 .padding(.vertical, layout.s(5))
-                                .background(Color.white.opacity(0.7))
+                                .background(AppTheme.chipBg)
                                 .clipShape(Capsule())
                         }
                     }
@@ -70,8 +64,8 @@ struct BasicAidView: View {
                         }
                     }
 
-                    Text("God of mercy, hold the injured in your care.\nGive strength to those who help, and wisdom to every choice made here.\nBring healing, comfort, and safe passage until help arrives.\nAmen.")
-                        .font(layout.footnoteFont())
+                    Text("God, steady my hands and calm my mind.\nHelp me stay calm and act clearly to save this life.\nBring comfort and courage until help arrives.\nAmen.")
+                        .font(layout.bodyFont(weight: .bold))
                         .foregroundStyle(AppTheme.muted)
                         .italic()
                         .multilineTextAlignment(.center)
@@ -153,7 +147,7 @@ private struct AidPaneCard: View {
                                     .foregroundStyle(AppTheme.muted)
                             }
                             .padding(layout.spaceMD)
-                            .background(Color.white.opacity(0.8))
+                            .background(AppTheme.secondarySurface)
                             .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
                             .overlay(
                                 RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous)

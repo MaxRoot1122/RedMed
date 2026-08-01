@@ -93,26 +93,39 @@ struct LayoutMetrics: Equatable {
     /// Vertical spacing — height-tier tightening on top of scale.
     func sv(_ points: CGFloat) -> CGFloat { points * scale * verticalFactor }
 
-    /// Scaled semantic fonts — use instead of raw `.subheadline` / `.caption` in tab screens.
+    /// Scaled semantic fonts — SF Rounded to match `redmed-theme.css` `--font`.
     func bodyFont(weight: Font.Weight = .regular) -> Font {
-        .system(size: s(15), weight: weight)
+        .system(size: s(15), weight: weight, design: .rounded)
     }
 
     func subheadlineFont(weight: Font.Weight = .regular) -> Font {
-        .system(size: s(14), weight: weight)
+        .system(size: s(14), weight: weight, design: .rounded)
     }
 
     func footnoteFont(weight: Font.Weight = .regular) -> Font {
-        .system(size: s(13), weight: weight)
+        .system(size: s(13), weight: weight, design: .rounded)
     }
 
     func captionFont(weight: Font.Weight = .regular) -> Font {
-        .system(size: s(12), weight: weight)
+        .system(size: s(12), weight: weight, design: .rounded)
     }
 
     func caption2Font(weight: Font.Weight = .regular) -> Font {
-        .system(size: s(11), weight: weight)
+        .system(size: s(11), weight: weight, design: .rounded)
     }
+
+    /// `.rm-section-eyebrow` — 10px + type bump.
+    func eyebrowFont() -> Font {
+        .system(size: s(10.5), weight: .heavy, design: .rounded)
+    }
+
+    /// `.rm-note` — 12px + type bump.
+    func noteFont(weight: Font.Weight = .semibold) -> Font {
+        .system(size: s(12.5), weight: weight, design: .rounded)
+    }
+
+    var bubblePadX: CGFloat { s(8) }
+    var bubblePadY: CGFloat { s(4) }
 
     func title3Font(weight: Font.Weight = .bold) -> Font {
         .system(size: s(19), weight: weight)
@@ -212,22 +225,64 @@ private struct LayoutMetricsScope: ViewModifier {
 
 // MARK: - Colors
 
-/// RedMed tokens — medical rose, Gemini-like soft motion, dead-simple chrome.
+/// RedMed tokens — mirrors `assets/redmed-theme.css` and `card/index.html`.
 enum AppTheme {
     static let accent = Color(red: 0.882, green: 0.114, blue: 0.282) // #e11d48
     static let accentSoft = Color(red: 0.882, green: 0.114, blue: 0.282).opacity(0.10)
-    /// Gradient highlight paired above `accent` (top stop of primary-button / hero gradients).
-    static let accentLight = Color(red: 1, green: 0.45, blue: 0.55)
+    static let accentLight = Color(red: 0.984, green: 0.443, blue: 0.522) // #fb7185
+    static let accentDark = Color(red: 0.749, green: 0.071, blue: 0.216) // #bf1239
     static let medical = accent
     static let medicalSoft = accentSoft
-    static let teal = Color(red: 0.624, green: 0.071, blue: 0.224) // #9f1239 deep rose
+    static let teal = Color(red: 0.624, green: 0.071, blue: 0.224) // #9f1239
     static let tealSoft = Color(red: 0.624, green: 0.071, blue: 0.224).opacity(0.08)
     static let ink = Color(red: 0.110, green: 0.098, blue: 0.090) // #1c1917
     static let muted = Color(red: 0.471, green: 0.443, blue: 0.424) // #78716c
+    static let mutedSoft = Color(red: 0.471, green: 0.443, blue: 0.424).opacity(0.10)
     static let ok = accent
+    static let nearby = Color(red: 0.09, green: 0.64, blue: 0.29)
     static let pageBg = Color(red: 1.0, green: 0.969, blue: 0.969) // #fff7f7
     static let cardBg = Color.white.opacity(0.92)
+    static let chipBg = Color.white.opacity(0.70) // .rm-soft-chip
+    static let secondarySurface = Color.white.opacity(0.82) // .rm-btn-secondary / .hospital-card
     static let line = Color(red: 0.110, green: 0.098, blue: 0.090).opacity(0.08)
+
+    /// `.rm-btn-primary` gradient — accentLight → accent.
+    static var primaryButtonGradient: LinearGradient {
+        LinearGradient(colors: [accentLight, accent], startPoint: .top, endPoint: .bottom)
+    }
+
+    /// Emergency card `.hero` — accent → accentDark at 135°.
+    static var heroGradient: LinearGradient {
+        LinearGradient(colors: [accent, accentDark], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
+    /// `.rm-step-num` badge gradient.
+    static var stepBadgeGradient: LinearGradient {
+        LinearGradient(colors: [accentLight, accent], startPoint: .top, endPoint: .bottom)
+    }
+
+    /// Aid tab hero title gradient.
+    static var titleGradient: LinearGradient {
+        LinearGradient(colors: [accentLight, accent, teal], startPoint: .leading, endPoint: .trailing)
+    }
+}
+
+extension UIColor {
+    static var redMedAccent: UIColor {
+        UIColor(red: 0.882, green: 0.114, blue: 0.282, alpha: 1)
+    }
+
+    static var redMedMuted: UIColor {
+        UIColor(red: 0.471, green: 0.443, blue: 0.424, alpha: 1)
+    }
+
+    static var redMedPageBg: UIColor {
+        UIColor(red: 1.0, green: 0.969, blue: 0.969, alpha: 1)
+    }
+
+    static var redMedLine: UIColor {
+        UIColor(red: 0.110, green: 0.098, blue: 0.090, alpha: 0.08)
+    }
 }
 
 // MARK: - Brand
@@ -302,7 +357,7 @@ struct ScreenAtmosphere: View {
                 endRadius: layout.s(280)
             )
             RadialGradient(
-                colors: [Color(red: 1.0, green: 0.45, blue: 0.55).opacity(0.04), Color.clear],
+                colors: [AppTheme.accentLight.opacity(0.04), Color.clear],
                 center: .bottomTrailing,
                 startRadius: layout.s(40),
                 endRadius: layout.s(320)
@@ -318,15 +373,214 @@ struct SectionEyebrow: View {
     let text: String
     var tint: Color = AppTheme.accent
 
+    private var isMuted: Bool { tint == AppTheme.muted }
+
     var body: some View {
         Text(text.uppercased())
-            .font(.caption2.weight(.bold))
-            .tracking(1.1)
+            .font(layout.eyebrowFont())
+            .tracking(1.0)
             .foregroundStyle(tint)
-            .padding(.horizontal, layout.s(10))
-            .padding(.vertical, layout.s(5))
-            .background(tint.opacity(0.1))
+            .padding(.horizontal, layout.bubblePadX)
+            .padding(.vertical, layout.bubblePadY)
+            .background(isMuted ? AppTheme.mutedSoft : tint.opacity(0.1))
             .clipShape(Capsule())
+    }
+}
+
+struct ThemeNoteText: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(layout.noteFont())
+            .foregroundStyle(AppTheme.muted)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+struct ThemeDividerLabel: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let text: String
+
+    var body: some View {
+        HStack {
+            Rectangle().fill(AppTheme.line).frame(height: 1)
+            Text(text.uppercased())
+                .font(layout.eyebrowFont())
+                .tracking(1.0)
+                .foregroundStyle(AppTheme.muted)
+            Rectangle().fill(AppTheme.line).frame(height: 1)
+        }
+    }
+}
+
+/// `.rm-step` — numbered instruction row inside a card.
+struct ThemeStepRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let number: Int
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: layout.s(10)) {
+            Text("\(number)")
+                .font(layout.caption2Font(weight: .heavy))
+                .foregroundStyle(.white)
+                .frame(width: layout.stepBadge, height: layout.stepBadge)
+                .background(AppTheme.stepBadgeGradient)
+                .clipShape(Circle())
+            VStack(alignment: .leading, spacing: layout.s(4)) {
+                Text(title)
+                    .font(layout.subheadlineFont(weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+                Text(detail)
+                    .font(layout.footnoteFont(weight: .medium))
+                    .foregroundStyle(AppTheme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(layout.s(14))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .appCard(elevated: false)
+    }
+}
+
+/// `.btn-pill` — compact accent call-to-action (contact cards, Maps links).
+struct CallPillButton: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    let url: URL
+
+    var body: some View {
+        Link(destination: url) {
+            Text(title)
+                .font(layout.footnoteFont(weight: .heavy))
+                .foregroundStyle(.white)
+                .padding(.horizontal, layout.s(14))
+                .padding(.vertical, layout.s(10))
+                .background(AppTheme.medical)
+                .clipShape(Capsule())
+        }
+    }
+}
+
+/// Emergency card `.hero` — matches `card/index.html`.
+struct EmergencyHeroHeader: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let name: String
+    var metaLine: String = ""
+    var donor: Bool = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            Text("REDMED")
+                .font(layout.caption2Font(weight: .heavy))
+                .tracking(1.6)
+                .foregroundStyle(.white.opacity(0.85))
+
+            Text(name.isEmpty ? "Medical ID" : name)
+                .font(layout.emergencyNameFont())
+                .tracking(-0.5)
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !metaLine.isEmpty {
+                Text(metaLine)
+                    .font(layout.subheadlineFont(weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.9))
+            }
+
+            if donor {
+                Text("Organ donor")
+                    .font(layout.captionFont(weight: .heavy))
+                    .padding(.horizontal, layout.s(10))
+                    .padding(.vertical, layout.s(5))
+                    .background(Color.white.opacity(0.18))
+                    .clipShape(Capsule())
+                    .foregroundStyle(.white)
+                    .padding(.top, layout.spaceXS)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, layout.screenPad)
+        .padding(.top, layout.s(28))
+        .padding(.bottom, layout.screenBottomLarge)
+        .background(AppTheme.heroGradient)
+    }
+}
+
+/// `.list-crit` / `.list-plain` — allergy/meds/conditions blocks on the emergency card.
+struct BulletListBlock: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    let items: [String]
+    var critical: Bool = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            SectionEyebrow(text: title, tint: critical ? AppTheme.accent : AppTheme.muted)
+            VStack(alignment: .leading, spacing: layout.spaceSM) {
+                ForEach(items, id: \.self) { item in
+                    HStack(alignment: .top, spacing: layout.s(10)) {
+                        Circle()
+                            .fill(AppTheme.accent)
+                            .frame(width: layout.bulletDot, height: layout.bulletDot)
+                            .padding(.top, layout.s(7))
+                        Text(item)
+                            .font(layout.bodyFont(weight: critical ? .semibold : .medium))
+                            .foregroundStyle(AppTheme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding(critical ? layout.s(14) : 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(critical ? AppTheme.accentSoft : Color.clear)
+            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
+        }
+    }
+}
+
+/// `.contact-card` — emergency contact row on the scanned card.
+struct ContactCardRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let name: String
+    var relation: String = ""
+    var phone: String = ""
+
+    var body: some View {
+        HStack(spacing: layout.spaceMD) {
+            VStack(alignment: .leading, spacing: layout.s(2)) {
+                Text(name.isEmpty ? "Contact" : name)
+                    .font(layout.bodyFont(weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+                if !relation.isEmpty {
+                    Text(relation)
+                        .font(layout.captionFont())
+                        .foregroundStyle(AppTheme.muted)
+                }
+                if !phone.isEmpty {
+                    Text(phone)
+                        .font(layout.subheadlineFont(weight: .medium))
+                        .foregroundStyle(AppTheme.muted)
+                }
+            }
+            Spacer(minLength: layout.spaceSM)
+            if !phone.isEmpty,
+               let url = URL(string: "tel:\(phone.filter { $0.isNumber || $0 == "+" })") {
+                CallPillButton(title: "Call", url: url)
+            }
+        }
+        .padding(layout.s(14))
+        .appCard(elevated: false)
     }
 }
 
@@ -393,7 +647,7 @@ struct SoftStatusChip: View {
             .padding(.horizontal, layout.s(14))
             .padding(.vertical, layout.spaceMD)
             .frame(maxWidth: .infinity)
-            .background(warning ? AppTheme.accentSoft : Color.white.opacity(0.7))
+            .background(warning ? AppTheme.accentSoft : AppTheme.chipBg)
             .clipShape(RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous)
@@ -484,7 +738,7 @@ struct BraceletSyncInstructions: View {
         }
         .padding(layout.s(14))
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.7))
+        .background(AppTheme.chipBg)
         .clipShape(RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: layout.chipRadius, style: .continuous)
@@ -524,13 +778,17 @@ struct PrimaryButtonStyle: ButtonStyle {
             .frame(height: fixedHeight)
             .padding(.vertical, fixedHeight == nil ? (prominent ? layout.sv(17) : layout.spaceLG) : 0)
             .background(
-                LinearGradient(
-                    colors: enabled
-                        ? [Color(red: 0.984, green: 0.443, blue: 0.522), AppTheme.accent]
-                        : [Color.gray.opacity(0.55), Color.gray.opacity(0.45)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+                Group {
+                    if enabled {
+                        AppTheme.primaryButtonGradient
+                    } else {
+                        LinearGradient(
+                            colors: [Color.gray.opacity(0.55), Color.gray.opacity(0.45)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+                }
             )
             .foregroundStyle(.white)
             .clipShape(Capsule())
@@ -574,7 +832,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .frame(height: fixedHeight)
             .padding(.vertical, fixedHeight == nil ? layout.sv(14) : 0)
-            .background(Color.white.opacity(0.82))
+            .background(AppTheme.secondarySurface)
             .foregroundStyle(AppTheme.ink)
             .clipShape(Capsule())
             .overlay(
@@ -653,6 +911,20 @@ struct Call911Button: View {
 
 // MARK: - Cards
 
+struct InnerSurfaceModifier: ViewModifier {
+    @Environment(\.layoutMetrics) private var layout
+
+    func body(content: Content) -> some View {
+        content
+            .background(AppTheme.secondarySurface)
+            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous)
+                    .stroke(AppTheme.line, lineWidth: 1)
+            )
+    }
+}
+
 struct CardModifier: ViewModifier {
     @Environment(\.layoutMetrics) private var layout
 
@@ -677,6 +949,10 @@ struct CardModifier: ViewModifier {
 extension View {
     func appCard(elevated: Bool = true) -> some View {
         modifier(CardModifier(elevated: elevated))
+    }
+
+    func innerSurface() -> some View {
+        modifier(InnerSurfaceModifier())
     }
 
     func screenAtmosphere() -> some View {

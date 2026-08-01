@@ -48,7 +48,7 @@ struct FirstAidDetailView: View {
                             .font(.caption.weight(.bold))
                             .foregroundStyle(index == 0 ? Color.white : tint)
                             .frame(width: layout.topicIcon, height: layout.topicIcon)
-                            .background(index == 0 ? AnyShapeStyle(LinearGradient(colors: [Color(red: 1, green: 0.45, blue: 0.55), AppTheme.accent], startPoint: .top, endPoint: .bottom)) : AnyShapeStyle(soft))
+                            .background(index == 0 ? AnyShapeStyle(AppTheme.stepBadgeGradient) : AnyShapeStyle(soft))
                             .clipShape(Circle())
                         Text(CopyHighlight.attributed(item))
                             .fixedSize(horizontal: false, vertical: true)

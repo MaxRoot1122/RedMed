@@ -211,14 +211,14 @@ struct EditProfileView: View {
 
                 Section("Allergies") {
                     if draft.allergies.isEmpty {
-                        Text("None").foregroundStyle(.secondary)
+                        Text("None").foregroundStyle(AppTheme.muted)
                     } else {
                         ForEach(Array(draft.allergies.enumerated()), id: \.offset) { index, allergy in
                             HStack {
                                 Text(allergy)
                                 Spacer()
                                 Button { draft.allergies.remove(at: index) } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -230,7 +230,7 @@ struct EditProfileView: View {
 
                 Section("Medications") {
                     if medRows.isEmpty {
-                        Text("None").foregroundStyle(.secondary)
+                        Text("None").foregroundStyle(AppTheme.muted)
                     } else {
                         ForEach($medRows) { $row in
                             HStack {
@@ -242,7 +242,7 @@ struct EditProfileView: View {
                                 Button {
                                     medRows.removeAll { $0.id == row.id }
                                 } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -255,14 +255,14 @@ struct EditProfileView: View {
 
                 Section("Conditions") {
                     if draft.conditions.isEmpty {
-                        Text("None").foregroundStyle(.secondary)
+                        Text("None").foregroundStyle(AppTheme.muted)
                     } else {
                         ForEach(Array(draft.conditions.enumerated()), id: \.offset) { index, condition in
                             HStack {
                                 Text(condition)
                                 Spacer()
                                 Button { draft.conditions.remove(at: index) } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -525,7 +525,7 @@ struct EditProfileView: View {
                     draft.contacts[index] = EmergencyContact()
                     if openContactIndex == index { openContactIndex = nil }
                 } label: {
-                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
                 }
                 .buttonStyle(.plain)
             }

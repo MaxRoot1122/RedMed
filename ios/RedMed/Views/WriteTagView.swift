@@ -121,14 +121,7 @@ struct WriteTagView: View {
     /// First-responder path — opens native emergency card, does not touch My ID.
     private var scanSection: some View {
         VStack(spacing: layout.s(14)) {
-            HStack {
-                Rectangle().fill(AppTheme.line).frame(height: 1)
-                Text("SCAN CARD")
-                    .font(.caption2.weight(.bold))
-                    .tracking(1.0)
-                    .foregroundStyle(AppTheme.muted)
-                Rectangle().fill(AppTheme.line).frame(height: 1)
-            }
+            ThemeDividerLabel(text: "Scan card")
 
             Text("Optional: scan in RedMed for the native card view. Passersby only need to tap the band — no app.")
                 .font(.subheadline.weight(.medium))
@@ -143,14 +136,7 @@ struct WriteTagView: View {
     /// Owner path — pull tag data onto this phone's My ID.
     private var importSection: some View {
         VStack(spacing: layout.s(14)) {
-            HStack {
-                Rectangle().fill(AppTheme.line).frame(height: 1)
-                Text("OR IMPORT")
-                    .font(.caption2.weight(.bold))
-                    .tracking(1.0)
-                    .foregroundStyle(AppTheme.muted)
-                Rectangle().fill(AppTheme.line).frame(height: 1)
-            }
+            ThemeDividerLabel(text: "Or import")
 
             Text("Already own a written tag? Pull it onto this phone's My ID.")
                 .font(.subheadline.weight(.medium))

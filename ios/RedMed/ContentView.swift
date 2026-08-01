@@ -14,19 +14,18 @@ struct ContentView: View {
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-        appearance.shadowColor = UIColor(red: 0.91, green: 0.92, blue: 0.93, alpha: 1)
+        appearance.backgroundColor = UIColor.redMedPageBg
+        appearance.shadowColor = UIColor.redMedLine
         appearance.shadowImage = nil
         let item = UITabBarItemAppearance()
-        let muted = UIColor(red: 0.373, green: 0.388, blue: 0.408, alpha: 1)
-        item.normal.iconColor = muted
+        item.normal.iconColor = UIColor.redMedMuted
         item.normal.titleTextAttributes = [
-            .foregroundColor: muted,
+            .foregroundColor: UIColor.redMedMuted,
             .font: UIFont.systemFont(ofSize: 10, weight: .medium)
         ]
-        item.selected.iconColor = UIColor(red: 0.882, green: 0.114, blue: 0.282, alpha: 1)
+        item.selected.iconColor = UIColor.redMedAccent
         item.selected.titleTextAttributes = [
-            .foregroundColor: UIColor(red: 0.882, green: 0.114, blue: 0.282, alpha: 1),
+            .foregroundColor: UIColor.redMedAccent,
             .font: UIFont.systemFont(ofSize: 10, weight: .semibold)
         ]
         item.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -1)

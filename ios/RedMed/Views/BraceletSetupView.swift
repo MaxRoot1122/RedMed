@@ -30,9 +30,9 @@ struct BraceletSetupView: View {
                         warning: false
                     )
 
-                    setupStep(number: 1, title: "Fill My ID", detail: "Name, allergies, meds, and contacts on the previous screen. Tap Save.")
-                    setupStep(number: 2, title: "Program your band", detail: "Hold the band to your iPhone once. The chip stores your card — tap opens it in any phone's browser.")
-                    setupStep(number: 3, title: "Done", detail: "Side of the road, a stranger taps the band. Their phone opens Call 911 and your critical info. No app for them.")
+                    ThemeStepRow(number: 1, title: "Fill My ID", detail: "Name, allergies, meds, and contacts on the previous screen. Tap Save.")
+                    ThemeStepRow(number: 2, title: "Program your band", detail: "Hold the band to your iPhone once. The chip stores your card — tap opens it in any phone's browser.")
+                    ThemeStepRow(number: 3, title: "Done", detail: "Side of the road, a stranger taps the band. Their phone opens Call 911 and your critical info. No app for them.")
 
                     if link.isLinked {
                         SoftStatusChip(text: "Bracelet linked on this phone", warning: false)
@@ -149,29 +149,6 @@ struct BraceletSetupView: View {
     private func openHostedPreview() {
         guard let url = ProfileLinkBuilder.previewURL(profile: store.profile) else { return }
         openURL(url)
-    }
-
-    private func setupStep(number: Int, title: String, detail: String) -> some View {
-        HStack(alignment: .top, spacing: layout.spaceMD) {
-            Text("\(number)")
-                .font(.caption.weight(.bold))
-                .foregroundStyle(.white)
-                .frame(width: layout.stepBadge, height: layout.stepBadge)
-                .background(LinearGradient(colors: [AppTheme.accentLight, AppTheme.accent], startPoint: .top, endPoint: .bottom))
-                .clipShape(Circle())
-            VStack(alignment: .leading, spacing: layout.spaceXS) {
-                Text(title)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(AppTheme.ink)
-                Text(detail)
-                    .font(.footnote.weight(.medium))
-                    .foregroundStyle(AppTheme.muted)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .padding(layout.s(14))
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard()
     }
 }
 
