@@ -54,6 +54,14 @@ enum AidPaneLibrary {
             topics: FirstAidLibrary.topics.filter {
                 ["Cold (Hypothermia)", "Heat (Exhaustion & Stroke)"].contains($0.title)
             }
+        ),
+        AidPane(
+            id: "seizure",
+            title: "Seizures",
+            blurb: "Protect · time · side",
+            icon: "brain.head.profile",
+            critical: true,
+            topics: FirstAidLibrary.topics.filter { $0.title == "Seizures" }
         )
     ]
 }

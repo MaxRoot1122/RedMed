@@ -158,6 +158,23 @@ enum FirstAidLibrary {
                 "Ice packs in a cloth on neck and armpits if you have them",
                 "Stay with them until help arrives"
             ]
+        ),
+        FirstAidTopic(
+            title: "Seizures",
+            icon: "brain.head.profile",
+            symptoms: [
+                "Sudden shaking, stiffening, or staring",
+                "Not responding; may bite tongue or lose bladder control",
+                "Afterward: confused, sleepy, or slow to wake"
+            ],
+            temporaryCare: [
+                "Call 911 if it lasts more than 5 minutes, repeats, they are injured, pregnant, diabetic, not breathing after, or this is their first seizure",
+                "Clear hard or sharp objects — cushion the head with a jacket or your hands",
+                "Do NOT hold them down or put anything in their mouth",
+                "Time the seizure from the start",
+                "When jerking stops: roll onto their side if they are breathing — keep airway open",
+                "Stay with them until fully awake and help arrives"
+            ]
         )
     ]
 }

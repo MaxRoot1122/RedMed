@@ -395,6 +395,7 @@ struct EditProfileView: View {
                     Task { await clearAfterAuth() }
                 }
             }
+            .withLayoutMetrics()
         }
     }
 

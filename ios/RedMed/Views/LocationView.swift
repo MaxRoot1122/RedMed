@@ -24,12 +24,15 @@ struct LocationView: View {
                         )
                     }
 
-                    Call911Button()
-
-                    ScanEmergencyCardControl(
-                        title: "Scan emergency bracelet",
-                        prominent: false
-                    )
+                    HStack(alignment: .top, spacing: layout.spaceMD) {
+                        Call911Button(pairLayout: true)
+                            .frame(maxWidth: .infinity)
+                        ScanEmergencyCardControl(
+                            title: "Scan bracelet",
+                            pairLayout: true
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
 
                     Text("Tap the band — their browser opens the emergency card. RedMed owners can scan here for the native view.")
                         .font(layout.captionFont(weight: .medium))
@@ -100,10 +103,10 @@ struct LocationView: View {
             .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
             .screenAtmosphere()
-            .navigationTitle("Find 911")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle("911")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .principal) {
                     BrandMark(size: .nav)
                 }
             }

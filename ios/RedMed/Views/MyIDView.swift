@@ -36,6 +36,9 @@ struct MyIDView: View {
                         .foregroundStyle(AppTheme.muted)
                         .accessibilityLabel("How it works")
                     }
+                    ToolbarItem(placement: .principal) {
+                        BrandMark(size: .nav)
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             if useConsentAccepted {
@@ -60,6 +63,7 @@ struct MyIDView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             EditProfileView(embedded: false)
+                .withLayoutMetrics()
         }
         .sheet(isPresented: $showingHowItWorks) {
             HowItWorksView()

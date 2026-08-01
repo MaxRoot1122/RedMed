@@ -46,14 +46,33 @@ struct ProfileSummaryView: View {
             Section {
                 VStack(alignment: .leading, spacing: layout.s(10)) {
                     if link.isLinked {
-                        BrandMark(size: .hero, titleOverride: link.deviceName)
+                        VStack(alignment: .leading, spacing: layout.s(2)) {
+                            Text(link.deviceName)
+                                .font(layout.heroTitleFont())
+                                .foregroundStyle(AppTheme.ink)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.85)
+                            Text("Linked bracelet")
+                                .font(.caption2.weight(.bold))
+                                .tracking(0.6)
+                                .textCase(.uppercase)
+                                .foregroundStyle(AppTheme.accent.opacity(0.85))
+                        }
                     } else {
-                        BrandMark(size: .hero, showTagline: true)
-                        if profile.name.trimmingCharacters(in: .whitespaces).isEmpty {
-                            Text("Tap Edit to add your name and set up your bracelet.")
-                                .font(layout.subheadlineFont(weight: .medium))
+                        VStack(alignment: .leading, spacing: layout.s(4)) {
+                            Text(DesignPagePlacement.brandTagline)
+                                .font(layout.subheadlineFont(weight: .bold))
+                                .foregroundStyle(AppTheme.accent)
+                            Text(DesignPagePlacement.brandLead)
+                                .font(layout.footnoteFont(weight: .medium))
                                 .foregroundStyle(AppTheme.muted)
                                 .fixedSize(horizontal: false, vertical: true)
+                            if profile.name.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Text(DesignPagePlacement.myIDEmptyPrompt)
+                                    .font(layout.subheadlineFont(weight: .medium))
+                                    .foregroundStyle(AppTheme.muted)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                     }
                 }

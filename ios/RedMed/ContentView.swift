@@ -28,8 +28,6 @@ struct ContentView: View {
             .foregroundColor: UIColor.redMedAccent,
             .font: UIFont.systemFont(ofSize: 10, weight: .semibold)
         ]
-        item.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -1)
-        item.selected.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -1)
         appearance.stackedLayoutAppearance = item
         appearance.inlineLayoutAppearance = item
         appearance.compactInlineLayoutAppearance = item
@@ -43,7 +41,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             MyIDView()
-                .tabItem { Label("RedMed", systemImage: "person.crop.circle.fill") }
+                .tabItem { Label("My ID", systemImage: "heart.fill") }
                 .tag(AppTab.myID)
 
             LocationView()
@@ -55,7 +53,7 @@ struct ContentView: View {
                 .tag(AppTab.aid)
 
             WriteTagView()
-                .tabItem { Label("NFC", systemImage: "wave.3.right.circle.fill") }
+                .tabItem { Label("NFC", systemImage: "wave.3.right") }
                 .tag(AppTab.nfc)
         }
         .modifier(TabBarBehaviorModifier())

@@ -4,25 +4,36 @@ import SwiftUI
 /// Never touches `ProfileStore` — a scan of someone else's band must not
 /// overwrite the owner's My ID.
 struct ScanEmergencyCardControl: View {
+    @Environment(\.layoutMetrics) private var layout
+
     var title: String = "Scan emergency bracelet"
     /// When true, uses the prominent red primary button (911 screen).
     var prominent: Bool = false
+    /// Side-by-side with Call 911 — matched capsule height.
+    var pairLayout: Bool = false
 
     @StateObject private var reader = NFCReader()
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: pairLayout ? layout.spaceXS : layout.s(10)) {
             Group {
                 if prominent {
                     Button(action: startScan) {
                         label
+                            .frame(maxWidth: .infinity, maxHeight: pairLayout ? .infinity : nil)
                     }
-                    .buttonStyle(PrimaryButtonStyle(prominent: true))
+                    .buttonStyle(PrimaryButtonStyle(
+                        prominent: pairLayout ? false : true,
+                        fixedHeight: pairLayout ? layout.emergencyPairButtonHeight : nil
+                    ))
                 } else {
                     Button(action: startScan) {
                         label
+                            .frame(maxWidth: .infinity, maxHeight: pairLayout ? .infinity : nil)
                     }
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(SecondaryButtonStyle(
+                        fixedHeight: pairLayout ? layout.emergencyPairButtonHeight : nil
+                    ))
                 }
             }
             .disabled(reader.isReading)
@@ -32,6 +43,7 @@ struct ScanEmergencyCardControl: View {
                     .font(.footnote.weight(.medium))
                     .foregroundStyle(AppTheme.muted)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

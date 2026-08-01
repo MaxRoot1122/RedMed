@@ -1,5 +1,58 @@
 import SwiftUI
 
+/// Aid tab reads ~18% larger; spacing/grid unchanged — one knob for all copy.
+private enum AidTabMetrics {
+    static let textScale: CGFloat = 1.18
+
+    static func t(_ layout: LayoutMetrics, _ points: CGFloat) -> CGFloat {
+        layout.s(points * textScale)
+    }
+
+    static func tv(_ layout: LayoutMetrics, _ points: CGFloat) -> CGFloat {
+        layout.sv(points * textScale)
+    }
+
+    static func paneMinHeight(_ layout: LayoutMetrics) -> CGFloat { tv(layout, 100) }
+    static func iconSize(_ layout: LayoutMetrics) -> CGFloat { t(layout, 40) }
+    static func cardPad(_ layout: LayoutMetrics) -> CGFloat { t(layout, 14) }
+
+    static func heroTitle(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 25), weight: .bold, design: .rounded)
+    }
+
+    static func paneTitle(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 14), weight: .bold, design: .rounded)
+    }
+
+    static func paneBlurb(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 12), weight: .semibold, design: .rounded)
+    }
+
+    static func topicTitle(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 14), weight: .semibold, design: .rounded)
+    }
+
+    static func intro(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 14), weight: .medium, design: .rounded)
+    }
+
+    static func chip(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 11), weight: .bold, design: .rounded)
+    }
+
+    static func chevron(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 10), weight: .bold)
+    }
+
+    static func scripture(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 15), weight: .medium, design: .serif)
+    }
+
+    static func scriptureRef(_ layout: LayoutMetrics) -> Font {
+        .system(size: t(layout, 12), weight: .semibold, design: .serif)
+    }
+}
+
 struct BasicAidView: View {
     @Environment(\.layoutMetrics) private var layout
 
@@ -18,11 +71,11 @@ struct BasicAidView: View {
                 VStack(alignment: .leading, spacing: layout.spaceXL) {
                     VStack(alignment: .leading, spacing: layout.spaceSM) {
                         Text("Roadside Aid")
-                            .font(layout.heroTitleFont())
+                            .font(AidTabMetrics.heroTitle(layout))
                             .tracking(-0.4)
                             .foregroundStyle(AppTheme.titleGradient)
                         Text("Call 911 first. Tap a pane — expand only what you need.")
-                            .font(layout.subheadlineFont(weight: .medium))
+                            .font(AidTabMetrics.intro(layout))
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
 
@@ -30,7 +83,7 @@ struct BasicAidView: View {
 
                         HStack(spacing: layout.spaceSM) {
                             Text("tap to expand")
-                                .font(.caption2.weight(.bold))
+                                .font(AidTabMetrics.chip(layout))
                                 .textCase(.uppercase)
                                 .foregroundStyle(AppTheme.accent)
                                 .padding(.horizontal, layout.s(10))
@@ -38,7 +91,7 @@ struct BasicAidView: View {
                                 .background(AppTheme.accentSoft)
                                 .clipShape(Capsule())
                             Text("911 first")
-                                .font(.caption2.weight(.bold))
+                                .font(AidTabMetrics.chip(layout))
                                 .textCase(.uppercase)
                                 .foregroundStyle(AppTheme.muted)
                                 .padding(.horizontal, layout.s(10))
@@ -60,18 +113,10 @@ struct BasicAidView: View {
                                     }
                                 }
                             )
-                            .gridCellColumns(openPaneId == pane.id ? 2 : 1)
                         }
                     }
 
-                    Text("God, steady my hands and calm my mind.\nHelp me stay calm and act clearly to save this life.\nBring comfort and courage until help arrives.\nAmen.")
-                        .font(layout.bodyFont(weight: .bold))
-                        .foregroundStyle(AppTheme.muted)
-                        .italic()
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, layout.spaceSM)
-                        .padding(.horizontal, layout.spaceSM)
+                    aidScriptureFooter
                 }
                 .padding(.horizontal, layout.screenPad)
                 .padding(.bottom, layout.screenBottom)
@@ -92,6 +137,29 @@ struct BasicAidView: View {
             }
         }
     }
+
+    private var aidScriptureFooter: some View {
+        VStack(spacing: layout.s(6)) {
+            Text(Self.joshuaVerse)
+                .font(AidTabMetrics.scripture(layout))
+                .italic()
+                .foregroundStyle(AppTheme.muted)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("Joshua 1:9")
+                .font(AidTabMetrics.scriptureRef(layout))
+                .italic()
+                .foregroundStyle(AppTheme.muted.opacity(0.85))
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(Self.joshuaVerse) Joshua 1:9")
+        .frame(maxWidth: .infinity)
+        .padding(.top, layout.spaceSM + layout.s(31))
+        .padding(.horizontal, layout.spaceSM)
+    }
+
+    private static let joshuaVerse =
+        "Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go."
 }
 
 private struct AidPaneCard: View {
@@ -108,28 +176,30 @@ private struct AidPaneCard: View {
                     IconWell(
                         systemName: pane.icon,
                         tint: pane.critical ? Color.white : AppTheme.accent,
-                        soft: pane.critical ? AppTheme.accent : AppTheme.accentSoft
+                        soft: pane.critical ? AppTheme.accent : AppTheme.accentSoft,
+                        size: AidTabMetrics.iconSize(layout)
                     )
                     VStack(alignment: .leading, spacing: layout.spaceXS) {
                         Text(pane.title)
-                            .font(layout.subheadlineFont(weight: .bold))
+                            .font(AidTabMetrics.paneTitle(layout))
                             .foregroundStyle(AppTheme.ink)
                             .multilineTextAlignment(.leading)
                         if !isOpen {
                             Text(pane.blurb)
-                                .font(layout.captionFont(weight: .semibold))
+                                .font(AidTabMetrics.paneBlurb(layout))
                                 .foregroundStyle(AppTheme.muted)
                                 .multilineTextAlignment(.leading)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemName: "chevron.right")
-                        .font(.caption.weight(.bold))
+                        .font(AidTabMetrics.chevron(layout))
                         .foregroundStyle(AppTheme.accent)
                         .rotationEffect(.degrees(isOpen ? 90 : 0))
+                        .animation(.spring(response: 0.35, dampingFraction: 0.86), value: isOpen)
                 }
-                .padding(layout.s(14))
-                .frame(maxWidth: .infinity, minHeight: isOpen ? 0 : layout.aidPaneMinHeight, alignment: .topLeading)
+                .padding(AidTabMetrics.cardPad(layout))
+                .frame(maxWidth: .infinity, minHeight: AidTabMetrics.paneMinHeight(layout), alignment: isOpen ? .center : .topLeading)
             }
             .buttonStyle(.plain)
 
@@ -139,14 +209,14 @@ private struct AidPaneCard: View {
                         NavigationLink(value: topic) {
                             HStack {
                                 Text(topic.title)
-                                    .font(layout.subheadlineFont(weight: .semibold))
+                                    .font(AidTabMetrics.topicTitle(layout))
                                     .foregroundStyle(AppTheme.ink)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Image(systemName: "chevron.right")
-                                    .font(.caption2.weight(.bold))
+                                    .font(AidTabMetrics.chevron(layout))
                                     .foregroundStyle(AppTheme.muted)
                             }
-                            .padding(layout.spaceMD)
+                            .padding(layout.spaceLG)
                             .background(AppTheme.secondarySurface)
                             .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
                             .overlay(
