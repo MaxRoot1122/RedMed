@@ -2,3 +2,6 @@
 build/
 RedMed.app/
 xcuserdata/
+.claude/
+.artifact-design/
+ios/claude/ArtifactDesign/

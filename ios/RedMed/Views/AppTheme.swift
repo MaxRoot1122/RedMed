@@ -143,6 +143,8 @@ struct LayoutMetrics: Equatable {
     /// Extra scroll breathing room *below* content — not a substitute for the 34 pt home indicator.
     var screenBottom: CGFloat { sv(16) }
     var screenBottomLarge: CGFloat { sv(22) }
+    /// Bottom inset for the custom tab bar (artifact baseline ~64 pt).
+    var customTabBarReserve: CGFloat { sv(64) }
     /// Matched height for side-by-side Call 911 + Scan on Find 911.
     var emergencyPairButtonHeight: CGFloat { sv(54) }
     /// Vertical padding inside elevated cards (GPS, status chips).
@@ -345,25 +347,336 @@ struct BrandMark: View {
 }
 
 struct ScreenAtmosphere: View {
+    var body: some View {
+        AppTheme.pageBg.ignoresSafeArea()
+    }
+}
+
+/// Edit sheet / topic detail background from the artifact.
+enum ArtifactChrome {
+    static let editSheetBg = Color(red: 0.949, green: 0.949, blue: 0.969)
+    static let editLabel = Color(red: 0.42, green: 0.43, blue: 0.48)
+}
+
+struct EditSectionLabel: View {
     @Environment(\.layoutMetrics) private var layout
+
+    let text: String
+    var isFirst: Bool = false
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(.system(size: layout.s(13), weight: .semibold))
+            .foregroundStyle(ArtifactChrome.editLabel)
+            .kerning(0.5)
+            .padding(.horizontal, layout.s(4))
+            .padding(.bottom, layout.s(6))
+            .padding(.top, isFirst ? 0 : layout.s(22))
+    }
+}
+
+struct EditCard<Content: View>: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    @ViewBuilder let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) { content }
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+    }
+}
+
+struct EditCardDivider: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    var leadingInset: CGFloat?
+
+    var body: some View {
+        Divider().padding(.leading, leadingInset ?? layout.screenPad)
+    }
+}
+
+struct EditLabeledField: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let label: String
+    @Binding var text: String
+    var placeholder: String = ""
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Text(label)
+                .font(.system(size: layout.s(15), weight: .medium))
+                .foregroundStyle(ArtifactChrome.editLabel)
+                .frame(width: layout.s(90), alignment: .leading)
+                .padding(.trailing, layout.s(12))
+            TextField(placeholder, text: $text)
+                .font(.system(size: layout.s(15)))
+                .foregroundStyle(AppTheme.ink)
+        }
+        .padding(.horizontal, layout.screenPad)
+        .padding(.vertical, layout.s(13))
+    }
+}
+
+struct EditAddRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: layout.s(8)) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: layout.s(18)))
+                Text(title)
+                    .font(.system(size: layout.s(15)))
+            }
+            .foregroundStyle(AppTheme.accent)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, layout.screenPad)
+            .padding(.vertical, layout.s(13))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct EditRemoveButton: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text("✕")
+                .font(.system(size: layout.s(18)))
+                .foregroundStyle(AppTheme.accent)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Full-screen hold overlay while CoreNFC write is active (artifact NFCView).
+struct NFCWriteOverlay: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let onCancel: () -> Void
 
     var body: some View {
         ZStack {
-            AppTheme.pageBg
-            RadialGradient(
-                colors: [AppTheme.accent.opacity(0.05), Color.clear],
-                center: .topLeading,
-                startRadius: layout.s(20),
-                endRadius: layout.s(280)
-            )
-            RadialGradient(
-                colors: [AppTheme.accentLight.opacity(0.04), Color.clear],
-                center: .bottomTrailing,
-                startRadius: layout.s(40),
-                endRadius: layout.s(320)
-            )
+            Color.black.opacity(0.9).ignoresSafeArea()
+            VStack(spacing: layout.s(20)) {
+                ZStack {
+                    Circle()
+                        .stroke(AppTheme.accent.opacity(0.35), lineWidth: 1.5)
+                        .frame(width: layout.s(104), height: layout.s(104))
+                    Circle()
+                        .fill(AppTheme.accent.opacity(0.12))
+                        .frame(width: layout.s(80), height: layout.s(80))
+                    Image(systemName: "wave.3.right")
+                        .font(.system(size: layout.s(32)))
+                        .foregroundStyle(AppTheme.accent)
+                }
+
+                VStack(spacing: layout.s(8)) {
+                    Text("Hold to band")
+                        .font(.system(size: layout.s(20), weight: .bold))
+                        .foregroundStyle(.white)
+                    Text("Bring the top of your iPhone close to the NFC bracelet")
+                        .font(.system(size: layout.s(14)))
+                        .foregroundStyle(.white.opacity(0.5))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: layout.s(260))
+                        .lineSpacing(layout.s(3))
+                }
+
+                Button(action: onCancel) {
+                    Text("Cancel")
+                        .font(.system(size: layout.s(15), weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, layout.s(32))
+                        .padding(.vertical, layout.s(13))
+                        .background(Color.white.opacity(0.1))
+                        .clipShape(Capsule())
+                }
+                .padding(.top, layout.s(8))
+            }
         }
-        .ignoresSafeArea()
+    }
+}
+
+// MARK: - Artifact card chrome (Live app editing session)
+
+struct DesignSectionLabel: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let text: String
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(.system(size: layout.s(12), weight: .semibold))
+            .foregroundStyle(AppTheme.muted)
+            .kerning(0.6)
+            .padding(.horizontal, layout.s(4))
+            .padding(.bottom, layout.s(5))
+    }
+}
+
+struct DesignCardGroup<Content: View>: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    @ViewBuilder let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) { content }
+            .background(AppTheme.cardBg)
+            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: layout.s(12), style: .continuous)
+                    .stroke(AppTheme.line, lineWidth: 1)
+            )
+            .padding(.horizontal, layout.screenPad)
+    }
+}
+
+struct DesignCardDivider: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    var body: some View {
+        Divider().padding(.leading, layout.screenPad)
+    }
+}
+
+struct DesignPillTag: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let text: String
+    var accent: Bool = false
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(.system(size: layout.s(10), weight: .bold))
+            .kerning(0.8)
+            .foregroundStyle(accent ? AppTheme.accent : AppTheme.muted)
+            .padding(.horizontal, layout.s(10))
+            .padding(.vertical, layout.s(5))
+            .background(
+                Capsule()
+                    .fill(accent ? AppTheme.accentSoft : AppTheme.chipBg)
+                    .overlay(
+                        Capsule()
+                            .stroke(accent ? Color.clear : AppTheme.line, lineWidth: 1)
+                    )
+            )
+    }
+}
+
+/// Numbered guidance card on the 911 tab (artifact EmergencyView).
+struct DesignInfoCard: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let icon: String
+    let title: String
+    let numbered: Bool
+    let items: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            HStack(spacing: layout.s(8)) {
+                Image(systemName: icon)
+                    .font(.system(size: layout.s(15)))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: layout.s(28), height: layout.s(28))
+                    .background(AppTheme.accentSoft)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
+                Text(title)
+                    .font(.system(size: layout.s(12), weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+            }
+            VStack(alignment: .leading, spacing: layout.s(6)) {
+                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                    HStack(alignment: .top, spacing: layout.s(8)) {
+                        Text(numbered ? "\(index + 1)" : "→")
+                            .font(.system(size: layout.s(10), weight: .bold))
+                            .foregroundStyle(AppTheme.accent)
+                            .frame(width: layout.s(12))
+                        Text(item)
+                            .font(.system(size: layout.s(11), weight: .semibold))
+                            .foregroundStyle(AppTheme.ink)
+                            .lineSpacing(layout.s(3))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(layout.s(14))
+        .appCard(elevated: false)
+    }
+}
+
+/// Quick-reference trauma grid on the 911 tab (artifact EmergencyView).
+struct CommonTraumaGrid: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    private let cells: [(String, String)] = [
+        ("Bleeding", "Press hard. Belt tourniquet on limb 2–3 in above. Note time."),
+        ("Not Breathing", "Tilt head, lift chin. No pulse? 100–120/min hard compressions."),
+        ("Spinal", "Don't move. Keep head still. Move only if fire or traffic."),
+        ("Burns", "Running water 10+ min. No ice. Cover loosely."),
+        ("Shock", "Lay flat, elevate legs. Keep warm. No food or water."),
+        ("Hypothermia", "Remove wet clothes. Warm slowly. No rubbing.")
+    ]
+
+    private var columns: [GridItem] {
+        [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            HStack(spacing: layout.s(8)) {
+                Image(systemName: "person.fill")
+                    .font(.system(size: layout.s(15)))
+                    .foregroundStyle(.white)
+                    .frame(width: layout.s(28), height: layout.s(28))
+                    .background(AppTheme.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
+                Text("Common Trauma Situations")
+                    .font(.system(size: layout.s(12), weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+            }
+            LazyVGrid(columns: columns, spacing: layout.s(6)) {
+                ForEach(cells, id: \.0) { cell in
+                    VStack(alignment: .leading, spacing: layout.s(2)) {
+                        Text(cell.0)
+                            .font(.system(size: layout.s(10), weight: .bold))
+                            .foregroundStyle(AppTheme.accent)
+                        Text(cell.1)
+                            .font(.system(size: layout.s(9)))
+                            .foregroundStyle(AppTheme.ink)
+                            .lineSpacing(layout.s(2))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(layout.s(8))
+                    .background(AppTheme.pageBg)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(10), style: .continuous))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(layout.s(14))
+        .appCard(elevated: false)
     }
 }
 

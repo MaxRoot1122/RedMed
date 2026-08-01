@@ -2,77 +2,88 @@ import SwiftUI
 
 struct FirstAidDetailView: View {
     @Environment(\.layoutMetrics) private var layout
+    @Environment(\.dismiss) private var dismiss
 
     let topic: FirstAidTopic
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: layout.spaceXL) {
-                HStack(spacing: layout.s(14)) {
-                    IconWell(systemName: topic.icon, size: layout.iconWellLarge)
-                    VStack(alignment: .leading, spacing: layout.spaceXS) {
-                        Text(topic.title)
-                            .font(.title2.weight(.bold))
-                            .foregroundStyle(AppTheme.ink)
-                        Text("Until EMS arrives")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(AppTheme.muted)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    EditSectionLabel(text: "Recognize", isFirst: true)
+
+                    EditCard {
+                        ForEach(Array(topic.symptoms.enumerated()), id: \.offset) { index, symptom in
+                            Text(symptom)
+                                .font(.system(size: layout.s(15)))
+                                .foregroundStyle(AppTheme.ink)
+                                .lineSpacing(layout.s(3))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, layout.screenPad)
+                                .padding(.vertical, layout.s(13))
+                            if index < topic.symptoms.count - 1 {
+                                EditCardDivider()
+                            }
+                        }
+                    }
+                    .padding(.bottom, layout.s(22))
+
+                    EditSectionLabel(text: "What to do")
+
+                    EditCard {
+                        ForEach(Array(topic.temporaryCare.enumerated()), id: \.offset) { index, step in
+                            HStack(alignment: .top, spacing: layout.s(12)) {
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: layout.s(10), weight: .bold))
+                                    .foregroundStyle(AppTheme.accent)
+                                    .padding(.top, layout.s(4))
+                                Text(CopyHighlight.attributed(step))
+                                    .font(.system(size: layout.s(15)))
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(.horizontal, layout.screenPad)
+                            .padding(.vertical, layout.s(13))
+                            if index < topic.temporaryCare.count - 1 {
+                                EditCardDivider()
+                            }
+                        }
+                    }
+                    .padding(.bottom, layout.s(24))
+
+                    if topic.title == "CPR" {
+                        CPRTimerView(embedded: true)
+                            .padding(.bottom, layout.spaceMD)
+                    }
+
+                    Call911Button()
+                }
+                .padding(.horizontal, layout.screenPad)
+                .padding(.top, layout.s(4))
+                .padding(.bottom, layout.s(32))
+            }
+            .background(ArtifactChrome.editSheetBg)
+            .navigationTitle(topic.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack(spacing: layout.s(5)) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: layout.s(13), weight: .semibold))
+                            Text("Aid")
+                        }
+                        .foregroundStyle(AppTheme.accent)
                     }
                 }
-
-                detailCard(title: "Symptoms", tint: AppTheme.accent, soft: AppTheme.accentSoft, items: topic.symptoms)
-                detailCard(title: "Temporary care", tint: AppTheme.medical, soft: AppTheme.medicalSoft, items: topic.temporaryCare)
-
-                if topic.title == "CPR" {
-                    CPRTimerView(embedded: true)
-                }
-            }
-            .padding(layout.screenPad)
-            .padding(.bottom, layout.screenBottom)
-            .reactiveScrollTrack()
-        }
-        .reactiveScrollChrome()
-        .scrollIndicators(.visible, axes: .vertical)
-        .screenAtmosphere()
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func detailCard(title: String, tint: Color, soft: Color, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: layout.spaceMD) {
-            SectionEyebrow(text: title, tint: tint)
-            VStack(alignment: .leading, spacing: layout.s(10)) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                    HStack(alignment: .top, spacing: layout.spaceMD) {
-                        Text("\(index + 1)")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(index == 0 ? Color.white : tint)
-                            .frame(width: layout.topicIcon, height: layout.topicIcon)
-                            .background(index == 0 ? AnyShapeStyle(AppTheme.stepBadgeGradient) : AnyShapeStyle(soft))
-                            .clipShape(Circle())
-                        Text(CopyHighlight.attributed(item))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(layout.s(10))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(index == 0 ? AppTheme.accentSoft.opacity(0.55) : Color.white.opacity(0.55))
-                    .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous)
-                            .stroke(index == 0 ? AppTheme.accent.opacity(0.16) : AppTheme.line, lineWidth: 1)
-                    )
-                }
             }
         }
-        .padding(layout.spaceLG)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard()
     }
 }
 
 #Preview {
-    NavigationStack {
-        FirstAidDetailView(topic: FirstAidLibrary.topics[0])
-    }
-    .withLayoutMetrics()
+    FirstAidDetailView(topic: FirstAidLibrary.topics[0])
+        .withLayoutMetrics()
 }

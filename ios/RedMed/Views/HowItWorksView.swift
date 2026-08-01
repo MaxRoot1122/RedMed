@@ -20,7 +20,7 @@ struct HowItWorksView: View {
                 .padding(layout.screenPad)
                 .padding(.bottom, layout.screenBottomLarge)
             }
-            .screenAtmosphere()
+            .background(AppTheme.pageBg)
             .navigationTitle("Help & About")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

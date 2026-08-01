@@ -5,6 +5,7 @@ struct AidPane: Identifiable, Hashable {
     let title: String
     let blurb: String
     let icon: String
+    let emoji: String
     let critical: Bool
     let topics: [FirstAidTopic]
 }
@@ -16,6 +17,7 @@ enum AidPaneLibrary {
             title: "Crash & Head",
             blurb: "Impact · neck · pupils",
             icon: "car.fill",
+            emoji: "🚗",
             critical: false,
             topics: FirstAidLibrary.topics.filter { ["Car Crash", "Head & Pupils"].contains($0.title) }
         ),
@@ -24,6 +26,7 @@ enum AidPaneLibrary {
             title: "Bleeding",
             blurb: "Pressure · tourniquet · wounds",
             icon: "drop.fill",
+            emoji: "🩸",
             critical: true,
             topics: FirstAidLibrary.topics.filter {
                 ["Find Bleeding", "Bad Bleeding", "Belt Tourniquet", "Gunshot / Stab"].contains($0.title)
@@ -34,6 +37,7 @@ enum AidPaneLibrary {
             title: "Heart & Airway",
             blurb: "CPR · choking",
             icon: "heart.fill",
+            emoji: "❤️",
             critical: true,
             topics: FirstAidLibrary.topics.filter { ["CPR", "Choking"].contains($0.title) }
         ),
@@ -42,6 +46,7 @@ enum AidPaneLibrary {
             title: "Shock",
             blurb: "Pale · cold · clammy",
             icon: "bolt.fill",
+            emoji: "⚡",
             critical: false,
             topics: FirstAidLibrary.topics.filter { $0.title == "Shock" }
         ),
@@ -50,6 +55,7 @@ enum AidPaneLibrary {
             title: "Cold & Heat",
             blurb: "Notice · warm · cool down",
             icon: "thermometer.medium",
+            emoji: "🌡️",
             critical: false,
             topics: FirstAidLibrary.topics.filter {
                 ["Cold (Hypothermia)", "Heat (Exhaustion & Stroke)"].contains($0.title)
@@ -60,6 +66,7 @@ enum AidPaneLibrary {
             title: "Seizures",
             blurb: "Protect · time · side",
             icon: "brain.head.profile",
+            emoji: "🧠",
             critical: true,
             topics: FirstAidLibrary.topics.filter { $0.title == "Seizures" }
         )

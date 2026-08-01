@@ -18,4 +18,5 @@ enum AppConfig {
     static let legacyHostedCardBaseURL = "https://maxroot1122.github.io/RedMed/card/"
 
     static let privacyPolicyURL = "https://redmed.pages.dev/privacy-policy.html"
+    static let termsOfServiceURL = "https://redmed.pages.dev/terms-of-service.html"
 }

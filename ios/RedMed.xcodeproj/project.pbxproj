@@ -36,6 +36,8 @@
 		B4C5D6E7F8A9012345BCDEF1 /* GoogleGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B4C5D6E7F8901234ABCDE0 /* GoogleGeocoder.swift */; };
 		B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA5420A418C4467938AA432 /* NFCWriter.swift */; };
 		B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */; };
+		H3LP000014A1D00000002 /* HelpMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = H3LP000014A1D00000001 /* HelpMenuView.swift */; };
+		C0TAB000014A1D00000002 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0TAB000014A1D00000001 /* CustomTabBar.swift */; };
 		C0F10BEA290A43C6950B7BC7 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E699F1B5D1E14BE8B89CB68F /* AppConfig.swift */; };
 		C3D4E5F6A7B849D0E1F20345 /* UseConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C94D1E8F901234 /* UseConsentView.swift */; };
 		CAAABDF6872A4D1293AEAF11 /* FirstAidTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674C4DB35F44A98B647EA8B /* FirstAidTopic.swift */; };
@@ -82,6 +84,8 @@
 		B77E20A2201C48CBA8A9896B /* MedicalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalProfile.swift; sourceTree = "<group>"; };
 		B97AA6BDDA134B69ABA01F65 /* RedMed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RedMed.entitlements; sourceTree = "<group>"; };
 		BFBA864A15A1418FBA801232 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		H3LP000014A1D00000001 /* HelpMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpMenuView.swift; sourceTree = "<group>"; };
+		C0TAB000014A1D00000001 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		C3D4E5F6A7B890123456CDEF /* trauma-hospitals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "trauma-hospitals.json"; sourceTree = "<group>"; };
 		C4CC2B3234F946E992AF8294 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		C5D6E7F8A9B0123456CDEF12 /* google-api-key */ = {isa = PBXFileReference; lastKnownFileType = text; path = "google-api-key"; sourceTree = "<group>"; };
@@ -149,11 +153,13 @@
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
 				B3CELET000014A1D00000001 /* BraceletToolbarButton.swift */,
 				CACA0414AEB0404C84D4D717 /* CPRTimerView.swift */,
+				C0TAB000014A1D00000001 /* CustomTabBar.swift */,
 				C4CC2B3234F946E992AF8294 /* EditProfileView.swift */,
 				A12CE5B150BB4CC09D469ADB /* FirstAidDetailView.swift */,
 				572AFAA69FD048659B137D3A /* LocationView.swift */,
 				1381A61F1B3645C98CB67182 /* MyIDView.swift */,
 				4B1D2E3F4A5B6C7D8E9F0A10 /* HowItWorksView.swift */,
+				H3LP000014A1D00000001 /* HelpMenuView.swift */,
 				84F177F3DB4549588AF855B5 /* ScannedCardView.swift */,
 				S1CAN000014A1D00000001 /* ScanEmergencyCardControl.swift */,
 				E1F2A3B4C5D6478990ABCDEF /* TraumaHospitalsSection.swift */,
@@ -297,6 +303,8 @@
 				B68EEB52CA0648D19F2ABC7C /* NFCWriter.swift in Sources */,
 				1D760A5B2D0347E6AC80A85F /* ProfileLinkBuilder.swift in Sources */,
 				B7C50B6F967A43539B3767D0 /* AppTheme.swift in Sources */,
+				C0TAB000014A1D00000002 /* CustomTabBar.swift in Sources */,
+				H3LP000014A1D00000002 /* HelpMenuView.swift in Sources */,
 				140CC3B3B7804B41B48B4D2F /* BasicAidView.swift in Sources */,
 				B1CELET000014A1D00000002 /* BraceletSetupView.swift in Sources */,
 				B3CELET000014A1D00000002 /* BraceletToolbarButton.swift in Sources */,

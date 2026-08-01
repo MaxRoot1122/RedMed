@@ -41,7 +41,7 @@ struct UseConsentView: View {
             .padding(.vertical, layout.space2XL)
         }
         .scrollIndicators(.visible, axes: .vertical)
-        .screenAtmosphere()
+        .background(AppTheme.pageBg)
     }
 }
 

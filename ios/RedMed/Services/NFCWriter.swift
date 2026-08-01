@@ -12,6 +12,15 @@ final class NFCWriter: NSObject, ObservableObject {
     private var session: NFCNDEFReaderSession?
     private var urlToWrite: String = ""
 
+    func cancel() {
+        session?.invalidate()
+        session = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.isWriting = false
+            self?.statusMessage = "Cancelled."
+        }
+    }
+
     func writeURL(_ urlString: String) {
         guard NFCNDEFReaderSession.readingAvailable else {
             statusMessage = "This device doesn't support NFC tag writing."

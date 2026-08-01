@@ -57,6 +57,7 @@ struct BasicAidView: View {
     @Environment(\.layoutMetrics) private var layout
 
     @State private var openPaneId: String?
+    @State private var activeTopic: FirstAidTopic?
 
     private var columns: [GridItem] {
         [
@@ -78,62 +79,53 @@ struct BasicAidView: View {
                             .font(AidTabMetrics.intro(layout))
                             .foregroundStyle(AppTheme.muted)
                             .fixedSize(horizontal: false, vertical: true)
-
-                        Call911Button()
-
-                        HStack(spacing: layout.spaceSM) {
-                            Text("tap to expand")
-                                .font(AidTabMetrics.chip(layout))
-                                .textCase(.uppercase)
-                                .foregroundStyle(AppTheme.accent)
-                                .padding(.horizontal, layout.s(10))
-                                .padding(.vertical, layout.s(5))
-                                .background(AppTheme.accentSoft)
-                                .clipShape(Capsule())
-                            Text("911 first")
-                                .font(AidTabMetrics.chip(layout))
-                                .textCase(.uppercase)
-                                .foregroundStyle(AppTheme.muted)
-                                .padding(.horizontal, layout.s(10))
-                                .padding(.vertical, layout.s(5))
-                                .background(AppTheme.chipBg)
-                                .clipShape(Capsule())
-                        }
                     }
-                    .padding(.top, layout.pageTopInset)
+
+                    Call911Button()
+
+                    HStack(spacing: layout.s(8)) {
+                        DesignPillTag(text: "tap to expand", accent: true)
+                        DesignPillTag(text: "911 first", accent: false)
+                    }
+                    .padding(.bottom, layout.s(2))
 
                     LazyVGrid(columns: columns, spacing: layout.spaceMD) {
                         ForEach(AidPaneLibrary.panes) { pane in
                             AidPaneCard(
                                 pane: pane,
                                 isOpen: openPaneId == pane.id,
+                                activeTopic: $activeTopic,
                                 onToggle: {
                                     withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
                                         openPaneId = openPaneId == pane.id ? nil : pane.id
                                     }
                                 }
                             )
+                            .gridCellColumns(openPaneId == pane.id ? 2 : 1)
                         }
                     }
 
                     aidScriptureFooter
+                        .padding(.bottom, layout.screenBottom)
                 }
                 .padding(.horizontal, layout.screenPad)
-                .padding(.bottom, layout.screenBottom)
+                .padding(.top, layout.s(10))
                 .reactiveScrollTrack()
             }
-            .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
-            .screenAtmosphere()
-            .navigationTitle("Aid")
+            .background(AppTheme.pageBg)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    BrandMark(size: .nav)
+                    Text("Roadside Aid")
+                        .font(.system(size: layout.s(17), weight: .semibold))
+                        .foregroundStyle(AppTheme.ink)
                 }
             }
-            .navigationDestination(for: FirstAidTopic.self) { topic in
+            .sheet(item: $activeTopic) { topic in
                 FirstAidDetailView(topic: topic)
+                    .withLayoutMetrics()
             }
         }
     }
@@ -167,19 +159,20 @@ private struct AidPaneCard: View {
 
     let pane: AidPane
     let isOpen: Bool
+    @Binding var activeTopic: FirstAidTopic?
     let onToggle: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Button(action: onToggle) {
-                HStack(alignment: isOpen ? .center : .top, spacing: layout.spaceMD) {
-                    IconWell(
-                        systemName: pane.icon,
-                        tint: pane.critical ? Color.white : AppTheme.accent,
-                        soft: pane.critical ? AppTheme.accent : AppTheme.accentSoft,
-                        size: AidTabMetrics.iconSize(layout)
-                    )
-                    VStack(alignment: .leading, spacing: layout.spaceXS) {
+                HStack(alignment: .top, spacing: layout.s(10)) {
+                    Text(pane.emoji)
+                        .font(.system(size: layout.s(22)))
+                        .frame(width: AidTabMetrics.iconSize(layout), height: AidTabMetrics.iconSize(layout))
+                        .background(isOpen ? AppTheme.accent : AppTheme.accentSoft)
+                        .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+
+                    VStack(alignment: .leading, spacing: layout.s(3)) {
                         Text(pane.title)
                             .font(AidTabMetrics.paneTitle(layout))
                             .foregroundStyle(AppTheme.ink)
@@ -188,54 +181,58 @@ private struct AidPaneCard: View {
                             Text(pane.blurb)
                                 .font(AidTabMetrics.paneBlurb(layout))
                                 .foregroundStyle(AppTheme.muted)
-                                .multilineTextAlignment(.leading)
+                                .lineLimit(1)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "chevron.right")
+
+                    Image(systemName: isOpen ? "chevron.down" : "chevron.right")
                         .font(AidTabMetrics.chevron(layout))
                         .foregroundStyle(AppTheme.accent)
-                        .rotationEffect(.degrees(isOpen ? 90 : 0))
-                        .animation(.spring(response: 0.35, dampingFraction: 0.86), value: isOpen)
                 }
                 .padding(AidTabMetrics.cardPad(layout))
-                .frame(maxWidth: .infinity, minHeight: AidTabMetrics.paneMinHeight(layout), alignment: isOpen ? .center : .topLeading)
+                .frame(maxWidth: .infinity, minHeight: AidTabMetrics.paneMinHeight(layout), alignment: .topLeading)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             if isOpen {
-                VStack(spacing: layout.s(10)) {
+                VStack(spacing: layout.s(7)) {
                     ForEach(pane.topics) { topic in
-                        NavigationLink(value: topic) {
+                        Button {
+                            activeTopic = topic
+                        } label: {
                             HStack {
                                 Text(topic.title)
                                     .font(AidTabMetrics.topicTitle(layout))
                                     .foregroundStyle(AppTheme.ink)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(AidTabMetrics.chevron(layout))
                                     .foregroundStyle(AppTheme.muted)
                             }
-                            .padding(layout.spaceLG)
+                            .padding(.horizontal, layout.s(12))
+                            .padding(.vertical, layout.s(10))
                             .background(AppTheme.secondarySurface)
-                            .clipShape(RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous))
+                            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
                             .overlay(
-                                RoundedRectangle(cornerRadius: layout.innerRadius, style: .continuous)
+                                RoundedRectangle(cornerRadius: layout.s(12), style: .continuous)
                                     .stroke(AppTheme.line, lineWidth: 1)
                             )
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal, layout.spaceMD)
+                .padding(.horizontal, layout.s(10))
                 .padding(.bottom, layout.s(14))
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .appCard()
+        .background(AppTheme.cardBg)
+        .clipShape(RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous)
-                .stroke(isOpen ? AppTheme.accent.opacity(0.28) : Color.clear, lineWidth: 1)
+                .stroke(isOpen ? AppTheme.accent.opacity(0.28) : AppTheme.line, lineWidth: 1)
         )
     }
 }

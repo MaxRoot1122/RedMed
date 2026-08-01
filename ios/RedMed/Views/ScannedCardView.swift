@@ -88,9 +88,8 @@ struct ScannedCardView: View {
                 }
                 .reactiveScrollTrack()
             }
-            .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
-            .screenAtmosphere()
+            .background(AppTheme.pageBg)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {

@@ -16,11 +16,21 @@ struct WriteTagView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: layout.space2XL) {
-                    NFCHeroHeader(
-                        title: DesignPagePlacement.nfcHeroTitle,
-                        subtitle: DesignPagePlacement.nfcHeroSubtitle
-                    )
+                VStack(spacing: layout.spaceMD) {
+                    VStack(spacing: layout.s(4)) {
+                        Text("NFC Bracelet")
+                            .font(.system(size: layout.s(22), weight: .bold))
+                            .foregroundStyle(AppTheme.ink)
+                        Text(DesignPagePlacement.nfcHeroSubtitle)
+                            .font(.system(size: layout.s(14), weight: .medium))
+                            .foregroundStyle(AppTheme.muted)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(layout.s(3))
+                            .frame(maxWidth: layout.s(275))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, layout.s(8))
+                    .padding(.bottom, layout.s(6))
 
                     SoftStatusChip(
                         text: "Tap the band · phone opens your card · no app for readers",
@@ -48,6 +58,7 @@ struct WriteTagView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle(enabled: profileReady && !writer.isWriting))
                     .disabled(!profileReady || writer.isWriting)
+                    .padding(.top, layout.s(4))
 
                     if !profileReady {
                         Text("Add your name on My ID before writing a tag.")
@@ -67,7 +78,7 @@ struct WriteTagView: View {
                     }
 
                     if profileReady {
-                        BraceletVerifySection()
+                        artifactVerifySection
                     }
 
                     BraceletSyncInstructions()
@@ -76,18 +87,23 @@ struct WriteTagView: View {
                     importSection
                 }
                 .padding(.horizontal, layout.screenPad)
-                .padding(.top, layout.spaceSM)
                 .padding(.bottom, layout.screenBottomLarge)
                 .reactiveScrollTrack()
             }
-            .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
-            .screenAtmosphere()
-            .navigationTitle("NFC")
+            .background(AppTheme.pageBg)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    BrandMark(size: .nav)
+                    Text("NFC Bracelet")
+                        .font(.system(size: layout.s(17), weight: .semibold))
+                        .foregroundStyle(AppTheme.ink)
+                }
+            }
+            .overlay {
+                if writer.isWriting {
+                    NFCWriteOverlay { writer.cancel() }
                 }
             }
             .confirmationDialog(
@@ -118,7 +134,29 @@ struct WriteTagView: View {
         self.pendingRead = nil
     }
 
-    /// First-responder path — opens native emergency card, does not touch My ID.
+    private var artifactVerifySection: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            Text("VERIFY")
+                .font(.system(size: layout.s(10), weight: .bold))
+                .kerning(1.1)
+                .foregroundStyle(AppTheme.muted)
+                .padding(.horizontal, layout.s(10))
+                .padding(.vertical, layout.s(5))
+                .background(Capsule().fill(AppTheme.mutedSoft))
+
+            Text("After writing, scan your band here to see the same emergency card a stranger gets.")
+                .font(.system(size: layout.s(13), weight: .medium))
+                .foregroundStyle(AppTheme.muted)
+                .lineSpacing(layout.s(3))
+                .fixedSize(horizontal: false, vertical: true)
+
+            ScanEmergencyCardControl(title: "Scan your bracelet")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(layout.s(16))
+        .appCard(elevated: false)
+    }
+
     private var scanSection: some View {
         VStack(spacing: layout.s(14)) {
             ThemeDividerLabel(text: "Scan card")
@@ -133,7 +171,6 @@ struct WriteTagView: View {
         .padding(.top, layout.spaceSM)
     }
 
-    /// Owner path — pull tag data onto this phone's My ID.
     private var importSection: some View {
         VStack(spacing: layout.s(14)) {
             ThemeDividerLabel(text: "Or import")

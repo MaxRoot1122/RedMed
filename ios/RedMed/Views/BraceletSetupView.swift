@@ -20,10 +20,19 @@ struct BraceletSetupView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: layout.spaceXL) {
-                    NFCHeroHeader(
-                        title: DesignPagePlacement.braceletHeroTitle,
-                        subtitle: DesignPagePlacement.braceletHeroSubtitle
-                    )
+                    VStack(spacing: layout.s(4)) {
+                        Text("NFC Bracelet")
+                            .font(.system(size: layout.s(22), weight: .bold))
+                            .foregroundStyle(AppTheme.ink)
+                        Text(DesignPagePlacement.braceletHeroSubtitle)
+                            .font(.system(size: layout.s(14), weight: .medium))
+                            .foregroundStyle(AppTheme.muted)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(layout.s(3))
+                            .frame(maxWidth: layout.s(275))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, layout.s(8))
 
                     SoftStatusChip(
                         text: "Tap the band · phone opens your card · no app for readers",
@@ -107,14 +116,15 @@ struct BraceletSetupView: View {
                 .padding(.bottom, layout.screenBottom)
                 .reactiveScrollTrack()
             }
-            .reactiveScrollChrome()
             .scrollIndicators(.visible, axes: .vertical)
-            .screenAtmosphere()
-            .navigationTitle("Bracelet")
+            .background(AppTheme.pageBg)
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    BrandMark(size: .nav)
+                    Text("NFC Bracelet")
+                        .font(.system(size: layout.s(17), weight: .semibold))
+                        .foregroundStyle(AppTheme.ink)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }

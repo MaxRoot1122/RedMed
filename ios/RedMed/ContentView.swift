@@ -1,62 +1,32 @@
 import SwiftUI
-import UIKit
 
 struct ContentView: View {
+    @Environment(\.layoutMetrics) private var layout
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
-    @State private var selectedTab: AppTab = .find911
+    @State private var selectedTab: OwnerTab = .myID
     @Environment(\.scenePhase) private var scenePhase
 
-    private enum AppTab: Hashable {
-        case myID, find911, aid, nfc
-    }
-
-    init() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.redMedPageBg
-        appearance.shadowColor = UIColor.redMedLine
-        appearance.shadowImage = nil
-        let item = UITabBarItemAppearance()
-        item.normal.iconColor = UIColor.redMedMuted
-        item.normal.titleTextAttributes = [
-            .foregroundColor: UIColor.redMedMuted,
-            .font: UIFont.systemFont(ofSize: 10, weight: .medium)
-        ]
-        item.selected.iconColor = UIColor.redMedAccent
-        item.selected.titleTextAttributes = [
-            .foregroundColor: UIColor.redMedAccent,
-            .font: UIFont.systemFont(ofSize: 10, weight: .semibold)
-        ]
-        appearance.stackedLayoutAppearance = item
-        appearance.inlineLayoutAppearance = item
-        appearance.compactInlineLayoutAppearance = item
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-        if #available(iOS 26.0, *) {
-            UITabBar.appearance().isHidden = false
-        }
-    }
-
     var body: some View {
-        TabView(selection: $selectedTab) {
-            MyIDView()
-                .tabItem { Label("My ID", systemImage: "heart.fill") }
-                .tag(AppTab.myID)
+        ZStack(alignment: .bottom) {
+            Group {
+                switch selectedTab {
+                case .myID:
+                    MyIDView(selectedTab: $selectedTab)
+                case .find911:
+                    LocationView()
+                case .aid:
+                    BasicAidView()
+                case .nfc:
+                    WriteTagView()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, layout.customTabBarReserve)
 
-            LocationView()
-                .tabItem { Label("911", systemImage: "phone.fill") }
-                .tag(AppTab.find911)
-
-            BasicAidView()
-                .tabItem { Label("Aid", systemImage: "cross.case.fill") }
-                .tag(AppTab.aid)
-
-            WriteTagView()
-                .tabItem { Label("NFC", systemImage: "wave.3.right") }
-                .tag(AppTab.nfc)
+            CustomTabBar(tab: $selectedTab)
         }
-        .modifier(TabBarBehaviorModifier())
+        .ignoresSafeArea(edges: .bottom)
         .environmentObject(store)
         .environmentObject(braceletLink)
         .tint(AppTheme.accent)
@@ -72,9 +42,6 @@ struct ContentView: View {
         }
         .withLayoutMetrics()
         .onAppear {
-            // Cold launch after pairing+backgrounding (e.g. kill & relaunch):
-            // there's no scenePhase *change* to observe for the app's own
-            // first activation, so check once on appear too.
             braceletLink.promotePostPairingGraceIfEligible()
         }
         .onChange(of: scenePhase) { phase in
@@ -85,21 +52,9 @@ struct ContentView: View {
             }
         }
     }
+
 }
 
 #Preview {
     ContentView()
-}
-
-/// iOS 26+ floating/minimized tab bars change height while scrolling — keep a stable bar.
-private struct TabBarBehaviorModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .tabBarMinimizeBehavior(.never)
-                .toolbarBackground(.visible, for: .tabBar)
-        } else {
-            content
-        }
-    }
 }

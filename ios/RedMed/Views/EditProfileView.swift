@@ -23,11 +23,9 @@ struct EditProfileView: View {
     @State private var showingAddAllergy = false
     @State private var showingAddMed = false
     @State private var showingAddCondition = false
-    @State private var openContactIndex: Int?
     @State private var savedFlash = false
     @State private var showingBraceletSetup = false
-    @State private var firstName = ""
-    @State private var lastName = ""
+    @State private var fullName = ""
     @StateObject private var braceletWriter = NFCWriter()
 
     private let bloodTypes = ["", "O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
@@ -148,253 +146,355 @@ struct EditProfileView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            if embedded {
+                embeddedNavBar
+            } else {
+                sheetNavBar
+            }
+
             ZStack {
-            Form {
-                if embedded {
-                    Section {
-                        VStack(alignment: .leading, spacing: layout.s(10)) {
-                            if link.isLinked {
-                                BrandMark(size: .hero, titleOverride: link.deviceName)
-                            } else {
-                                BrandMark(size: .hero, showTagline: true)
-                                if Self.joinProfileName(first: firstName, last: lastName).isEmpty {
-                                    Text("Add your name to unlock NFC write.")
-                                        .font(.subheadline.weight(.medium))
-                                        .foregroundStyle(AppTheme.muted)
-                                }
-                            }
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if embedded {
+                            embeddedHeader
                         }
-                        .padding(.vertical, layout.spaceSM)
+
+                        if link.isLinked {
+                            syncSection
+                        }
+
+                        EditSectionLabel(text: "You", isFirst: !embedded)
+                        EditCard {
+                            EditLabeledField(label: "Name", text: $fullName, placeholder: "Full name")
+                            EditCardDivider(leadingInset: layout.s(106))
+                            dobRow
+                            EditCardDivider(leadingInset: layout.s(106))
+                            bloodTypeRow
+                        }
+
+                        listEditSection(title: "Allergies", items: $draft.allergies, addTitle: "Add allergy") {
+                            showingAddAllergy = true
+                        }
+
+                        medicationsSection
+
+                        listEditSection(title: "Conditions", items: $draft.conditions, addTitle: "Add condition") {
+                            showingAddCondition = true
+                        }
+
+                        contactsSection
+
+                        Button("Clear data", role: .destructive) {
+                            showingClearConfirm = true
+                        }
+                        .font(.system(size: layout.s(15)))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(
-                            top: layout.pageTopInset,
-                            leading: layout.spaceXS,
-                            bottom: layout.spaceSM,
-                            trailing: layout.spaceXS
-                        ))
+                        .padding(.horizontal, layout.s(4))
+                        .padding(.top, layout.s(22))
+
+                        Text("On this device and your band only. Never uploaded.")
+                            .font(.system(size: layout.s(12), weight: .medium))
+                            .foregroundStyle(AppTheme.muted)
+                            .padding(.horizontal, layout.s(4))
+                            .padding(.top, layout.s(8))
+                            .padding(.bottom, layout.s(48))
+                    }
+                    .padding(.top, layout.s(20))
+                    .padding(.horizontal, layout.screenPad)
+                }
+                .background(ArtifactChrome.editSheetBg)
+                .disabled(!editUnlocked)
+                .blur(radius: editUnlocked ? 0 : 8)
+
+                if requiresEditAuth && !editUnlocked {
+                    authGate
+                }
+            }
+        }
+        .onAppear {
+            loadDraft()
+            prepareEditAccess()
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .background {
+                if link.pendingPostPairingGrace { link.consumePostPairingGrace() }
+                if requiresEditAuth { editUnlocked = false }
+            }
+        }
+        .onChange(of: braceletWriter.verified) { verified in
+            guard verified,
+                  let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+            link.link(name: link.deviceName, url: url.absoluteString)
+        }
+        .onChange(of: braceletWriter.success) { success in
+            guard success, !braceletWriter.verified,
+                  let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
+            link.link(name: link.deviceName, url: url.absoluteString)
+        }
+        .sheet(isPresented: $showingBraceletSetup) {
+            BraceletSetupView()
+        }
+        .sheet(isPresented: $showingAddAllergy) {
+            SearchAddSheet(
+                title: "Add allergy",
+                placeholder: "Search or type",
+                suggestions: Self.commonAllergens,
+                existing: draft.allergies
+            ) { draft.allergies.append($0) }
+        }
+        .sheet(isPresented: $showingAddMed) {
+            SearchAddSheet(
+                title: "Add medication",
+                placeholder: "Type 3+ letters to search",
+                suggestions: Self.commonMeds,
+                existing: medRows.map(\.name),
+                minimumQueryLength: 3
+            ) { medRows.append(MedRow(name: $0, dose: "")) }
+        }
+        .sheet(isPresented: $showingAddCondition) {
+            SearchAddSheet(
+                title: "Add condition",
+                placeholder: "Search or type",
+                suggestions: Self.commonConditions,
+                existing: draft.conditions
+            ) { draft.conditions.append($0) }
+        }
+        .confirmationDialog("Clear all data?", isPresented: $showingClearConfirm) {
+            Button("Clear", role: .destructive) {
+                Task { await clearAfterAuth() }
+            }
+        }
+    }
+
+    private var sheetNavBar: some View {
+        HStack {
+            Button("Cancel") { dismiss() }
+                .font(.system(size: layout.s(17)))
+                .foregroundStyle(AppTheme.accent)
+            Spacer()
+            Text("Edit Profile")
+                .font(.system(size: layout.s(17), weight: .semibold))
+                .foregroundStyle(AppTheme.ink)
+            Spacer()
+            Button(savedFlash ? "Saved" : "Save") { save() }
+                .font(.system(size: layout.s(17), weight: .bold))
+                .foregroundStyle(AppTheme.accent)
+                .disabled(!editUnlocked)
+        }
+        .padding(.horizontal, layout.screenPad)
+        .frame(height: layout.s(52))
+        .background(ArtifactChrome.editSheetBg.opacity(0.95))
+        .overlay(alignment: .bottom) {
+            Divider().overlay(Color.black.opacity(0.12))
+        }
+    }
+
+    private var embeddedNavBar: some View {
+        HStack {
+            Spacer()
+            Button(savedFlash ? "Saved" : "Save") { save() }
+                .font(.system(size: layout.s(17), weight: .bold))
+                .foregroundStyle(AppTheme.accent)
+                .disabled(!editUnlocked)
+            Button {
+                showingBraceletSetup = true
+            } label: {
+                BraceletToolbarButton(link: link)
+            }
+            .accessibilityLabel("Bracelet setup")
+        }
+        .padding(.horizontal, layout.screenPad)
+        .frame(height: layout.s(44))
+        .background(Color.white.opacity(0.9))
+        .overlay(alignment: .bottom) {
+            Divider().overlay(AppTheme.ink.opacity(0.08))
+        }
+    }
+
+    @ViewBuilder
+    private var embeddedHeader: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            if link.isLinked {
+                BrandMark(size: .hero, titleOverride: link.deviceName)
+            } else {
+                BrandMark(size: .hero, showTagline: true)
+                if fullName.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Text("Add your name to unlock NFC write.")
+                        .font(.system(size: layout.s(14), weight: .medium))
+                        .foregroundStyle(AppTheme.muted)
+                }
+            }
+        }
+        .padding(.bottom, layout.s(16))
+    }
+
+    @ViewBuilder
+    private var syncSection: some View {
+        VStack(alignment: .leading, spacing: layout.s(10)) {
+            BraceletSyncInstructions()
+            if braceletWriter.isWriting || !braceletWriter.statusMessage.isEmpty {
+                Text(braceletWriter.isWriting ? "Hold near bracelet…" : braceletWriter.statusMessage)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(braceletWriter.verified ? AppTheme.ok : AppTheme.ink)
+            }
+        }
+        .padding(.bottom, layout.s(16))
+    }
+
+    @ViewBuilder
+    private var dobRow: some View {
+        HStack(spacing: 0) {
+            Text("Birth date")
+                .font(.system(size: layout.s(15), weight: .medium))
+                .foregroundStyle(ArtifactChrome.editLabel)
+                .frame(width: layout.s(90), alignment: .leading)
+                .padding(.trailing, layout.s(12))
+            DatePicker("", selection: dobBinding, displayedComponents: .date)
+                .labelsHidden()
+                .font(.system(size: layout.s(15)))
+        }
+        .padding(.horizontal, layout.screenPad)
+        .padding(.vertical, layout.s(13))
+    }
+
+    @ViewBuilder
+    private var bloodTypeRow: some View {
+        HStack(spacing: 0) {
+            Text("Blood type")
+                .font(.system(size: layout.s(15), weight: .medium))
+                .foregroundStyle(ArtifactChrome.editLabel)
+                .frame(width: layout.s(90), alignment: .leading)
+                .padding(.trailing, layout.s(12))
+            Picker("", selection: $draft.blood) {
+                ForEach(bloodTypes, id: \.self) { bt in
+                    Text(bt.isEmpty ? "Unknown" : bt).tag(bt)
+                }
+            }
+            .pickerStyle(.menu)
+            .font(.system(size: layout.s(15)))
+        }
+        .padding(.horizontal, layout.screenPad)
+        .padding(.vertical, layout.s(13))
+    }
+
+    @ViewBuilder
+    private func listEditSection(
+        title: String,
+        items: Binding<[String]>,
+        addTitle: String,
+        onAdd: @escaping () -> Void
+    ) -> some View {
+        EditSectionLabel(text: title)
+        EditCard {
+            ForEach(items.wrappedValue.indices, id: \.self) { index in
+                HStack {
+                    TextField(title, text: items[index])
+                        .font(.system(size: layout.s(15)))
+                        .foregroundStyle(AppTheme.ink)
+                    Spacer()
+                    EditRemoveButton {
+                        withAnimation { _ = items.wrappedValue.remove(at: index) }
                     }
                 }
+                .padding(.horizontal, layout.screenPad)
+                .padding(.vertical, layout.s(13))
+                EditCardDivider()
+            }
+            EditAddRow(title: addTitle, action: onAdd)
+        }
+    }
 
-                if link.isLinked {
-                    Section {
-                        BraceletSyncInstructions()
-                        if braceletWriter.isWriting || !braceletWriter.statusMessage.isEmpty {
-                            Text(braceletWriter.isWriting ? "Hold near bracelet…" : braceletWriter.statusMessage)
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(braceletWriter.verified ? AppTheme.ok : AppTheme.ink)
+    @ViewBuilder
+    private var medicationsSection: some View {
+        EditSectionLabel(text: "Medications")
+        EditCard {
+            ForEach($medRows) { $row in
+                VStack(alignment: .leading, spacing: layout.s(4)) {
+                    HStack {
+                        TextField("Medication", text: $row.name)
+                            .font(.system(size: layout.s(15), weight: .semibold))
+                            .foregroundStyle(AppTheme.ink)
+                        Spacer()
+                        EditRemoveButton {
+                            withAnimation { medRows.removeAll { $0.id == row.id } }
                         }
                     }
-                    .listRowBackground(Color.clear)
+                    TextField("Dose", text: $row.dose)
+                        .font(.system(size: layout.s(13)))
+                        .foregroundStyle(AppTheme.muted)
                 }
+                .padding(.horizontal, layout.screenPad)
+                .padding(.vertical, layout.s(13))
+                EditCardDivider()
+            }
+            EditAddRow(title: "Add medication") { showingAddMed = true }
+        }
+    }
 
-                Section {
-                    HStack(spacing: layout.spaceSM) {
-                        TextField("First", text: $firstName)
-                            .textContentType(.givenName)
-                            .autocorrectionDisabled()
-                        TextField("Last", text: $lastName)
-                            .textContentType(.familyName)
-                            .autocorrectionDisabled()
+    @ViewBuilder
+    private var contactsSection: some View {
+        EditSectionLabel(text: "Emergency Contacts")
+        EditCard {
+            ForEach(draft.contacts.indices, id: \.self) { index in
+                HStack(alignment: .top, spacing: layout.s(8)) {
+                    VStack(alignment: .leading, spacing: layout.s(4)) {
+                        TextField("Name", text: $draft.contacts[index].name)
+                            .font(.system(size: layout.s(15), weight: .semibold))
+                            .foregroundStyle(AppTheme.ink)
+                        TextField("Relationship", text: $draft.contacts[index].rel)
+                            .font(.system(size: layout.s(13)))
+                            .foregroundStyle(AppTheme.muted)
+                        TextField("Phone", text: $draft.contacts[index].phone)
+                            .font(.system(size: layout.s(13)))
+                            .foregroundStyle(AppTheme.muted)
+                            .keyboardType(.phonePad)
                     }
-                    .padding(.top, layout.spaceMD)
-                    DatePicker("Birth date", selection: dobBinding, displayedComponents: .date)
-                    Picker("Blood type", selection: $draft.blood) {
-                        ForEach(bloodTypes, id: \.self) { bt in
-                            Text(bt.isEmpty ? "Unknown" : bt).tag(bt)
-                        }
+                    Spacer()
+                    EditRemoveButton {
+                        withAnimation { draft.contacts[index] = EmergencyContact() }
                     }
-                } header: {
-                    Text("You")
+                    .padding(.top, layout.s(4))
                 }
+                .padding(.horizontal, layout.screenPad)
+                .padding(.vertical, layout.s(13))
+                if index < draft.contacts.count - 1 {
+                    EditCardDivider()
+                }
+            }
+            EditAddRow(title: "Add contact") {
+                if draft.contacts.count < 3 {
+                    draft.contacts.append(EmergencyContact())
+                }
+            }
+        }
+    }
 
-                Section("Allergies") {
-                    if draft.allergies.isEmpty {
-                        Text("None").foregroundStyle(AppTheme.muted)
-                    } else {
-                        ForEach(Array(draft.allergies.enumerated()), id: \.offset) { index, allergy in
-                            HStack {
-                                Text(allergy)
-                                Spacer()
-                                Button { draft.allergies.remove(at: index) } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    Button("Add allergy") { showingAddAllergy = true }
-                        .foregroundStyle(AppTheme.teal)
+    @ViewBuilder
+    private var authGate: some View {
+        Color.black.opacity(0.15)
+            .ignoresSafeArea()
+        if authInProgress {
+            ProgressView("Unlocking…")
+                .font(.subheadline.weight(.semibold))
+                .padding(layout.spaceLG)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
+        } else {
+            VStack(spacing: layout.spaceMD) {
+                Image(systemName: editAuthAvailability.iconSystemName)
+                    .font(.system(size: layout.s(40)))
+                    .foregroundStyle(AppTheme.accent)
+                Text(editAuthAvailability.editGateTitle)
+                    .font(.subheadline.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                Button(editAuthAvailability.unlockButtonLabel) {
+                    Task { await unlockForEdit() }
                 }
-
-                Section("Medications") {
-                    if medRows.isEmpty {
-                        Text("None").foregroundStyle(AppTheme.muted)
-                    } else {
-                        ForEach($medRows) { $row in
-                            HStack {
-                                VStack(alignment: .leading, spacing: layout.s(6)) {
-                                    Text(row.name).font(.body.weight(.semibold))
-                                    TextField("Dose", text: $row.dose).font(.subheadline)
-                                }
-                                Spacer()
-                                Button {
-                                    medRows.removeAll { $0.id == row.id }
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                        .onDelete { medRows.remove(atOffsets: $0) }
-                    }
-                    Button("Add medication") { showingAddMed = true }
-                        .foregroundStyle(AppTheme.teal)
-                }
-
-                Section("Conditions") {
-                    if draft.conditions.isEmpty {
-                        Text("None").foregroundStyle(AppTheme.muted)
-                    } else {
-                        ForEach(Array(draft.conditions.enumerated()), id: \.offset) { index, condition in
-                            HStack {
-                                Text(condition)
-                                Spacer()
-                                Button { draft.conditions.remove(at: index) } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    Button("Add condition") { showingAddCondition = true }
-                        .foregroundStyle(AppTheme.teal)
-                }
-
-                Section("Contacts") {
-                    ForEach(0..<3, id: \.self) { index in
-                        contactDisclosure(index: index)
-                    }
-                }
-
-                Section {
-                    Button("Clear data", role: .destructive) { showingClearConfirm = true }
-                } footer: {
-                    Text("On this device and your band only. Never uploaded.")
-                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accent)
             }
-            .scrollContentBackground(.hidden)
-            .screenAtmosphere()
-            .disabled(!editUnlocked)
-            .blur(radius: editUnlocked ? 0 : 8)
-
-            if requiresEditAuth && !editUnlocked {
-                Color.black.opacity(0.15)
-                    .ignoresSafeArea()
-                if authInProgress {
-                    ProgressView("Unlocking…")
-                        .font(.subheadline.weight(.semibold))
-                        .padding(layout.spaceLG)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
-                } else {
-                    VStack(spacing: layout.spaceMD) {
-                        Image(systemName: editAuthAvailability.iconSystemName)
-                            .font(.system(size: layout.s(40)))
-                            .foregroundStyle(AppTheme.accent)
-                        Text(editAuthAvailability.editGateTitle)
-                            .font(.subheadline.weight(.semibold))
-                            .multilineTextAlignment(.center)
-                        Button(editAuthAvailability.unlockButtonLabel) {
-                            Task { await unlockForEdit() }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(AppTheme.accent)
-                    }
-                    .padding(layout.spaceLG)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
-                }
-            }
-            }
-            .navigationTitle(embedded ? "" : "Edit")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                if embedded {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showingBraceletSetup = true
-                        } label: {
-                            BraceletToolbarButton(link: link)
-                        }
-                        .accessibilityLabel("Bracelet setup")
-                    }
-                }
-                if !embedded {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { dismiss() }
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(savedFlash ? "Saved" : "Save") { save() }
-                        .bold()
-                        .foregroundStyle(AppTheme.accent)
-                        .disabled(!editUnlocked)
-                }
-            }
-            .tint(AppTheme.accent)
-            .onAppear {
-                loadDraft()
-                prepareEditAccess()
-            }
-            .onChange(of: scenePhase) { phase in
-                if phase == .background {
-                    if link.pendingPostPairingGrace { link.consumePostPairingGrace() }
-                    if requiresEditAuth { editUnlocked = false }
-                }
-            }
-            .onChange(of: braceletWriter.verified) { verified in
-                guard verified,
-                      let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
-                link.link(name: link.deviceName, url: url.absoluteString)
-            }
-            .onChange(of: braceletWriter.success) { success in
-                guard success, !braceletWriter.verified,
-                      let url = ProfileLinkBuilder.buildURL(profile: store.profile, baseURL: AppConfig.medicalCardBaseURL) else { return }
-                link.link(name: link.deviceName, url: url.absoluteString)
-            }
-            .sheet(isPresented: $showingBraceletSetup) {
-                BraceletSetupView()
-            }
-            .sheet(isPresented: $showingAddAllergy) {
-                SearchAddSheet(
-                    title: "Add allergy",
-                    placeholder: "Search or type",
-                    suggestions: Self.commonAllergens,
-                    existing: draft.allergies
-                ) { draft.allergies.append($0) }
-            }
-            .sheet(isPresented: $showingAddMed) {
-                SearchAddSheet(
-                    title: "Add medication",
-                    placeholder: "Type 3+ letters to search",
-                    suggestions: Self.commonMeds,
-                    existing: medRows.map(\.name),
-                    minimumQueryLength: 3
-                ) { medRows.append(MedRow(name: $0, dose: "")) }
-            }
-            .sheet(isPresented: $showingAddCondition) {
-                SearchAddSheet(
-                    title: "Add condition",
-                    placeholder: "Search or type",
-                    suggestions: Self.commonConditions,
-                    existing: draft.conditions
-                ) { draft.conditions.append($0) }
-            }
-            .confirmationDialog("Clear all data?", isPresented: $showingClearConfirm) {
-                Button("Clear", role: .destructive) {
-                    Task { await clearAfterAuth() }
-                }
-            }
+            .padding(layout.spaceLG)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: layout.s(16)))
             .withLayoutMetrics()
         }
     }
@@ -428,6 +528,7 @@ struct EditProfileView: View {
         store.clearAllData()
         link.clear()
         draft = store.profile
+        fullName = ""
         while draft.contacts.count < 3 { draft.contacts.append(EmergencyContact()) }
         medRows = []
         editUnlocked = true
@@ -435,7 +536,7 @@ struct EditProfileView: View {
 
     private func save() {
         guard editUnlocked else { return }
-        draft.name = Self.joinProfileName(first: firstName, last: lastName)
+        draft.name = fullName.trimmingCharacters(in: .whitespaces)
         draft.meds = medRows.compactMap(Self.formatMed)
         draft.allergies = draft.allergies.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
         draft.conditions = draft.conditions.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
@@ -469,68 +570,13 @@ struct EditProfileView: View {
 
     private func loadDraft() {
         draft = store.profile
-        let nameParts = Self.splitProfileName(draft.name)
-        firstName = nameParts.first
-        lastName = nameParts.last
+        fullName = draft.name
         if draft.contacts.count < 3 {
             while draft.contacts.count < 3 { draft.contacts.append(EmergencyContact()) }
         }
         medRows = store.profile.meds.map(Self.parseMed)
         draft.allergies = draft.allergies.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
         draft.conditions = draft.conditions.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-    }
-
-    private func contactDetail(_ contact: EmergencyContact) -> String {
-        [contact.rel, contact.phone]
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-            .joined(separator: " · ")
-    }
-
-    @ViewBuilder
-    private func contactDisclosure(index: Int) -> some View {
-        let isExpanded = Binding(
-            get: { openContactIndex == index },
-            set: { openContactIndex = $0 ? index : nil }
-        )
-        DisclosureGroup(isExpanded: isExpanded) {
-            TextField("Name", text: $draft.contacts[index].name)
-            TextField("Relationship", text: $draft.contacts[index].rel)
-            TextField("Phone", text: $draft.contacts[index].phone)
-                .keyboardType(.phonePad)
-        } label: {
-            contactLabel(index: index)
-        }
-    }
-
-    @ViewBuilder
-    private func contactLabel(index: Int) -> some View {
-        let contact = draft.contacts[index]
-        let name = contact.name.trimmingCharacters(in: .whitespaces)
-        let detail = contactDetail(contact)
-        let isEmpty = name.isEmpty && detail.isEmpty
-        HStack {
-            VStack(alignment: .leading, spacing: layout.s(2)) {
-                Text(name.isEmpty ? "Emergency contact \(index + 1)" : name)
-                    .font(.subheadline.weight(.semibold))
-                if !detail.isEmpty {
-                    Text(detail)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(AppTheme.muted)
-                        .lineLimit(1)
-                }
-            }
-            if !isEmpty {
-                Spacer()
-                Button {
-                    draft.contacts[index] = EmergencyContact()
-                    if openContactIndex == index { openContactIndex = nil }
-                } label: {
-                    Image(systemName: "xmark.circle.fill").foregroundStyle(AppTheme.muted.opacity(0.45))
-                }
-                .buttonStyle(.plain)
-            }
-        }
     }
 
     // Cached instead of built inside dobBinding's get/set — those closures
