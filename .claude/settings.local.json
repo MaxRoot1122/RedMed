@@ -7,8 +7,10 @@
       "Bash(rsync -av --delete __TRACKED_VAR__/Views/ __TRACKED_VAR__/Views/)",
       "Bash(rsync -av --delete __TRACKED_VAR__/Services/ __TRACKED_VAR__/Services/)",
       "Bash(rsync -av --delete __TRACKED_VAR__/Models/ __TRACKED_VAR__/Models/)",
-      "Bash(rsync -av __TRACKED_VAR__/Assets.xcassets/ __TRACKED_VAR__/Assets.xcassets/)",
-      "Bash(cp __TRACKED_VAR__/AppConfig.swift __TRACKED_VAR__/AppConfig.swift)"
+      "Bash(rsync -av --delete __TRACKED_VAR__/Assets.xcassets/ __TRACKED_VAR__/Assets.xcassets/)",
+      "Bash(cp __TRACKED_VAR__/AppConfig.swift __TRACKED_VAR__/AppConfig.swift)",
+      "Bash(xcodebuild -list)",
+      "Bash(xcodebuild -project RedMed.xcodeproj -scheme RedMed -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build)"
     ]
   }
 }

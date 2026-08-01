@@ -233,9 +233,18 @@ struct EditProfileView: View {
                         Text("None").foregroundStyle(.secondary)
                     } else {
                         ForEach($medRows) { $row in
-                            VStack(alignment: .leading, spacing: layout.s(6)) {
-                                Text(row.name).font(.body.weight(.semibold))
-                                TextField("Dose", text: $row.dose).font(.subheadline)
+                            HStack {
+                                VStack(alignment: .leading, spacing: layout.s(6)) {
+                                    Text(row.name).font(.body.weight(.semibold))
+                                    TextField("Dose", text: $row.dose).font(.subheadline)
+                                }
+                                Spacer()
+                                Button {
+                                    medRows.removeAll { $0.id == row.id }
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                         .onDelete { medRows.remove(atOffsets: $0) }
@@ -498,14 +507,27 @@ struct EditProfileView: View {
         let contact = draft.contacts[index]
         let name = contact.name.trimmingCharacters(in: .whitespaces)
         let detail = contactDetail(contact)
-        VStack(alignment: .leading, spacing: layout.s(2)) {
-            Text(name.isEmpty ? "Emergency contact \(index + 1)" : name)
-                .font(.subheadline.weight(.semibold))
-            if !detail.isEmpty {
-                Text(detail)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.muted)
-                    .lineLimit(1)
+        let isEmpty = name.isEmpty && detail.isEmpty
+        HStack {
+            VStack(alignment: .leading, spacing: layout.s(2)) {
+                Text(name.isEmpty ? "Emergency contact \(index + 1)" : name)
+                    .font(.subheadline.weight(.semibold))
+                if !detail.isEmpty {
+                    Text(detail)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(AppTheme.muted)
+                        .lineLimit(1)
+                }
+            }
+            if !isEmpty {
+                Spacer()
+                Button {
+                    draft.contacts[index] = EmergencyContact()
+                    if openContactIndex == index { openContactIndex = nil }
+                } label: {
+                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
