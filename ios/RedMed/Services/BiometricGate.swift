@@ -94,13 +94,10 @@ enum BiometricGate {
     /// - Returns: `true` if authenticated (or if the device has no auth to
     ///   enforce — fail-open so the owner is never locked out).
     static func authenticate(reason: String) async -> Bool {
-        #if DEBUG
-        #if targetEnvironment(simulator)
+        #if DEBUG && targetEnvironment(simulator)
         // Simulator passcode/Face ID sheets often reject keyboard input — skip in dev.
         return true
-        #endif
-        #endif
-
+        #else
         let context = LAContext()
         context.localizedFallbackTitle = "Enter Passcode"
 
@@ -120,5 +117,6 @@ enum BiometricGate {
                 continuation.resume(returning: success)
             }
         }
+        #endif
     }
 }

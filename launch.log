@@ -1,0 +1,13 @@
+To change
+
+- correct resolution / scaling
+- lower 7 ITALICIZE BY 9PX
+- ADD AID PANE FOR SEIZURES- IMPROVRE AID RESEARCH
+- add functional scrolling header and footer need to be same color- aid bigger font still 2x3 pane
+- Fix gps
+Add only Face ID no passcode to make second edit to RedMedFix icon bar height
+- increase font home page 
+=== 2026-08-02 13:47:46 RedMed.app ===
+REPO_ROOT=/Users/maximilianaguilar-aasted/Documents/Users/RedMed/RedMed
+bash: /Users/maximilianaguilar-aasted/Documents/Users/RedMed/RedMed/scripts/run-ios-simulator.sh: Operation not permitted
+ERROR: Simulator launch failed. Open the log file for the build error.
