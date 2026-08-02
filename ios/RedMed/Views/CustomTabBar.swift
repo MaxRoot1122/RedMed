@@ -38,7 +38,7 @@ struct CustomTabBar: View {
                     .padding(.vertical, layout.s(5))
                     .background(
                         RoundedRectangle(cornerRadius: layout.s(14), style: .continuous)
-                            .fill(isOn ? AppTheme.accent.opacity(0.05) : Color.clear) // lowered highlight
+                            .fill(isOn ? AppTheme.accent.opacity(0.10) : Color.clear)
                     )
                 Text(label)
                     .font(.system(size: layout.s(10), weight: isOn ? .semibold : .medium))

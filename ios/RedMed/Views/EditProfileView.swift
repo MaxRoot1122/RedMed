@@ -10,9 +10,6 @@ struct EditProfileView: View {
     /// When true, shown as the My ID tab (Save stays; no Cancel).
     var embedded: Bool = false
 
-    /// When true, parent already ran device auth (sheet must not call LAContext itself).
-    var initiallyUnlocked: Bool = false
-
     @State private var editUnlocked = false
     @State private var authInProgress = false
 
@@ -174,8 +171,6 @@ struct EditProfileView: View {
                             dobRow
                             EditCardDivider(leadingInset: layout.s(106))
                             bloodTypeRow
-                            EditCardDivider(leadingInset: layout.s(106))
-                            donorRow
                         }
 
                         listEditSection(title: "Allergies", items: $draft.allergies, addTitle: "Add allergy") {
@@ -212,18 +207,14 @@ struct EditProfileView: View {
                 .disabled(!editUnlocked)
                 .blur(radius: editUnlocked ? 0 : 8)
 
-                if requiresEditAuth && !editUnlocked && !authInProgress {
+                if requiresEditAuth && !editUnlocked {
                     authGate
                 }
             }
         }
         .onAppear {
             loadDraft()
-            if initiallyUnlocked || !requiresEditAuth || editAuthAvailability == .none {
-                editUnlocked = true
-            } else if embedded {
-                prepareEditAccess()
-            }
+            prepareEditAccess()
         }
         .onChange(of: scenePhase) { phase in
             if phase == .background {
@@ -243,7 +234,6 @@ struct EditProfileView: View {
         }
         .sheet(isPresented: $showingBraceletSetup) {
             BraceletSetupView()
-                .withLayoutMetrics()
         }
         .sheet(isPresented: $showingAddAllergy) {
             SearchAddSheet(
@@ -273,11 +263,6 @@ struct EditProfileView: View {
         .confirmationDialog("Clear all data?", isPresented: $showingClearConfirm) {
             Button("Clear", role: .destructive) {
                 Task { await clearAfterAuth() }
-            }
-        }
-        .overlay {
-            if braceletWriter.isWriting {
-                NFCWriteOverlay { braceletWriter.cancel() }
             }
         }
     }
@@ -388,22 +373,6 @@ struct EditProfileView: View {
             }
             .pickerStyle(.menu)
             .font(.system(size: layout.s(15)))
-        }
-        .padding(.horizontal, layout.screenPad)
-        .padding(.vertical, layout.s(13))
-    }
-
-    @ViewBuilder
-    private var donorRow: some View {
-        HStack(spacing: 0) {
-            Text("Organ donor")
-                .font(.system(size: layout.s(15), weight: .medium))
-                .foregroundStyle(ArtifactChrome.editLabel)
-                .frame(width: layout.s(90), alignment: .leading)
-                .padding(.trailing, layout.s(12))
-            Toggle("", isOn: $draft.donor)
-                .labelsHidden()
-                .tint(AppTheme.accent)
         }
         .padding(.horizontal, layout.screenPad)
         .padding(.vertical, layout.s(13))
