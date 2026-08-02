@@ -29,6 +29,8 @@ struct MyIDView: View {
         }
         .sheet(isPresented: $showingEditSheet) {
             EditProfileView(embedded: false)
+                .environmentObject(store)
+                .environmentObject(link)
                 .withLayoutMetrics()
         }
         .sheet(isPresented: $showingHowItWorks) {

@@ -54,6 +54,10 @@ struct ProfileSummaryView: View {
                     profileRow("Birth date", dobDisplay)
                     DesignCardDivider()
                     profileRow("Blood type", profile.blood.isEmpty ? "" : profile.blood)
+                    if profile.donor {
+                        DesignCardDivider()
+                        profileRow("Organ donor", "Yes")
+                    }
                 }
 
                 listSection(title: "Allergies", items: profile.allergies)
