@@ -56,7 +56,7 @@ struct BasicAidView: View {
                         .multilineTextAlignment(.center)
                         .lineSpacing(layout.s(4))
                         .frame(maxWidth: .infinity)
-                        .padding(.top, layout.s(4))
+                        .padding(.top, layout.s(21)) // lowered 21pt from grid
                         .padding(.bottom, layout.screenBottom)
                 }
                 .padding(.horizontal, layout.screenPad)

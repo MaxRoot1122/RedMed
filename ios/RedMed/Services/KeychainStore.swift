@@ -8,7 +8,12 @@ import Security
 enum KeychainStore {
     private static let service = "local.redmed.profile"
 
-    static func save(_ data: Data, account: String) {
+    /// - Returns: `true` if the item was written. Callers should not assume a
+    ///   save succeeded just because this returns — check it, since a failed
+    ///   write here means the caller's in-memory state and the Keychain have
+    ///   silently diverged.
+    @discardableResult
+    static func save(_ data: Data, account: String) -> Bool {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -19,7 +24,9 @@ enum KeychainStore {
         var attributes = query
         attributes[kSecValueData as String] = data
         attributes[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-        SecItemAdd(attributes as CFDictionary, nil)
+        let status = SecItemAdd(attributes as CFDictionary, nil)
+        assert(status == errSecSuccess, "KeychainStore.save failed for account \(account), status \(status)")
+        return status == errSecSuccess
     }
 
     static func load(account: String) -> Data? {
