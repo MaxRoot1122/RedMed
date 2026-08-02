@@ -149,6 +149,11 @@ echo "==> Launching on $DEVICE_NAME (native iOS app)"
 xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
 open -a Simulator
 
+# `simctl boot` returns before the device's runtime services are actually up.
+# Installing/launching too early fails with FBSOpenApplicationServiceErrorDomain
+# code=4 ("Simulator device failed to launch"). Block until fully booted.
+xcrun simctl bootstatus "$DEVICE_ID" -b
+
 # Clear the broken/evicted placeholder before reinstalling.
 xcrun simctl uninstall "$DEVICE_ID" "$BUNDLE_ID" 2>/dev/null || true
 

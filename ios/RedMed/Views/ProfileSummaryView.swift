@@ -132,7 +132,7 @@ struct ProfileSummaryView: View {
             .padding(.horizontal, layout.s(20))
             .padding(.top, layout.s(10))
             .padding(.bottom, layout.s(8))
-        } else if link.isLinked {
+        } else if hasProfileData {
             Button(action: { onBraceletTap?() }) {
                 HStack(spacing: layout.s(10)) {
                     Image("BrandLogo")
@@ -142,10 +142,11 @@ struct ProfileSummaryView: View {
                         .clipShape(RoundedRectangle(cornerRadius: layout.s(13), style: .continuous))
                         .shadow(color: AppTheme.accent.opacity(0.15), radius: layout.s(5), y: layout.s(3))
                     VStack(alignment: .leading, spacing: layout.s(3)) {
-                        Text(link.deviceName.isEmpty ? "\(profile.name)'s iPhone" : link.deviceName)
+                        Text(link.isLinked && !link.deviceName.isEmpty ? link.deviceName : profile.name)
                             .font(.system(size: layout.s(22), weight: .bold))
                             .foregroundStyle(AppTheme.ink)
-                        Text("LINKED BRACELET ›")
+                            .lineLimit(2)
+                        Text(link.isLinked ? "LINKED BRACELET ›" : "SET UP BRACELET ›")
                             .font(.system(size: layout.s(10), weight: .bold))
                             .foregroundStyle(AppTheme.accent.opacity(0.85))
                             .kerning(0.7)
@@ -155,12 +156,6 @@ struct ProfileSummaryView: View {
                 .padding(.vertical, layout.s(10))
             }
             .buttonStyle(.plain)
-        } else {
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                BrandMark(size: .hero, showTagline: true)
-            }
-            .padding(.horizontal, layout.s(20))
-            .padding(.vertical, layout.s(10))
         }
     }
 
@@ -169,7 +164,7 @@ struct ProfileSummaryView: View {
         HStack(spacing: 0) {
             Button(action: { onBraceletTap?() }) {
                 HStack(spacing: layout.s(6)) {
-                    Image(systemName: "wave.3.right.circle")
+                    Image(systemName: "plus.circle")
                         .font(.system(size: layout.s(18)))
                         .foregroundStyle(AppTheme.accent)
                     Text("Bracelet")

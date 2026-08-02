@@ -10,6 +10,9 @@ struct EditProfileView: View {
     /// When true, shown as the My ID tab (Save stays; no Cancel).
     var embedded: Bool = false
 
+    /// When true, parent already ran device auth (sheet must not call LAContext itself).
+    var initiallyUnlocked: Bool = false
+
     @State private var editUnlocked = false
     @State private var authInProgress = false
 
@@ -209,14 +212,18 @@ struct EditProfileView: View {
                 .disabled(!editUnlocked)
                 .blur(radius: editUnlocked ? 0 : 8)
 
-                if requiresEditAuth && !editUnlocked {
+                if requiresEditAuth && !editUnlocked && !authInProgress {
                     authGate
                 }
             }
         }
         .onAppear {
             loadDraft()
-            prepareEditAccess()
+            if initiallyUnlocked || !requiresEditAuth || editAuthAvailability == .none {
+                editUnlocked = true
+            } else if embedded {
+                prepareEditAccess()
+            }
         }
         .onChange(of: scenePhase) { phase in
             if phase == .background {

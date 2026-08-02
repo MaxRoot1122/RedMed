@@ -20,6 +20,9 @@ struct HelpMenuView: View {
                     Text("Security")
                 }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.pageBg)
             .navigationTitle("Policies")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
