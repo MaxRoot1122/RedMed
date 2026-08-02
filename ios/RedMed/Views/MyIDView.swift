@@ -52,7 +52,7 @@ struct MyIDView: View {
             Image("BrandWordmark")
                 .resizable()
                 .scaledToFit()
-                .frame(height: layout.s(22))
+                .frame(height: layout.s(30))
                 .accessibilityLabel("RedMed")
             Spacer()
             Button(action: beginEdit) {
@@ -62,8 +62,8 @@ struct MyIDView: View {
             }
             .accessibilityLabel("Edit")
         }
-        .padding(.horizontal, layout.s(14))
-        .frame(height: layout.s(44))
+        .padding(.horizontal, layout.screenPad)
+        .frame(height: layout.s(56))
         .background(Color.white.opacity(0.9))
         .overlay(alignment: .bottom) {
             Divider().overlay(AppTheme.ink.opacity(0.08))
