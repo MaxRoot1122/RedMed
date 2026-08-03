@@ -98,6 +98,66 @@ struct SecondaryButton: View {
     }
 }
 
+struct ArtifactNavTitle: View {
+    var body: some View {
+        Image("wordmark")
+            .resizable()
+            .scaledToFit()
+            .frame(height: 18)
+            .accessibilityLabel("RedMed")
+    }
+}
+
+/// Artifact phone shell: one vertical scroll for header + body on every tab.
+struct ArtifactTabShell<Content: View>: View {
+    var showEdit: Bool = false
+    var hideHeader: Bool = false
+    var onEdit: (() -> Void)? = nil
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(spacing: 0) {
+                if !hideHeader { scrollHeader }
+                content()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, 20)
+        }
+        .scrollIndicators(.visible, axes: .vertical)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.redmedBg)
+    }
+
+    @ViewBuilder
+    private var scrollHeader: some View {
+        HStack {
+            if showEdit {
+                Image("wordmark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 22)
+                    .accessibilityLabel("RedMed")
+                Spacer()
+                Button("Edit") { onEdit?() }
+                    .font(.system(size: 17))
+                    .foregroundColor(.redmedAccent)
+                    .accessibilityLabel("Edit")
+            } else {
+                Spacer()
+                ArtifactNavTitle()
+                Spacer()
+            }
+        }
+        .padding(.horizontal, 14)
+        .frame(height: 44)
+        .background(Color.white.opacity(0.9))
+        .overlay(alignment: .bottom) {
+            Divider().overlay(Color.redmedDark.opacity(0.08))
+        }
+    }
+}
+
 struct ArtifactCustomTabBar: View {
     @Binding var tab: AppTab
 
@@ -110,13 +170,13 @@ struct ArtifactCustomTabBar: View {
                 ArtifactTabBarItem(icon: "cross.case.fill", label: "Aid", isOn: tab == .aid) { tab = .aid }
                 ArtifactTabBarItem(icon: "wave.3.right", label: "NFC", isOn: tab == .nfc) { tab = .nfc }
             }
-            .padding(.top, 4)
+            .padding(.top, 1)
 
             Capsule()
                 .fill(Color(red: 0.11, green: 0.098, blue: 0.086).opacity(0.18))
-                .frame(width: 134, height: 5)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
+                .frame(width: 118, height: 3)
+                .padding(.top, 2)
+                .padding(.bottom, 4)
         }
         .background(Color.white)
     }
@@ -130,23 +190,23 @@ private struct ArtifactTabBarItem: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 2) {
+            VStack(spacing: 1) {
                 Image(systemName: icon)
-                    .font(.system(size: 22))
+                    .font(.system(size: 18))
                     .foregroundColor(isOn ? .redmedAccent : Color(red: 0.372, green: 0.388, blue: 0.408))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 5)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 2)
                     .background(
-                        RoundedRectangle(cornerRadius: 14)
+                        RoundedRectangle(cornerRadius: 10)
                             .fill(isOn ? Color.redmedAccent.opacity(0.10) : Color.clear)
                     )
                 Text(label)
-                    .font(.system(size: 10, weight: isOn ? .semibold : .medium))
+                    .font(.system(size: 8, weight: isOn ? .semibold : .medium))
                     .foregroundColor(isOn ? .redmedAccent : Color(red: 0.372, green: 0.388, blue: 0.408))
                     .kerning(-0.1)
             }
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 6)
+            .padding(.bottom, 2)
         }
         .buttonStyle(.plain)
     }
@@ -155,6 +215,8 @@ private struct ArtifactTabBarItem: View {
 struct ArtifactGPSCard: View {
     let coordinate: CLLocationCoordinate2D?
     let accuracy: CLLocationAccuracy?
+    let heading: CLLocationDirection?
+    let altitude: CLLocationDistance?
 
     private var latStr: String {
         coordinate.map { String(format: "%.6f", $0.latitude) } ?? "–––"
@@ -164,9 +226,18 @@ struct ArtifactGPSCard: View {
         coordinate.map { String(format: "%.6f", $0.longitude) } ?? "–––"
     }
 
+    private var dmsStr: String? {
+        guard let coordinate else { return nil }
+        return LocationFormatting.dms(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+
     private var accuracyText: String {
         guard let accuracy, accuracy > 0 else { return "––" }
         return "±\(Int(accuracy.rounded())) m"
+    }
+
+    private var headingAltitudeText: String? {
+        LocationFormatting.headingAltitudeText(heading: heading, altitude: altitude)
     }
 
     var body: some View {
@@ -183,9 +254,22 @@ struct ArtifactGPSCard: View {
                 .foregroundColor(.redmedDark)
                 .multilineTextAlignment(.center)
 
+            if let dmsStr {
+                Text(dmsStr)
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.redmedMuted)
+                    .multilineTextAlignment(.center)
+            }
+
             Text("Accuracy \(accuracyText)")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(.redmedMuted)
+
+            if let headingAltitudeText {
+                Text(headingAltitudeText)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.redmedMuted)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(14)
@@ -231,100 +315,6 @@ struct InfoCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color.redmedSurface)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.redmedDivider, lineWidth: 1))
-    }
-}
-
-struct ArtifactCommonTraumaGrid: View {
-    let cells: [(String, String)] = [
-        ("Bleeding", "Press hard. Belt tourniquet on limb 2–3 in above. Note time."),
-        ("Not Breathing", "Tilt head, lift chin. No pulse? 100–120/min hard compressions."),
-        ("Spinal", "Don't move. Keep head still. Move only if fire or traffic."),
-        ("Burns", "Running water 10+ min. No ice. Cover loosely."),
-        ("Shock", "Lay flat, elevate legs. Keep warm. No food or water."),
-        ("Hypothermia", "Remove wet clothes. Warm slowly. No rubbing."),
-    ]
-
-    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "person.fill")
-                    .font(.system(size: 15))
-                    .foregroundColor(.white)
-                    .frame(width: 28, height: 28)
-                    .background(Color.redmedAccent)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                Text("Common Trauma Situations")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.redmedDark)
-            }
-            LazyVGrid(columns: columns, spacing: 6) {
-                ForEach(cells, id: \.0) { cell in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(cell.0)
-                            .font(.system(size: 10, weight: .bold))
-                            .foregroundColor(.redmedAccent)
-                        Text(cell.1)
-                            .font(.system(size: 9))
-                            .foregroundColor(.redmedDark)
-                            .lineSpacing(2)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(8)
-                    .background(Color.redmedBg)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Color.redmedSurface)
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.redmedDivider, lineWidth: 1))
-    }
-}
-
-struct NoCellSignalCard: View {
-    @Binding var showSatellite: Bool
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button { withAnimation(.easeInOut(duration: 0.2)) { showSatellite.toggle() } } label: {
-                HStack {
-                    Image(systemName: "antenna.radiowaves.left.and.right")
-                        .foregroundColor(.redmedAccent)
-                    Text("No cell signal?")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.redmedAccent)
-                    Spacer()
-                    Image(systemName: showSatellite ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.redmedMuted)
-                }
-            }
-            .padding(14)
-
-            if showSatellite {
-                VStack(spacing: 8) {
-                    Text("iPhone 14+ (iOS 16.1+): hold Side + Volume until Emergency SOS appears, or Settings → Emergency SOS.")
-                        .font(.system(size: 11))
-                        .foregroundColor(.redmedMuted)
-                        .lineSpacing(3)
-                    SecondaryButton("Open Phone · dial 911") {
-                        if let url = EmergencySummaryBuilder.call911URL {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                }
-                .padding(.horizontal, 14)
-                .padding(.bottom, 14)
-                .transition(.opacity.combined(with: .move(edge: .top)))
-            }
-        }
         .background(Color.redmedSurface)
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.redmedDivider, lineWidth: 1))

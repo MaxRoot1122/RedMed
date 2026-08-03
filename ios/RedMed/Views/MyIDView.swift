@@ -3,10 +3,13 @@ import SwiftUI
 struct MyIDView: View {
     @EnvironmentObject var store: ProfileStore
     @EnvironmentObject var link: BraceletLinkStore
+    @Environment(\.scenePhase) private var scenePhase
     @Binding var tab: AppTab
 
     @State private var showEdit = false
     @State private var showHelp = false
+    @AppStorage("redMedUseConsent") private var useConsentAccepted = false
+    @State private var showConsent = false
 
     private static let dobFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -37,54 +40,13 @@ struct MyIDView: View {
     private var hasData: Bool { store.profile.hasOwnerData }
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image("wordmark")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 22)
-                Spacer()
-                Button("Edit") { showEdit = true }
-                    .font(.system(size: 17))
-                    .foregroundColor(.redmedAccent)
-            }
-            .padding(.horizontal, 14)
-            .frame(height: 44)
-            .background(Color.white.opacity(0.9))
-            .overlay(alignment: .bottom) { Divider().overlay(Color.redmedDark.opacity(0.08)) }
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
+        ArtifactTabShell(showEdit: true, onEdit: beginEdit) {
+            VStack(alignment: .leading, spacing: 0) {
                     if !hasData {
-                        HStack(spacing: 0) {
-                            Text("Tap ").font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
-                            Text("Edit").font(.system(size: 14, weight: .bold)).foregroundColor(.redmedAccent)
-                            Text(" to add your name and set up your bracelet.")
-                                .font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
-                        }
-                        .padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 8)
-                    } else {
-                        Button { tab = .nfc } label: {
-                            HStack(spacing: 10) {
-                                Image("BrandLogo")
-                                    .resizable().frame(width: 48, height: 48)
-                                    .clipShape(RoundedRectangle(cornerRadius: 13))
-                                    .shadow(color: Color.redmedAccent.opacity(0.15), radius: 5, y: 3)
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text("\(store.profile.name)'s iPhone")
-                                        .font(.system(size: 22, weight: .bold)).foregroundColor(.redmedDark)
-                                    Text("LINKED BRACELET ›")
-                                        .font(.system(size: 10, weight: .bold))
-                                        .foregroundColor(Color.redmedAccent.opacity(0.85))
-                                        .kerning(0.7)
-                                }
-                            }
-                            .padding(.horizontal, 20).padding(.vertical, 10)
-                        }
-                        .buttonStyle(.plain)
+                        emptyPrompt
                     }
 
-                    SectionLabel(text: "You").padding(.horizontal, 16).padding(.top, 2)
+                    SectionLabel(text: "You").padding(.horizontal, 16).padding(.top, hasData ? 10 : 2)
                     cardGroup {
                         profileRow(label: "Name", value: store.profile.name)
                         Divider().padding(.leading, 16)
@@ -141,8 +103,10 @@ struct MyIDView: View {
                         .multilineTextAlignment(.center).lineSpacing(4)
                         .padding(.horizontal, 20).padding(.top, 20).padding(.bottom, 16)
                 }
-            }
-            .background(Color.redmedBg)
+                .padding(.bottom, 8)
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .background { showEdit = false }
         }
         .sheet(isPresented: $showEdit) {
             EditProfileView()
@@ -152,6 +116,31 @@ struct MyIDView: View {
         .sheet(isPresented: $showHelp) {
             HelpMenuView()
         }
+        .fullScreenCover(isPresented: $showConsent) {
+            UseConsentView {
+                useConsentAccepted = true
+                showConsent = false
+                showEdit = true
+            }
+        }
+    }
+
+    private func beginEdit() {
+        if useConsentAccepted {
+            showEdit = true
+        } else {
+            showConsent = true
+        }
+    }
+
+    private var emptyPrompt: some View {
+        HStack(spacing: 0) {
+            Text("Tap ").font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
+            Text("Edit").font(.system(size: 14, weight: .bold)).foregroundColor(.redmedAccent)
+            Text(" to add your name and set up your bracelet.")
+                .font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
+        }
+        .padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 8)
     }
 
     private func contactDetail(_ contact: EmergencyContact) -> String {
@@ -182,6 +171,7 @@ struct MyIDView: View {
     @ViewBuilder
     private func cardGroup<C: View>(@ViewBuilder content: () -> C) -> some View {
         VStack(spacing: 0) { content() }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.redmedSurface)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.redmedDivider, lineWidth: 1))
@@ -190,15 +180,18 @@ struct MyIDView: View {
 
     @ViewBuilder
     private func listSection(title: String, items: [String]) -> some View {
+        let visible = items
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
         SectionLabel(text: title).padding(.horizontal, 16).padding(.top, 12)
         cardGroup {
-            if items.isEmpty { emptyRow() }
+            if visible.isEmpty { emptyRow() }
             else {
-                ForEach(Array(items.enumerated()), id: \.offset) { i, item in
+                ForEach(Array(visible.enumerated()), id: \.offset) { i, item in
                     Text(item).font(.system(size: 14)).foregroundColor(.redmedDark)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 16).padding(.vertical, 11)
-                    if i < items.count - 1 { Divider().padding(.leading, 16) }
+                    if i < visible.count - 1 { Divider().padding(.leading, 16) }
                 }
             }
         }

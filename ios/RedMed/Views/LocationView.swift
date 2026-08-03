@@ -4,15 +4,13 @@ import UIKit
 struct LocationView: View {
     @EnvironmentObject var store: ProfileStore
     @StateObject private var locationManager = LocationManager()
-    @State private var showSatellite = false
     @State private var copiedCoords = false
     @State private var showCallContactPicker = false
     @StateObject private var scanReader = NFCReader()
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
+        ArtifactTabShell(hideHeader: true) {
+            VStack(alignment: .leading, spacing: 8) {
                     Text("Find 911")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(.redmedDark)
@@ -47,7 +45,9 @@ struct LocationView: View {
 
                     ArtifactGPSCard(
                         coordinate: locationManager.coordinate,
-                        accuracy: locationManager.accuracy
+                        accuracy: locationManager.accuracy,
+                        heading: locationManager.heading,
+                        altitude: locationManager.altitude
                     )
                     .padding(.vertical, 4)
 
@@ -79,41 +79,18 @@ struct LocationView: View {
                         numbered: false,
                         items: [
                             "Your exact location — read the GPS coordinates above.",
-                            "Number of people injured and visible injuries.",
-                            "If anyone is unconscious or not breathing.",
-                            "Stay on the line — let the dispatcher guide you."
+                            "Number of people injured and visible injuries."
                         ]
                     )
-
-                    ArtifactCommonTraumaGrid()
-                    NoCellSignalCard(showSatellite: $showSatellite)
-
-                    Text("Coordinates show on this screen only. RedMed has no servers.")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.redmedMuted)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 2)
-                        .padding(.bottom, 8)
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 6)
-                .padding(.bottom, 24)
-            }
-            .background(Color.redmedBg)
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Find 911").font(.system(size: 17, weight: .semibold)).foregroundColor(.redmedDark)
-                }
-            }
-            .onAppear { locationManager.requestLocation() }
-            .onDisappear { locationManager.stopUpdating() }
-            .sheet(isPresented: $showCallContactPicker) {
-                ArtifactContactCallSheet(contacts: callableContacts) {
-                    showCallContactPicker = false
-                }
+                .padding(.top, 10)
+        }
+        .onAppear { locationManager.requestLocation() }
+        .onDisappear { locationManager.stopUpdating() }
+        .sheet(isPresented: $showCallContactPicker) {
+            ArtifactContactCallSheet(contacts: callableContacts) {
+                showCallContactPicker = false
             }
         }
     }
@@ -148,7 +125,7 @@ private struct ArtifactContactCallSheet: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(contacts) { contact in
                 if let url = EmergencySummaryBuilder.telURL(phone: contact.phone) {
                     Link(destination: url) {

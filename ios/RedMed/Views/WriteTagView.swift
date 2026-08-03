@@ -15,9 +15,8 @@ struct WriteTagView: View {
     }
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 12) {
+        ArtifactTabShell {
+            VStack(spacing: 12) {
                     VStack(spacing: 4) {
                         Text("NFC Bracelet")
                             .font(.system(size: 22, weight: .bold))
@@ -159,31 +158,21 @@ struct WriteTagView: View {
                     .padding(.bottom, 16)
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+        }
+        .overlay {
+            if showWriteOverlay { NFCWriteOverlay { showWriteOverlay = false } }
+        }
+        .confirmationDialog(
+            "Replace this device's RedMed with the tag's data?",
+            isPresented: $showingReadConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Replace", role: .destructive) {
+                Task { await replaceFromTagAfterAuth() }
             }
-            .background(Color.redmedBg)
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("NFC Bracelet").font(.system(size: 17, weight: .semibold)).foregroundColor(.redmedDark)
-                }
-            }
-            .overlay {
-                if showWriteOverlay { NFCWriteOverlay { showWriteOverlay = false } }
-            }
-            .confirmationDialog(
-                "Replace this device's RedMed with the tag's data?",
-                isPresented: $showingReadConfirm,
-                titleVisibility: .visible
-            ) {
-                Button("Replace", role: .destructive) {
-                    Task { await replaceFromTagAfterAuth() }
-                }
-                Button("Cancel", role: .cancel) { pendingRead = nil }
-            } message: {
-                Text("This overwrites what's currently saved on My ID with what was read from the tag.")
-            }
+            Button("Cancel", role: .cancel) { pendingRead = nil }
+        } message: {
+            Text("This overwrites what's currently saved on My ID with what was read from the tag.")
         }
     }
 

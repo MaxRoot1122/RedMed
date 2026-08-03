@@ -7,9 +7,8 @@ struct BasicAidView: View {
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+        ArtifactTabShell {
+            VStack(alignment: .leading, spacing: 12) {
                     Text("Roadside Aid")
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(.redmedDark)
@@ -57,19 +56,9 @@ struct BasicAidView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 10)
-                .padding(.bottom, 24)
-            }
-            .background(Color.redmedBg)
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Roadside Aid").font(.system(size: 17, weight: .semibold)).foregroundColor(.redmedDark)
-                }
-            }
-            .sheet(item: $activeTopic) { topic in
-                ArtifactTopicDetailView(topic: topic)
-            }
+        }
+        .sheet(item: $activeTopic) { topic in
+            ArtifactTopicDetailView(topic: topic)
         }
     }
 }

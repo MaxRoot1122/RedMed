@@ -98,9 +98,11 @@ struct EditProfileView: View {
                             TextField("Name", text: $contact.name)
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(.redmedDark)
+                                .textInputAutocapitalization(.words)
                             TextField("Relationship · phone", text: $contact.detail)
                                 .font(.system(size: 13))
                                 .foregroundColor(.redmedMuted)
+                                .textInputAutocapitalization(.words)
                         }
                         Spacer()
                         Button {
@@ -127,6 +129,7 @@ struct EditProfileView: View {
             TextField("", text: text)
                 .font(.system(size: 15))
                 .foregroundColor(.redmedDark)
+                .textInputAutocapitalization(.sentences)
             Spacer()
             Button(action: onRemove) {
                 Text("✕").font(.system(size: 18)).foregroundColor(.redmedAccent)
@@ -165,6 +168,9 @@ struct EditProfileView: View {
             TextField(placeholder, text: text)
                 .font(.system(size: 15))
                 .foregroundColor(.redmedDark)
+                .textInputAutocapitalization(label == "Blood type" ? .characters : .words)
+                .autocorrectionDisabled(label == "Blood type")
+                .keyboardType(label == "Blood type" ? .asciiCapable : .default)
         }
         .padding(.horizontal, 16).padding(.vertical, 13)
     }

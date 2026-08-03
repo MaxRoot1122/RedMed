@@ -16,14 +16,23 @@ enum LocationFormatting {
 
     private static func dmsComponent(_ decimal: Double, isLat: Bool) -> String {
         let absolute = abs(decimal)
-        var degrees = Int(absolute)
+        let degrees = Int(absolute)
         let minFloat = (absolute - Double(degrees)) * 60
-        var minutes = Int(minFloat)
-        var seconds = Int(round((minFloat - Double(minutes)) * 60))
-        if seconds == 60 { seconds = 0; minutes += 1 }
-        if minutes == 60 { minutes = 0; degrees += 1 }
+        let minutes = Int(minFloat)
+        let seconds = (minFloat - Double(minutes)) * 60
         let direction = isLat ? (decimal >= 0 ? "N" : "S") : (decimal >= 0 ? "E" : "W")
-        return "\(degrees)°\(minutes)'\(seconds)\"\(direction)"
+        return String(format: "%d°%d′%04.1f″%@", degrees, minutes, seconds, direction)
+    }
+
+    static func headingAltitudeText(heading: CLLocationDirection?, altitude: CLLocationDistance?) -> String? {
+        var parts: [String] = []
+        if let heading {
+            parts.append("↑ \(Int(heading.rounded()))° \(cardinal(for: heading))")
+        }
+        if let altitude {
+            parts.append("⌂ \(Int(altitude.rounded())) m alt")
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: " ")
     }
 }
 

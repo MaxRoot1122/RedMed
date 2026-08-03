@@ -7,21 +7,18 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Group {
-                switch tab {
-                case .myid: MyIDView(tab: $tab)
-                case .emergency: LocationView()
-                case .aid: BasicAidView()
-                case .nfc: WriteTagView()
-                }
+        Group {
+            switch tab {
+            case .myid: MyIDView(tab: $tab)
+            case .emergency: LocationView()
+            case .aid: BasicAidView()
+            case .nfc: WriteTagView()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.bottom, 64)
-
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
             ArtifactCustomTabBar(tab: $tab)
         }
-        .ignoresSafeArea(edges: .bottom)
         .environmentObject(store)
         .environmentObject(braceletLink)
         .preferredColorScheme(.light)
