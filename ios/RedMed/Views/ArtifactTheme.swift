@@ -2,7 +2,7 @@ import SwiftUI
 import CoreLocation
 
 enum AppTab: Hashable {
-    case myid, emergency, aid, nfc
+    case myid, call911, emergency, aid, nfc
 }
 
 extension Color {
@@ -180,7 +180,8 @@ struct ArtifactCustomTabBar: View {
             Divider().overlay(Color(red: 0.9, green: 0.9, blue: 0.9))
             HStack(spacing: 0) {
                 ArtifactTabBarItem(icon: "person.fill", label: "RedMed", isOn: tab == .myid) { tab = .myid }
-                ArtifactTabBarItem(icon: "phone.fill", label: "911", isOn: tab == .emergency) { tab = .emergency }
+                ArtifactTabBarItem(icon: "phone.circle.fill", label: "SOS", isOn: tab == .call911) { tab = .call911 }
+                ArtifactTabBarItem(icon: "location.fill", label: "911", isOn: tab == .emergency) { tab = .emergency }
                 ArtifactTabBarItem(icon: "cross.case.fill", label: "Aid", isOn: tab == .aid) { tab = .aid }
                 ArtifactTabBarItem(icon: "wave.3.right", label: "NFC", isOn: tab == .nfc) { tab = .nfc }
             }

@@ -10,6 +10,7 @@ struct ContentView: View {
         Group {
             switch tab {
             case .myid: MyIDView(tab: $tab)
+            case .call911: Call911TabView()
             case .emergency: LocationView()
             case .aid: BasicAidView()
             case .nfc: WriteTagView()

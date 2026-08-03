@@ -53,6 +53,7 @@
 		WEB000014A1D00000004 /* TOS.html in Resources */ = {isa = PBXBuildFile; fileRef = WEB000014A1D00000003 /* TOS.html */; };
 		WEB000014A1D00000006 /* get.html in Resources */ = {isa = PBXBuildFile; fileRef = WEB000014A1D00000005 /* get.html */; };
 		WEB000014A1D00000008 /* security.html in Resources */ = {isa = PBXBuildFile; fileRef = WEB000014A1D00000007 /* security.html */; };
+		CA11091100014A1D00000002 /* Call911TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA11091100014A1D00000001 /* Call911TabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +106,7 @@
 		WEB000014A1D00000003 /* TOS.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = TOS.html; sourceTree = "<group>"; };
 		WEB000014A1D00000005 /* get.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = get.html; sourceTree = "<group>"; };
 		WEB000014A1D00000007 /* security.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = security.html; sourceTree = "<group>"; };
+		CA11091100014A1D00000001 /* Call911TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Call911TabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 				02B9A9AFC45F4B27A560B0F5 /* AppTheme.swift */,
 				ART1FACT000014A1D00000001 /* ArtifactTheme.swift */,
 				ART1FACT000014A1D00000005 /* ArtifactTopicDetailView.swift */,
+				CA11091100014A1D00000001 /* Call911TabView.swift */,
 				4D5BD85593584556B6843D30 /* AppLockView.swift */,
 				F904DC2367104A3595DC5468 /* BasicAidView.swift */,
 				B1CELET000014A1D00000001 /* BraceletSetupView.swift */,
@@ -345,6 +348,7 @@
 				ART1FACT000014A1D00000004 /* ArtifactAidData.swift in Sources */,
 				ART1FACT000014A1D00000006 /* ArtifactTopicDetailView.swift in Sources */,
 				HLP000014A1D00000002 /* HelpMenuView.swift in Sources */,
+				CA11091100014A1D00000002 /* Call911TabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
