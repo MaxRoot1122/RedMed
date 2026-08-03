@@ -104,8 +104,10 @@ struct LocationView: View {
     private func startScan() {
         scanReader.readTag(
             alertMessage: "Hold your iPhone near the person's RedMed bracelet to open their emergency card."
-        ) { profile, _ in
-            NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+        ) { _, urlString in
+            Task { @MainActor in
+                ProfileLinkBuilder.openHostedCard(urlString: urlString)
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-struct ArtifactAidTopic: Identifiable {
+struct ArtifactAidTopic: Identifiable, Hashable {
     let id: String
     let title: String
     let symptoms: [String]

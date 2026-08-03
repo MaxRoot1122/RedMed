@@ -176,8 +176,10 @@ struct BraceletSetupView: View {
             Button {
                 verifyReader.readTag(
                     alertMessage: "Hold your iPhone near your RedMed bracelet to verify the write."
-                ) { profile, _ in
-                    NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+                ) { _, urlString in
+                    Task { @MainActor in
+                        ProfileLinkBuilder.openHostedCard(urlString: urlString)
+                    }
                 }
             } label: {
                 Text(verifyReader.isReading ? "Hold near bracelet…" : "Scan your bracelet")

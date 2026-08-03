@@ -1,9 +1,20 @@
 import SwiftUI
 
+private struct EditLineDraft: Identifiable {
+    let id: UUID
+    var text: String
+
+    init(id: UUID = UUID(), text: String = "") {
+        self.id = id
+        self.text = text
+    }
+}
+
 private struct EditContactDraft: Identifiable {
     var id = UUID()
     var name = ""
-    var detail = ""
+    var rel = ""
+    var phone = ""
 }
 
 struct EditProfileView: View {
@@ -14,188 +25,126 @@ struct EditProfileView: View {
     @State private var name = ""
     @State private var birthDate = ""
     @State private var bloodType = ""
-    @State private var allergies: [String] = []
-    @State private var medications: [String] = []
-    @State private var conditions: [String] = []
+    @State private var allergies: [EditLineDraft] = []
+    @State private var medications: [EditLineDraft] = []
+    @State private var conditions: [EditLineDraft] = []
     @State private var contacts: [EditContactDraft] = []
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Button("Cancel") { dismiss() }
-                    .font(.system(size: 17))
-                    .foregroundColor(.redmedAccent)
-                Spacer()
-                Text("Edit Profile")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundColor(.redmedDark)
-                Spacer()
-                Button("Save") { Task { await save() } }
-                    .font(.system(size: 17, weight: .bold))
-                    .foregroundColor(.redmedAccent)
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 52)
-            .background(Color(red: 0.949, green: 0.949, blue: 0.969).opacity(0.95))
-            .overlay(alignment: .bottom) {
-                Divider().overlay(Color.black.opacity(0.12))
-            }
+        NavigationStack {
+            Form {
+                Section("You") {
+                    clearableField("Full name", text: $name, textContentType: .name, autocapitalization: .words)
+                    clearableField("Birth date", text: $birthDate, textContentType: .dateTime, autocapitalization: .words)
+                    clearableField(
+                        "Blood type",
+                        text: $bloodType,
+                        autocapitalization: .characters,
+                        autocorrectionDisabled: true,
+                        keyboardType: .asciiCapable
+                    )
+                }
 
-            ScrollView(.vertical) {
-                formContent
+                listSection("Allergies", rows: $allergies, placeholder: "Allergy", addLabel: "Add allergy")
+
+                listSection("Medications", rows: $medications, placeholder: "Medication", addLabel: "Add medication")
+
+                listSection("Conditions", rows: $conditions, placeholder: "Condition", addLabel: "Add condition")
+
+                Section("Emergency Contacts") {
+                    ForEach($contacts) { $contact in
+                        VStack(alignment: .leading, spacing: 8) {
+                            clearableField("Name", text: $contact.name, textContentType: .name, autocapitalization: .words)
+                            clearableField("Relationship", text: $contact.rel, autocapitalization: .words)
+                            clearableField(
+                                "Phone",
+                                text: $contact.phone,
+                                textContentType: .telephoneNumber,
+                                keyboardType: .phonePad
+                            )
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                contacts.removeAll { $0.id == contact.id }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                    Button {
+                        contacts.append(EditContactDraft())
+                    } label: {
+                        Label("Add contact", systemImage: "plus.circle.fill")
+                    }
+                }
             }
-            .background(Color(red: 0.949, green: 0.949, blue: 0.969))
+            .navigationTitle("Edit Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { Task { await save() } }
+                        .fontWeight(.semibold)
+                }
+            }
         }
+        .withLayoutMetrics()
         .onAppear { loadDraft() }
     }
 
-    private var formContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            editSectionLabel("You")
-            editCard {
-                editRow(label: "Name", text: $name, placeholder: "Full name")
-                Divider().padding(.leading, 106)
-                editRow(label: "Birth date", text: $birthDate, placeholder: "Month DD, YYYY")
-                Divider().padding(.leading, 106)
-                editRow(label: "Blood type", text: $bloodType, placeholder: "A+, B−, O+…")
-            }
+    private func clearableField(
+        _ placeholder: String,
+        text: Binding<String>,
+        textContentType: UITextContentType? = nil,
+        autocapitalization: TextInputAutocapitalization = .sentences,
+        autocorrectionDisabled: Bool = false,
+        keyboardType: UIKeyboardType = .default
+    ) -> some View {
+        ClearableTextField(
+            placeholder: placeholder,
+            text: text,
+            keyboardType: keyboardType,
+            textContentType: textContentType,
+            autocapitalization: autocapitalization,
+            autocorrectionDisabled: autocorrectionDisabled
+        )
+    }
 
-            editSectionLabel("Allergies")
-            editCard {
-                ForEach($allergies, id: \.self) { $item in
-                    listEditRow(text: $item) {
-                        withAnimation { allergies.removeAll { $0 == item } }
-                    }
-                }
-                addButton("Add allergy") { allergies.append("") }
-            }
-
-            editSectionLabel("Medications")
-            editCard {
-                ForEach($medications, id: \.self) { $item in
-                    listEditRow(text: $item) {
-                        withAnimation { medications.removeAll { $0 == item } }
-                    }
-                }
-                addButton("Add medication") { medications.append("") }
-            }
-
-            editSectionLabel("Conditions")
-            editCard {
-                ForEach($conditions, id: \.self) { $item in
-                    listEditRow(text: $item) {
-                        withAnimation { conditions.removeAll { $0 == item } }
-                    }
-                }
-                addButton("Add condition") { conditions.append("") }
-            }
-
-            editSectionLabel("Emergency Contacts")
-            editCard {
-                ForEach($contacts) { $contact in
-                    HStack(alignment: .top, spacing: 8) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            TextField("Name", text: $contact.name)
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.redmedDark)
-                                .textInputAutocapitalization(.words)
-                            TextField("Relationship · phone", text: $contact.detail)
-                                .font(.system(size: 13))
-                                .foregroundColor(.redmedMuted)
-                                .textInputAutocapitalization(.words)
-                        }
-                        Spacer()
-                        Button {
-                            withAnimation { contacts.removeAll { $0.id == contact.id } }
+    @ViewBuilder
+    private func listSection(
+        _ title: String,
+        rows: Binding<[EditLineDraft]>,
+        placeholder: String,
+        addLabel: String
+    ) -> some View {
+        Section(title) {
+            ForEach(rows) { $row in
+                clearableField(placeholder, text: $row.text, autocapitalization: .sentences)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            rows.wrappedValue.removeAll { $0.id == row.id }
                         } label: {
-                            Text("✕").font(.system(size: 18)).foregroundColor(.redmedAccent)
+                            Label("Delete", systemImage: "trash")
                         }
-                        .padding(.top, 4)
                     }
-                    .padding(.horizontal, 16).padding(.vertical, 13)
-                    Divider().padding(.leading, 16)
-                }
-                addButton("Add contact") { contacts.append(EditContactDraft()) }
+            }
+            Button {
+                rows.wrappedValue.append(EditLineDraft())
+            } label: {
+                Label(addLabel, systemImage: "plus.circle.fill")
             }
         }
-        .padding(.top, 20)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 48)
-    }
-
-    @ViewBuilder
-    private func listEditRow(text: Binding<String>, onRemove: @escaping () -> Void) -> some View {
-        HStack {
-            TextField("", text: text)
-                .font(.system(size: 15))
-                .foregroundColor(.redmedDark)
-                .textInputAutocapitalization(.sentences)
-            Spacer()
-            Button(action: onRemove) {
-                Text("✕").font(.system(size: 18)).foregroundColor(.redmedAccent)
-            }
-        }
-        .padding(.horizontal, 16).padding(.vertical, 13)
-        Divider().padding(.leading, 16)
-    }
-
-    @ViewBuilder
-    private func editSectionLabel(_ text: String) -> some View {
-        Text(text.uppercased())
-            .font(.system(size: 13, weight: .semibold))
-            .foregroundColor(Color(red: 0.42, green: 0.43, blue: 0.48))
-            .kerning(0.5)
-            .padding(.horizontal, 4)
-            .padding(.bottom, 6)
-            .padding(.top, text == "You" ? 0 : 22)
-    }
-
-    @ViewBuilder
-    private func editCard<C: View>(@ViewBuilder content: () -> C) -> some View {
-        VStack(spacing: 0) { content() }
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-
-    @ViewBuilder
-    private func editRow(label: String, text: Binding<String>, placeholder: String) -> some View {
-        HStack(spacing: 0) {
-            Text(label)
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(Color(red: 0.42, green: 0.43, blue: 0.48))
-                .frame(width: 90, alignment: .leading)
-                .padding(.trailing, 12)
-            TextField(placeholder, text: text)
-                .font(.system(size: 15))
-                .foregroundColor(.redmedDark)
-                .textInputAutocapitalization(label == "Blood type" ? .characters : .words)
-                .autocorrectionDisabled(label == "Blood type")
-                .keyboardType(label == "Blood type" ? .asciiCapable : .default)
-        }
-        .padding(.horizontal, 16).padding(.vertical, 13)
-    }
-
-    @ViewBuilder
-    private func addButton(_ label: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Image(systemName: "plus.circle.fill").font(.system(size: 18))
-                Text(label).font(.system(size: 15))
-            }
-            .foregroundColor(.redmedAccent)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16).padding(.vertical, 13)
-        }
-        .buttonStyle(.plain)
     }
 
     private func loadDraft() {
         let profile = store.profile
         name = profile.name
         bloodType = profile.blood
-        allergies = profile.allergies
-        medications = profile.meds
-        conditions = profile.conditions
+        allergies = profile.allergies.map { EditLineDraft(text: $0) }
+        medications = profile.meds.map { EditLineDraft(text: $0) }
+        conditions = profile.conditions.map { EditLineDraft(text: $0) }
 
         if !profile.dob.isEmpty {
             let f = DateFormatter()
@@ -213,10 +162,8 @@ struct EditProfileView: View {
             EditContactDraft(
                 id: contact.id,
                 name: contact.name,
-                detail: [contact.rel, contact.phone]
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
-                    .filter { !$0.isEmpty }
-                    .joined(separator: " · ")
+                rel: contact.rel,
+                phone: contact.phone
             )
         }
     }
@@ -231,9 +178,18 @@ struct EditProfileView: View {
         var profile = store.profile
         profile.name = name.trimmingCharacters(in: .whitespaces)
         profile.blood = bloodType.trimmingCharacters(in: .whitespaces)
-        profile.allergies = allergies.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-        profile.meds = medications.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-        profile.conditions = conditions.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        profile.allergies = allergies
+            .map(\.text)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        profile.meds = medications
+            .map(\.text)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        profile.conditions = conditions
+            .map(\.text)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
 
         if birthDate.trimmingCharacters(in: .whitespaces).isEmpty {
             profile.dob = ""
@@ -251,21 +207,15 @@ struct EditProfileView: View {
 
         profile.contacts = contacts.compactMap { draft in
             let trimmedName = draft.name.trimmingCharacters(in: .whitespaces)
-            let trimmedDetail = draft.detail.trimmingCharacters(in: .whitespaces)
-            guard !trimmedName.isEmpty || !trimmedDetail.isEmpty else { return nil }
-            var contact = EmergencyContact(id: draft.id, name: trimmedName, rel: "", phone: "")
-            let parts = trimmedDetail.split(separator: "·", maxSplits: 1).map {
-                $0.trimmingCharacters(in: .whitespaces)
-            }
-            if parts.count == 2 {
-                contact.rel = parts[0]
-                contact.phone = parts[1]
-            } else if trimmedDetail.rangeOfCharacter(from: .decimalDigits) != nil {
-                contact.phone = trimmedDetail
-            } else {
-                contact.rel = trimmedDetail
-            }
-            return contact
+            let trimmedRel = draft.rel.trimmingCharacters(in: .whitespaces)
+            let trimmedPhone = draft.phone.trimmingCharacters(in: .whitespaces)
+            guard !trimmedName.isEmpty || !trimmedRel.isEmpty || !trimmedPhone.isEmpty else { return nil }
+            return EmergencyContact(
+                id: draft.id,
+                name: trimmedName,
+                rel: trimmedRel,
+                phone: trimmedPhone
+            )
         }
 
         store.profile = profile

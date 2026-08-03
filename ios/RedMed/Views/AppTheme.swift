@@ -290,6 +290,9 @@ extension UIColor {
 struct BrandMark: View {
     enum Size { case hero, nav, compact }
 
+    /// Matches `assets/wordmark-ios.svg` viewBox (276×76).
+    private static let wordmarkAspect: CGFloat = 276 / 76
+
     @Environment(\.layoutMetrics) private var layout
 
     var size: Size = .nav
@@ -322,10 +325,12 @@ struct BrandMark: View {
                     }
                 }
             } else {
+                let height = layout.brandWordmarkHeight(size)
                 Image("BrandWordmark")
+                    .renderingMode(.original)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: layout.brandWordmarkHeight(size))
+                    .frame(width: height * Self.wordmarkAspect, height: height)
                     .accessibilityLabel("RedMed")
             }
 
@@ -1043,6 +1048,62 @@ struct EditCardDivider: View {
     }
 }
 
+struct FieldClearButton: View {
+    @Environment(\.layoutMetrics) private var layout
+    @Binding var text: String
+
+    var body: some View {
+        if !text.isEmpty {
+            Button {
+                text = ""
+            } label: {
+                Text("✕")
+                    .font(.system(size: layout.s(18)))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Clear")
+        }
+    }
+}
+
+struct ClearableTextField: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let placeholder: String
+    @Binding var text: String
+    var font: Font?
+    var foreground: Color = AppTheme.ink
+    var keyboardType: UIKeyboardType = .default
+    var textContentType: UITextContentType?
+    var autocapitalization: TextInputAutocapitalization = .sentences
+    var autocorrectionDisabled: Bool = false
+
+    var body: some View {
+        HStack(spacing: layout.spaceSM) {
+            TextField(placeholder, text: $text)
+                .font(font ?? .system(size: layout.s(15)))
+                .foregroundStyle(foreground)
+                .keyboardType(keyboardType)
+                .textInputAutocapitalization(autocapitalization)
+                .autocorrectionDisabled(autocorrectionDisabled)
+                .applyTextContentType(textContentType)
+            FieldClearButton(text: $text)
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func applyTextContentType(_ type: UITextContentType?) -> some View {
+        if let type {
+            self.textContentType(type)
+        } else {
+            self
+        }
+    }
+}
+
 struct EditLabeledField: View {
     @Environment(\.layoutMetrics) private var layout
 
@@ -1057,9 +1118,7 @@ struct EditLabeledField: View {
                 .foregroundStyle(AppTheme.muted)
                 .frame(width: layout.s(90), alignment: .leading)
                 .padding(.trailing, layout.s(12))
-            TextField(placeholder, text: $text)
-                .font(.system(size: layout.s(15)))
-                .foregroundStyle(AppTheme.ink)
+            ClearableTextField(placeholder: placeholder, text: $text)
         }
         .padding(.horizontal, layout.spaceLG)
         .padding(.vertical, layout.s(13))
@@ -1071,23 +1130,11 @@ struct EditInlineFieldRow: View {
 
     @Binding var text: String
     var placeholder: String = ""
-    let onDelete: () -> Void
 
     var body: some View {
-        HStack {
-            TextField(placeholder, text: $text)
-                .font(.system(size: layout.s(15)))
-                .foregroundStyle(AppTheme.ink)
-            Spacer()
-            Button(action: onDelete) {
-                Text("✕")
-                    .font(.system(size: layout.s(18)))
-                    .foregroundStyle(AppTheme.accent)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal, layout.spaceLG)
-        .padding(.vertical, layout.s(13))
+        ClearableTextField(placeholder: placeholder, text: $text)
+            .padding(.horizontal, layout.spaceLG)
+            .padding(.vertical, layout.s(13))
     }
 }
 
@@ -1101,14 +1148,19 @@ struct EditMedRow: View {
     var body: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: layout.s(4)) {
-                TextField("Medication", text: $name)
-                    .font(.system(size: layout.s(15), weight: .semibold))
-                    .foregroundStyle(AppTheme.ink)
-                TextField("Dose", text: $dose)
-                    .font(.system(size: layout.s(13)))
-                    .foregroundStyle(AppTheme.muted)
+                ClearableTextField(
+                    placeholder: "Medication",
+                    text: $name,
+                    font: .system(size: layout.s(15), weight: .semibold)
+                )
+                ClearableTextField(
+                    placeholder: "Dose",
+                    text: $dose,
+                    font: .system(size: layout.s(13)),
+                    foreground: AppTheme.muted
+                )
             }
-            Spacer()
+            Spacer(minLength: 0)
             Button(action: onDelete) {
                 Text("✕")
                     .font(.system(size: layout.s(18)))
@@ -1116,6 +1168,7 @@ struct EditMedRow: View {
             }
             .buttonStyle(.plain)
             .padding(.top, layout.s(4))
+            .accessibilityLabel("Delete medication")
         }
         .padding(.horizontal, layout.spaceLG)
         .padding(.vertical, layout.s(13))
@@ -1133,18 +1186,26 @@ struct EditContactRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: layout.spaceSM) {
             VStack(alignment: .leading, spacing: layout.s(4)) {
-                TextField("Name", text: $name)
-                    .font(.system(size: layout.s(15), weight: .semibold))
-                    .foregroundStyle(AppTheme.ink)
-                TextField("Relationship", text: $relationship)
-                    .font(.system(size: layout.s(13)))
-                    .foregroundStyle(AppTheme.muted)
-                TextField("Phone", text: $phone)
-                    .font(.system(size: layout.s(13)))
-                    .foregroundStyle(AppTheme.muted)
-                    .keyboardType(.phonePad)
+                ClearableTextField(
+                    placeholder: "Name",
+                    text: $name,
+                    font: .system(size: layout.s(15), weight: .semibold)
+                )
+                ClearableTextField(
+                    placeholder: "Relationship",
+                    text: $relationship,
+                    font: .system(size: layout.s(13)),
+                    foreground: AppTheme.muted
+                )
+                ClearableTextField(
+                    placeholder: "Phone",
+                    text: $phone,
+                    font: .system(size: layout.s(13)),
+                    foreground: AppTheme.muted,
+                    keyboardType: .phonePad
+                )
             }
-            Spacer()
+            Spacer(minLength: 0)
             Button(action: onDelete) {
                 Text("✕")
                     .font(.system(size: layout.s(18)))
@@ -1152,6 +1213,7 @@ struct EditContactRow: View {
             }
             .buttonStyle(.plain)
             .padding(.top, layout.s(4))
+            .accessibilityLabel("Delete contact")
         }
         .padding(.horizontal, layout.spaceLG)
         .padding(.vertical, layout.s(13))

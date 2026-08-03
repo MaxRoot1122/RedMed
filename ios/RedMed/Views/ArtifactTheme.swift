@@ -7,7 +7,7 @@ enum AppTab: Hashable {
 
 extension Color {
     static let redmedAccent = Color(red: 0.882, green: 0.114, blue: 0.282)
-    static let redmedBg = Color(red: 1.000, green: 0.969, blue: 0.969)
+    static let redmedBg = Color(red: 1.000, green: 0.961, blue: 0.961)
     static let redmedDark = Color(red: 0.110, green: 0.098, blue: 0.086)
     static let redmedMuted = Color(red: 0.471, green: 0.443, blue: 0.424)
     static let redmedSurface = Color.white.opacity(0.92)
@@ -100,7 +100,8 @@ struct SecondaryButton: View {
 
 struct ArtifactNavTitle: View {
     var body: some View {
-        Image("wordmark")
+        Image("BrandWordmark")
+            .renderingMode(.original)
             .resizable()
             .scaledToFit()
             .frame(height: 18)
@@ -108,9 +109,23 @@ struct ArtifactNavTitle: View {
     }
 }
 
+struct ArtifactBrandLockup: View {
+    var height: CGFloat = 22
+
+    var body: some View {
+        Image("BrandWordmark")
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(height: height)
+            .accessibilityLabel("RedMed")
+    }
+}
+
 /// Artifact phone shell: one vertical scroll for header + body on every tab.
 struct ArtifactTabShell<Content: View>: View {
     var showEdit: Bool = false
+    var brandHeader: Bool = false
     var hideHeader: Bool = false
     var onEdit: (() -> Void)? = nil
     @ViewBuilder let content: () -> Content
@@ -133,16 +148,15 @@ struct ArtifactTabShell<Content: View>: View {
     private var scrollHeader: some View {
         HStack {
             if showEdit {
-                Image("wordmark")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 22)
-                    .accessibilityLabel("RedMed")
+                ArtifactBrandLockup()
                 Spacer()
                 Button("Edit") { onEdit?() }
                     .font(.system(size: 17))
                     .foregroundColor(.redmedAccent)
                     .accessibilityLabel("Edit")
+            } else if brandHeader {
+                ArtifactBrandLockup()
+                Spacer()
             } else {
                 Spacer()
                 ArtifactNavTitle()

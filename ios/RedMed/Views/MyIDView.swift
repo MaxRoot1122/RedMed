@@ -37,73 +37,66 @@ struct MyIDView: View {
         }
     }
 
-    private var hasData: Bool { store.profile.hasOwnerData }
+    private var isEmpty: Bool {
+        store.profile.name.trimmingCharacters(in: .whitespaces).isEmpty
+            && store.profile.dob.isEmpty
+            && store.profile.blood.isEmpty
+            && store.profile.allergies.isEmpty
+            && store.profile.meds.isEmpty
+            && store.profile.conditions.isEmpty
+            && filledContacts.isEmpty
+    }
 
     var body: some View {
         ArtifactTabShell(showEdit: true, onEdit: beginEdit) {
             VStack(alignment: .leading, spacing: 0) {
-                    if !hasData {
-                        emptyPrompt
-                    }
-
-                    SectionLabel(text: "You").padding(.horizontal, 16).padding(.top, hasData ? 10 : 2)
-                    cardGroup {
-                        profileRow(label: "Name", value: store.profile.name)
-                        Divider().padding(.leading, 16)
-                        profileRow(label: "Birth date", value: birthDateDisplay)
-                        Divider().padding(.leading, 16)
-                        profileRow(label: "Blood type", value: store.profile.blood)
-                    }
-
-                    listSection(title: "Allergies", items: store.profile.allergies)
-                    listSection(title: "Medications", items: store.profile.meds)
-                    listSection(title: "Conditions", items: store.profile.conditions)
-
-                    SectionLabel(text: "Contacts").padding(.horizontal, 16).padding(.top, 12)
-                    cardGroup {
-                        if filledContacts.isEmpty {
-                            emptyRow()
-                        } else {
-                            ForEach(filledContacts) { contact in
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
-                                        .font(.system(size: 14, weight: .semibold)).foregroundColor(.redmedDark)
-                                    Text(contactDetail(contact))
-                                        .font(.system(size: 12, weight: .medium)).foregroundColor(.redmedMuted)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 16).padding(.vertical, 11)
-                                if contact.id != filledContacts.last?.id { Divider().padding(.leading, 16) }
-                            }
-                        }
-                    }
-
-                    HStack(spacing: 0) {
-                        Button { tab = .nfc } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "wave.3.right.circle").font(.system(size: 18)).foregroundColor(.redmedAccent)
-                                Text("Bracelet").font(.system(size: 12, weight: .semibold)).foregroundColor(.redmedAccent)
-                            }.padding(.horizontal, 10).padding(.vertical, 6)
-                        }
-                        .buttonStyle(.plain)
-                        Divider().frame(height: 28)
-                        Button { showHelp = true } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "questionmark.circle").font(.system(size: 18)).foregroundColor(.redmedMuted)
-                                Text("How it works").font(.system(size: 12, weight: .semibold)).foregroundColor(.redmedMuted)
-                            }.padding(.horizontal, 10).padding(.vertical, 6)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 14).padding(.bottom, 4)
-
-                    Text("\"Control your fear. Control the moment. You have what it takes to save a life.\"")
-                        .font(.system(size: 11)).italic().foregroundColor(.redmedDark)
-                        .multilineTextAlignment(.center).lineSpacing(4)
-                        .padding(.horizontal, 20).padding(.top, 20).padding(.bottom, 16)
+                if isEmpty {
+                    emptyPrompt
                 }
-                .padding(.bottom, 8)
+
+                sectionHeader("You")
+                    .padding(.top, isEmpty ? 4 : 10)
+
+                profileCard {
+                    profileRow(label: "Name", value: store.profile.name)
+                    cardDivider
+                    profileRow(label: "Birth date", value: birthDateDisplay)
+                    cardDivider
+                    profileRow(label: "Blood type", value: store.profile.blood)
+                }
+
+                listSection(title: "Allergies", items: store.profile.allergies)
+                listSection(title: "Medications", items: store.profile.meds)
+                listSection(title: "Conditions", items: store.profile.conditions)
+
+                sectionHeader("Contacts")
+                profileCard {
+                    if filledContacts.isEmpty {
+                        placeholderRow
+                    } else {
+                        ForEach(Array(filledContacts.enumerated()), id: \.element.id) { index, contact in
+                            if index > 0 { cardDivider }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.redmedDark)
+                                if !contactDetail(contact).isEmpty {
+                                    Text(contactDetail(contact))
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.redmedMuted)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 11)
+                        }
+                    }
+                }
+
+                quickActions
+                footerQuote
+            }
+            .padding(.bottom, 8)
         }
         .onChange(of: scenePhase) { phase in
             if phase == .background { showEdit = false }
@@ -134,13 +127,71 @@ struct MyIDView: View {
     }
 
     private var emptyPrompt: some View {
-        HStack(spacing: 0) {
-            Text("Tap ").font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
-            Text("Edit").font(.system(size: 14, weight: .bold)).foregroundColor(.redmedAccent)
-            Text(" to add your name and set up your bracelet.")
-                .font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
+        Group {
+            Text("Tap ")
+                .foregroundColor(.redmedMuted)
+            + Text("Edit")
+                .fontWeight(.bold)
+                .foregroundColor(.redmedAccent)
+            + Text(" to add your name and set up your bracelet.")
+                .foregroundColor(.redmedMuted)
         }
-        .padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 8)
+        .font(.system(size: 14, weight: .medium))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 6)
+    }
+
+    private var quickActions: some View {
+        HStack(spacing: 0) {
+            Button { tab = .nfc } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.redmedAccent)
+                    Text("Bracelet")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.redmedAccent)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+            }
+            .buttonStyle(.plain)
+
+            Rectangle()
+                .fill(Color.redmedDivider)
+                .frame(width: 1, height: 28)
+
+            Button { showHelp = true } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "questionmark.circle")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.redmedMuted)
+                    Text("How it works")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.redmedMuted)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 16)
+    }
+
+    private var footerQuote: some View {
+        Text("\"Control your fear. Control the moment. You have what it takes to save a life.\"")
+            .font(.system(size: 11))
+            .italic()
+            .foregroundColor(.redmedDark)
+            .multilineTextAlignment(.center)
+            .lineSpacing(4)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 20)
+            .padding(.top, 22)
+            .padding(.bottom, 16)
     }
 
     private func contactDetail(_ contact: EmergencyContact) -> String {
@@ -151,28 +202,50 @@ struct MyIDView: View {
     }
 
     @ViewBuilder
+    private func sectionHeader(_ text: String) -> some View {
+        Text(text.uppercased())
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundColor(.redmedMuted)
+            .kerning(0.6)
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 5)
+    }
+
+    @ViewBuilder
     private func profileRow(label: String, value: String) -> some View {
         HStack {
-            Text(label).font(.system(size: 14, weight: .medium)).foregroundColor(.redmedMuted)
-            Spacer()
+            Text(label)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.redmedMuted)
+            Spacer(minLength: 12)
             Text(value.isEmpty ? "—" : value)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(value.isEmpty ? Color.redmedMuted.opacity(0.4) : .redmedDark)
+                .foregroundColor(value.isEmpty ? Color.redmedMuted.opacity(0.45) : .redmedDark)
+                .multilineTextAlignment(.trailing)
         }
-        .padding(.horizontal, 16).padding(.vertical, 11)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 11)
+    }
+
+    private var placeholderRow: some View {
+        Text("—")
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundColor(Color.redmedMuted.opacity(0.45))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 11)
+    }
+
+    private var cardDivider: some View {
+        Divider().padding(.leading, 16)
     }
 
     @ViewBuilder
-    private func emptyRow() -> some View {
-        Text("—").font(.system(size: 14)).foregroundColor(Color.redmedMuted.opacity(0.4))
-            .padding(.horizontal, 16).padding(.vertical, 11)
-    }
-
-    @ViewBuilder
-    private func cardGroup<C: View>(@ViewBuilder content: () -> C) -> some View {
+    private func profileCard<C: View>(@ViewBuilder content: () -> C) -> some View {
         VStack(spacing: 0) { content() }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.redmedSurface)
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.redmedDivider, lineWidth: 1))
             .padding(.horizontal, 16)
@@ -183,23 +256,50 @@ struct MyIDView: View {
         let visible = items
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-        SectionLabel(text: title).padding(.horizontal, 16).padding(.top, 12)
-        cardGroup {
-            if visible.isEmpty { emptyRow() }
-            else {
-                ForEach(Array(visible.enumerated()), id: \.offset) { i, item in
-                    Text(item).font(.system(size: 14)).foregroundColor(.redmedDark)
+
+        sectionHeader(title)
+        profileCard {
+            if visible.isEmpty {
+                placeholderRow
+            } else {
+                ForEach(Array(visible.enumerated()), id: \.offset) { index, item in
+                    if index > 0 { cardDivider }
+                    Text(item)
+                        .font(.system(size: 14))
+                        .foregroundColor(.redmedDark)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 16).padding(.vertical, 11)
-                    if i < visible.count - 1 { Divider().padding(.leading, 16) }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 11)
                 }
             }
         }
     }
 }
 
-#Preview {
+#Preview("Empty") {
     MyIDView(tab: .constant(.myid))
         .environmentObject(ProfileStore())
         .environmentObject(BraceletLinkStore())
+        .safeAreaInset(edge: .bottom) {
+            ArtifactCustomTabBar(tab: .constant(.myid))
+        }
+}
+
+#Preview("Filled") {
+    let store = ProfileStore()
+    store.profile = MedicalProfile(
+        name: "Alex Rivera",
+        dob: "1990-05-15",
+        blood: "O+",
+        allergies: ["Penicillin"],
+        meds: ["Metformin"],
+        conditions: ["Diabetes (Type 2)"],
+        contacts: [EmergencyContact(name: "Jordan", rel: "Spouse", phone: "555-0100")]
+    )
+    return MyIDView(tab: .constant(.myid))
+        .environmentObject(store)
+        .environmentObject(BraceletLinkStore())
+        .safeAreaInset(edge: .bottom) {
+            ArtifactCustomTabBar(tab: .constant(.myid))
+        }
 }

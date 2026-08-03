@@ -3,16 +3,10 @@ import SwiftUI
 extension Notification.Name {
     /// Posted when a Universal Link / deep link asks for an owner tab (`aid`, `911`, or empty → My ID).
     static let redMedOpenOwnerTab = Notification.Name("redMedOpenOwnerTab")
-    /// In-app NFC scan decoded a bracelet profile — show emergency card immediately.
-    static let redMedShowEmergencyCard = Notification.Name("redMedShowEmergencyCard")
 }
 
 @main
 struct RedMedApp: App {
-    /// Bracelet tap / Universal Link `#d=` — THAT tag's profile, not the owner's.
-    @State private var scannedProfile: MedicalProfile?
-    @State private var showingScanned = false
-
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -23,38 +17,25 @@ struct RedMedApp: App {
                     guard let url = activity.webpageURL else { return }
                     handleIncomingURL(url)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: .redMedShowEmergencyCard)) { note in
-                    guard let profile = note.object as? MedicalProfile else { return }
-                    presentEmergencyCard(profile)
-                }
-                .fullScreenCover(isPresented: $showingScanned) {
-                    ScannedCardView(profile: scannedProfile ?? MedicalProfile())
-                }
-                .transaction { transaction in
-                    if showingScanned {
-                        transaction.disablesAnimations = true
-                    }
-                }
         }
     }
 
-    /// HTTPS `#d=` (new writes), `redmed://card#d=…`, and in-app NFC scans land here.
+    /// Owner deep links (`redmed://`, #911, #aid). Bracelet `#d=` opens Safari — not the app.
     private func handleIncomingURL(_ url: URL) {
         let urlString = url.absoluteString
 
-        // Emergency card payload on the chip / shared link.
         if urlString.contains("#d=") || urlString.contains("d=") {
             let linked = BraceletLinkStore.loadURL()
             if isOwnPairedBand(opened: urlString, linked: linked) {
                 NotificationCenter.default.post(name: .redMedOpenOwnerTab, object: "myid")
                 return
             }
-            guard let profile = ProfileLinkBuilder.decodeProfile(fromURLString: urlString) else { return }
-            presentEmergencyCard(profile)
+            Task { @MainActor in
+                ProfileLinkBuilder.openHostedCard(urlString: urlString)
+            }
             return
         }
 
-        // Owner deep links: redmed:// or Universal Link fragments (#911, #aid).
         let tab = ownerTab(from: url)
         NotificationCenter.default.post(name: .redMedOpenOwnerTab, object: tab)
     }
@@ -74,10 +55,5 @@ struct RedMedApp: App {
               openHash.hasPrefix("d="),
               linkHash.hasPrefix("d=") else { return false }
         return openHash == linkHash
-    }
-
-    private func presentEmergencyCard(_ profile: MedicalProfile) {
-        scannedProfile = profile
-        showingScanned = true
     }
 }

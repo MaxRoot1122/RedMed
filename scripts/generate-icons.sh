@@ -46,35 +46,8 @@ for size in 120 240 360; do
   echo "$out"
 done
 
-# Optional: BrandWordmark rasters from the iOS wordmark source (tagline baked in).
-WORDMARK_IOS="$ROOT/assets/wordmark-ios.svg"
-BRAND_WM="$ROOT/ios/RedMed/Assets.xcassets/BrandWordmark.imageset"
-render_wordmark_raster() {
-  local width="$1" height="$2" out="$3"
-  if command -v rsvg-convert >/dev/null 2>&1; then
-    rsvg-convert -w "$width" -h "$height" "$WORDMARK_IOS" -o "$out"
-    return 0
-  fi
-  if command -v qlmanage >/dev/null 2>&1 && command -v sips >/dev/null 2>&1; then
-    local tmp="$ROOT/build/wordmark-thumb.png"
-    mkdir -p "$ROOT/build"
-    rm -f "$tmp"
-    qlmanage -t -s "$width" -o "$ROOT/build" "$WORDMARK_IOS" >/dev/null 2>&1
-    mv "$ROOT/build/wordmark-ios.svg.png" "$tmp"
-    sips -z "$height" "$width" "$tmp" --out "$out" >/dev/null
-    return 0
-  fi
-  return 1
-}
-if [[ -f "$WORDMARK_IOS" ]]; then
-  if render_wordmark_raster 360 88 "$BRAND_WM/BrandWordmark.png" \
-    && render_wordmark_raster 720 176 "$BRAND_WM/BrandWordmark@2x.png" \
-    && render_wordmark_raster 1080 264 "$BRAND_WM/BrandWordmark@3x.png"; then
-    echo "BrandWordmark PNGs from wordmark-ios.svg"
-  else
-    echo "WARN: could not render BrandWordmark PNGs (install rsvg-convert or use macOS qlmanage+sips)." >&2
-  fi
-fi
+# BrandWordmark + nav wordmark are vector SVG in Assets.xcassets (transparent, 276×76).
+# Do not rasterize via qlmanage — it bakes a white square background.
 
 if [[ -f "$PNG" ]]; then
   cp "$PNG" "$ROOT/assets/cpr-trainer-icon.png"

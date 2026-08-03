@@ -95,8 +95,10 @@ struct WriteTagView: View {
                         SecondaryButton(verifyReader.isReading ? "Hold near bracelet…" : "Scan your bracelet") {
                             verifyReader.readTag(
                                 alertMessage: "Hold your iPhone near your RedMed bracelet to verify the write."
-                            ) { profile, _ in
-                                NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+                            ) { _, urlString in
+                                Task { @MainActor in
+                                    ProfileLinkBuilder.openHostedCard(urlString: urlString)
+                                }
                             }
                         }
                         .disabled(verifyReader.isReading)
@@ -123,7 +125,7 @@ struct WriteTagView: View {
 
                     dividerLabel("SCAN CARD")
 
-                    Text("Optional: scan in RedMed for the native card view. Passersby only need to tap the band — no app.")
+                    Text("Opens the same hosted card in Safari that passersby get when they tap the band — no app needed.")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.redmedMuted)
                         .multilineTextAlignment(.center)
@@ -132,8 +134,10 @@ struct WriteTagView: View {
                     SecondaryButton("Scan emergency bracelet", icon: "qrcode.viewfinder") {
                         verifyReader.readTag(
                             alertMessage: "Hold your iPhone near the person's RedMed bracelet to open their emergency card."
-                        ) { profile, _ in
-                            NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+                        ) { _, urlString in
+                            Task { @MainActor in
+                                ProfileLinkBuilder.openHostedCard(urlString: urlString)
+                            }
                         }
                     }
                     .disabled(verifyReader.isReading)

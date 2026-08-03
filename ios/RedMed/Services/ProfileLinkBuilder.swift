@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Builds the on-chip NDEF URI: profile JSON, base64url-encoded, after `#d=`.
 /// New writes use `AppConfig.medicalCardBaseURL` (HTTPS hosted card/) so any
@@ -30,6 +31,23 @@ enum ProfileLinkBuilder {
     /// fixed to `AppConfig.medicalCardBaseURL` since previews always target the live host.
     static func previewURL(profile: MedicalProfile) -> URL? {
         buildURL(profile: profile, baseURL: AppConfig.medicalCardBaseURL)
+    }
+
+    /// Safari URL for a chip/deep link — keeps HTTPS as-is, maps legacy `redmed://` to hosted `card/`.
+    static func hostedBrowserURL(from urlString: String) -> URL? {
+        if let url = URL(string: urlString), url.scheme?.lowercased() == "https" {
+            return url
+        }
+        guard let range = urlString.range(of: "#d=") else { return nil }
+        let fragment = String(urlString[range.lowerBound...])
+        return URL(string: AppConfig.medicalCardBaseURL + fragment)
+    }
+
+    /// Passersby tap the band → browser emergency card. No in-app sheet for readers.
+    @MainActor
+    static func openHostedCard(urlString: String) {
+        guard let url = hostedBrowserURL(from: urlString) else { return }
+        UIApplication.shared.open(url)
     }
 
     /// On-screen guidance about which passive NFC tag size is needed.

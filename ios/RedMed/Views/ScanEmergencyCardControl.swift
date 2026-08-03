@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// First-responder NFC path: read a bracelet chip → show `ScannedCardView`.
+/// First-responder NFC path: read a bracelet chip → open hosted card in Safari.
 /// Never touches `ProfileStore` — a scan of someone else's band must not
 /// overwrite the owner's My ID.
 struct ScanEmergencyCardControl: View {
@@ -58,8 +58,10 @@ struct ScanEmergencyCardControl: View {
     private func startScan() {
         reader.readTag(
             alertMessage: "Hold your iPhone near the person's RedMed bracelet to open their emergency card."
-        ) { profile, _ in
-            NotificationCenter.default.post(name: .redMedShowEmergencyCard, object: profile)
+        ) { _, urlString in
+            Task { @MainActor in
+                ProfileLinkBuilder.openHostedCard(urlString: urlString)
+            }
         }
     }
 }
