@@ -18,12 +18,9 @@ final class ProfileStore: ObservableObject {
     }
 
     private func save() {
-        guard let data = try? JSONEncoder().encode(profile) else {
-            assertionFailure("ProfileStore: failed to encode profile")
-            return
+        if let data = try? JSONEncoder().encode(profile) {
+            KeychainStore.save(data, account: Self.account)
         }
-        let ok = KeychainStore.save(data, account: Self.account)
-        assert(ok, "ProfileStore: Keychain save failed — in-memory profile and Keychain have diverged")
     }
 
     /// Wipes the saved profile from the Keychain. Does not affect an

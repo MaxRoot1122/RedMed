@@ -1,43 +1,55 @@
 import SwiftUI
+import WebKit
 
-/// Policies sheet — matches artifact HelpMenuView (My ID → How it works).
+struct LocalWebView: UIViewRepresentable {
+    let filename: String
+
+    func makeUIView(context: Context) -> WKWebView { WKWebView() }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "html") else { return }
+        webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+    }
+}
+
 struct HelpMenuView: View {
-    @Environment(\.layoutMetrics) private var layout
     @Environment(\.dismiss) private var dismiss
-    @State private var showHowItWorks = false
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             List {
-                Link(destination: URL(string: AppConfig.privacyPolicyURL)!) {
-                    Text("Privacy Policy")
+                NavigationLink("Privacy Policy") {
+                    LocalWebView(filename: "PrivacyPolicy")
+                        .navigationTitle("Privacy Policy")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
-                Link(destination: URL(string: AppConfig.termsOfServiceURL)!) {
-                    Text("Terms of Service")
+                NavigationLink("Terms of Service") {
+                    LocalWebView(filename: "TOS")
+                        .navigationTitle("Terms of Service")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
-                Button("How It Works") { showHowItWorks = true }
-                Link(destination: URL(string: "https://github.com/RedmMed/RedMed/blob/main/SECURITY.md")!) {
-                    Text("Security")
+                NavigationLink("Security") {
+                    LocalWebView(filename: "security")
+                        .navigationTitle("Security")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+                NavigationLink("How It Works") {
+                    LocalWebView(filename: "get")
+                        .navigationTitle("How It Works")
+                        .navigationBarTitleDisplayMode(.inline)
                 }
             }
             .navigationTitle("Policies")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                        .foregroundStyle(AppTheme.accent)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundColor(.redmedAccent)
                 }
             }
-            .sheet(isPresented: $showHowItWorks) {
-                HowItWorksView()
-                    .withLayoutMetrics()
-            }
         }
-        .tint(AppTheme.accent)
     }
 }
 
 #Preview {
     HelpMenuView()
-        .withLayoutMetrics()
 }

@@ -143,8 +143,6 @@ struct LayoutMetrics: Equatable {
     /// Extra scroll breathing room *below* content — not a substitute for the 34 pt home indicator.
     var screenBottom: CGFloat { sv(16) }
     var screenBottomLarge: CGFloat { sv(22) }
-    /// Bottom inset for the custom tab bar (artifact baseline ~64 pt).
-    var customTabBarReserve: CGFloat { sv(64) }
     /// Matched height for side-by-side Call 911 + Scan on Find 911.
     var emergencyPairButtonHeight: CGFloat { sv(54) }
     /// Vertical padding inside elevated cards (GPS, status chips).
@@ -347,336 +345,25 @@ struct BrandMark: View {
 }
 
 struct ScreenAtmosphere: View {
-    var body: some View {
-        AppTheme.pageBg.ignoresSafeArea()
-    }
-}
-
-/// Edit sheet / topic detail background from the artifact.
-enum ArtifactChrome {
-    static let editSheetBg = Color(red: 0.949, green: 0.949, blue: 0.969)
-    static let editLabel = Color(red: 0.42, green: 0.43, blue: 0.48)
-}
-
-struct EditSectionLabel: View {
     @Environment(\.layoutMetrics) private var layout
-
-    let text: String
-    var isFirst: Bool = false
-
-    var body: some View {
-        Text(text.uppercased())
-            .font(.system(size: layout.s(13), weight: .semibold))
-            .foregroundStyle(ArtifactChrome.editLabel)
-            .kerning(0.5)
-            .padding(.horizontal, layout.s(4))
-            .padding(.bottom, layout.s(6))
-            .padding(.top, isFirst ? 0 : layout.s(22))
-    }
-}
-
-struct EditCard<Content: View>: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    @ViewBuilder let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(spacing: 0) { content }
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
-    }
-}
-
-struct EditCardDivider: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    var leadingInset: CGFloat?
-
-    var body: some View {
-        Divider().padding(.leading, leadingInset ?? layout.screenPad)
-    }
-}
-
-struct EditLabeledField: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let label: String
-    @Binding var text: String
-    var placeholder: String = ""
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Text(label)
-                .font(.system(size: layout.s(15), weight: .medium))
-                .foregroundStyle(ArtifactChrome.editLabel)
-                .frame(width: layout.s(90), alignment: .leading)
-                .padding(.trailing, layout.s(12))
-            TextField(placeholder, text: $text)
-                .font(.system(size: layout.s(15)))
-                .foregroundStyle(AppTheme.ink)
-        }
-        .padding(.horizontal, layout.screenPad)
-        .padding(.vertical, layout.s(13))
-    }
-}
-
-struct EditAddRow: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let title: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: layout.s(8)) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: layout.s(18)))
-                Text(title)
-                    .font(.system(size: layout.s(15)))
-            }
-            .foregroundStyle(AppTheme.accent)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, layout.screenPad)
-            .padding(.vertical, layout.s(13))
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-struct EditRemoveButton: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text("✕")
-                .font(.system(size: layout.s(18)))
-                .foregroundStyle(AppTheme.accent)
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-/// Full-screen hold overlay while CoreNFC write is active (artifact NFCView).
-struct NFCWriteOverlay: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let onCancel: () -> Void
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.9).ignoresSafeArea()
-            VStack(spacing: layout.s(20)) {
-                ZStack {
-                    Circle()
-                        .stroke(AppTheme.accent.opacity(0.35), lineWidth: 1.5)
-                        .frame(width: layout.s(104), height: layout.s(104))
-                    Circle()
-                        .fill(AppTheme.accent.opacity(0.12))
-                        .frame(width: layout.s(80), height: layout.s(80))
-                    Image(systemName: "wave.3.right")
-                        .font(.system(size: layout.s(32)))
-                        .foregroundStyle(AppTheme.accent)
-                }
-
-                VStack(spacing: layout.s(8)) {
-                    Text("Hold to band")
-                        .font(.system(size: layout.s(20), weight: .bold))
-                        .foregroundStyle(.white)
-                    Text("Bring the top of your iPhone close to the NFC bracelet")
-                        .font(.system(size: layout.s(14)))
-                        .foregroundStyle(.white.opacity(0.5))
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: layout.s(260))
-                        .lineSpacing(layout.s(3))
-                }
-
-                Button(action: onCancel) {
-                    Text("Cancel")
-                        .font(.system(size: layout.s(15), weight: .semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, layout.s(32))
-                        .padding(.vertical, layout.s(13))
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(Capsule())
-                }
-                .padding(.top, layout.s(8))
-            }
-        }
-    }
-}
-
-// MARK: - Artifact card chrome (Live app editing session)
-
-struct DesignSectionLabel: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let text: String
-
-    var body: some View {
-        Text(text.uppercased())
-            .font(.system(size: layout.s(12), weight: .semibold))
-            .foregroundStyle(AppTheme.muted)
-            .kerning(0.6)
-            .padding(.horizontal, layout.s(4))
-            .padding(.bottom, layout.s(5))
-    }
-}
-
-struct DesignCardGroup<Content: View>: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    @ViewBuilder let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(spacing: 0) { content }
-            .background(AppTheme.cardBg)
-            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: layout.s(12), style: .continuous)
-                    .stroke(AppTheme.line, lineWidth: 1)
+            AppTheme.pageBg
+            RadialGradient(
+                colors: [AppTheme.accent.opacity(0.05), Color.clear],
+                center: .topLeading,
+                startRadius: layout.s(20),
+                endRadius: layout.s(280)
             )
-            .padding(.horizontal, layout.screenPad)
-    }
-}
-
-struct DesignCardDivider: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    var body: some View {
-        Divider().padding(.leading, layout.screenPad)
-    }
-}
-
-struct DesignPillTag: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let text: String
-    var accent: Bool = false
-
-    var body: some View {
-        Text(text.uppercased())
-            .font(.system(size: layout.s(10), weight: .bold))
-            .kerning(0.8)
-            .foregroundStyle(accent ? AppTheme.accent : AppTheme.muted)
-            .padding(.horizontal, layout.s(10))
-            .padding(.vertical, layout.s(5))
-            .background(
-                Capsule()
-                    .fill(accent ? AppTheme.accentSoft : AppTheme.chipBg)
-                    .overlay(
-                        Capsule()
-                            .stroke(accent ? Color.clear : AppTheme.line, lineWidth: 1)
-                    )
+            RadialGradient(
+                colors: [AppTheme.accentLight.opacity(0.04), Color.clear],
+                center: .bottomTrailing,
+                startRadius: layout.s(40),
+                endRadius: layout.s(320)
             )
-    }
-}
-
-/// Numbered guidance card on the 911 tab (artifact EmergencyView).
-struct DesignInfoCard: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    let icon: String
-    let title: String
-    let numbered: Bool
-    let items: [String]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            HStack(spacing: layout.s(8)) {
-                Image(systemName: icon)
-                    .font(.system(size: layout.s(15)))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: layout.s(28), height: layout.s(28))
-                    .background(AppTheme.accentSoft)
-                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
-                Text(title)
-                    .font(.system(size: layout.s(12), weight: .bold))
-                    .foregroundStyle(AppTheme.ink)
-            }
-            VStack(alignment: .leading, spacing: layout.s(6)) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                    HStack(alignment: .top, spacing: layout.s(8)) {
-                        Text(numbered ? "\(index + 1)" : "→")
-                            .font(.system(size: layout.s(10), weight: .bold))
-                            .foregroundStyle(AppTheme.accent)
-                            .frame(width: layout.s(12))
-                        Text(item)
-                            .font(.system(size: layout.s(11), weight: .semibold))
-                            .foregroundStyle(AppTheme.ink)
-                            .lineSpacing(layout.s(3))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(layout.s(14))
-        .appCard(elevated: false)
-    }
-}
-
-/// Quick-reference trauma grid on the 911 tab (artifact EmergencyView).
-struct CommonTraumaGrid: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    private let cells: [(String, String)] = [
-        ("Bleeding", "Press hard. Belt tourniquet on limb 2–3 in above. Note time."),
-        ("Not Breathing", "Tilt head, lift chin. No pulse? 100–120/min hard compressions."),
-        ("Spinal", "Don't move. Keep head still. Move only if fire or traffic."),
-        ("Burns", "Running water 10+ min. No ice. Cover loosely."),
-        ("Shock", "Lay flat, elevate legs. Keep warm. No food or water."),
-        ("Hypothermia", "Remove wet clothes. Warm slowly. No rubbing.")
-    ]
-
-    private var columns: [GridItem] {
-        [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: layout.s(10)) {
-            HStack(spacing: layout.s(8)) {
-                Image(systemName: "person.fill")
-                    .font(.system(size: layout.s(15)))
-                    .foregroundStyle(.white)
-                    .frame(width: layout.s(28), height: layout.s(28))
-                    .background(AppTheme.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
-                Text("Common Trauma Situations")
-                    .font(.system(size: layout.s(12), weight: .bold))
-                    .foregroundStyle(AppTheme.ink)
-            }
-            LazyVGrid(columns: columns, spacing: layout.s(6)) {
-                ForEach(cells, id: \.0) { cell in
-                    VStack(alignment: .leading, spacing: layout.s(2)) {
-                        Text(cell.0)
-                            .font(.system(size: layout.s(10), weight: .bold))
-                            .foregroundStyle(AppTheme.accent)
-                        Text(cell.1)
-                            .font(.system(size: layout.s(9)))
-                            .foregroundStyle(AppTheme.ink)
-                            .lineSpacing(layout.s(2))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(layout.s(8))
-                    .background(AppTheme.pageBg)
-                    .clipShape(RoundedRectangle(cornerRadius: layout.s(10), style: .continuous))
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(layout.s(14))
-        .appCard(elevated: false)
+        .ignoresSafeArea()
     }
 }
 
@@ -1219,6 +906,493 @@ struct Call911Button: View {
     private func dial() {
         guard let url = EmergencySummaryBuilder.call911URL else { return }
         UIApplication.shared.open(url)
+    }
+}
+
+// MARK: - Profile (My ID design)
+
+/// Muted uppercase section label above profile cards — artifact `SectionLabel`.
+struct ProfileSectionHeader: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+
+    var body: some View {
+        Text(title.uppercased())
+            .font(layout.eyebrowFont())
+            .tracking(0.6)
+            .foregroundStyle(AppTheme.muted)
+            .padding(.horizontal, layout.spaceXS)
+            .padding(.top, layout.spaceSM)
+    }
+}
+
+struct ProfileFieldRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let label: String
+    let value: String
+
+    private var displayValue: String {
+        let trimmed = value.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty || trimmed == "Not set" || trimmed == "Unknown" { return "—" }
+        return trimmed
+    }
+
+    private var isPlaceholder: Bool { displayValue == "—" }
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(layout.subheadlineFont(weight: .medium))
+                .foregroundStyle(AppTheme.muted)
+            Spacer(minLength: layout.spaceMD)
+            Text(displayValue)
+                .font(layout.subheadlineFont(weight: .semibold))
+                .foregroundStyle(isPlaceholder ? AppTheme.muted.opacity(0.45) : AppTheme.ink)
+                .multilineTextAlignment(.trailing)
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.s(11))
+    }
+}
+
+struct ProfileCardDivider: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    var body: some View {
+        Divider().padding(.leading, layout.spaceLG)
+    }
+}
+
+// MARK: - Edit profile (artifact sheet)
+
+/// Cancel · title · Save bar on the edit-profile sheet.
+struct EditSheetNavBar: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    var saveTitle: String = "Save"
+    var saveDisabled: Bool = false
+    let onCancel: () -> Void
+    let onSave: () -> Void
+
+    var body: some View {
+        HStack {
+            Button("Cancel", action: onCancel)
+                .font(.system(size: layout.s(17)))
+                .foregroundStyle(AppTheme.accent)
+            Spacer()
+            Text(title)
+                .font(.system(size: layout.s(17), weight: .semibold))
+                .foregroundStyle(AppTheme.ink)
+            Spacer()
+            Button(saveTitle, action: onSave)
+                .font(.system(size: layout.s(17), weight: .bold))
+                .foregroundStyle(AppTheme.accent)
+                .disabled(saveDisabled)
+                .opacity(saveDisabled ? 0.45 : 1)
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .frame(height: layout.s(52))
+        .background(AppTheme.pageBg.opacity(0.95))
+        .overlay(alignment: .bottom) {
+            Divider().overlay(AppTheme.ink.opacity(0.12))
+        }
+    }
+}
+
+struct EditSectionLabel: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    var isFirst: Bool = false
+
+    var body: some View {
+        Text(title.uppercased())
+            .font(.system(size: layout.s(13), weight: .semibold))
+            .foregroundStyle(AppTheme.muted)
+            .kerning(0.5)
+            .padding(.horizontal, layout.spaceXS)
+            .padding(.bottom, layout.s(6))
+            .padding(.top, isFirst ? 0 : layout.s(22))
+    }
+}
+
+struct EditCard<Content: View>: View {
+    @Environment(\.layoutMetrics) private var layout
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: 0) { content() }
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: layout.s(12), style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: layout.s(12), style: .continuous)
+                    .stroke(AppTheme.line, lineWidth: 1)
+            )
+    }
+}
+
+struct EditCardDivider: View {
+    @Environment(\.layoutMetrics) private var layout
+    var leadingInset: CGFloat?
+
+    var body: some View {
+        Divider().padding(.leading, leadingInset ?? layout.s(106))
+    }
+}
+
+struct EditLabeledField: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let label: String
+    @Binding var text: String
+    var placeholder: String = ""
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Text(label)
+                .font(.system(size: layout.s(15), weight: .medium))
+                .foregroundStyle(AppTheme.muted)
+                .frame(width: layout.s(90), alignment: .leading)
+                .padding(.trailing, layout.s(12))
+            TextField(placeholder, text: $text)
+                .font(.system(size: layout.s(15)))
+                .foregroundStyle(AppTheme.ink)
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.s(13))
+    }
+}
+
+struct EditInlineFieldRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    @Binding var text: String
+    var placeholder: String = ""
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack {
+            TextField(placeholder, text: $text)
+                .font(.system(size: layout.s(15)))
+                .foregroundStyle(AppTheme.ink)
+            Spacer()
+            Button(action: onDelete) {
+                Text("✕")
+                    .font(.system(size: layout.s(18)))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.s(13))
+    }
+}
+
+struct EditMedRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    @Binding var name: String
+    @Binding var dose: String
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: layout.s(4)) {
+                TextField("Medication", text: $name)
+                    .font(.system(size: layout.s(15), weight: .semibold))
+                    .foregroundStyle(AppTheme.ink)
+                TextField("Dose", text: $dose)
+                    .font(.system(size: layout.s(13)))
+                    .foregroundStyle(AppTheme.muted)
+            }
+            Spacer()
+            Button(action: onDelete) {
+                Text("✕")
+                    .font(.system(size: layout.s(18)))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, layout.s(4))
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.s(13))
+    }
+}
+
+struct EditContactRow: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    @Binding var name: String
+    @Binding var relationship: String
+    @Binding var phone: String
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: layout.spaceSM) {
+            VStack(alignment: .leading, spacing: layout.s(4)) {
+                TextField("Name", text: $name)
+                    .font(.system(size: layout.s(15), weight: .semibold))
+                    .foregroundStyle(AppTheme.ink)
+                TextField("Relationship", text: $relationship)
+                    .font(.system(size: layout.s(13)))
+                    .foregroundStyle(AppTheme.muted)
+                TextField("Phone", text: $phone)
+                    .font(.system(size: layout.s(13)))
+                    .foregroundStyle(AppTheme.muted)
+                    .keyboardType(.phonePad)
+            }
+            Spacer()
+            Button(action: onDelete) {
+                Text("✕")
+                    .font(.system(size: layout.s(18)))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, layout.s(4))
+        }
+        .padding(.horizontal, layout.spaceLG)
+        .padding(.vertical, layout.s(13))
+    }
+}
+
+struct EditAddButton: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: layout.spaceSM) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: layout.s(18)))
+                Text(title)
+                    .font(.system(size: layout.s(15)))
+            }
+            .foregroundStyle(AppTheme.accent)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, layout.spaceLG)
+            .padding(.vertical, layout.s(13))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// 2×2 emergency actions on the 911 tab — design grid with icon + label tiles.
+struct EmergencyGridTile: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    enum Style { case primary, secondary, ink }
+
+    let title: String
+    let systemImage: String
+    var style: Style = .secondary
+    var disabled: Bool = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: layout.spaceSM) {
+                Image(systemName: systemImage)
+                    .font(.system(size: layout.s(22), weight: .semibold))
+                Text(title)
+                    .font(layout.footnoteFont(weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: layout.emergencyPairButtonHeight)
+            .padding(.horizontal, layout.spaceSM)
+            .padding(.vertical, layout.spaceMD)
+            .foregroundStyle(foreground)
+            .background(background)
+            .clipShape(RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: layout.cardRadius, style: .continuous)
+                    .stroke(border, lineWidth: style == .primary ? 0 : 1)
+            )
+            .shadow(color: style == .primary ? AppTheme.accent.opacity(0.18) : .clear, radius: layout.s(8), y: layout.s(4))
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .opacity(disabled ? 0.45 : 1)
+    }
+
+    private var foreground: Color {
+        switch style {
+        case .primary, .ink: return .white
+        case .secondary: return AppTheme.ink
+        }
+    }
+
+    private var background: some ShapeStyle {
+        switch style {
+        case .primary: return AnyShapeStyle(AppTheme.primaryButtonGradient)
+        case .secondary: return AnyShapeStyle(AppTheme.cardBg)
+        case .ink: return AnyShapeStyle(AppTheme.ink)
+        }
+    }
+
+    private var border: Color {
+        style == .secondary ? AppTheme.line : .clear
+    }
+}
+
+/// Numbered roadside tips — design cards on the 911 tab.
+struct NumberedReferenceCard: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    let icon: String
+    let title: String
+    let items: [String]
+    var numbered: Bool = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.spaceMD) {
+            HStack(spacing: layout.spaceSM) {
+                Image(systemName: icon)
+                    .font(.system(size: layout.s(15), weight: .semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: layout.s(28), height: layout.s(28))
+                    .background(AppTheme.accentSoft)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
+                Text(title)
+                    .font(layout.subheadlineFont(weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+            }
+            VStack(alignment: .leading, spacing: layout.s(8)) {
+                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                    HStack(alignment: .top, spacing: layout.spaceSM) {
+                        Text(numbered ? "\(index + 1)" : "→")
+                            .font(layout.caption2Font(weight: .heavy))
+                            .foregroundStyle(AppTheme.accent)
+                            .frame(width: layout.s(14), alignment: .leading)
+                        Text(item)
+                            .font(layout.captionFont(weight: .semibold))
+                            .foregroundStyle(AppTheme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(layout.spaceLG)
+        .appCard(elevated: false)
+    }
+}
+
+/// 3×2 trauma quick-reference grid on the 911 tab.
+struct CommonTraumaGrid: View {
+    @Environment(\.layoutMetrics) private var layout
+
+    private let cells: [(String, String)] = [
+        ("Bleeding", "Press hard. Belt tourniquet on limb 2–3 in above. Note time."),
+        ("Not Breathing", "Tilt head, lift chin. No pulse? 100–120/min hard compressions."),
+        ("Spinal", "Don't move. Keep head still. Move only if fire or traffic."),
+        ("Burns", "Running water 10+ min. No ice. Cover loosely."),
+        ("Shock", "Lay flat, elevate legs. Keep warm. No food or water."),
+        ("Hypothermia", "Remove wet clothes. Warm slowly. No rubbing.")
+    ]
+
+    private var columns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: layout.s(6)),
+            GridItem(.flexible(), spacing: layout.s(6)),
+            GridItem(.flexible(), spacing: layout.s(6))
+        ]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: layout.spaceMD) {
+            HStack(spacing: layout.spaceSM) {
+                Image(systemName: "person.fill")
+                    .font(.system(size: layout.s(15), weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: layout.s(28), height: layout.s(28))
+                    .background(AppTheme.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(8), style: .continuous))
+                Text("Common Trauma Situations")
+                    .font(layout.subheadlineFont(weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+            }
+            LazyVGrid(columns: columns, spacing: layout.s(6)) {
+                ForEach(cells, id: \.0) { cell in
+                    VStack(alignment: .leading, spacing: layout.s(2)) {
+                        Text(cell.0)
+                            .font(layout.caption2Font(weight: .heavy))
+                            .foregroundStyle(AppTheme.accent)
+                        Text(cell.1)
+                            .font(.system(size: layout.s(9)))
+                            .foregroundStyle(AppTheme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(layout.s(8))
+                    .background(AppTheme.pageBg)
+                    .clipShape(RoundedRectangle(cornerRadius: layout.s(10), style: .continuous))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(layout.spaceLG)
+        .appCard(elevated: false)
+    }
+}
+
+/// Custom tab bar — pink pill on the active tab (Claude design / `CustomTabBar.swift`).
+struct RedMedTabBar<Tab: Hashable>: View {
+    @Environment(\.layoutMetrics) private var layout
+    @Binding var selection: Tab
+    let items: [(tab: Tab, icon: String, label: String)]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Divider().overlay(AppTheme.line)
+            HStack(spacing: 0) {
+                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+                    tabButton(item)
+                }
+            }
+            .padding(.top, layout.s(4))
+            Capsule()
+                .fill(AppTheme.ink.opacity(0.18))
+                .frame(width: layout.s(134), height: layout.s(5))
+                .padding(.top, layout.s(4))
+                .padding(.bottom, layout.s(8))
+        }
+        .background(AppTheme.cardBg)
+    }
+
+    private func tabButton(_ item: (tab: Tab, icon: String, label: String)) -> some View {
+        let isOn = selection == item.tab
+        return Button {
+            selection = item.tab
+        } label: {
+            VStack(spacing: layout.s(2)) {
+                Image(systemName: item.icon)
+                    .font(.system(size: layout.s(22)))
+                    .foregroundStyle(isOn ? AppTheme.accent : AppTheme.muted)
+                    .padding(.horizontal, layout.spaceLG)
+                    .padding(.vertical, layout.s(5))
+                    .background(
+                        RoundedRectangle(cornerRadius: layout.s(14), style: .continuous)
+                            .fill(isOn ? AppTheme.accentSoft : Color.clear)
+                    )
+                Text(item.label)
+                    .font(.system(size: layout.s(10), weight: isOn ? .semibold : .medium))
+                    .foregroundStyle(isOn ? AppTheme.accent : AppTheme.muted)
+                    .kerning(-0.1)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, layout.s(6))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(item.label)
+        .accessibilityAddTraits(isOn ? .isSelected : [])
     }
 }
 

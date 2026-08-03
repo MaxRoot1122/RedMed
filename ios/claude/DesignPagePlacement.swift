@@ -12,7 +12,7 @@ enum DesignPagePlacement {
     static let nfcHeroSubtitle = "iPhone only for setup. Fill My ID, write the band once — CoreNFC, Face ID, done."
     static let braceletHeroTitle = DesignPageCopy.Page3.title
     static let braceletHeroSubtitle = DesignPageCopy.Page3.lead + " Program the chip once on iPhone; strangers never need RedMed."
-    static let myIDEmptyPrompt = "Tap Edit to fill your details, then program the band from the NFC tab — iPhone setup, any-phone read."
+    static let myIDEmptyPrompt = "Tap Edit to add your name and set up your bracelet."
 
     // Page 4 — Android reader lane (minimal)
     static let androidReaderNote = DesignPageCopy.Page4.androidReaderNote

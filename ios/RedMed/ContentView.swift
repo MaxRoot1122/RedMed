@@ -1,46 +1,39 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.layoutMetrics) private var layout
     @StateObject private var store = ProfileStore()
     @StateObject private var braceletLink = BraceletLinkStore()
-    @State private var selectedTab: OwnerTab = .myID
+    @State private var tab: AppTab = .myid
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
-                switch selectedTab {
-                case .myID:
-                    MyIDView(selectedTab: $selectedTab)
-                case .find911:
-                    LocationView()
-                case .aid:
-                    BasicAidView()
-                case .nfc:
-                    WriteTagView()
+                switch tab {
+                case .myid: MyIDView(tab: $tab)
+                case .emergency: LocationView()
+                case .aid: BasicAidView()
+                case .nfc: WriteTagView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.bottom, layout.customTabBarReserve)
+            .padding(.bottom, 64)
 
-            CustomTabBar(tab: $selectedTab)
+            ArtifactCustomTabBar(tab: $tab)
         }
         .ignoresSafeArea(edges: .bottom)
         .environmentObject(store)
         .environmentObject(braceletLink)
-        .tint(AppTheme.accent)
         .preferredColorScheme(.light)
         .onReceive(NotificationCenter.default.publisher(for: .redMedOpenOwnerTab)) { note in
             guard let raw = note.object as? String else { return }
             switch raw {
-            case "911": selectedTab = .find911
-            case "aid": selectedTab = .aid
-            case "nfc": selectedTab = .nfc
-            default: selectedTab = .myID
+            case "911": tab = .emergency
+            case "aid": tab = .aid
+            case "nfc": tab = .nfc
+            default: tab = .myid
             }
         }
-        .withLayoutMetrics()
         .onAppear {
             braceletLink.promotePostPairingGraceIfEligible()
         }
@@ -52,7 +45,6 @@ struct ContentView: View {
             }
         }
     }
-
 }
 
 #Preview {

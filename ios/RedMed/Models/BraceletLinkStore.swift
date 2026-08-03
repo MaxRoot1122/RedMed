@@ -79,8 +79,7 @@ final class BraceletLinkStore: ObservableObject {
         if url.isEmpty {
             KeychainStore.delete(account: Keys.urlAccount)
         } else if let data = url.data(using: .utf8) {
-            let ok = KeychainStore.save(data, account: Keys.urlAccount)
-            assert(ok, "BraceletLinkStore: Keychain save failed — bracelet URL not persisted")
+            KeychainStore.save(data, account: Keys.urlAccount)
         }
         UserDefaults.standard.removeObject(forKey: Keys.url)
     }

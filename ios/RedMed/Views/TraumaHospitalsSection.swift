@@ -1,11 +1,8 @@
 import SwiftUI
 import CoreLocation
 
-/// Offline trauma hospital picker — shared by Find 911 and the NFC emergency card.
+/// Offline trauma hospital picker — artifact fixed typography.
 struct TraumaHospitalsSection: View {
-    @Environment(\.layoutMetrics) private var layout
-
-    /// When set (Find 911), Google Geocoding may auto-select state/county from GPS.
     var gpsCoordinate: CLLocationCoordinate2D?
 
     @AppStorage("redMedTraumaState") private var traumaState = ""
@@ -16,19 +13,26 @@ struct TraumaHospitalsSection: View {
         let needsCounty = TraumaHospitalFinder.needsCountyPicker(for: traumaState)
         let hospitals = TraumaHospitalFinder.resolvedHospitals(state: traumaState, county: traumaCounty)
 
-        VStack(alignment: .leading, spacing: layout.spaceMD) {
-            SectionEyebrow(text: "Trauma hospitals", tint: AppTheme.medical)
+        VStack(alignment: .leading, spacing: 10) {
+            Text("TRAUMA HOSPITALS")
+                .font(.system(size: 10, weight: .bold))
+                .kerning(1)
+                .foregroundColor(.redmedAccent)
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(Capsule().fill(Color.redmedAccent.opacity(0.1)))
+
             Text("For transport when they may not survive if you wait for a closer hospital.")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(AppTheme.ink.opacity(0.85))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(.redmedDark)
             Text("Verified trauma centers only — pick your state. County appears only when the list is long (30+).")
-                .font(.caption)
-                .foregroundStyle(AppTheme.muted)
+                .font(.system(size: 11))
+                .foregroundColor(.redmedMuted)
+                .lineSpacing(3)
 
             if let googleRegionNote {
                 Text(googleRegionNote)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.medical)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.redmedAccent)
             }
 
             Picker("State", selection: $traumaState) {
@@ -38,9 +42,7 @@ struct TraumaHospitalsSection: View {
                 }
             }
             .pickerStyle(.menu)
-            .onChange(of: traumaState) { _ in
-                traumaCounty = ""
-            }
+            .onChange(of: traumaState) { _ in traumaCounty = "" }
 
             if needsCounty {
                 Picker("County", selection: $traumaCounty) {
@@ -55,42 +57,47 @@ struct TraumaHospitalsSection: View {
             if !traumaState.isEmpty && (!needsCounty || !traumaCounty.isEmpty) {
                 if hospitals.isEmpty {
                     Text("None in this area")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.muted)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.redmedMuted)
                 } else {
                     ForEach(hospitals) { hospital in
-                        HStack(alignment: .top, spacing: layout.s(10)) {
-                            VStack(alignment: .leading, spacing: layout.spaceXS) {
+                        HStack(alignment: .top, spacing: 10) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(hospital.name)
-                                    .font(layout.subheadlineFont(weight: .heavy))
-                                    .foregroundStyle(AppTheme.ink)
-                                    .fixedSize(horizontal: false, vertical: true)
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.redmedDark)
                                 Text("\(hospital.levelLabel) · \(hospital.city), \(hospital.state)")
-                                    .font(layout.captionFont(weight: .semibold))
-                                    .foregroundStyle(AppTheme.muted)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundColor(.redmedMuted)
                                 if !hospital.phone.isEmpty {
                                     Text(hospital.phone)
-                                        .font(layout.captionFont())
-                                        .foregroundStyle(AppTheme.muted)
+                                        .font(.system(size: 11))
+                                        .foregroundColor(.redmedMuted)
                                 }
                             }
-                            Spacer(minLength: layout.spaceSM)
+                            Spacer(minLength: 8)
                             if let url = hospital.mapsURL {
-                                CallPillButton(title: "Maps", url: url)
+                                Link(destination: url) {
+                                    Text("Maps")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.redmedAccent)
+                                        .padding(.horizontal, 12).padding(.vertical, 8)
+                                        .background(Color.redmedAccent.opacity(0.1))
+                                        .clipShape(Capsule())
+                                }
                             }
                         }
-                        .padding(layout.s(10))
-                        .innerSurface()
+                        .padding(10)
+                        .background(Color.redmedBg)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     Text("Call 911 first. Tell the dispatcher you need trauma-center transport and your location.")
-                        .font(.caption2)
-                        .foregroundStyle(AppTheme.muted)
+                        .font(.system(size: 10))
+                        .foregroundColor(.redmedMuted)
+                        .lineSpacing(3)
                 }
             }
         }
-        .padding(layout.spaceLG)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .appCard()
         .task(id: gpsCoordinate.map { "\($0.latitude),\($0.longitude)" }) {
             guard let coordinate = gpsCoordinate else { return }
             guard let region = await GoogleGeocoder.reverseGeocode(coordinate: coordinate) else { return }

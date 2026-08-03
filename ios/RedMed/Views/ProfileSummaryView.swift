@@ -1,13 +1,14 @@
 import SwiftUI
 
-/// Read-only My ID body — card groups from the Claude artifact design session.
+/// Read-only My ID tab — matches artifact `MyIDView.swift` card layout.
 struct ProfileSummaryView: View {
     @Environment(\.layoutMetrics) private var layout
 
     let profile: MedicalProfile
     @ObservedObject var link: BraceletLinkStore
-    var onBraceletTap: (() -> Void)?
-    var onHelpTap: (() -> Void)?
+    var onOpenBracelet: () -> Void = {}
+    var onOpenHowItWorks: () -> Void = {}
+    var onOpenNFC: () -> Void = {}
 
     private static let dobFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -20,10 +21,6 @@ struct ProfileSummaryView: View {
         f.dateStyle = .long
         return f
     }()
-
-    private var hasProfileData: Bool {
-        !profile.name.trimmingCharacters(in: .whitespaces).isEmpty
-    }
 
     private var dobDisplay: String {
         guard !profile.dob.isEmpty, let date = Self.dobFormatter.date(from: profile.dob) else {
@@ -40,37 +37,44 @@ struct ProfileSummaryView: View {
         }
     }
 
+    private var profileIsEmpty: Bool {
+        profile.name.trimmingCharacters(in: .whitespaces).isEmpty
+            && profile.dob.isEmpty
+            && profile.blood.isEmpty
+            && profile.allergies.isEmpty
+            && profile.meds.isEmpty
+            && profile.conditions.isEmpty
+            && filledContacts.isEmpty
+    }
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                header
+            VStack(alignment: .leading, spacing: layout.spaceMD) {
+                headerBlock
 
-                DesignSectionLabel(text: "You")
-                    .padding(.horizontal, layout.screenPad)
-                    .padding(.top, layout.s(2))
-                DesignCardGroup {
-                    profileRow("Name", profile.name)
-                    DesignCardDivider()
-                    profileRow("Birth date", dobDisplay)
-                    DesignCardDivider()
-                    profileRow("Blood type", profile.blood.isEmpty ? "" : profile.blood)
+                ProfileSectionHeader(title: "You")
+                profileCard {
+                    ProfileFieldRow(label: "Name", value: profile.name)
+                    ProfileCardDivider()
+                    ProfileFieldRow(label: "Birth date", value: dobDisplay)
+                    ProfileCardDivider()
+                    ProfileFieldRow(label: "Blood type", value: profile.blood)
                 }
 
                 listSection(title: "Allergies", items: profile.allergies)
                 listSection(title: "Medications", items: profile.meds)
                 listSection(title: "Conditions", items: profile.conditions)
 
-                DesignSectionLabel(text: "Contacts")
-                    .padding(.horizontal, layout.screenPad)
-                    .padding(.top, layout.spaceMD)
-                DesignCardGroup {
+                ProfileSectionHeader(title: "Contacts")
+                profileCard {
                     if filledContacts.isEmpty {
-                        emptyRow()
+                        emptyCardRow
                     } else {
                         ForEach(Array(filledContacts.enumerated()), id: \.element.id) { index, contact in
+                            if index > 0 { ProfileCardDivider() }
                             VStack(alignment: .leading, spacing: layout.s(2)) {
                                 Text(contact.name.isEmpty ? "Unnamed contact" : contact.name)
-                                    .font(.system(size: layout.s(14), weight: .semibold))
+                                    .font(layout.subheadlineFont(weight: .semibold))
                                     .foregroundStyle(AppTheme.ink)
                                 let detail = [contact.rel, contact.phone]
                                     .map { $0.trimmingCharacters(in: .whitespaces) }
@@ -78,59 +82,38 @@ struct ProfileSummaryView: View {
                                     .joined(separator: " · ")
                                 if !detail.isEmpty {
                                     Text(detail)
-                                        .font(.system(size: layout.s(12), weight: .medium))
+                                        .font(layout.captionFont(weight: .medium))
                                         .foregroundStyle(AppTheme.muted)
                                 }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, layout.screenPad)
+                            .padding(.horizontal, layout.spaceLG)
                             .padding(.vertical, layout.s(11))
-                            if index < filledContacts.count - 1 {
-                                DesignCardDivider()
-                            }
                         }
                     }
                 }
 
                 quickActions
-                    .padding(.top, layout.s(14))
-                    .padding(.bottom, layout.s(4))
-
-                Text("\"Control your fear. Control the moment. You have what it takes to save a life.\"")
-                    .font(.system(size: layout.s(11)))
-                    .italic()
-                    .foregroundStyle(AppTheme.ink)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(layout.s(4))
-                    .padding(.horizontal, layout.s(20))
-                    .padding(.top, layout.s(20))
-                    .padding(.bottom, layout.screenBottom)
-                    .frame(maxWidth: .infinity)
+                artifactFooter
             }
+            .padding(.horizontal, layout.screenPad)
+            .padding(.bottom, layout.screenBottomLarge)
+            .reactiveScrollTrack()
         }
-        .background(AppTheme.pageBg)
+        .reactiveScrollChrome()
+        .scrollIndicators(.visible, axes: .vertical)
+        .screenAtmosphere()
     }
 
     @ViewBuilder
-    private var header: some View {
-        if !hasProfileData {
-            HStack(spacing: 0) {
-                Text("Tap ")
-                    .font(.system(size: layout.s(14), weight: .medium))
-                    .foregroundStyle(AppTheme.muted)
-                Text("Edit")
-                    .font(.system(size: layout.s(14), weight: .bold))
-                    .foregroundStyle(AppTheme.accent)
-                Text(" to add your name and set up your bracelet.")
-                    .font(.system(size: layout.s(14), weight: .medium))
-                    .foregroundStyle(AppTheme.muted)
-            }
-            .padding(.horizontal, layout.s(20))
-            .padding(.top, layout.s(10))
-            .padding(.bottom, layout.s(8))
+    private var headerBlock: some View {
+        if profileIsEmpty {
+            emptyPrompt
+                .padding(.top, layout.spaceSM)
+                .padding(.bottom, layout.spaceXS)
         } else if link.isLinked {
-            Button(action: { onBraceletTap?() }) {
-                HStack(spacing: layout.s(10)) {
+            Button(action: onOpenNFC) {
+                HStack(spacing: layout.spaceMD) {
                     Image("BrandLogo")
                         .resizable()
                         .scaledToFit()
@@ -138,54 +121,61 @@ struct ProfileSummaryView: View {
                         .clipShape(RoundedRectangle(cornerRadius: layout.s(13), style: .continuous))
                         .shadow(color: AppTheme.accent.opacity(0.15), radius: layout.s(5), y: layout.s(3))
                     VStack(alignment: .leading, spacing: layout.s(3)) {
-                        Text(link.deviceName.isEmpty ? "\(profile.name)'s iPhone" : link.deviceName)
-                            .font(.system(size: layout.s(22), weight: .bold))
+                        Text(link.deviceName)
+                            .font(layout.heroTitleFont())
                             .foregroundStyle(AppTheme.ink)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.85)
                         Text("LINKED BRACELET ›")
-                            .font(.system(size: layout.s(10), weight: .bold))
+                            .font(.caption2.weight(.bold))
+                            .tracking(0.7)
                             .foregroundStyle(AppTheme.accent.opacity(0.85))
-                            .kerning(0.7)
                     }
                 }
-                .padding(.horizontal, layout.s(20))
-                .padding(.vertical, layout.s(10))
             }
             .buttonStyle(.plain)
-        } else {
-            VStack(alignment: .leading, spacing: layout.spaceSM) {
-                BrandMark(size: .hero, showTagline: true)
-            }
-            .padding(.horizontal, layout.s(20))
-            .padding(.vertical, layout.s(10))
+            .padding(.top, layout.spaceSM)
+            .padding(.bottom, layout.spaceXS)
         }
     }
 
-    @ViewBuilder
+    private var emptyPrompt: some View {
+        HStack(spacing: 0) {
+            Text("Tap ")
+                .foregroundStyle(AppTheme.muted)
+            Text("Edit")
+                .bold()
+                .foregroundStyle(AppTheme.accent)
+            Text(" to add your name and set up your bracelet.")
+                .foregroundStyle(AppTheme.muted)
+        }
+        .font(layout.subheadlineFont(weight: .medium))
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     private var quickActions: some View {
         HStack(spacing: 0) {
-            Button(action: { onBraceletTap?() }) {
+            Button(action: onOpenBracelet) {
                 HStack(spacing: layout.s(6)) {
                     Image(systemName: "wave.3.right.circle")
                         .font(.system(size: layout.s(18)))
                         .foregroundStyle(AppTheme.accent)
                     Text("Bracelet")
-                        .font(.system(size: layout.s(12), weight: .semibold))
+                        .font(layout.captionFont(weight: .semibold))
                         .foregroundStyle(AppTheme.accent)
                 }
                 .padding(.horizontal, layout.s(10))
                 .padding(.vertical, layout.s(6))
             }
             .buttonStyle(.plain)
-
             Divider().frame(height: layout.s(28))
-
-            Button(action: { onHelpTap?() }) {
+            Button(action: onOpenHowItWorks) {
                 HStack(spacing: layout.s(6)) {
                     Image(systemName: "questionmark.circle")
                         .font(.system(size: layout.s(18)))
                         .foregroundStyle(AppTheme.muted)
                     Text("How it works")
-                        .font(.system(size: layout.s(12), weight: .semibold))
+                        .font(layout.captionFont(weight: .semibold))
                         .foregroundStyle(AppTheme.muted)
                 }
                 .padding(.horizontal, layout.s(10))
@@ -193,55 +183,56 @@ struct ProfileSummaryView: View {
             }
             .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.top, layout.spaceMD)
+    }
+
+    private var artifactFooter: some View {
+        Text("\"Control your fear. Control the moment. You have what it takes to save a life.\"")
+            .font(layout.captionFont())
+            .italic()
+            .foregroundStyle(AppTheme.ink)
+            .multilineTextAlignment(.center)
+            .lineSpacing(layout.s(4))
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, layout.spaceLG)
+            .padding(.top, layout.spaceLG)
+            .padding(.bottom, layout.spaceSM)
     }
 
     @ViewBuilder
-    private func profileRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label)
-                .font(.system(size: layout.s(14), weight: .medium))
-                .foregroundStyle(AppTheme.muted)
-            Spacer()
-            Text(value.isEmpty ? "—" : value)
-                .font(.system(size: layout.s(14), weight: .semibold))
-                .foregroundStyle(value.isEmpty ? AppTheme.muted.opacity(0.4) : AppTheme.ink)
-        }
-        .padding(.horizontal, layout.screenPad)
-        .padding(.vertical, layout.s(11))
-    }
-
-    @ViewBuilder
-    private func emptyRow() -> some View {
-        Text("—")
-            .font(.system(size: layout.s(14)))
-            .foregroundStyle(AppTheme.muted.opacity(0.4))
-            .padding(.horizontal, layout.screenPad)
-            .padding(.vertical, layout.s(11))
+    private func profileCard<C: View>(@ViewBuilder content: () -> C) -> some View {
+        VStack(spacing: 0) { content() }
+            .appCard(elevated: false)
     }
 
     @ViewBuilder
     private func listSection(title: String, items: [String]) -> some View {
-        DesignSectionLabel(text: title)
-            .padding(.horizontal, layout.screenPad)
-            .padding(.top, layout.spaceMD)
-        DesignCardGroup {
+        ProfileSectionHeader(title: title)
+        profileCard {
             if items.isEmpty {
-                emptyRow()
+                emptyCardRow
             } else {
                 ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                    if index > 0 { ProfileCardDivider() }
                     Text(item)
-                        .font(.system(size: layout.s(14)))
+                        .font(layout.subheadlineFont())
                         .foregroundStyle(AppTheme.ink)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, layout.screenPad)
+                        .padding(.horizontal, layout.spaceLG)
                         .padding(.vertical, layout.s(11))
-                    if index < items.count - 1 {
-                        DesignCardDivider()
-                    }
                 }
             }
         }
+    }
+
+    private var emptyCardRow: some View {
+        Text("—")
+            .font(layout.subheadlineFont())
+            .foregroundStyle(AppTheme.muted.opacity(0.45))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, layout.spaceLG)
+            .padding(.vertical, layout.s(11))
     }
 }
 

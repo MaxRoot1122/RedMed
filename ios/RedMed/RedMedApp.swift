@@ -29,7 +29,6 @@ struct RedMedApp: App {
                 }
                 .fullScreenCover(isPresented: $showingScanned) {
                     ScannedCardView(profile: scannedProfile ?? MedicalProfile())
-                        .withLayoutMetrics()
                 }
                 .transaction { transaction in
                     if showingScanned {
