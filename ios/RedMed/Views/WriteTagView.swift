@@ -34,6 +34,7 @@ struct WriteTagView: View {
 
                     infoChip("Tap the band · phone opens your card · no app for readers")
                     infoChip(ProfileLinkBuilder.capacityNote(for: store.profile).text)
+                    infoChip("Anyone who taps the band sees this instantly — no login, no passcode. Only include what you'd want a stranger to see.")
 
                     if !writer.statusMessage.isEmpty {
                         Text(writer.statusMessage)
@@ -116,6 +117,7 @@ struct WriteTagView: View {
                         syncBullet("Link your bracelet once (My ID → bracelet icon → write/read).")
                         syncBullet("Save after every edit and hold your phone to the band when prompted.")
                         syncBullet("If you cancel the NFC prompt, the band stays stale until you save again.")
+                        syncBullet("Lost the band or want it blank? Delete My ID (Edit Profile), then write again to erase what's on the chip.")
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(14)
