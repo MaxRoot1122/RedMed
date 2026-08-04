@@ -205,18 +205,18 @@ private struct ArtifactTabBarItem: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 1) {
+            VStack(spacing: 3) {
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: 20, weight: .medium))
                     .foregroundColor(isOn ? .redmedAccent : Color(red: 0.372, green: 0.388, blue: 0.408))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 2)
+                    .frame(width: 40, height: 26)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
                             .fill(isOn ? Color.redmedAccent.opacity(0.10) : Color.clear)
                     )
+                    .offset(y: 2)
                 Text(label)
-                    .font(.system(size: 8, weight: isOn ? .semibold : .medium))
+                    .font(.system(size: 9, weight: isOn ? .semibold : .medium))
                     .foregroundColor(isOn ? .redmedAccent : Color(red: 0.372, green: 0.388, blue: 0.408))
                     .kerning(-0.1)
             }
