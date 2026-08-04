@@ -666,7 +666,7 @@
     var traumaRaw = window.REDMED_TRAUMA_HOSPITALS || [];
     if (traumaRaw.length) content.appendChild(renderTrauma(buildTraumaIndex(traumaRaw)));
 
-    content.appendChild(el("p", "note", "Tap the band → this card. Nothing saved to this phone."));
+    content.appendChild(el("p", "note", "Tap the band → this card. Nothing saved to this phone, nothing sent to a server."));
 
     if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
       content.appendChild(el("p", "note", "No allergies, meds, conditions, or contacts were written to this band."));

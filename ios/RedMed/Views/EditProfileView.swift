@@ -29,6 +29,7 @@ struct EditProfileView: View {
     @State private var medications: [EditLineDraft] = []
     @State private var conditions: [EditLineDraft] = []
     @State private var contacts: [EditContactDraft] = []
+    @State private var showingDeleteConfirm = false
 
     var body: some View {
         NavigationStack {
@@ -77,6 +78,18 @@ struct EditProfileView: View {
                         Label("Add contact", systemImage: "plus.circle.fill")
                     }
                 }
+
+                if store.profile.hasOwnerData {
+                    Section {
+                        Button(role: .destructive) {
+                            showingDeleteConfirm = true
+                        } label: {
+                            Label("Delete My ID from this phone", systemImage: "trash")
+                        }
+                    } footer: {
+                        Text("Removes your saved medical ID from this phone only. Any band you already wrote keeps its data until you write it again.")
+                    }
+                }
             }
             .navigationTitle("Edit Profile")
             .navigationBarTitleDisplayMode(.inline)
@@ -92,6 +105,26 @@ struct EditProfileView: View {
         }
         .withLayoutMetrics()
         .onAppear { loadDraft() }
+        .confirmationDialog(
+            "Delete your medical ID from this phone?",
+            isPresented: $showingDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                Task { await deleteAfterAuth() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This can't be undone. It doesn't erase any band you've already written — write a blank profile to clear the band itself.")
+        }
+    }
+
+    @MainActor
+    private func deleteAfterAuth() async {
+        let ok = await BiometricGate.authenticate(reason: "Confirm deleting your medical ID")
+        guard ok else { return }
+        store.clearAllData()
+        dismiss()
     }
 
     private func clearableField(
