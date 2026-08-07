@@ -87,7 +87,16 @@ enum EmergencySummaryBuilder {
         var medLines: [String] = []
         if !profile.name.isEmpty { medLines.append("Name: \(profile.name)") }
         if !profile.blood.isEmpty { medLines.append("Blood: \(profile.blood)") }
-        if !profile.allergies.isEmpty { medLines.append("Allergies: \(profile.allergies.joined(separator: ", "))") }
+        let hasClinical =
+            !profile.name.isEmpty || !profile.blood.isEmpty
+            || !profile.allergies.isEmpty || !profile.conditions.isEmpty || !profile.meds.isEmpty
+        if hasClinical {
+            if profile.allergies.isEmpty {
+                medLines.append("Allergies: No known allergies")
+            } else {
+                medLines.append("Allergies: \(profile.allergies.joined(separator: ", "))")
+            }
+        }
         if !profile.conditions.isEmpty { medLines.append("Conditions: \(profile.conditions.joined(separator: ", "))") }
         if !profile.meds.isEmpty { medLines.append("Meds: \(profile.meds.joined(separator: ", "))") }
         if !medLines.isEmpty {

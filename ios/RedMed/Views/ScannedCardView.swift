@@ -8,19 +8,12 @@ struct ScannedCardView: View {
     @State private var copiedSummary = false
     @State private var traumaExpanded = false
 
-    private var ageLine: String {
-        var parts: [String] = []
-        if let age = ageYears(from: profile.dob) {
-            parts.append("\(age) yrs")
-        }
-        if !profile.dob.isEmpty {
-            parts.append("DOB \(profile.dob)")
-        }
-        if !profile.blood.isEmpty {
-            parts.append("Blood \(profile.blood)")
-        }
-        return parts.joined(separator: " · ")
-    }
+    /// High-acuity keywords — match web card `ACUITY_RE` so seizure/shunt
+    /// style conditions get critical treatment in-app too.
+    private static let acuityPattern = try! NSRegularExpression(
+        pattern: #"seizure|epilep|gefs|febrile|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp/?sp|tonic.?clonic|status epilepticus|c1.?c2|cervical fusion"#,
+        options: .caseInsensitive
+    )
 
     private var filledContacts: [EmergencyContact] {
         profile.contacts.filter {
@@ -28,6 +21,19 @@ struct ScannedCardView: View {
                 || !$0.phone.trimmingCharacters(in: .whitespaces).isEmpty
                 || !$0.rel.trimmingCharacters(in: .whitespaces).isEmpty
         }
+    }
+
+    private var criticalConditions: [String] {
+        profile.conditions.filter { isHighAcuity($0) }
+    }
+
+    private var otherConditions: [String] {
+        profile.conditions.filter { !isHighAcuity($0) }
+    }
+
+    private func isHighAcuity(_ text: String) -> Bool {
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        return Self.acuityPattern.firstMatch(in: text, options: [], range: range) != nil
     }
 
     var body: some View {
@@ -45,14 +51,21 @@ struct ScannedCardView: View {
                         .padding(.top, 16)
                         .padding(.bottom, 4)
 
-                        if !profile.allergies.isEmpty {
+                        // Clinical order mirrors hosted card/: allergies → critical
+                        // conditions → other conditions → meds → contacts.
+                        if profile.allergies.isEmpty {
+                            nkdaSection
+                        } else {
                             cardSection(title: "Allergies", items: profile.allergies, critical: true)
+                        }
+                        if !criticalConditions.isEmpty {
+                            cardSection(title: "Critical conditions", items: criticalConditions, critical: true)
+                        }
+                        if !otherConditions.isEmpty {
+                            cardSection(title: "Conditions", items: otherConditions)
                         }
                         if !profile.meds.isEmpty {
                             cardSection(title: "Medications", items: profile.meds)
-                        }
-                        if !profile.conditions.isEmpty {
-                            cardSection(title: "Conditions", items: profile.conditions)
                         }
                         if !filledContacts.isEmpty {
                             contactsSection
@@ -75,7 +88,7 @@ struct ScannedCardView: View {
 
                         traumaCard
 
-                        Text("Tap the band → this card. Nothing saved to this phone.")
+                        Text("Tap the band → this card. Nothing saved to this phone, nothing sent to a server.")
                             .font(.system(size: 10, weight: .medium))
                             .foregroundColor(.redmedMuted)
                             .multilineTextAlignment(.center)
@@ -118,31 +131,21 @@ struct ScannedCardView: View {
     }
 
     private var heroHeader: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("REDMED")
                 .font(.system(size: 11, weight: .heavy))
-                .kerning(1.6)
-                .foregroundColor(.white.opacity(0.85))
+                .kerning(1.8)
+                .foregroundColor(.white.opacity(0.88))
 
             Text(profile.name.isEmpty ? "Medical ID" : profile.name)
-                .font(.system(size: 30, weight: .bold))
+                .font(.system(size: profile.name.count > 22 ? 26 : 30, weight: .bold))
                 .foregroundColor(.white)
                 .fixedSize(horizontal: false, vertical: true)
+                .minimumScaleFactor(0.7)
+                .lineLimit(3)
 
-            if !ageLine.isEmpty {
-                Text(ageLine)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.9))
-            }
-
-            if profile.donor {
-                Text("Organ donor")
-                    .font(.system(size: 11, weight: .heavy))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 10).padding(.vertical, 5)
-                    .background(Color.white.opacity(0.18))
-                    .clipShape(Capsule())
-                    .padding(.top, 2)
+            if !heroChips.isEmpty {
+                FlowChips(chips: heroChips)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -151,11 +154,49 @@ struct ScannedCardView: View {
         .padding(.bottom, 22)
         .background(
             LinearGradient(
-                colors: [Color.redmedAccent, Color(red: 0.749, green: 0.071, blue: 0.216)],
+                colors: [
+                    Color(red: 0.957, green: 0.247, blue: 0.369),
+                    Color.redmedAccent,
+                    Color(red: 0.749, green: 0.071, blue: 0.216)
+                ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
         )
+    }
+
+    private var heroChips: [HeroChip] {
+        var chips: [HeroChip] = []
+        if !profile.blood.isEmpty {
+            chips.append(HeroChip(text: "Blood \(profile.blood)", emphasized: true))
+        }
+        if let age = ageYears(from: profile.dob) {
+            chips.append(HeroChip(text: "\(age) yrs", emphasized: false))
+        }
+        if !profile.dob.isEmpty {
+            chips.append(HeroChip(text: "DOB \(profile.dob)", emphasized: false))
+        }
+        if profile.donor {
+            chips.append(HeroChip(text: "Organ donor", emphasized: false))
+        }
+        return chips
+    }
+
+    private var nkdaSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SectionLabel(text: "Allergies").padding(.top, 12)
+            Text("No known allergies")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(Color(red: 0.086, green: 0.396, blue: 0.204))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16).padding(.vertical, 13)
+                .background(Color(red: 0.086, green: 0.396, blue: 0.204).opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color(red: 0.086, green: 0.396, blue: 0.204).opacity(0.16), lineWidth: 1)
+                )
+        }
     }
 
     @ViewBuilder
@@ -183,21 +224,34 @@ struct ScannedCardView: View {
             SectionLabel(text: "Emergency Contacts").padding(.top, 12)
             VStack(spacing: 0) {
                 ForEach(Array(filledContacts.enumerated()), id: \.element.id) { index, contact in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(contact.name.isEmpty ? "Contact" : contact.name)
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.redmedDark)
-                        let detail = [contact.rel, contact.phone]
-                            .map { $0.trimmingCharacters(in: .whitespaces) }
-                            .filter { !$0.isEmpty }
-                            .joined(separator: " · ")
-                        if !detail.isEmpty {
-                            Text(detail)
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(.redmedMuted)
+                    HStack(alignment: .center, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(contact.name.isEmpty ? "Contact" : contact.name)
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(.redmedDark)
+                            if !contact.rel.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Text(contact.rel)
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.redmedMuted)
+                            }
+                            if !contact.phone.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Text(contact.phone)
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.redmedMuted)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        if let url = EmergencySummaryBuilder.telURL(phone: contact.phone) {
+                            Button("Call") { UIApplication.shared.open(url) }
+                                .font(.system(size: 14, weight: .heavy))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(Color.redmedAccent)
+                                .clipShape(Capsule())
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16).padding(.vertical, 13)
                     if index < filledContacts.count - 1 {
                         Divider().overlay(Color.black.opacity(0.06))
@@ -248,15 +302,59 @@ struct ScannedCardView: View {
     }
 }
 
+private struct HeroChip: Identifiable {
+    var id: String { text }
+    let text: String
+    let emphasized: Bool
+}
+
+/// Simple wrapping chip row — avoids importing a layout dependency for a
+/// one-off hero meta strip.
+private struct FlowChips: View {
+    let chips: [HeroChip]
+
+    var body: some View {
+        // LazyVGrid keeps chip rows tight on narrow phones without a custom
+        // flow layout; two columns is enough for blood/age/DOB/donor.
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 88), spacing: 8)],
+            alignment: .leading,
+            spacing: 8
+        ) {
+            ForEach(chips) { chip in
+                Text(chip.text)
+                    .font(.system(size: chip.emphasized ? 15 : 13, weight: .heavy))
+                    .foregroundColor(chip.emphasized ? Color(red: 0.749, green: 0.071, blue: 0.216) : .white)
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 6)
+                    .background(chip.emphasized ? Color.white : Color.white.opacity(0.16))
+                    .overlay(
+                        Capsule().stroke(Color.white.opacity(chip.emphasized ? 0 : 0.22), lineWidth: 1)
+                    )
+                    .clipShape(Capsule())
+            }
+        }
+    }
+}
+
 #Preview {
     ScannedCardView(profile: MedicalProfile(
-        name: "Alex Rivera",
-        dob: "1990-04-12",
-        blood: "O+",
-        donor: true,
-        allergies: ["Penicillin"],
-        meds: ["Metformin 500mg"],
-        conditions: ["Type 2 diabetes"],
-        contacts: [EmergencyContact(name: "Sam Rivera", rel: "Spouse", phone: "5551234567")]
+        name: "Maximilian Aguilar-Aasted",
+        dob: "2000-06-14",
+        blood: "A+",
+        donor: false,
+        allergies: [],
+        meds: ["Lamictal 150 mg", "Depakote 600 mg (3x/day)", "Gabapentin 500 mg (4x/day)"],
+        conditions: [
+            "Tonic-clonic seizures",
+            "GEFS+ type 6",
+            "VP/SP shunt",
+            "Fused C1–C2",
+            "Chronic pain"
+        ],
+        contacts: [
+            EmergencyContact(name: "Mark Aguilar", rel: "Father", phone: "6094393828"),
+            EmergencyContact(name: "Kristine Aguilar", rel: "Mother", phone: "6092403035")
+        ]
     ))
 }
