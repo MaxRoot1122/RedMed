@@ -6,7 +6,7 @@
 <title>RedMed — Emergency Card</title>
 <meta name="theme-color" content="#e11d48">
 <meta name="description" content="RedMed emergency card — tap the band, phone opens instantly. Allergies, meds, Call 911. No app needed.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ygu0SHtxr4eCxzc7xYOGtM2U2gucJhNS8mzLqj+UDUs='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-NN24AR1zPXHPm/oYuZBm5DyZuk4LBMuAVrUI5H/Vu2E='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
   @font-face {
     font-family: "DM Sans";
@@ -95,10 +95,12 @@
   }
   .hero h1 {
     margin: 0;
-    font-size: calc(32px * var(--scale));
+    font-size: calc(28px * var(--scale));
     font-weight: 800;
     letter-spacing: -.6px;
+    overflow-wrap: anywhere;
     word-break: break-word;
+    hyphens: auto;
     position: relative;
   }
   .hero-chips {
@@ -320,7 +322,7 @@
   var TRAUMA_STATE_KEY = "redMedTraumaState";
   var TRAUMA_COUNTY_KEY = "redMedTraumaCounty";
   // High-acuity keywords — surface these conditions with the same urgency as allergies.
-  var ACUITY_RE = /seizure|epilep|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp\/?sp|tonic.?clonic|status epilepticus/i;
+  var ACUITY_RE = /seizure|epilep|gefs|febrile|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp\/?sp|tonic.?clonic|status epilepticus|c1.?c2|cervical fusion/i;
 
   function applyLayoutScale() {
     var w = window.innerWidth;

@@ -11,7 +11,7 @@ struct ScannedCardView: View {
     /// High-acuity keywords — match web card `ACUITY_RE` so seizure/shunt
     /// style conditions get critical treatment in-app too.
     private static let acuityPattern = try! NSRegularExpression(
-        pattern: #"seizure|epilep|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp/?sp|tonic.?clonic|status epilepticus"#,
+        pattern: #"seizure|epilep|gefs|febrile|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp/?sp|tonic.?clonic|status epilepticus|c1.?c2|cervical fusion"#,
         options: .caseInsensitive
     )
 
@@ -138,9 +138,11 @@ struct ScannedCardView: View {
                 .foregroundColor(.white.opacity(0.88))
 
             Text(profile.name.isEmpty ? "Medical ID" : profile.name)
-                .font(.system(size: 32, weight: .bold))
+                .font(.system(size: profile.name.count > 22 ? 26 : 30, weight: .bold))
                 .foregroundColor(.white)
                 .fixedSize(horizontal: false, vertical: true)
+                .minimumScaleFactor(0.7)
+                .lineLimit(3)
 
             if !heroChips.isEmpty {
                 FlowChips(chips: heroChips)
