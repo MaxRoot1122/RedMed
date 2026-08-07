@@ -6,38 +6,46 @@
 <title>RedMed — Emergency Card</title>
 <meta name="theme-color" content="#e11d48">
 <meta name="description" content="RedMed emergency card — tap the band, phone opens instantly. Allergies, meds, Call 911. No app needed.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-p8mYfVK89BdXjH/w6jTImTWX4yBOuNFI8WaUfAVZ+xw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ygu0SHtxr4eCxzc7xYOGtM2U2gucJhNS8mzLqj+UDUs='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';">
 <style>
+  @font-face {
+    font-family: "DM Sans";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../assets/fonts/dm-sans-latin.woff2") format("woff2");
+  }
   :root {
     --accent: #e11d48;
     --accent-dark: #bf1239;
-    --accent-soft: rgba(225,29,72,.1);
+    --accent-soft: rgba(225,29,72,.12);
     --ink: #1c1917;
     --muted: #78716c;
     --bg: #fff7f7;
-    --card: rgba(255,255,255,.92);
+    --card: rgba(255,255,255,.94);
     --line: rgba(28,25,23,.08);
     --scale: 1;
     --v-scale: 1;
     --pad: calc(16px * var(--scale));
-    --radius: calc(22px * var(--scale));
+    --radius: calc(18px * var(--scale));
     --inner: calc(12px * var(--scale));
+    --dock-h: calc(76px * var(--v-scale) + env(safe-area-inset-bottom, 0px));
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; height: 100%; }
   body {
-    font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
+    font-family: "DM Sans", ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Rounded", sans-serif;
     background: var(--bg);
     color: var(--ink);
-    line-height: 1.45;
+    line-height: 1.4;
   }
   a { color: inherit; text-decoration: none; }
   .shell { min-height: 100dvh; display: flex; flex-direction: column; }
   .atmosphere {
     background-color: var(--bg);
     background-image:
-      radial-gradient(ellipse 280px 280px at 0% 0%, rgba(225,29,72,.05), transparent 70%),
-      radial-gradient(ellipse 320px 320px at 100% 100%, rgba(255,115,140,.04), transparent 70%);
+      radial-gradient(ellipse 280px 280px at 0% 0%, rgba(225,29,72,.07), transparent 70%),
+      radial-gradient(ellipse 320px 320px at 100% 100%, rgba(255,115,140,.05), transparent 70%);
   }
   .topbar {
     position: sticky; top: 0; z-index: 20;
@@ -51,7 +59,7 @@
   .topbar span {
     font-size: calc(11px * var(--scale));
     font-weight: 800;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.4px;
     color: var(--muted);
   }
   .progress {
@@ -65,45 +73,81 @@
   }
   .hero {
     color: #fff;
-    padding: calc(22px * var(--v-scale)) var(--pad) calc(22px * var(--v-scale));
-    background: linear-gradient(135deg, var(--accent) 0%, rgb(191,18,55) 100%);
+    padding: calc(24px * var(--v-scale)) var(--pad) calc(26px * var(--v-scale));
+    background:
+      linear-gradient(145deg, #f43f5e 0%, var(--accent) 42%, var(--accent-dark) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: auto -20% -40% 40%;
+    height: 140%;
+    background: radial-gradient(circle, rgba(255,255,255,.14), transparent 62%);
+    pointer-events: none;
   }
   .hero-kicker {
     margin: 0 0 calc(8px * var(--v-scale));
     font-size: calc(11px * var(--scale));
     font-weight: 800;
-    letter-spacing: 1.6px;
-    color: rgba(255,255,255,.85);
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,.88);
   }
   .hero h1 {
     margin: 0;
-    font-size: calc(30px * var(--scale));
+    font-size: calc(32px * var(--scale));
     font-weight: 800;
-    letter-spacing: -.5px;
+    letter-spacing: -.6px;
     word-break: break-word;
+    position: relative;
   }
-  .hero-meta {
-    margin: calc(8px * var(--v-scale)) 0 0;
-    font-size: calc(14px * var(--scale));
-    font-weight: 600;
-    color: rgba(255,255,255,.9);
+  .hero-chips {
+    display: flex; flex-wrap: wrap; gap: calc(8px * var(--scale));
+    margin-top: calc(14px * var(--v-scale));
+    position: relative;
   }
-  .donor {
-    display: inline-block;
-    margin-top: calc(10px * var(--v-scale));
-    padding: calc(5px * var(--scale)) calc(10px * var(--scale));
+  .chip {
+    display: inline-flex; align-items: center;
+    padding: calc(6px * var(--scale)) calc(11px * var(--scale));
     border-radius: 999px;
-    background: rgba(255,255,255,.18);
-    font-size: calc(11px * var(--scale));
-    font-weight: 800;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.22);
+    font-size: calc(13px * var(--scale));
+    font-weight: 700;
     color: #fff;
+  }
+  .chip-blood {
+    background: #fff;
+    color: var(--accent-dark);
+    border-color: #fff;
+    font-weight: 800;
+    font-size: calc(15px * var(--scale));
+    letter-spacing: .2px;
   }
   .content {
     padding: var(--pad);
-    padding-bottom: calc(28px * var(--v-scale) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(18px * var(--v-scale) + var(--dock-h));
     display: flex;
     flex-direction: column;
-    gap: calc(18px * var(--v-scale));
+    gap: calc(16px * var(--v-scale));
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise .42s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .reveal:nth-child(1) { animation-delay: .02s; }
+  .reveal:nth-child(2) { animation-delay: .07s; }
+  .reveal:nth-child(3) { animation-delay: .12s; }
+  .reveal:nth-child(4) { animation-delay: .17s; }
+  .reveal:nth-child(5) { animation-delay: .22s; }
+  .reveal:nth-child(6) { animation-delay: .27s; }
+  .reveal:nth-child(7) { animation-delay: .32s; }
+  @keyframes rise {
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; animation: none; }
   }
   .btn {
     display: block; width: 100%;
@@ -112,21 +156,27 @@
     text-decoration: none;
   }
   .btn-call {
-    padding: calc(17px * var(--v-scale));
+    padding: calc(16px * var(--v-scale));
     font-size: calc(20px * var(--scale));
     font-weight: 800;
     color: #fff;
     background: linear-gradient(180deg, #fb7185, var(--accent));
     border: 0.5px solid rgba(255,255,255,.34);
-    box-shadow: 0 calc(2px * var(--scale)) calc(6px * var(--scale)) rgba(225,29,72,.08);
+    box-shadow: 0 calc(6px * var(--scale)) calc(18px * var(--scale)) rgba(225,29,72,.28);
   }
   .btn-ink {
-    padding: calc(16px * var(--v-scale));
-    font-size: calc(16px * var(--scale));
+    padding: calc(14px * var(--v-scale));
+    font-size: calc(15px * var(--scale));
     font-weight: 800;
     color: #fff;
     background: var(--ink);
-    box-shadow: 0 calc(4px * var(--scale)) calc(10px * var(--scale)) rgba(0,0,0,.12);
+  }
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    padding: calc(10px * var(--v-scale)) var(--pad) calc(10px * var(--v-scale) + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(255,247,247,0), rgba(255,247,247,.92) 28%, rgba(255,247,247,.98));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .section { display: flex; flex-direction: column; gap: calc(10px * var(--v-scale)); }
   .pill {
@@ -140,39 +190,49 @@
   }
   .pill-accent { color: var(--accent); background: var(--accent-soft); }
   .pill-muted { color: var(--muted); background: rgba(120,113,108,.1); }
-  .list { display: flex; flex-direction: column; gap: calc(7px * var(--v-scale)); }
+  .list { display: flex; flex-direction: column; gap: calc(8px * var(--v-scale)); }
   .list-crit {
     padding: calc(14px * var(--scale));
     border-radius: var(--inner);
     background: var(--accent-soft);
+    border: 1px solid rgba(225,29,72,.14);
+  }
+  .list-ok {
+    padding: calc(14px * var(--scale));
+    border-radius: var(--inner);
+    background: rgba(22,163,74,.08);
+    border: 1px solid rgba(22,163,74,.16);
+    color: #166534;
+    font-size: calc(15px * var(--scale));
+    font-weight: 700;
   }
   .row {
     display: flex; gap: calc(10px * var(--scale)); align-items: flex-start;
   }
   .dot {
-    width: calc(5px * var(--scale)); height: calc(5px * var(--scale));
+    width: calc(6px * var(--scale)); height: calc(6px * var(--scale));
     margin-top: calc(7px * var(--scale)); flex: none;
     border-radius: 50%; background: var(--accent);
   }
-  .row span { font-size: calc(15px * var(--scale)); font-weight: 600; }
-  .list-plain .row span { font-weight: 500; }
-  .contact-card {
+  .row span { font-size: calc(16px * var(--scale)); font-weight: 650; }
+  .list-plain .row span { font-weight: 550; }
+  .contact-row {
     display: flex; align-items: center; justify-content: space-between;
     gap: calc(10px * var(--scale));
-    padding: calc(14px * var(--scale));
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    padding: calc(12px * var(--scale)) 0;
+    border-bottom: 1px solid var(--line);
   }
-  .cname { font-weight: 700; font-size: calc(15px * var(--scale)); }
-  .crel, .cphone { font-size: calc(12px * var(--scale)); color: var(--muted); margin-top: 2px; }
+  .contact-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .contact-row:first-child { padding-top: 0; }
+  .cname { font-weight: 750; font-size: calc(16px * var(--scale)); }
+  .crel, .cphone { font-size: calc(13px * var(--scale)); color: var(--muted); margin-top: 2px; font-weight: 550; }
   .btn-pill {
     flex: none;
-    padding: calc(10px * var(--scale)) calc(14px * var(--scale));
+    padding: calc(11px * var(--scale)) calc(16px * var(--scale));
     border-radius: 999px;
     background: var(--accent);
     color: #fff;
-    font-size: calc(13px * var(--scale));
+    font-size: calc(14px * var(--scale));
     font-weight: 800;
   }
   .note {
@@ -199,7 +259,6 @@
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: 0 calc(3px * var(--scale)) calc(8px * var(--scale)) rgba(225,29,72,.04);
   }
   .trauma-panel.open { display: block; }
   .trauma-panel p { margin: 0 0 calc(8px * var(--v-scale)); font-size: calc(12px * var(--scale)); color: var(--muted); }
@@ -260,6 +319,8 @@
   var COUNTY_THRESHOLD = 30;
   var TRAUMA_STATE_KEY = "redMedTraumaState";
   var TRAUMA_COUNTY_KEY = "redMedTraumaCounty";
+  // High-acuity keywords — surface these conditions with the same urgency as allergies.
+  var ACUITY_RE = /seizure|epilep|shunt|anaphylax|diabetes|insulin|anticoag|warfarin|eliquis|xarelto|asthma|pacemaker|icd\b|transplant|hemophil|bleeding disorder|adrenal|addison|airway|tracheostom|vp\/?sp|tonic.?clonic|status epilepticus/i;
 
   function applyLayoutScale() {
     var w = window.innerWidth;
@@ -356,6 +417,20 @@
     return digits ? "tel:" + digits : null;
   }
 
+  function isHighAcuity(text) {
+    return ACUITY_RE.test(String(text || ""));
+  }
+
+  function partitionConditions(items) {
+    var critical = [];
+    var other = [];
+    items.forEach(function (t) {
+      if (isHighAcuity(t)) critical.push(t);
+      else other.push(t);
+    });
+    return { critical: critical, other: other };
+  }
+
   function buildTraumaIndex(raw) {
     var index = {};
     (raw || []).forEach(function (h) {
@@ -416,18 +491,18 @@
     var hero = el("div", "hero");
     hero.appendChild(el("p", "hero-kicker", "REDMED"));
     hero.appendChild(el("h1", null, p.name || "Medical ID"));
-    var metaParts = [];
+    var chips = el("div", "hero-chips");
+    if (p.blood) chips.appendChild(el("span", "chip chip-blood", "Blood " + p.blood));
     var age = ageYears(p.dob);
-    if (age != null) metaParts.push(age + " yrs");
-    if (p.dob) metaParts.push("DOB " + p.dob);
-    if (p.blood) metaParts.push("Blood " + p.blood);
-    if (metaParts.length) hero.appendChild(el("p", "hero-meta", metaParts.join(" · ")));
-    if (p.donor) hero.appendChild(el("span", "donor", "Organ donor"));
+    if (age != null) chips.appendChild(el("span", "chip", age + " yrs"));
+    if (p.dob) chips.appendChild(el("span", "chip", "DOB " + p.dob));
+    if (p.donor) chips.appendChild(el("span", "chip", "Organ donor"));
+    if (chips.childNodes.length) hero.appendChild(chips);
     return hero;
   }
 
   function renderList(title, items, critical) {
-    var section = el("div", "section");
+    var section = el("div", "section reveal");
     section.appendChild(el("span", "pill " + (critical ? "pill-accent" : "pill-muted"), title));
     var list = el("div", "list" + (critical ? " list-crit" : " list-plain"));
     items.forEach(function (text) {
@@ -440,29 +515,36 @@
     return section;
   }
 
+  function renderNkda() {
+    var section = el("div", "section reveal");
+    section.appendChild(el("span", "pill pill-muted", "Allergies"));
+    section.appendChild(el("div", "list-ok", "No known allergies"));
+    return section;
+  }
+
   function renderContacts(contacts) {
-    var section = el("div", "section");
+    var section = el("div", "section reveal");
     section.appendChild(el("span", "pill pill-muted", "Emergency contacts"));
     contacts.forEach(function (c) {
-      var card = el("div", "contact-card");
+      var row = el("div", "contact-row");
       var info = el("div");
       info.appendChild(el("div", "cname", c.name || "Contact"));
       if (c.rel) info.appendChild(el("div", "crel", c.rel));
       if (c.phone) info.appendChild(el("div", "cphone", c.phone));
-      card.appendChild(info);
+      row.appendChild(info);
       var href = telHref(c.phone);
       if (href) {
         var call = el("a", "btn-pill", "Call");
         call.href = href;
-        card.appendChild(call);
+        row.appendChild(call);
       }
-      section.appendChild(card);
+      section.appendChild(row);
     });
     return section;
   }
 
   function renderTrauma(index) {
-    var wrap = el("div", "section");
+    var wrap = el("div", "section reveal");
     var toggle = el("button", "trauma-toggle");
     toggle.type = "button";
     toggle.setAttribute("aria-expanded", "false");
@@ -590,6 +672,7 @@
     if (p.name) lines.push("Name: " + p.name);
     if (p.blood) lines.push("Blood: " + p.blood);
     if (p.allergies.length) lines.push("Allergies: " + p.allergies.join(", "));
+    else lines.push("Allergies: No known allergies");
     if (p.conditions.length) lines.push("Conditions: " + p.conditions.join(", "));
     if (p.meds.length) lines.push("Meds: " + p.meds.join(", "));
     return lines.join("\n");
@@ -606,7 +689,6 @@
   }
 
   function renderCard(p) {
-    document.getElementById("nav").hidden = false;
     var root = document.getElementById("root");
     root.textContent = "";
     var shell = el("div", "shell atmosphere");
@@ -622,16 +704,18 @@
     scroll.appendChild(renderHero(p));
 
     var content = el("div", "content");
-    var call = el("a", "btn btn-call", "Call 911");
-    call.href = "tel:911";
-    content.appendChild(call);
 
+    // Clinical order: allergies → high-acuity conditions → other conditions → meds → contacts
     if (p.allergies.length) content.appendChild(renderList("Allergies", p.allergies, true));
+    else content.appendChild(renderNkda());
+
+    var parts = partitionConditions(p.conditions);
+    if (parts.critical.length) content.appendChild(renderList("Critical conditions", parts.critical, true));
+    if (parts.other.length) content.appendChild(renderList("Medical conditions", parts.other, false));
     if (p.meds.length) content.appendChild(renderList("Medications", p.meds, false));
-    if (p.conditions.length) content.appendChild(renderList("Medical conditions", p.conditions, false));
     if (p.contacts.length) content.appendChild(renderContacts(p.contacts));
 
-    var copy = el("button", "btn btn-ink", "Copy medical summary");
+    var copy = el("button", "btn btn-ink reveal", "Copy medical summary");
     copy.type = "button";
     copy.addEventListener("click", function () {
       var text = summaryText(p);
@@ -666,14 +750,21 @@
     var traumaRaw = window.REDMED_TRAUMA_HOSPITALS || [];
     if (traumaRaw.length) content.appendChild(renderTrauma(buildTraumaIndex(traumaRaw)));
 
-    content.appendChild(el("p", "note", "Tap the band → this card. Nothing saved to this phone, nothing sent to a server."));
+    content.appendChild(el("p", "note reveal", "Tap the band → this card. Nothing saved to this phone, nothing sent to a server."));
 
     if (!p.allergies.length && !p.meds.length && !p.conditions.length && !p.contacts.length) {
-      content.appendChild(el("p", "note", "No allergies, meds, conditions, or contacts were written to this band."));
+      content.appendChild(el("p", "note reveal", "No allergies, meds, conditions, or contacts were written to this band."));
     }
 
     scroll.appendChild(content);
     shell.appendChild(scroll);
+
+    var dock = el("div", "dock");
+    var call = el("a", "btn btn-call", "Call 911");
+    call.href = "tel:911";
+    dock.appendChild(call);
+    shell.appendChild(dock);
+
     root.appendChild(shell);
     attachScrollProgress(scroll);
   }
